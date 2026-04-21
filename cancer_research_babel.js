@@ -80,7 +80,7 @@ class CancerResearchBabel {
     this.researchBlocks = [];
     this.currentBlock = null;
     this.agentMerkleRoots = new Map(); // Track agent state Merkle roots
-    this.blockInterval = 1 * 60 * 1000; // 1 minute for testing, change to 10 * 60 * 1000 for production
+    this.blockInterval = 5 * 60 * 1000; // 5 minutes for testing, change to 10 * 60 * 1000 for production
     this.minAgents = 42;
     this.agentsPerBlock = 10; // 10 agents evaluate each block
     this.providers = ['openai/gpt-4o', 'anthropic/claude-3.5-sonnet', 'google/gemini-2.0', 'meta/llama-3.1-70b', 'mistral/mistral-7b'];
@@ -100,6 +100,11 @@ class CancerResearchBabel {
       this.researchBlocks = parsed.blocks || [];
       this.currentBlock = parsed.currentBlock;
     }
+
+    // Always start fresh for testing - clear any existing data
+    console.log('🔄 Starting fresh Cancer Research Babel initialization...');
+    this.initializeAgents();
+    this.initializeGenesisBlock();
   }
 
   saveData() {
@@ -109,6 +114,37 @@ class CancerResearchBabel {
       currentBlock: this.currentBlock
     };
     localStorage.setItem('cancerResearchData', JSON.stringify(data));
+  }
+
+  initializeGenesisBlock() {
+    // Genesis block with 10 fundamental cancer research directions
+    const genesisTopics = [
+      "CRISPR-based universal cancer vaccine targeting shared neoantigens across all cancer types",
+      "AI-driven drug discovery using quantum computing to identify undruggable cancer targets",
+      "Microbiome engineering to prevent cancer metastasis through gut-brain-cancer axis modulation",
+      "Nanoparticle delivery systems for organ-specific cancer targeting with zero healthy cell toxicity",
+      "Epigenetic reprogramming to reverse cancer stem cell differentiation and eliminate self-renewal",
+      "Viral oncolysis combined with CRISPR enhancement for selective tumor destruction and immune activation",
+      "Metabolic reprogramming inhibitors to starve cancer cells while sparing normal metabolism",
+      "Immune checkpoint modulators with tissue-specific delivery to overcome tumor immunosuppression",
+      "Telomere lengthening inhibitors combined with senolytics to eliminate aging-related cancer risk",
+      "RNA-based therapeutics targeting non-coding RNAs that drive cancer progression and resistance"
+    ];
+
+    this.currentBlock = {
+      id: `genesis_block_${Date.now()}`,
+      topics: genesisTopics,
+      issuedAt: new Date().toISOString(),
+      evaluations: [],
+      winners: [],
+      status: 'active',
+      blockType: 'genesis'
+    };
+
+    console.log('✅ Genesis Block Initialized with 10 Fundamental Research Directions');
+    this.displayCurrentBlock();
+    this.displayLeaderboard();
+    this.displayRecentBlocks();
   }
 
   initializeAgents() {
@@ -349,7 +385,15 @@ class CancerResearchBabel {
 
   async performInitialCycle() {
     console.log('🚀 Initiating Initial Autonomous Cancer Research Cycle...');
-    await this.triggerNextCycle();
+
+    // If we have a genesis block waiting, process it
+    if (this.currentBlock && this.currentBlock.blockType === 'genesis') {
+      console.log('📋 Processing Genesis Block...');
+      await this.triggerNextCycle();
+    } else {
+      console.log('⏳ Waiting for genesis block initialization...');
+      setTimeout(() => this.performInitialCycle(), 1000);
+    }
   }
 
   async triggerNextCycle() {
