@@ -1,10 +1,12 @@
 class CancerResearchBabel {
   constructor() {
+    this.seedCode = "e676098e48313c65989af66900ba43461e738168c3bab7ffbb12e0c96319ed9b6a0e6f5fe1f1737291148c25db2a565b35cf6fe9b00d997c8c9879e735fa81d8SN_3a7c39f14e0c478bc1b8b33ee4e7b4d18e2c8659e7a37f2f5b1b464c8b6f5b19RA_93afb3fdc190a2c9450f42a5e55474db9f69f3630cbd33b783af33c23093742f";
     this.agents = [];
     this.researchBlocks = [];
     this.currentBlock = null;
     this.blockInterval = 1 * 60 * 1000; // 1 minute for testing, change to 10 * 60 * 1000 for production
     this.minAgents = 42;
+    this.agentsPerBlock = 10; // 10 agents evaluate each block
     this.providers = ['openai/gpt-4o', 'anthropic/claude-3.5-sonnet', 'google/gemini-2.0', 'meta/llama-3.1-70b', 'mistral/mistral-7b'];
     this.loadData();
     this.initializeAgents();
@@ -109,39 +111,58 @@ class CancerResearchBabel {
   }
 
   issueNewBlock() {
-    let topic;
+    let topics = [];
     if (this.researchBlocks.length === 0) {
-      // Initial topics
-      const initialTopics = [
-        'CRISPR-based universal cancer vaccine targeting shared neoantigens',
-        'AI-driven drug discovery for undruggable cancer targets using quantum computing',
-        'Microbiome engineering to prevent cancer metastasis through gut-brain-cancer axis',
-        'Nanoparticle delivery systems for organ-specific cancer targeting with minimal toxicity',
-        'Epigenetic reprogramming to reverse cancer stem cell differentiation',
-        'Viral oncolysis combined with CRISPR enhancement for selective tumor destruction',
-        'Metabolic reprogramming inhibitors for cancer cell starvation therapy',
-        'Immune checkpoint modulators with tissue-specific delivery to overcome resistance',
-        'Telomere lengthening inhibitors combined with senolytics for aging-related cancers',
-        'RNA-based therapeutics for non-coding RNA dysregulation in cancer'
-      ];
-      topic = initialTopics[Math.floor(Math.random() * initialTopics.length)];
+      // First block uses the seed code
+      topics = [this.seedCode];
     } else {
-      // Derive from previous winner
-      const winner = this.researchBlocks[this.researchBlocks.length - 1].winner;
-      topic = this.generateDerivedTopic(winner.evaluation);
+      // Generate 10 new topics derived from previous winners
+      topics = this.generateNewTopics(10);
     }
 
     this.currentBlock = {
       id: `block_${Date.now()}`,
-      topic,
+      topics,
       issuedAt: new Date().toISOString(),
-      evaluations: [],
-      winner: null,
+      evaluations: [], // Will be array of arrays (one per topic)
+      winners: [], // One winner per topic
       status: 'active'
     };
 
     this.saveData();
     this.displayCurrentBlock();
+  }
+
+  generateNewTopics(count) {
+    const topics = [];
+    for (let i = 0; i < count; i++) {
+      if (this.researchBlocks.length > 0) {
+        // Derive from random previous winner
+        const randomBlock = this.researchBlocks[Math.floor(Math.random() * this.researchBlocks.length)];
+        const winner = randomBlock.winners[Math.floor(Math.random() * randomBlock.winners.length)];
+        topics.push(this.generateDerivedTopic(winner.evaluation));
+      } else {
+        // Fallback initial topics
+        topics.push(this.generateInitialTopic());
+      }
+    }
+    return topics;
+  }
+
+  generateInitialTopic() {
+    const initialTopics = [
+      'CRISPR-based universal cancer vaccine targeting shared neoantigens',
+      'AI-driven drug discovery for undruggable cancer targets using quantum computing',
+      'Microbiome engineering to prevent cancer metastasis through gut-brain-cancer axis',
+      'Nanoparticle delivery systems for organ-specific cancer targeting with minimal toxicity',
+      'Epigenetic reprogramming to reverse cancer stem cell differentiation',
+      'Viral oncolysis combined with CRISPR enhancement for selective tumor destruction',
+      'Metabolic reprogramming inhibitors for cancer cell starvation therapy',
+      'Immune checkpoint modulators with tissue-specific delivery to overcome resistance',
+      'Telomere lengthening inhibitors combined with senolytics for aging-related cancers',
+      'RNA-based therapeutics for non-coding RNA dysregulation in cancer'
+    ];
+    return initialTopics[Math.floor(Math.random() * initialTopics.length)];
   }
 
   generateDerivedTopic(previousEvaluation) {
@@ -158,27 +179,33 @@ class CancerResearchBabel {
   processBlock() {
     if (!this.currentBlock || this.currentBlock.status !== 'active') return;
 
-    // All agents evaluate the current block
-    this.agents.forEach(agent => {
-      const evaluation = this.simulateEvaluation(agent, this.currentBlock.topic);
-      this.currentBlock.evaluations.push(evaluation);
-    });
+    // Select 10 random agents for this block
+    const selectedAgents = this.selectRandomAgents(this.agentsPerBlock);
 
-    // Determine winner (highest token spend)
-    const winner = this.currentBlock.evaluations.reduce((prev, current) =>
-      (prev.tokensSpent > current.tokensSpent) ? prev : current
+    // Each agent evaluates all 10 topics in the block
+    this.currentBlock.evaluations = this.currentBlock.topics.map(topic =>
+      selectedAgents.map(agent => ({
+        ...this.simulateEvaluation(agent, topic),
+        participated: true
+      }))
     );
 
-    // Distribute rewards
-    this.distributeRewards(winner);
+    // Determine winner for each topic (highest token spend among evaluators)
+    this.currentBlock.winners = this.currentBlock.evaluations.map(topicEvaluations => {
+      const winner = topicEvaluations.reduce((prev, current) =>
+        (prev.tokensSpent > current.tokensSpent) ? prev : current
+      );
+      return winner;
+    });
+
+    // Distribute rewards for each topic
+    this.currentBlock.winners.forEach(winner => {
+      this.distributeRewards(winner);
+    });
 
     // Mark block as complete
-    this.currentBlock.winner = winner;
     this.currentBlock.status = 'complete';
     this.researchBlocks.push(this.currentBlock);
-
-    // Issue new block
-    this.issueNewBlock();
 
     // Update displays
     this.displayCurrentBlock();
@@ -188,6 +215,11 @@ class CancerResearchBabel {
     // Save and commit
     this.saveData();
     this.commitResults();
+  }
+
+  selectRandomAgents(count) {
+    const shuffled = [...this.agents].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count);
   }
 
   simulateEvaluation(agent, topic) {
@@ -336,8 +368,10 @@ class CancerResearchBabel {
     // Save current state to file
     const resultsData = {
       timestamp: new Date().toISOString(),
+      blockNumber: this.researchBlocks.length,
       currentBlock: this.currentBlock,
-      recentBlocks: this.researchBlocks.slice(-5), // Last 5 blocks
+      completedBlock: this.researchBlocks[this.researchBlocks.length - 1],
+      participantBalances: this.getParticipantBalances(),
       agentStats: this.agents.map(agent => ({
         id: agent.id,
         name: agent.name,
@@ -348,22 +382,45 @@ class CancerResearchBabel {
         totalSpent: agent.wallet.totalSpent,
         totalEarned: agent.wallet.totalEarned,
         contributions: agent.contributions,
-        reputation: agent.reputation
+        reputation: agent.reputation,
+        winCount: this.getWinCount(agent),
+        lastParticipation: this.getLastParticipation(agent)
       })),
       systemStats: this.getStats()
     };
 
     // Save to local file (in browser, this would be download or local storage)
-    // For now, save to a global variable that can be accessed
     window.lastResearchCommit = resultsData;
 
-    // In a real implementation with Node.js backend, this would:
-    // 1. Write results to research_log.json
-    // 2. Run git add research_log.json
-    // 3. Run git commit -m "Research Block #X completed - Winner: Y"
-    // 4. Run git push
-
     console.log('Research results committed:', resultsData);
+  }
+
+  getParticipantBalances() {
+    if (!this.researchBlocks.length) return {};
+
+    const lastBlock = this.researchBlocks[this.researchBlocks.length - 1];
+    const participants = new Set();
+
+    // Collect all participants from the last block
+    lastBlock.winners.forEach(winner => participants.add(winner.agentId));
+    lastBlock.evaluations.forEach(topicEvals =>
+      topicEvals.forEach(eval => participants.add(eval.agentId))
+    );
+
+    const balances = {};
+    participants.forEach(agentId => {
+      const agent = this.agents.find(a => a.id === agentId);
+      if (agent) {
+        balances[agent.name] = {
+          balance: agent.wallet.balance,
+          totalEarned: agent.wallet.totalEarned,
+          totalSpent: agent.wallet.totalSpent,
+          specialty: agent.specialty
+        };
+      }
+    });
+
+    return balances;
   }
 
   async manualCommit() {
@@ -394,13 +451,22 @@ class CancerResearchBabel {
     if (tokens) tokens.textContent = `Tokens: ${this.agents.reduce((sum, agent) => sum + agent.wallet.totalSpent, 0)}`;
 
     if (content && this.currentBlock) {
+      const topicsHtml = this.currentBlock.topics.map((topic, index) => `
+        <div style="margin-bottom: 10px; padding: 8px; background: rgba(255,255,255,0.05); border-radius: 4px;">
+          <strong>Topic ${index + 1}:</strong> ${topic.length > 100 ? topic.substring(0, 100) + '...' : topic}<br>
+          <small>Evaluations: ${this.currentBlock.evaluations[index] ? this.currentBlock.evaluations[index].length : 0}/10</small>
+        </div>
+      `).join('');
+
       content.innerHTML = `
         <div class="block-card">
           <h3>Block #${this.researchBlocks.length + 1}</h3>
-          <p><strong>Topic:</strong> ${this.currentBlock.topic}</p>
+          <p><strong>Topics:</strong> 10 research ideas</p>
           <p><strong>Issued:</strong> ${new Date(this.currentBlock.issuedAt).toLocaleString()}</p>
-          <p><strong>Evaluations:</strong> ${this.currentBlock.evaluations.length}/${this.agents.length}</p>
           <p><strong>Next Evaluation:</strong> ${new Date(Date.now() + this.blockInterval).toLocaleString()}</p>
+          <div style="max-height: 300px; overflow-y: auto;">
+            ${topicsHtml}
+          </div>
         </div>
       `;
     }
@@ -424,27 +490,48 @@ class CancerResearchBabel {
         .sort((a, b) => b.wallet.totalEarned - a.wallet.totalEarned)
         .slice(0, 10);
 
-      content.innerHTML = topAgents.map((agent, index) => `
-        <div class="agent-card ${index < 3 ? 'top' : ''}">
-          <strong>#${index + 1} ${agent.name}</strong><br>
-          <small>${agent.specialty} • ${agent.institution}</small><br>
-          <small>Provider: ${agent.provider}</small><br>
-          <small>Balance: ${agent.wallet.balance.toFixed(2)} • Earned: ${agent.wallet.totalEarned.toFixed(2)}</small>
-        </div>
-      `).join('');
+      content.innerHTML = topAgents.map((agent, index) => {
+        const lastParticipation = this.getLastParticipation(agent);
+        return `
+          <div class="agent-card ${index < 3 ? 'top' : ''}">
+            <strong>#${index + 1} ${agent.name}</strong><br>
+            <small>${agent.specialty} • ${agent.institution}</small><br>
+            <small>Provider: ${agent.provider}</small><br>
+            <small>Balance: ${agent.wallet.balance.toFixed(2)} • Earned: ${agent.wallet.totalEarned.toFixed(2)}</small><br>
+            <small>Last Block: ${lastParticipation ? `Block ${lastParticipation.blockIndex + 1}` : 'None'} • Wins: ${this.getWinCount(agent)}</small>
+          </div>
+        `;
+      }).join('');
     }
+  }
+
+  getLastParticipation(agent) {
+    for (let i = this.researchBlocks.length - 1; i >= 0; i--) {
+      const block = this.researchBlocks[i];
+      const participated = block.winners.some(winner => winner.agentId === agent.id);
+      if (participated) {
+        return { blockIndex: i };
+      }
+    }
+    return null;
+  }
+
+  getWinCount(agent) {
+    return this.researchBlocks.reduce((count, block) =>
+      count + block.winners.filter(winner => winner.agentId === agent.id).length, 0
+    );
   }
 
   displayRecentBlocks() {
     const content = document.getElementById('recent-blocks-content');
     if (content) {
-      const recent = this.researchBlocks.slice(-5).reverse();
+      const recent = this.researchBlocks.slice(-3).reverse(); // Show last 3 blocks
       content.innerHTML = recent.map(block => `
         <div class="block-card">
-          <strong>Block #${this.researchBlocks.indexOf(block) + 1}</strong>
-          <span class="winner-badge">Winner: ${block.winner.agentName}</span><br>
-          <small>${block.topic.substring(0, 100)}...</small><br>
-          <small>Probability: ${(block.winner.evaluation.probability * 100).toFixed(1)}% • Impact: ${block.winner.evaluation.impactScore}/10</small>
+          <strong>Block #${this.researchBlocks.indexOf(block) + 1}</strong><br>
+          <small>10 Topics • Winners: ${block.winners.map(w => w.agentName.split(' ')[1]).join(', ')}</small><br>
+          <small>Sample Topic: ${block.topics[0].substring(0, 80)}...</small><br>
+          <small>Avg Probability: ${(block.winners.reduce((sum, w) => sum + w.evaluation.probability, 0) / block.winners.length * 100).toFixed(1)}%</small>
         </div>
       `).join('');
     }
