@@ -358,15 +358,33 @@ class CancerResearchBabel {
     console.log('Research results committed:', resultsData);
   }
 
+  async manualCommit() {
+    await this.commitResults();
+
+    // For manual commits, create a downloadable JSON file
+    const dataStr = JSON.stringify(window.lastResearchCommit, null, 2);
+    const dataBlob = new Blob([dataStr], {type: 'application/json'});
+
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(dataBlob);
+    link.download = `research_results_${Date.now()}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    alert('Research results downloaded! Manually commit this file to GitHub.');
+  }
+
   displayCurrentBlock() {
-    const display = document.getElementById('research-display');
-    if (display && this.currentBlock) {
-      display.innerHTML = `
-        <h2>Current Research Block #${this.researchBlocks.length + 1}</h2>
+    const content = document.getElementById('research-content');
+    if (content && this.currentBlock) {
+      content.innerHTML = `
+        <h3>Block #${this.researchBlocks.length + 1}</h3>
         <p><strong>Topic:</strong> ${this.currentBlock.topic}</p>
         <p><strong>Issued:</strong> ${new Date(this.currentBlock.issuedAt).toLocaleString()}</p>
-        <p><strong>Active Agents:</strong> ${this.agents.length}</p>
-        <p><strong>Next Evaluation:</strong> ${new Date(Date.now() + this.blockInterval).toLocaleString()}</p>
+        <p><strong>Agents:</strong> ${this.agents.length}</p>
+        <p><strong>Next:</strong> ${new Date(Date.now() + this.blockInterval).toLocaleString()}</p>
+        <p><strong>Blocks Completed:</strong> ${this.researchBlocks.length}</p>
       `;
     }
   }
@@ -385,4 +403,9 @@ class CancerResearchBabel {
 let babel;
 document.addEventListener('DOMContentLoaded', () => {
   babel = new CancerResearchBabel();
+
+  // Add commit button handler
+  document.getElementById('commit-btn').addEventListener('click', async () => {
+    await babel.manualCommit();
+  });
 });
