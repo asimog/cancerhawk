@@ -8,6 +8,9 @@ class CancerResearchBabel {
     this.providers = ['openai/gpt-4o', 'anthropic/claude-3.5-sonnet', 'google/gemini-2.0', 'meta/llama-3.1-70b', 'mistral/mistral-7b'];
     this.loadData();
     this.initializeAgents();
+    this.displayCurrentBlock();
+    this.displayLeaderboard();
+    this.displayRecentBlocks();
     this.startSimulation();
   }
 
@@ -176,6 +179,11 @@ class CancerResearchBabel {
 
     // Issue new block
     this.issueNewBlock();
+
+    // Update displays
+    this.displayCurrentBlock();
+    this.displayLeaderboard();
+    this.displayRecentBlocks();
 
     // Save and commit
     this.saveData();
@@ -376,16 +384,69 @@ class CancerResearchBabel {
   }
 
   displayCurrentBlock() {
-    const content = document.getElementById('research-content');
+    const content = document.getElementById('current-block-content');
+    const stats = document.getElementById('block-count');
+    const agents = document.getElementById('agent-count');
+    const tokens = document.getElementById('total-tokens');
+
+    if (stats) stats.textContent = `Blocks: ${this.researchBlocks.length}`;
+    if (agents) agents.textContent = `Agents: ${this.agents.length}`;
+    if (tokens) tokens.textContent = `Tokens: ${this.agents.reduce((sum, agent) => sum + agent.wallet.totalSpent, 0)}`;
+
     if (content && this.currentBlock) {
       content.innerHTML = `
-        <h3>Block #${this.researchBlocks.length + 1}</h3>
-        <p><strong>Topic:</strong> ${this.currentBlock.topic}</p>
-        <p><strong>Issued:</strong> ${new Date(this.currentBlock.issuedAt).toLocaleString()}</p>
-        <p><strong>Agents:</strong> ${this.agents.length}</p>
-        <p><strong>Next:</strong> ${new Date(Date.now() + this.blockInterval).toLocaleString()}</p>
-        <p><strong>Blocks Completed:</strong> ${this.researchBlocks.length}</p>
+        <div class="block-card">
+          <h3>Block #${this.researchBlocks.length + 1}</h3>
+          <p><strong>Topic:</strong> ${this.currentBlock.topic}</p>
+          <p><strong>Issued:</strong> ${new Date(this.currentBlock.issuedAt).toLocaleString()}</p>
+          <p><strong>Evaluations:</strong> ${this.currentBlock.evaluations.length}/${this.agents.length}</p>
+          <p><strong>Next Evaluation:</strong> ${new Date(Date.now() + this.blockInterval).toLocaleString()}</p>
+        </div>
       `;
+    }
+
+    // Update floating display
+    const floating = document.getElementById('research-content');
+    if (floating) {
+      floating.innerHTML = `
+        Status: ${this.currentBlock ? 'Active' : 'Initializing'}<br>
+        Blocks: ${this.researchBlocks.length}<br>
+        Agents: ${this.agents.length}<br>
+        Total Tokens: ${this.agents.reduce((sum, agent) => sum + agent.wallet.totalSpent, 0)}
+      `;
+    }
+  }
+
+  displayLeaderboard() {
+    const content = document.getElementById('leaderboard-content');
+    if (content) {
+      const topAgents = this.agents
+        .sort((a, b) => b.wallet.totalEarned - a.wallet.totalEarned)
+        .slice(0, 10);
+
+      content.innerHTML = topAgents.map((agent, index) => `
+        <div class="agent-card ${index < 3 ? 'top' : ''}">
+          <strong>#${index + 1} ${agent.name}</strong><br>
+          <small>${agent.specialty} • ${agent.institution}</small><br>
+          <small>Provider: ${agent.provider}</small><br>
+          <small>Balance: ${agent.wallet.balance.toFixed(2)} • Earned: ${agent.wallet.totalEarned.toFixed(2)}</small>
+        </div>
+      `).join('');
+    }
+  }
+
+  displayRecentBlocks() {
+    const content = document.getElementById('recent-blocks-content');
+    if (content) {
+      const recent = this.researchBlocks.slice(-5).reverse();
+      content.innerHTML = recent.map(block => `
+        <div class="block-card">
+          <strong>Block #${this.researchBlocks.indexOf(block) + 1}</strong>
+          <span class="winner-badge">Winner: ${block.winner.agentName}</span><br>
+          <small>${block.topic.substring(0, 100)}...</small><br>
+          <small>Probability: ${(block.winner.evaluation.probability * 100).toFixed(1)}% • Impact: ${block.winner.evaluation.impactScore}/10</small>
+        </div>
+      `).join('');
     }
   }
 
