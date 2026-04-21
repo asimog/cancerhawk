@@ -3,7 +3,7 @@ class CancerResearchBabel {
     this.agents = [];
     this.researchBlocks = [];
     this.currentBlock = null;
-    this.blockInterval = 10 * 60 * 1000; // 10 minutes
+    this.blockInterval = 1 * 60 * 1000; // 1 minute for testing, change to 10 * 60 * 1000 for production
     this.minAgents = 42;
     this.providers = ['openai/gpt-4o', 'anthropic/claude-3.5-sonnet', 'google/gemini-2.0', 'meta/llama-3.1-70b', 'mistral/mistral-7b'];
     this.loadData();
@@ -322,11 +322,40 @@ class CancerResearchBabel {
     });
   }
 
-  commitResults() {
-    // This would be called to commit to GitHub
-    // For now, just log
+  async commitResults() {
     console.log('Committing research block results to GitHub...');
-    // In real implementation, this would trigger a git commit
+
+    // Save current state to file
+    const resultsData = {
+      timestamp: new Date().toISOString(),
+      currentBlock: this.currentBlock,
+      recentBlocks: this.researchBlocks.slice(-5), // Last 5 blocks
+      agentStats: this.agents.map(agent => ({
+        id: agent.id,
+        name: agent.name,
+        specialty: agent.specialty,
+        institution: agent.institution,
+        provider: agent.provider,
+        balance: agent.wallet.balance,
+        totalSpent: agent.wallet.totalSpent,
+        totalEarned: agent.wallet.totalEarned,
+        contributions: agent.contributions,
+        reputation: agent.reputation
+      })),
+      systemStats: this.getStats()
+    };
+
+    // Save to local file (in browser, this would be download or local storage)
+    // For now, save to a global variable that can be accessed
+    window.lastResearchCommit = resultsData;
+
+    // In a real implementation with Node.js backend, this would:
+    // 1. Write results to research_log.json
+    // 2. Run git add research_log.json
+    // 3. Run git commit -m "Research Block #X completed - Winner: Y"
+    // 4. Run git push
+
+    console.log('Research results committed:', resultsData);
   }
 
   displayCurrentBlock() {
