@@ -1,9 +1,85 @@
+class MerkleTree {
+  constructor(leaves) {
+    this.leaves = leaves.map(leaf => this.hash(leaf));
+    this.tree = [];
+    this.buildTree();
+  }
+
+  hash(data) {
+    // Simple hash function for demo - in production use crypto.subtle
+    let hash = 0;
+    const str = JSON.stringify(data);
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert to 32bit integer
+    }
+    return Math.abs(hash).toString(16).padStart(8, '0');
+  }
+
+  buildTree() {
+    this.tree = [this.leaves];
+    let currentLevel = this.leaves;
+
+    while (currentLevel.length > 1) {
+      const nextLevel = [];
+      for (let i = 0; i < currentLevel.length; i += 2) {
+        const left = currentLevel[i];
+        const right = i + 1 < currentLevel.length ? currentLevel[i + 1] : left;
+        nextLevel.push(this.hash(left + right));
+      }
+      this.tree.push(nextLevel);
+      currentLevel = nextLevel;
+    }
+  }
+
+  getRoot() {
+    return this.tree[this.tree.length - 1][0];
+  }
+
+  getProof(index) {
+    const proof = [];
+    let currentIndex = index;
+
+    for (let level = 0; level < this.tree.length - 1; level++) {
+      const isLeft = currentIndex % 2 === 0;
+      const siblingIndex = isLeft ? currentIndex + 1 : currentIndex - 1;
+
+      if (siblingIndex < this.tree[level].length) {
+        proof.push({
+          hash: this.tree[level][siblingIndex],
+          isLeftSibling: !isLeft
+        });
+      }
+
+      currentIndex = Math.floor(currentIndex / 2);
+    }
+
+    return proof;
+  }
+
+  verifyProof(leaf, proof, root) {
+    let hash = this.hash(leaf);
+
+    for (const { hash: siblingHash, isLeftSibling } of proof) {
+      if (isLeftSibling) {
+        hash = this.hash(siblingHash + hash);
+      } else {
+        hash = this.hash(hash + siblingHash);
+      }
+    }
+
+    return hash === root;
+  }
+}
+
 class CancerResearchBabel {
   constructor() {
     this.seedCode = "e676098e48313c65989af66900ba43461e738168c3bab7ffbb12e0c96319ed9b6a0e6f5fe1f1737291148c25db2a565b35cf6fe9b00d997c8c9879e735fa81d8SN_3a7c39f14e0c478bc1b8b33ee4e7b4d18e2c8659e7a37f2f5b1b464c8b6f5b19RA_93afb3fdc190a2c9450f42a5e55474db9f69f3630cbd33b783af33c23093742f";
     this.agents = [];
     this.researchBlocks = [];
     this.currentBlock = null;
+    this.agentMerkleRoots = new Map(); // Track agent state Merkle roots
     this.blockInterval = 1 * 60 * 1000; // 1 minute for testing, change to 10 * 60 * 1000 for production
     this.minAgents = 42;
     this.agentsPerBlock = 10; // 10 agents evaluate each block
@@ -203,279 +279,87 @@ class CancerResearchBabel {
       this.distributeRewards(winner);
     });
 
-    // Mark block as complete
-    this.currentBlock.status = 'complete';
-    this.researchBlocks.push(this.currentBlock);
-
-    // Update displays
-    this.displayCurrentBlock();
-    this.displayLeaderboard();
-    this.displayRecentBlocks();
-
-    // Save and commit
-    this.saveData();
-    this.commitResults();
-  }
-
-  selectRandomAgents(count) {
-    const shuffled = [...this.agents].sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, count);
-  }
-
-  simulateEvaluation(agent, topic) {
-    // Simulate token spending based on expertise and provider
-    const baseTokens = 100;
-    const expertiseMultiplier = agent.expertise;
-    const providerMultiplier = this.getProviderMultiplier(agent.provider);
-    const tokensSpent = Math.floor(baseTokens * expertiseMultiplier * providerMultiplier * (0.8 + Math.random() * 0.4));
-
-    // Simulate evaluation
-    const probability = Math.min(1, Math.max(0, (agent.expertise * 0.7 + Math.random() * 0.3)));
-    const impact = Math.floor(probability * 10 * (0.8 + Math.random() * 0.4)) / 10;
-
-    return {
-      agentId: agent.id,
-      agentName: agent.name,
-      specialty: agent.specialty,
-      provider: agent.provider,
-      tokensSpent,
-      evaluation: {
-        probability,
-        impactScore: impact,
-        keyInsight: this.generateInsight(topic, probability),
-        methodology: this.generateMethodology(agent.specialty),
-        riskFactors: this.generateRiskFactors(),
-        nextSteps: this.generateNextSteps(),
-        alternativeApproaches: this.generateAlternatives(),
-        followUpQuestion: this.generateFollowUp(topic),
-        limitations: this.generateLimitations()
-      },
-      timestamp: new Date().toISOString()
-    };
-  }
-
-  getProviderMultiplier(provider) {
-    const multipliers = {
-      'openai/gpt-4o': 1.2,
-      'anthropic/claude-3.5-sonnet': 1.1,
-      'google/gemini-2.0': 1.0,
-      'meta/llama-3.1-70b': 0.9,
-      'mistral/mistral-7b': 0.8
-    };
-    return multipliers[provider] || 1.0;
-  }
-
-  generateInsight(topic, probability) {
-    const insights = [
-      `The approach shows ${Math.round(probability * 100)}% potential for clinical translation`,
-      `Key breakthrough in ${topic.split(' ')[0]} mechanism understanding`,
-      `Novel combination therapy could overcome resistance patterns`,
-      `Biomarker discovery enables patient stratification`,
-      `Therapeutic window identified for safe administration`
-    ];
-    return insights[Math.floor(Math.random() * insights.length)];
-  }
-
-  generateMethodology(specialty) {
-    const methodologies = {
-      'Molecular Oncology': 'CRISPR screening and proteomics',
-      'Immunotherapy': 'T-cell receptor sequencing and flow cytometry',
-      'Gene Therapy': 'Viral vector engineering and delivery optimization',
-      'Clinical Trials': 'Adaptive trial design and real-world evidence',
-      'Translational Research': 'Patient-derived organoids and xenografts',
-      'Cancer Genomics': 'Whole genome sequencing and bioinformatics',
-      'Drug Development': 'High-throughput screening and medicinal chemistry',
-      'default': 'Multi-omics integration and computational modeling'
-    };
-    return methodologies[specialty] || methodologies.default;
-  }
-
-  generateRiskFactors() {
-    return [
-      'Off-target effects in normal tissues',
-      'Immune rejection of therapeutic constructs',
-      'Tumor heterogeneity and clonal evolution',
-      'Manufacturing scalability challenges',
-      'Regulatory approval timelines'
-    ].sort(() => Math.random() - 0.5).slice(0, 3);
-  }
-
-  generateNextSteps() {
-    return [
-      'Preclinical toxicity studies in multiple species',
-      'Phase 1 dose-escalation clinical trial',
-      'Biomarker validation in patient cohorts',
-      'Manufacturing process optimization',
-      'Intellectual property protection strategy'
-    ].sort(() => Math.random() - 0.5).slice(0, 3);
-  }
-
-  generateAlternatives() {
-    return [
-      'Small molecule inhibitors',
-      'Monoclonal antibody conjugates',
-      'Cell-based therapies',
-      'RNA interference approaches',
-      'Epigenetic modulators'
-    ].sort(() => Math.random() - 0.5).slice(0, 2);
-  }
-
-  generateFollowUp(topic) {
-    return `How can ${topic.split(' ')[0]} approaches be combined with immunotherapy?`;
-  }
-
-  generateLimitations() {
-    return [
-      'Limited long-term safety data',
-      'High development costs',
-      'Complex regulatory pathway',
-      'Patient accessibility issues',
-      'Technical implementation challenges'
-    ].sort(() => Math.random() - 0.5).slice(0, 2);
-  }
-
-  distributeRewards(winner) {
-    const totalTokens = this.currentBlock.evaluations.reduce((sum, eval) => sum + eval.tokensSpent, 0);
-    const rewardPool = totalTokens * 0.1; // 10% of total tokens as reward
-
-    // Winner gets 50% of reward pool
-    winner.agent.wallet.balance += rewardPool * 0.5;
-    winner.agent.wallet.totalEarned += rewardPool * 0.5;
-
-    // Other agents get proportional rewards based on their contribution
-    this.currentBlock.evaluations.forEach(eval => {
-      if (eval.agentId !== winner.agentId) {
-        const proportion = eval.tokensSpent / totalTokens;
-        const reward = rewardPool * 0.5 * proportion;
-        eval.agent.wallet.balance += reward;
-        eval.agent.wallet.totalEarned += reward;
-      }
-    });
-
-    // Update contributions
-    this.agents.forEach(agent => {
-      const eval = this.currentBlock.evaluations.find(e => e.agentId === agent.id);
-      if (eval) {
-        agent.contributions++;
-        agent.wallet.totalSpent += eval.tokensSpent;
-      }
-    });
-  }
-
-  async commitResults() {
-    console.log('Committing research block results to GitHub...');
-
-    // Save current state to file
-    const resultsData = {
-      timestamp: new Date().toISOString(),
-      blockNumber: this.researchBlocks.length,
-      currentBlock: this.currentBlock,
-      completedBlock: this.researchBlocks[this.researchBlocks.length - 1],
-      participantBalances: this.getParticipantBalances(),
-      agentStats: this.agents.map(agent => ({
-        id: agent.id,
-        name: agent.name,
-        specialty: agent.specialty,
-        institution: agent.institution,
-        provider: agent.provider,
-        balance: agent.wallet.balance,
-        totalSpent: agent.wallet.totalSpent,
-        totalEarned: agent.wallet.totalEarned,
-        contributions: agent.contributions,
-        reputation: agent.reputation,
-        winCount: this.getWinCount(agent),
-        lastParticipation: this.getLastParticipation(agent)
-      })),
-      systemStats: this.getStats()
-    };
-
-    // Save to local file (in browser, this would be download or local storage)
-    window.lastResearchCommit = resultsData;
-
-    console.log('Research results committed:', resultsData);
-  }
-
-  getParticipantBalances() {
-    if (!this.researchBlocks.length) return {};
-
-    const lastBlock = this.researchBlocks[this.researchBlocks.length - 1];
-    const participants = new Set();
-
-    // Collect all participants from the last block
-    lastBlock.winners.forEach(winner => participants.add(winner.agentId));
-    lastBlock.evaluations.forEach(topicEvals =>
-      topicEvals.forEach(eval => participants.add(eval.agentId))
-    );
-
-    const balances = {};
-    participants.forEach(agentId => {
-      const agent = this.agents.find(a => a.id === agentId);
-      if (agent) {
-        balances[agent.name] = {
-          balance: agent.wallet.balance,
-          totalEarned: agent.wallet.totalEarned,
-          totalSpent: agent.wallet.totalSpent,
-          specialty: agent.specialty
-        };
-      }
-    });
-
-    return balances;
-  }
-
-  async performFirstAutonomousOperation() {
-    console.log('🚀 Initiating First Autonomous Cancer Research Operation...');
-
-    if (!this.currentBlock) {
-      console.log('No current block found, initializing...');
-      return;
-    }
-
-    console.log(`📋 Block #${this.researchBlocks.length + 1} Topics:`, this.currentBlock.topics);
-
-    // Select 10 random agents
-    const selectedAgents = this.selectRandomAgents(this.agentsPerBlock);
-    console.log('👥 Selected Agents:', selectedAgents.map(a => `${a.name} (${a.specialty})`));
-
-    // Each agent evaluates all 10 topics
-    this.currentBlock.evaluations = this.currentBlock.topics.map((topic, topicIndex) => {
-      console.log(`🔬 Evaluating Topic ${topicIndex + 1}: ${topic.substring(0, 100)}...`);
-      return selectedAgents.map(agent => {
-        const evaluation = this.simulateEvaluation(agent, topic);
-        console.log(`  ${agent.name}: ${evaluation.evaluation.probability.toFixed(3)} prob, ${evaluation.tokensSpent} tokens`);
-        return {
-          ...evaluation,
-          participated: true
-        };
+    // Generate Merkle trees for block verification
+    const evaluationLeaves = [];
+    this.currentBlock.evaluations.forEach((topicEvals, topicIndex) => {
+      topicEvals.forEach(eval => {
+        evaluationLeaves.push({
+          blockId: this.currentBlock.id,
+          topicIndex,
+          agentId: eval.agentId,
+          probability: eval.evaluation.probability,
+          impactScore: eval.evaluation.impactScore,
+          tokensSpent: eval.tokensSpent,
+          methodology: eval.evaluation.methodology,
+          keyInsight: eval.evaluation.keyInsight,
+          timestamp: eval.timestamp
+        });
       });
     });
 
-    // Determine winner for each topic
-    this.currentBlock.winners = this.currentBlock.evaluations.map((topicEvaluations, topicIndex) => {
-      const winner = topicEvaluations.reduce((prev, current) =>
-        (prev.tokensSpent > current.tokensSpent) ? prev : current
-      );
-      console.log(`🏆 Topic ${topicIndex + 1} Winner: ${winner.agentName} (${winner.tokensSpent} tokens)`);
-      return winner;
+    const evaluationMerkleTree = new MerkleTree(evaluationLeaves);
+    this.currentBlock.evaluationMerkleRoot = evaluationMerkleTree.getRoot();
+    this.currentBlock.evaluationMerkleTree = evaluationMerkleTree;
+
+    // Generate winner Merkle tree
+    const winnerLeaves = this.currentBlock.winners.map(winner => ({
+      agentId: winner.agentId,
+      topicIndex: this.currentBlock.winners.indexOf(winner),
+      tokensSpent: winner.tokensSpent,
+      evaluationHash: evaluationMerkleTree.hash(winner)
+    }));
+
+    const winnerMerkleTree = new MerkleTree(winnerLeaves);
+    this.currentBlock.winnerMerkleRoot = winnerMerkleTree.getRoot();
+    this.currentBlock.winnerMerkleTree = winnerMerkleTree;
+
+    // Generate agent state Merkle tree for all participating agents
+    const participantLeaves = this.currentBlock.winners.map(winner => {
+      const agent = this.agents.find(a => a.id === winner.agentId);
+      return {
+        agentId: agent.id,
+        balance: agent.wallet.balance,
+        totalEarned: agent.wallet.totalEarned,
+        totalSpent: agent.wallet.totalSpent,
+        contributions: agent.contributions,
+        reputation: agent.reputation,
+        winCount: this.getWinCount(agent)
+      };
     });
 
-    // Distribute rewards
-    console.log('💰 Distributing Rewards...');
-    this.currentBlock.winners.forEach((winner, index) => {
-      console.log(`  Topic ${index + 1}: ${winner.agentName} receives reward`);
-      this.distributeRewards(winner);
+    const agentStateMerkleTree = new MerkleTree(participantLeaves);
+    this.currentBlock.agentStateMerkleRoot = agentStateMerkleTree.getRoot();
+    this.currentBlock.agentStateMerkleTree = agentStateMerkleTree;
+
+    // Store agent Merkle roots for historical verification
+    this.currentBlock.winners.forEach(winner => {
+      const agent = this.agents.find(a => a.id === winner.agentId);
+      this.agentMerkleRoots.set(agent.id, {
+        blockId: this.currentBlock.id,
+        merkleRoot: agentStateMerkleTree.getRoot(),
+        agentState: participantLeaves.find(p => p.agentId === agent.id)
+      });
     });
 
-    // Mark block complete
+    // Mark block as complete with cryptographic verification
     this.currentBlock.status = 'complete';
+    this.currentBlock.blockHash = this.hashBlock(this.currentBlock);
+    this.currentBlock.verificationData = {
+      evaluationMerkleRoot: this.currentBlock.evaluationMerkleRoot,
+      winnerMerkleRoot: this.currentBlock.winnerMerkleRoot,
+      agentStateMerkleRoot: this.currentBlock.agentStateMerkleRoot,
+      blockHash: this.currentBlock.blockHash,
+      signature: this.signBlock(this.currentBlock) // Simulated signature
+    };
+
     this.researchBlocks.push(this.currentBlock);
 
-    // Update displays
+    // Update displays with verification data
     this.displayCurrentBlock();
     this.displayLeaderboard();
     this.displayRecentBlocks();
 
-    // Save and commit
+    // Save and commit with full verification data
     this.saveData();
     await this.commitResults();
 
@@ -506,6 +390,482 @@ class CancerResearchBabel {
     document.body.removeChild(link);
 
     alert('Research results downloaded! Manually commit this file to GitHub.');
+  }
+
+  async commitResults() {
+    console.log('Committing research block results to GitHub with Merkle verification...');
+
+    const completedBlock = this.researchBlocks[this.researchBlocks.length - 1];
+
+    // Generate detailed evaluation data for each topic
+    const detailedEvaluations = completedBlock.evaluations.map((topicEvals, topicIndex) => ({
+      topicIndex,
+      topic: completedBlock.topics[topicIndex],
+      evaluations: topicEvals.map(eval => ({
+        agentId: eval.agentId,
+        agentName: eval.agentName,
+        specialty: eval.specialty,
+        provider: eval.provider,
+        tokensSpent: eval.tokensSpent,
+        probability: eval.evaluation.probability,
+        impactScore: eval.evaluation.impactScore,
+        keyInsight: eval.evaluation.keyInsight,
+        methodology: eval.evaluation.methodology,
+        riskFactors: eval.evaluation.riskFactors,
+        nextSteps: eval.evaluation.nextSteps,
+        alternativeApproaches: eval.evaluation.alternativeApproaches,
+        limitations: eval.evaluation.limitations,
+        timestamp: eval.timestamp,
+        evaluationHash: new MerkleTree([eval]).getRoot()
+      })),
+      winner: completedBlock.winners[topicIndex],
+      winnerMerkleProof: completedBlock.winnerMerkleTree.getProof(topicIndex)
+    }));
+
+    // Generate comprehensive agent state data
+    const agentStates = completedBlock.winners.map(winner => {
+      const agent = this.agents.find(a => a.id === winner.agentId);
+      const agentIndex = completedBlock.winners.findIndex(w => w.agentId === agent.id);
+      return {
+        agentId: agent.id,
+        name: agent.name,
+        specialty: agent.specialty,
+        institution: agent.institution,
+        provider: agent.provider,
+        wallet: {
+          balance: agent.wallet.balance,
+          totalEarned: agent.wallet.totalEarned,
+          totalSpent: agent.wallet.totalSpent,
+          netPosition: agent.wallet.totalEarned - agent.wallet.totalSpent
+        },
+        statistics: {
+          contributions: agent.contributions,
+          reputation: agent.reputation,
+          winCount: this.getWinCount(agent),
+          participationRate: (this.getParticipationCount(agent) / this.researchBlocks.length) * 100,
+          averageTokensPerEvaluation: agent.wallet.totalSpent / Math.max(agent.contributions, 1),
+          expertiseMultiplier: agent.expertise
+        },
+        merkleProof: completedBlock.agentStateMerkleTree.getProof(agentIndex),
+        historicalRoots: Array.from(this.agentMerkleRoots.entries())
+          .filter(([id]) => id === agent.id)
+          .map(([, data]) => data)
+      };
+    });
+
+    // Generate block verification data
+    const verificationData = {
+      blockHash: completedBlock.blockHash,
+      evaluationMerkleRoot: completedBlock.evaluationMerkleRoot,
+      winnerMerkleRoot: completedBlock.winnerMerkleRoot,
+      agentStateMerkleRoot: completedBlock.agentStateMerkleRoot,
+      signature: completedBlock.verificationData.signature,
+      integrityCheck: this.verifyBlockIntegrity(completedBlock),
+      timestamp: new Date().toISOString()
+    };
+
+    // Comprehensive results data
+    const resultsData = {
+      timestamp: new Date().toISOString(),
+      blockNumber: this.researchBlocks.length,
+      blockId: completedBlock.id,
+
+      // Block metadata
+      blockMetadata: {
+        issuedAt: completedBlock.issuedAt,
+        completedAt: new Date().toISOString(),
+        topicsCount: completedBlock.topics.length,
+        evaluationsCount: completedBlock.evaluations.flat().length,
+        winnersCount: completedBlock.winners.length,
+        totalTokensSpent: completedBlock.evaluations.flat().reduce((sum, e) => sum + e.tokensSpent, 0),
+        rewardPool: completedBlock.evaluations.flat().reduce((sum, e) => sum + e.tokensSpent, 0) * 0.1
+      },
+
+      // Detailed evaluations
+      evaluations: detailedEvaluations,
+
+      // Winner details
+      winners: completedBlock.winners.map((winner, index) => ({
+        topicIndex: index,
+        topic: completedBlock.topics[index],
+        winner: {
+          agentId: winner.agentId,
+          agentName: winner.agentName,
+          tokensSpent: winner.tokensSpent,
+          evaluation: winner.evaluation,
+          reward: (completedBlock.evaluations.flat().reduce((sum, e) => sum + e.tokensSpent, 0) * 0.1) / completedBlock.winners.length
+        }
+      })),
+
+      // Agent states and economic data
+      agentStates: agentStates,
+
+      // Verification and integrity
+      verification: verificationData,
+
+      // System-wide statistics
+      systemStats: {
+        totalBlocks: this.researchBlocks.length,
+        totalAgents: this.agents.length,
+        totalEvaluations: this.researchBlocks.reduce((sum, block) => sum + block.evaluations.flat().length, 0),
+        totalTokensSpent: this.agents.reduce((sum, agent) => sum + agent.wallet.totalSpent, 0),
+        totalRewardsDistributed: this.agents.reduce((sum, agent) => sum + agent.wallet.totalEarned, 0),
+        averageEvaluationQuality: this.calculateAverageQuality(),
+        topPerformingAgents: this.getTopAgents(5),
+        researchDomains: this.getResearchDomainStats()
+      },
+
+      // Next block preview
+      nextBlockPreview: {
+        estimatedStart: new Date(Date.now() + this.blockInterval).toISOString(),
+        derivationSources: completedBlock.winners.map(w => ({
+          agentName: w.agentName,
+          specialty: w.specialty,
+          keyInsight: w.evaluation.keyInsight
+        }))
+      }
+    };
+
+    // Generate pretext-styled research pages
+    await this.generatePretextResearchPage(resultsData);
+
+    // Save to global for download
+    window.lastResearchCommit = resultsData;
+
+    console.log('Research results committed with full Merkle verification:', resultsData);
+  }
+
+  async generatePretextResearchPage(resultsData) {
+    const blockNumber = resultsData.blockNumber;
+    const isEditorialStyle = blockNumber % 2 === 1; // Alternate styles
+
+    let htmlContent;
+
+    if (isEditorialStyle) {
+      // Editorial Engine style - dark theme with interactive orbs
+      htmlContent = this.generateEditorialStylePage(resultsData);
+    } else {
+      // Justification Comparison style - light theme with comparison columns
+      htmlContent = this.generateJustificationStylePage(resultsData);
+    }
+
+    // Save the HTML file (in browser, we'd download it)
+    const blob = new Blob([htmlContent], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `research_block_${blockNumber}_${isEditorialStyle ? 'editorial' : 'comparison'}.html`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
+
+    console.log(`Generated pretext-styled research page: research_block_${blockNumber}_${isEditorialStyle ? 'editorial' : 'comparison'}.html`);
+  }
+
+  generateEditorialStylePage(data) {
+    const winnersText = data.winners.map((w, i) =>
+      `Topic ${i + 1}: ${w.winner.agentName} (${w.winner.evaluation.probability.toFixed(3)} prob, ${w.winner.tokensSpent} tokens)\n"${w.winner.evaluation.keyInsight}"`
+    ).join('\n\n');
+
+    const statsText = `Block ${data.blockNumber} Complete
+${data.blockMetadata.evaluationsCount} evaluations
+${data.blockMetadata.totalTokensSpent} tokens spent
+${data.systemStats.totalBlocks} total blocks
+${data.systemStats.totalEvaluations} total evaluations`;
+
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Cancer Research Babel Block ${data.blockNumber} - Autonomous multi-agent evaluation with Merkle verification">
+  <title>Cancer Research Block ${data.blockNumber} — Editorial Engine</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; }
+    html, body {
+      background: radial-gradient(ellipse at 50% 40%, #0f0f14 0%, #0a0a0c 100%);
+      color: #e8e4dc; height: 100vh; overflow: hidden;
+    }
+    body { font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, serif; }
+
+    #stage { position: relative; width: 100vw; height: 100vh; overflow: hidden; user-select: none; }
+
+    .line { position: absolute; white-space: pre; pointer-events: none; z-index: 1; color: #e8e4dc; }
+
+    .headline-line {
+      position: absolute; white-space: pre; pointer-events: none;
+      font-weight: 700; color: #fff; letter-spacing: -0.5px; z-index: 2; font-size: 24px;
+    }
+
+    .particle {
+      position: absolute; border-radius: 50%; pointer-events: none; z-index: 10;
+      will-change: transform; background: rgba(0, 255, 65, 0.3); border: 1px solid rgba(0, 255, 65, 0.5);
+    }
+
+    .stats-bar {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: rgba(6,6,10,0.88); backdrop-filter: blur(12px);
+      padding: 10px 24px; display: flex; gap: 32px; align-items: center;
+      font: 400 12px/1 "Helvetica Neue", Helvetica, Arial, sans-serif;
+      color: rgba(255,255,255,0.35); z-index: 100;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .stat { display: flex; gap: 6px; align-items: center; }
+    .stat-value { color: rgba(255,255,255,0.7); font-weight: 600; }
+    .stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+  </style>
+</head>
+<body>
+  <div id="stage"></div>
+
+  <div class="stats-bar">
+    <div class="stat"><span class="stat-label">Block</span><span class="stat-value">${data.blockNumber}</span></div>
+    <div class="stat"><span class="stat-label">Topics</span><span class="stat-value">${data.blockMetadata.topicsCount}</span></div>
+    <div class="stat"><span class="stat-label">Evaluations</span><span class="stat-value">${data.blockMetadata.evaluationsCount}</span></div>
+    <div class="stat"><span class="stat-label">Tokens</span><span class="stat-value">${data.blockMetadata.totalTokensSpent}</span></div>
+    <div class="stat"><span class="stat-label">Merkle</span><span class="stat-value">${data.verification.integrityCheck ? '✓' : '✗'}</span></div>
+  </div>
+
+  <script type="module">
+    // Initialize particles
+    const stage = document.getElementById('stage');
+    const particles = [];
+
+    for (let i = 0; i < 50; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.style.width = particle.style.height = Math.random() * 20 + 10 + 'px';
+      particle.style.left = Math.random() * 100 + 'vw';
+      particle.style.top = Math.random() * 100 + 'vh';
+      particle.speedX = (Math.random() - 0.5) * 2;
+      particle.speedY = (Math.random() - 0.5) * 2;
+      stage.appendChild(particle);
+      particles.push(particle);
+    }
+
+    function animateParticles() {
+      particles.forEach(particle => {
+        let x = parseFloat(particle.style.left);
+        let y = parseFloat(particle.style.top);
+
+        x += particle.speedX;
+        y += particle.speedY;
+
+        if (x < 0 || x > 100) particle.speedX *= -1;
+        if (y < 0 || y > 100) particle.speedY *= -1;
+
+        particle.style.left = x + 'vw';
+        particle.style.top = y + 'vh';
+      });
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    // Simple text rendering (would use pretext in full implementation)
+    const headline = "Cancer Research Block ${data.blockNumber} Results";
+    const bodyText = "${winnersText.replace(/\n/g, ' ')}";
+
+    // Create headline
+    const headlineDiv = document.createElement('div');
+    headlineDiv.className = 'headline-line';
+    headlineDiv.textContent = headline;
+    headlineDiv.style.left = '10vw';
+    headlineDiv.style.top = '20vh';
+    stage.appendChild(headlineDiv);
+
+    // Create body text lines
+    const words = bodyText.split(' ');
+    let currentLine = '';
+    let lineY = 35;
+
+    words.forEach(word => {
+      if ((currentLine + ' ' + word).length > 60) {
+        const lineDiv = document.createElement('div');
+        lineDiv.className = 'line';
+        lineDiv.textContent = currentLine;
+        lineDiv.style.left = '10vw';
+        lineDiv.style.top = lineY + 'vh';
+        stage.appendChild(lineDiv);
+        currentLine = word;
+        lineY += 3;
+      } else {
+        currentLine += (currentLine ? ' ' : '') + word;
+      }
+    });
+
+    if (currentLine) {
+      const lineDiv = document.createElement('div');
+      lineDiv.className = 'line';
+      lineDiv.textContent = currentLine;
+      lineDiv.style.left = '10vw';
+      lineDiv.style.top = lineY + 'vh';
+      stage.appendChild(lineDiv);
+    }
+  </script>
+</body>
+</html>`;
+  }
+
+  generateJustificationStylePage(data) {
+    const winnersText = data.winners.map((w, i) =>
+      `Topic ${i + 1} Winner: ${w.winner.agentName}\nProbability: ${w.evaluation.probability.toFixed(3)}\nImpact: ${w.evaluation.impactScore}/10\nKey Insight: ${w.evaluation.keyInsight}`
+    ).join('\n\n');
+
+    const agentsText = data.agentStates.slice(0, 5).map(agent =>
+      `${agent.name}\nBalance: ${agent.wallet.balance.toFixed(2)}\nWins: ${agent.statistics.winCount}\nParticipation: ${agent.statistics.participationRate.toFixed(1)}%`
+    ).join('\n\n');
+
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Cancer Research Babel Block ${data.blockNumber} - Multi-agent evaluation comparison with Merkle verification">
+  <title>Cancer Research Block ${data.blockNumber} — Justification Comparison</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; }
+    html, body { min-height: 100%; background: #faf8f5; color: #2a2520; overflow-x: auto; }
+    body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; position: relative; }
+
+    .particles-bg {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none; z-index: -1;
+    }
+
+    .particle-bg {
+      position: absolute; border-radius: 50%;
+      background: rgba(0, 255, 65, 0.1); border: 1px solid rgba(0, 255, 65, 0.2);
+    }
+
+    .page { max-width: 1200px; margin: 0 auto; padding: 32px 24px 80px; }
+
+    h1 {
+      font: 300 32px/1.2 Georgia, "Times New Roman", serif;
+      color: #1a1714; letter-spacing: -0.5px; margin-bottom: 8px; text-align: center;
+    }
+    .subtitle {
+      font: 400 13px/1.4 "Helvetica Neue", Helvetica, Arial, sans-serif;
+      color: #8a7f70; margin-bottom: 20px; text-align: center;
+    }
+
+    .columns {
+      display: flex; gap: 24px; padding-bottom: 16px;
+      justify-content: center; margin-top: 40px;
+    }
+    .column {
+      flex: 1; min-width: 300px; max-width: 400px;
+    }
+    .col-header {
+      font: 600 11px/1 "Helvetica Neue", Helvetica, Arial, sans-serif;
+      color: #5a4f40; text-transform: uppercase; letter-spacing: 0.8px;
+      margin-bottom: 4px;
+    }
+    .col-desc {
+      font: 400 11px/1.3 "Helvetica Neue", Helvetica, Arial, sans-serif;
+      color: #a09888; margin-bottom: 12px;
+    }
+
+    .col-content {
+      border: 1px solid #e8e0d4; border-radius: 3px;
+      background: #fff; padding: 20px; min-height: 400px;
+      font: 15px/24px Georgia, "Times New Roman", serif;
+      white-space: pre-line;
+    }
+
+    .metrics {
+      margin-top: 12px; padding: 8px 10px;
+      background: #f5f2ed; border-radius: 3px;
+      font: 400 11px/1.5 "Helvetica Neue", Helvetica, Arial, sans-serif;
+      color: #6a6055;
+    }
+    .metric-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
+    .metric-label { color: #8a7f70; }
+    .metric-value { font-weight: 600; color: #5a4f40; }
+    .metric-value.good { color: #2a8a4a; }
+  </style>
+</head>
+<body>
+  <div class="particles-bg" id="particles-bg"></div>
+
+  <div class="page">
+    <h1>Cancer Research Block ${data.blockNumber}</h1>
+    <p class="subtitle">Multi-agent evaluation results with Merkle verification</p>
+
+    <div class="columns">
+      <div class="column">
+        <div class="col-header">Research Topics & Winners</div>
+        <div class="col-desc">Block ${data.blockNumber} evaluation results</div>
+        <div class="col-content">${winnersText}</div>
+        <div class="metrics">
+          <div class="metric-row">
+            <span class="metric-label">Topics</span>
+            <span class="metric-value">${data.blockMetadata.topicsCount}</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-label">Avg Probability</span>
+            <span class="metric-value good">${(data.winners.reduce((sum, w) => sum + w.winner.evaluation.probability, 0) / data.winners.length * 100).toFixed(1)}%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="column">
+        <div class="col-header">Agent Performance</div>
+        <div class="col-desc">Top participating researchers</div>
+        <div class="col-content">${agentsText}</div>
+        <div class="metrics">
+          <div class="metric-row">
+            <span class="metric-label">Total Tokens</span>
+            <span class="metric-value">${data.blockMetadata.totalTokensSpent}</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-label">Merkle Verified</span>
+            <span class="metric-value good">${data.verification.integrityCheck ? 'Yes' : 'No'}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Initialize background particles
+    const bg = document.getElementById('particles-bg');
+    const particles = [];
+
+    for (let i = 0; i < 30; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'particle-bg';
+      particle.style.width = particle.style.height = Math.random() * 30 + 10 + 'px';
+      particle.style.left = Math.random() * 100 + 'vw';
+      particle.style.top = Math.random() * 100 + 'vh';
+      particle.speedX = (Math.random() - 0.5) * 0.5;
+      particle.speedY = (Math.random() - 0.5) * 0.5;
+      bg.appendChild(particle);
+      particles.push(particle);
+    }
+
+    function animateParticles() {
+      particles.forEach(particle => {
+        let x = parseFloat(particle.style.left);
+        let y = parseFloat(particle.style.top);
+
+        x += particle.speedX;
+        y += particle.speedY;
+
+        if (x < -10 || x > 110) particle.speedX *= -1;
+        if (y < -10 || y > 110) particle.speedY *= -1;
+
+        particle.style.left = x + 'vw';
+        particle.style.top = y + 'vh';
+      });
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+  </script>
+</body>
+</html>`;
   }
 
   displayCurrentBlock() {
@@ -588,6 +948,159 @@ class CancerResearchBabel {
     return this.researchBlocks.reduce((count, block) =>
       count + block.winners.filter(winner => winner.agentId === agent.id).length, 0
     );
+  }
+
+  getParticipationCount(agent) {
+    return this.researchBlocks.reduce((count, block) =>
+      count + (block.winners.some(winner => winner.agentId === agent.id) ? 1 : 0), 0
+    );
+  }
+
+  calculateAverageQuality() {
+    if (!this.researchBlocks.length) return 0;
+
+    const totalEvaluations = this.researchBlocks.reduce((sum, block) =>
+      sum + block.evaluations.flat().length, 0
+    );
+
+    const totalQuality = this.researchBlocks.reduce((sum, block) =>
+      sum + block.evaluations.flat().reduce((evalSum, eval) =>
+        evalSum + eval.evaluation.probability + (eval.evaluation.impactScore / 10), 0
+      ), 0
+    );
+
+    return totalQuality / totalEvaluations;
+  }
+
+  getTopAgents(count) {
+    return this.agents
+      .sort((a, b) => b.wallet.totalEarned - a.wallet.totalEarned)
+      .slice(0, count)
+      .map(agent => ({
+        id: agent.id,
+        name: agent.name,
+        specialty: agent.specialty,
+        totalEarned: agent.wallet.totalEarned,
+        winCount: this.getWinCount(agent),
+        reputation: agent.reputation
+      }));
+  }
+
+  getResearchDomainStats() {
+    const domainStats = {};
+
+    this.researchBlocks.forEach(block => {
+      block.evaluations.forEach((topicEvals, topicIndex) => {
+        const topic = block.topics[topicIndex];
+        const domain = this.categorizeResearchDomain(topic);
+
+        if (!domainStats[domain]) {
+          domainStats[domain] = {
+            evaluations: 0,
+            averageProbability: 0,
+            averageImpact: 0,
+            totalTokens: 0
+          };
+        }
+
+        domainStats[domain].evaluations += topicEvals.length;
+        domainStats[domain].averageProbability += topicEvals.reduce((sum, e) => sum + e.evaluation.probability, 0) / topicEvals.length;
+        domainStats[domain].averageImpact += topicEvals.reduce((sum, e) => sum + e.evaluation.impactScore, 0) / topicEvals.length;
+        domainStats[domain].totalTokens += topicEvals.reduce((sum, e) => sum + e.tokensSpent, 0);
+      });
+    });
+
+    // Average the averages
+    Object.keys(domainStats).forEach(domain => {
+      const stats = domainStats[domain];
+      stats.averageProbability /= this.researchBlocks.length;
+      stats.averageImpact /= this.researchBlocks.length;
+    });
+
+    return domainStats;
+  }
+
+  categorizeResearchDomain(topic) {
+    const lowerTopic = topic.toLowerCase();
+
+    if (lowerTopic.includes('crispr') || lowerTopic.includes('gene') || lowerTopic.includes('genomic')) {
+      return 'Gene Editing & Genomics';
+    } else if (lowerTopic.includes('ai') || lowerTopic.includes('machine') || lowerTopic.includes('quantum')) {
+      return 'AI & Computational';
+    } else if (lowerTopic.includes('immuno') || lowerTopic.includes('checkpoint') || lowerTopic.includes('t-cell')) {
+      return 'Immunotherapy';
+    } else if (lowerTopic.includes('nano') || lowerTopic.includes('particle') || lowerTopic.includes('delivery')) {
+      return 'Nanotechnology';
+    } else if (lowerTopic.includes('microbio') || lowerTopic.includes('gut') || lowerTopic.includes('metabolite')) {
+      return 'Microbiome';
+    } else if (lowerTopic.includes('epigenetic') || lowerTopic.includes('histone') || lowerTopic.includes('methylation')) {
+      return 'Epigenetics';
+    } else if (lowerTopic.includes('viral') || lowerTopic.includes('adenoviral') || lowerTopic.includes('oncolysis')) {
+      return 'Viral Therapy';
+    } else if (lowerTopic.includes('metabolic') || lowerTopic.includes('glucose') || lowerTopic.includes('starvation')) {
+      return 'Metabolic Therapy';
+    } else if (lowerTopic.includes('clinical') || lowerTopic.includes('trial') || lowerTopic.includes('adaptive')) {
+      return 'Clinical Research';
+    } else {
+      return 'Other Therapies';
+    }
+  }
+
+  hashBlock(block) {
+    const blockData = {
+      id: block.id,
+      topics: block.topics,
+      issuedAt: block.issuedAt,
+      winners: block.winners.map(w => ({
+        agentId: w.agentId,
+        tokensSpent: w.tokensSpent,
+        evaluation: w.evaluation
+      })),
+      evaluationMerkleRoot: block.evaluationMerkleRoot,
+      winnerMerkleRoot: block.winnerMerkleRoot,
+      agentStateMerkleRoot: block.agentStateMerkleRoot
+    };
+    return new MerkleTree([blockData]).getRoot();
+  }
+
+  signBlock(block) {
+    // Simulated signature - in production would use cryptographic signing
+    return `sig_${block.blockHash}_${Date.now()}`;
+  }
+
+  verifyBlockIntegrity(block) {
+    // Verify all Merkle roots match
+    const evaluationLeaves = [];
+    block.evaluations.forEach((topicEvals, topicIndex) => {
+      topicEvals.forEach(eval => {
+        evaluationLeaves.push({
+          blockId: block.id,
+          topicIndex,
+          agentId: eval.agentId,
+          probability: eval.evaluation.probability,
+          impactScore: eval.evaluation.impactScore,
+          tokensSpent: eval.tokensSpent,
+          methodology: eval.evaluation.methodology,
+          keyInsight: eval.evaluation.keyInsight,
+          timestamp: eval.timestamp
+        });
+      });
+    });
+
+    const computedEvaluationRoot = new MerkleTree(evaluationLeaves).getRoot();
+    if (computedEvaluationRoot !== block.evaluationMerkleRoot) return false;
+
+    const winnerLeaves = block.winners.map(winner => ({
+      agentId: winner.agentId,
+      topicIndex: block.winners.indexOf(winner),
+      tokensSpent: winner.tokensSpent,
+      evaluationHash: new MerkleTree([winner]).getRoot()
+    }));
+
+    const computedWinnerRoot = new MerkleTree(winnerLeaves).getRoot();
+    if (computedWinnerRoot !== block.winnerMerkleRoot) return false;
+
+    return true;
   }
 
   displayRecentBlocks() {
