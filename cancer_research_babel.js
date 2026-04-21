@@ -423,6 +423,74 @@ class CancerResearchBabel {
     return balances;
   }
 
+  async performFirstAutonomousOperation() {
+    console.log('🚀 Initiating First Autonomous Cancer Research Operation...');
+
+    if (!this.currentBlock) {
+      console.log('No current block found, initializing...');
+      return;
+    }
+
+    console.log(`📋 Block #${this.researchBlocks.length + 1} Topics:`, this.currentBlock.topics);
+
+    // Select 10 random agents
+    const selectedAgents = this.selectRandomAgents(this.agentsPerBlock);
+    console.log('👥 Selected Agents:', selectedAgents.map(a => `${a.name} (${a.specialty})`));
+
+    // Each agent evaluates all 10 topics
+    this.currentBlock.evaluations = this.currentBlock.topics.map((topic, topicIndex) => {
+      console.log(`🔬 Evaluating Topic ${topicIndex + 1}: ${topic.substring(0, 100)}...`);
+      return selectedAgents.map(agent => {
+        const evaluation = this.simulateEvaluation(agent, topic);
+        console.log(`  ${agent.name}: ${evaluation.evaluation.probability.toFixed(3)} prob, ${evaluation.tokensSpent} tokens`);
+        return {
+          ...evaluation,
+          participated: true
+        };
+      });
+    });
+
+    // Determine winner for each topic
+    this.currentBlock.winners = this.currentBlock.evaluations.map((topicEvaluations, topicIndex) => {
+      const winner = topicEvaluations.reduce((prev, current) =>
+        (prev.tokensSpent > current.tokensSpent) ? prev : current
+      );
+      console.log(`🏆 Topic ${topicIndex + 1} Winner: ${winner.agentName} (${winner.tokensSpent} tokens)`);
+      return winner;
+    });
+
+    // Distribute rewards
+    console.log('💰 Distributing Rewards...');
+    this.currentBlock.winners.forEach((winner, index) => {
+      console.log(`  Topic ${index + 1}: ${winner.agentName} receives reward`);
+      this.distributeRewards(winner);
+    });
+
+    // Mark block complete
+    this.currentBlock.status = 'complete';
+    this.researchBlocks.push(this.currentBlock);
+
+    // Update displays
+    this.displayCurrentBlock();
+    this.displayLeaderboard();
+    this.displayRecentBlocks();
+
+    // Save and commit
+    this.saveData();
+    await this.commitResults();
+
+    console.log('✅ First Autonomous Operation Complete!');
+    console.log('📊 Block Results:', {
+      blockNumber: this.researchBlocks.length,
+      topicsProcessed: this.currentBlock.topics.length,
+      winners: this.currentBlock.winners.map(w => w.agentName),
+      participantBalances: this.getParticipantBalances()
+    });
+
+    // Issue next block
+    this.issueNewBlock();
+  }
+
   async manualCommit() {
     await this.commitResults();
 
@@ -556,4 +624,9 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('commit-btn').addEventListener('click', async () => {
     await babel.manualCommit();
   });
+
+  // Perform first autonomous operation
+  setTimeout(() => {
+    babel.performFirstAutonomousOperation();
+  }, 2000); // Wait 2 seconds for initialization
 });
