@@ -252,116 +252,71 @@ class CancerResearchBabel {
     return derivations[Math.floor(Math.random() * derivations.length)];
   }
 
-  processBlock() {
+  async processBlock() {
     if (!this.currentBlock || this.currentBlock.status !== 'active') return;
+
+    const blockNumber = this.researchBlocks.length + 1;
+    console.log(`🔬 Processing Block #${blockNumber} with ${this.currentBlock.topics.length} topics...`);
 
     // Select 10 random agents for this block
     const selectedAgents = this.selectRandomAgents(this.agentsPerBlock);
+    console.log(`👥 Selected ${selectedAgents.length} agents:`, selectedAgents.map(a => a.name));
 
-    // Each agent evaluates all 10 topics in the block
-    this.currentBlock.evaluations = this.currentBlock.topics.map(topic =>
-      selectedAgents.map(agent => ({
-        ...this.simulateEvaluation(agent, topic),
-        participated: true
-      }))
-    );
+    // Each agent evaluates all topics in the block
+    console.log('⚡ Running evaluations...');
+    this.currentBlock.evaluations = this.currentBlock.topics.map((topic, topicIndex) => {
+      console.log(`  Topic ${topicIndex + 1}: ${topic.substring(0, 60)}...`);
+      return selectedAgents.map(agent => {
+        const evaluation = this.simulateEvaluation(agent, topic);
+        console.log(`    ${agent.name}: ${(evaluation.evaluation.probability * 100).toFixed(1)}% prob, ${evaluation.tokensSpent} tokens`);
+        return {
+          ...evaluation,
+          participated: true
+        };
+      });
+    });
 
     // Determine winner for each topic (highest token spend among evaluators)
-    this.currentBlock.winners = this.currentBlock.evaluations.map(topicEvaluations => {
+    console.log('🏆 Calculating winners...');
+    this.currentBlock.winners = this.currentBlock.evaluations.map((topicEvaluations, topicIndex) => {
       const winner = topicEvaluations.reduce((prev, current) =>
         (prev.tokensSpent > current.tokensSpent) ? prev : current
       );
+      console.log(`  Topic ${topicIndex + 1} Winner: ${winner.agentName} (${winner.tokensSpent} tokens, ${(winner.evaluation.probability * 100).toFixed(1)}% prob)`);
       return winner;
     });
 
     // Distribute rewards for each topic
+    const totalTokensSpent = this.currentBlock.evaluations.flat().reduce((sum, e) => sum + e.tokensSpent, 0);
+    const rewardPool = totalTokensSpent * 0.1;
+    const rewardPerWinner = rewardPool / this.currentBlock.winners.length;
+
+    console.log(`💰 Reward Pool: ${rewardPool.toFixed(2)} tokens (${rewardPerWinner.toFixed(2)} per winner)`);
     this.currentBlock.winners.forEach(winner => {
       this.distributeRewards(winner);
     });
 
     // Generate Merkle trees for block verification
-    const evaluationLeaves = [];
-    this.currentBlock.evaluations.forEach((topicEvals, topicIndex) => {
-      topicEvals.forEach(eval => {
-        evaluationLeaves.push({
-          blockId: this.currentBlock.id,
-          topicIndex,
-          agentId: eval.agentId,
-          probability: eval.evaluation.probability,
-          impactScore: eval.evaluation.impactScore,
-          tokensSpent: eval.tokensSpent,
-          methodology: eval.evaluation.methodology,
-          keyInsight: eval.evaluation.keyInsight,
-          timestamp: eval.timestamp
-        });
-      });
-    });
+    console.log('🔐 Generating Merkle verification...');
+    this.generateBlockVerification();
 
-    const evaluationMerkleTree = new MerkleTree(evaluationLeaves);
-    this.currentBlock.evaluationMerkleRoot = evaluationMerkleTree.getRoot();
-    this.currentBlock.evaluationMerkleTree = evaluationMerkleTree;
-
-    // Generate winner Merkle tree
-    const winnerLeaves = this.currentBlock.winners.map(winner => ({
-      agentId: winner.agentId,
-      topicIndex: this.currentBlock.winners.indexOf(winner),
-      tokensSpent: winner.tokensSpent,
-      evaluationHash: evaluationMerkleTree.hash(winner)
-    }));
-
-    const winnerMerkleTree = new MerkleTree(winnerLeaves);
-    this.currentBlock.winnerMerkleRoot = winnerMerkleTree.getRoot();
-    this.currentBlock.winnerMerkleTree = winnerMerkleTree;
-
-    // Generate agent state Merkle tree for all participating agents
-    const participantLeaves = this.currentBlock.winners.map(winner => {
-      const agent = this.agents.find(a => a.id === winner.agentId);
-      return {
-        agentId: agent.id,
-        balance: agent.wallet.balance,
-        totalEarned: agent.wallet.totalEarned,
-        totalSpent: agent.wallet.totalSpent,
-        contributions: agent.contributions,
-        reputation: agent.reputation,
-        winCount: this.getWinCount(agent)
-      };
-    });
-
-    const agentStateMerkleTree = new MerkleTree(participantLeaves);
-    this.currentBlock.agentStateMerkleRoot = agentStateMerkleTree.getRoot();
-    this.currentBlock.agentStateMerkleTree = agentStateMerkleTree;
-
-    // Store agent Merkle roots for historical verification
-    this.currentBlock.winners.forEach(winner => {
-      const agent = this.agents.find(a => a.id === winner.agentId);
-      this.agentMerkleRoots.set(agent.id, {
-        blockId: this.currentBlock.id,
-        merkleRoot: agentStateMerkleTree.getRoot(),
-        agentState: participantLeaves.find(p => p.agentId === agent.id)
-      });
-    });
-
-    // Mark block as complete with cryptographic verification
+    // Mark block as complete
     this.currentBlock.status = 'complete';
-    this.currentBlock.blockHash = this.hashBlock(this.currentBlock);
-    this.currentBlock.verificationData = {
-      evaluationMerkleRoot: this.currentBlock.evaluationMerkleRoot,
-      winnerMerkleRoot: this.currentBlock.winnerMerkleRoot,
-      agentStateMerkleRoot: this.currentBlock.agentStateMerkleRoot,
-      blockHash: this.currentBlock.blockHash,
-      signature: this.signBlock(this.currentBlock) // Simulated signature
-    };
-
     this.researchBlocks.push(this.currentBlock);
 
-    // Update displays with verification data
+    // Update displays
     this.displayCurrentBlock();
     this.displayLeaderboard();
     this.displayRecentBlocks();
 
-    // Save and commit with full verification data
+    // Save data
     this.saveData();
+
+    // Commit results and generate pretext page
     await this.commitResults();
+
+    console.log(`✅ Block #${blockNumber} Complete! Next block will be issued automatically.`);
+  }
 
     console.log('✅ First Autonomous Operation Complete!');
     console.log('📊 Block Results:', {
@@ -390,6 +345,26 @@ class CancerResearchBabel {
     document.body.removeChild(link);
 
     alert('Research results downloaded! Manually commit this file to GitHub.');
+  }
+
+  async performInitialCycle() {
+    console.log('🚀 Initiating Initial Autonomous Cancer Research Cycle...');
+    await this.triggerNextCycle();
+  }
+
+  async triggerNextCycle() {
+    const blockNumber = this.researchBlocks.length + 1;
+    console.log(`🔄 Triggering Autonomous Cycle - Block #${blockNumber}...`);
+
+    if (!this.currentBlock) {
+      console.log('No current block to process');
+      return;
+    }
+
+    // Process the current block
+    await this.processBlock();
+
+    console.log(`✅ Block #${blockNumber} processing complete`);
   }
 
   async commitResults() {
@@ -1138,8 +1113,17 @@ document.addEventListener('DOMContentLoaded', () => {
     await babel.manualCommit();
   });
 
-  // Perform first autonomous operation
+  // Add manual trigger button for next cycle
+  const triggerBtn = document.createElement('button');
+  triggerBtn.textContent = 'Trigger Next Cycle';
+  triggerBtn.style.cssText = 'position: fixed; bottom: 60px; right: 10px; background: #00ff41; color: black; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; z-index: 1001;';
+  triggerBtn.addEventListener('click', async () => {
+    await babel.triggerNextCycle();
+  });
+  document.body.appendChild(triggerBtn);
+
+  // Perform initial autonomous operations
   setTimeout(() => {
-    babel.performFirstAutonomousOperation();
+    babel.performInitialCycle();
   }, 2000); // Wait 2 seconds for initialization
 });
