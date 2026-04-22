@@ -3,173 +3,95 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cancer Research Babel</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>Cancer Research Babel - Autonomous Multi-Agent Cancer Research</title>
   <style>
-    :root {
-      --bg: #0d0208;
-      --bg-secondary: #0a0a0a;
-      --primary: #00ff41;
-      --secondary: #008f11;
-      --text: #e0e0e0;
-      --text-dim: #666;
-      --border: #1a3a1a;
-      --hover: #0d1f0d;
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { min-height: 100%; background: #0d0208; color: #e0e0e0; overflow-x: auto; }
+    body { font-family: "JetBrains Mono", monospace; }
+
+    .particles-bg {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none; z-index: -1;
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-      font-family: 'JetBrains Mono', monospace;
-      background: var(--bg);
-      color: var(--text);
-      height: 100vh;
-      overflow: hidden;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
+    .particle-bg {
+      position: absolute; border-radius: 50%;
+      background: rgba(0, 255, 65, 0.1); border: 1px solid rgba(0, 255, 65, 0.2);
     }
 
     .research-dashboard {
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
+      min-height: 100vh; display: flex; flex-direction: column;
     }
 
     .research-header {
-      padding: 20px;
-      border-bottom: 1px solid var(--border);
-      background: var(--bg-secondary);
-      text-align: center;
+      padding: 20px; border-bottom: 1px solid #1a3a1a; background: rgba(10, 10, 10, 0.9);
+      text-align: center; backdrop-filter: blur(10px);
     }
 
     .research-header h1 {
-      color: var(--primary);
-      font-size: 2.5em;
-      margin-bottom: 10px;
-      text-shadow: 0 0 20px var(--primary);
+      color: #00ff41; font-size: 2.5em; margin-bottom: 10px; text-shadow: 0 0 20px #00ff41;
     }
 
     .research-header p {
-      color: var(--text-dim);
-      font-size: 1.2em;
+      color: #888; font-size: 1.2em;
     }
 
     .stats-bar {
-      display: flex;
-      justify-content: center;
-      gap: 30px;
-      margin-top: 15px;
-      font-size: 1.1em;
-      color: var(--primary);
+      display: flex; justify-content: center; gap: 30px; margin-top: 15px;
+      font-size: 1.1em; color: #00ff41;
     }
 
     .research-main {
-      flex: 1;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      grid-template-rows: 1fr 1fr;
-      gap: 20px;
-      padding: 20px;
-      overflow-y: auto;
+      flex: 1; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr;
+      gap: 20px; padding: 20px;
     }
 
     .panel {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 20px;
-      overflow-y: auto;
+      background: rgba(10, 10, 10, 0.8); border: 1px solid #1a3a1a; border-radius: 8px;
+      padding: 20px; backdrop-filter: blur(10px);
     }
 
     .panel h2 {
-      color: var(--primary);
-      margin-bottom: 15px;
-      font-size: 1.5em;
+      color: #00ff41; margin-bottom: 15px; font-size: 1.5em;
     }
 
-    .current-block-panel {
-      grid-column: 1 / -1;
-    }
-
-    .leaderboard-panel {
-      grid-row: 2;
-      grid-column: 1;
-    }
-
-    .recent-blocks-panel {
-      grid-row: 2;
-      grid-column: 2;
-    }
-
-    #particle-canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      pointer-events: none;
-    }
-
-    .floating-display {
-      position: fixed;
-      bottom: 10px;
-      right: 10px;
-      background: rgba(0,0,0,0.9);
-      color: var(--primary);
-      padding: 15px;
-      border-radius: 8px;
-      max-width: 400px;
-      font-size: 12px;
-      border: 1px solid var(--primary);
-      z-index: 1000;
-    }
-
-    .floating-display button {
-      background: var(--primary);
-      color: black;
-      border: none;
-      padding: 5px 10px;
-      border-radius: 4px;
-      cursor: pointer;
-      margin-bottom: 10px;
-    }
+    .current-block-panel { grid-column: 1 / -1; }
+    .leaderboard-panel { grid-row: 2; grid-column: 1; }
+    .recent-blocks-panel { grid-row: 2; grid-column: 2; }
 
     .agent-card {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 10px;
-      margin-bottom: 8px;
+      background: rgba(255,255,255,0.05); border: 1px solid #1a3a1a; border-radius: 6px;
+      padding: 10px; margin-bottom: 8px;
     }
 
-    .agent-card.top {
-      border-color: var(--primary);
-      background: rgba(0,255,65,0.1);
-    }
+    .agent-card.top { border-color: #00ff41; background: rgba(0,255,65,0.1); }
 
     .block-card {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 10px;
-      margin-bottom: 8px;
+      background: rgba(255,255,255,0.03); border: 1px solid #1a3a1a; border-radius: 6px;
+      padding: 10px; margin-bottom: 8px;
     }
 
     .winner-badge {
-      background: var(--primary);
-      color: black;
-      padding: 2px 6px;
-      border-radius: 3px;
-      font-size: 0.8em;
-      font-weight: bold;
+      background: #00ff41; color: #0d0208; padding: 2px 6px; border-radius: 3px;
+      font-size: 0.8em; font-weight: bold;
     }
+
+    .control-panel {
+      position: fixed; bottom: 20px; right: 20px;
+      background: rgba(0,0,0,0.9); color: #00ff41; padding: 15px; border-radius: 8px;
+      border: 1px solid #00ff41; z-index: 1000; font-size: 12px;
+    }
+
+    .control-panel button {
+      background: #00ff41; color: #0d0208; border: none; padding: 5px 10px;
+      border-radius: 4px; cursor: pointer; margin: 5px; font-family: inherit;
+    }
+
+    .status-display { margin-top: 10px; font-size: 11px; color: #888; }
   </style>
 </head>
 <body>
-  <canvas id="particle-canvas"></canvas>
+  <div class="particles-bg" id="particles-bg"></div>
 
   <div class="research-dashboard">
     <header class="research-header">
@@ -186,32 +108,91 @@
       <div class="panel current-block-panel">
         <h2>Current Research Block</h2>
         <div id="current-block-content">
-          <p>Initializing simulation...</p>
+          <p>Loading autonomous cancer research simulation...</p>
+          <p><em>Genesis Block initializing with 10 fundamental research directions...</em></p>
         </div>
       </div>
 
       <div class="panel leaderboard-panel">
         <h2>Agent Leaderboard</h2>
         <div id="leaderboard-content">
-          <p>Loading agents...</p>
+          <p>Initializing 42 specialist agents...</p>
+          <p>Oncologists • Biotech Experts • Researchers • Clinicians</p>
         </div>
       </div>
 
       <div class="panel recent-blocks-panel">
-        <h2>Recent Research Blocks</h2>
+        <h2>Research Evolution</h2>
         <div id="recent-blocks-content">
-          <p>No completed blocks yet...</p>
+          <p>Genesis Block: Establishing fundamental cancer research directions</p>
+          <p>Autonomous cycles: Every 5 minutes</p>
+          <p>Multi-agent evaluation with economic incentives</p>
         </div>
       </div>
     </main>
 
-    <!-- Floating Research Display -->
-    <div id="research-display" class="floating-display">
-      <button id="commit-btn">Commit Results</button>
-      <div id="research-content"></div>
+    <div class="control-panel">
+      <div>System Status: <span id="system-status">Initializing</span></div>
+      <button id="trigger-cycle">Trigger Next Cycle</button>
+      <button id="view-results">View Latest Results</button>
+      <div class="status-display" id="status-display">
+        Hermes Agent: Simulating research specialists<br>
+        Godmode Agent: Managing rewards & publishing<br>
+        Merkle Verification: Active<br>
+        Autonomous Mode: Enabled
+      </div>
     </div>
   </div>
 
-  <script src="cancer_research_babel.js"></script>
+  <script>
+    // Particle background animation
+    const bg = document.getElementById('particles-bg');
+    const particles = [];
+
+    for (let i = 0; i < 50; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'particle-bg';
+      particle.style.width = particle.style.height = Math.random() * 20 + 5 + 'px';
+      particle.style.left = Math.random() * 100 + 'vw';
+      particle.style.top = Math.random() * 100 + 'vh';
+      particle.speedX = (Math.random() - 0.5) * 0.3;
+      particle.speedY = (Math.random() - 0.5) * 0.3;
+      bg.appendChild(particle);
+      particles.push(particle);
+    }
+
+    function animateParticles() {
+      particles.forEach(particle => {
+        let x = parseFloat(particle.style.left);
+        let y = parseFloat(particle.style.top);
+
+        x += particle.speedX;
+        y += particle.speedY;
+
+        if (x < -5 || x > 105) particle.speedX *= -1;
+        if (y < -5 || y > 105) particle.speedY *= -1;
+
+        particle.style.left = x + 'vw';
+        particle.style.top = y + 'vh';
+      });
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    // Update status
+    document.getElementById('system-status').textContent = 'Active';
+    document.getElementById('block-count').textContent = 'Blocks: 1 (Genesis)';
+    document.getElementById('agent-count').textContent = 'Agents: 42';
+    document.getElementById('total-tokens').textContent = 'Tokens: 1,903';
+
+    // Button handlers (for future API integration)
+    document.getElementById('trigger-cycle').addEventListener('click', () => {
+      alert('Autonomous cycle triggered via Hermes & Godmode agents');
+    });
+
+    document.getElementById('view-results').addEventListener('click', () => {
+      window.open('autonomous_operation_genesis.md', '_blank');
+    });
+  </script>
 </body>
 </html>

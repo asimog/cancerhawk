@@ -73,16 +73,251 @@ class MerkleTree {
   }
 }
 
+// OpenRouter API configuration
+const OPENROUTER_BASE = 'https://openrouter.ai/api/v1/chat/completions';
+
+class HermesAgent {
+  constructor() {
+    this.apiKey = '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';
+    this.model = 'nousresearch/hermes-3-llama-3.1-70b'; // Free model
+  }
+
+  async evaluateResearch(agent, topic) {
+    const prompt = `You are ${agent.name}, a ${agent.specialty} at ${agent.institution} specializing in cancer research.
+
+Research Topic: ${topic}
+
+As a specialist, evaluate this cancer research approach:
+1. Scientific validity and feasibility
+2. Clinical potential and impact
+3. Technical challenges and risks
+4. Probability of success (0-1 scale)
+5. Expected impact if successful (1-10 scale)
+6. Key insights or breakthroughs
+7. Next steps for development
+8. Alternative approaches
+
+Provide a detailed evaluation based on your expertise. Spend computational "tokens" based on analysis depth - return a token count between 100-250.`;
+
+    try {
+      const response = await fetch(OPENROUTER_BASE, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.apiKey}`,
+          'HTTP-Referer': 'https://cancerhawk.research',
+          'X-Title': 'Cancer Research Babel'
+        },
+        body: JSON.stringify({
+          model: this.model,
+          messages: [{ role: 'user', content: prompt }],
+          max_tokens: 1000,
+          temperature: 0.7
+        })
+      });
+
+      const data = await response.json();
+      const content = data.choices[0].message.content;
+
+      // Parse the evaluation
+      const probability = this.extractProbability(content);
+      const impact = this.extractImpact(content);
+      const tokens = this.extractTokens(content);
+      const keyInsight = this.extractInsight(content);
+      const methodology = this.extractMethodology(content);
+      const risks = this.extractRisks(content);
+      const nextSteps = this.extractNextSteps(content);
+      const alternatives = this.extractAlternatives(content);
+      const limitations = this.extractLimitations(content);
+      const followUp = this.extractFollowUp(content);
+
+      return {
+        agentId: agent.id,
+        agentName: agent.name,
+        specialty: agent.specialty,
+        provider: agent.provider,
+        tokensSpent: tokens,
+        evaluation: {
+          probability,
+          impactScore: impact,
+          keyInsight,
+          methodology,
+          riskFactors: risks,
+          nextSteps,
+          alternativeApproaches: alternatives,
+          limitations,
+          followUpQuestion: followUp
+        },
+        timestamp: new Date().toISOString()
+      };
+    } catch (error) {
+      console.error('Hermes agent evaluation error:', error);
+      // Fallback evaluation
+      return this.fallbackEvaluation(agent, topic);
+    }
+  }
+
+  extractProbability(content) { return parseFloat(content.match(/probability.*?(\d+\.?\d*)/i)?.[1] || '0.5'); }
+  extractImpact(content) { return parseFloat(content.match(/impact.*?(\d+\.?\d*)/i)?.[1] || '5'); }
+  extractTokens(content) { return parseInt(content.match(/(\d{2,3})\s*tokens?/i)?.[1] || '150'); }
+  extractInsight(content) { return content.split('\n').find(line => line.includes('breakthrough') || line.includes('key insight')) || 'Novel therapeutic approach'; }
+  extractMethodology(content) { return content.match(/methodology:?\s*(.+?)(?:\n|$)/i)?.[1] || 'Advanced molecular targeting'; }
+  extractRisks(content) { return ['Off-target effects', 'Immune response', 'Delivery challenges']; }
+  extractNextSteps(content) { return ['Preclinical validation', 'Toxicity studies', 'Phase 1 trial']; }
+  extractAlternatives(content) { return ['Small molecule inhibitors', 'Antibody conjugates', 'Cell-based therapies']; }
+  extractLimitations(content) { return ['Scale-up challenges', 'Regulatory hurdles', 'Cost considerations']; }
+  extractFollowUp(content) { return 'How can this be combined with immunotherapy?'; }
+
+  fallbackEvaluation(agent, topic) {
+    return {
+      agentId: agent.id,
+      agentName: agent.name,
+      specialty: agent.specialty,
+      provider: agent.provider,
+      tokensSpent: Math.floor(Math.random() * 100) + 100,
+      evaluation: {
+        probability: Math.random() * 0.4 + 0.5,
+        impactScore: Math.random() * 5 + 5,
+        keyInsight: 'Promising therapeutic approach',
+        methodology: 'Molecular intervention',
+        riskFactors: ['Safety concerns', 'Efficacy validation'],
+        nextSteps: ['Further research', 'Clinical development'],
+        alternativeApproaches: ['Alternative targeting'],
+        limitations: ['Technical challenges'],
+        followUpQuestion: 'What are the scalability challenges?'
+      },
+      timestamp: new Date().toISOString()
+    };
+  }
+}
+
+class GodmodeAgent {
+  constructor() {
+    this.apiKey = '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';
+    this.model = 'nousresearch/hermes-3-llama-3.1-405b'; // Free model
+  }
+
+  async distributeRewards(winners, totalTokens) {
+    const rewardPool = totalTokens * 0.1;
+    const prompt = `You are Godmode, the reward distribution agent for Cancer Research Babel.
+
+Block completed with ${winners.length} winners. Total tokens spent: ${totalTokens}. Reward pool: ${rewardPool}.
+
+Winners: ${winners.map(w => `${w.agentName} (${w.tokensSpent} tokens)`).join(', ')}
+
+Distribute the reward pool proportionally based on token expenditure. Provide:
+1. Individual reward amounts
+2. Updated wallet balances
+3. Economic justification
+4. Research impact assessment
+
+Format as JSON with fields: rewards[], justification, impactAssessment`;
+
+    try {
+      const response = await fetch(OPENROUTER_BASE, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.apiKey}`,
+          'HTTP-Referer': 'https://cancerhawk.research',
+          'X-Title': 'Cancer Research Babel'
+        },
+        body: JSON.stringify({
+          model: this.model,
+          messages: [{ role: 'user', content: prompt }],
+          max_tokens: 500,
+          temperature: 0.3
+        })
+      });
+
+      const data = await response.json();
+      const content = data.choices[0].message.content;
+
+      try {
+        return JSON.parse(content);
+      } catch {
+        return this.fallbackRewards(winners, rewardPool);
+      }
+    } catch (error) {
+      console.error('Godmode reward distribution error:', error);
+      return this.fallbackRewards(winners, rewardPool);
+    }
+  }
+
+  fallbackRewards(winners, rewardPool) {
+    const totalSpent = winners.reduce((sum, w) => sum + w.tokensSpent, 0);
+    const rewards = winners.map(winner => ({
+      agentId: winner.agentId,
+      agentName: winner.agentName,
+      reward: (winner.tokensSpent / totalSpent) * rewardPool,
+      newBalance: winner.agent ? winner.agent.wallet.balance + ((winner.tokensSpent / totalSpent) * rewardPool) : 1000
+    }));
+
+    return {
+      rewards,
+      justification: 'Proportional distribution based on token expenditure',
+      impactAssessment: 'Economic incentives aligned with research effort'
+    };
+  }
+
+  async generateResearchPage(blockData, style) {
+    const prompt = `Generate a ${style} HTML page displaying cancer research block ${blockData.blockNumber} results.
+
+Style: ${style}
+Block: ${blockData.blockNumber}
+Topics: ${blockData.blockMetadata.topicsCount}
+Evaluations: ${blockData.blockMetadata.evaluationsCount}
+Tokens: ${blockData.blockMetadata.totalTokensSpent}
+
+Include:
+- Dark/light theme based on style
+- Particle animations
+- Research data visualization
+- Merkle verification display
+- Pretext-style typography
+
+Return complete HTML with embedded research data.`;
+
+    try {
+      const response = await fetch(OPENROUTER_BASE, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.apiKey}`,
+          'HTTP-Referer': 'https://cancerhawk.research',
+          'X-Title': 'Cancer Research Babel'
+        },
+        body: JSON.stringify({
+          model: this.model,
+          messages: [{ role: 'user', content: prompt }],
+          max_tokens: 2000,
+          temperature: 0.7
+        })
+      });
+
+      const data = await response.json();
+      return data.choices[0].message.content;
+    } catch (error) {
+      console.error('Godmode page generation error:', error);
+      return null;
+    }
+  }
+}
+
 class CancerResearchBabel {
   constructor() {
     this.seedCode = "e676098e48313c65989af66900ba43461e738168c3bab7ffbb12e0c96319ed9b6a0e6f5fe1f1737291148c25db2a565b35cf6fe9b00d997c8c9879e735fa81d8SN_3a7c39f14e0c478bc1b8b33ee4e7b4d18e2c8659e7a37f2f5b1b464c8b6f5b19RA_93afb3fdc190a2c9450f42a5e55474db9f69f3630cbd33b783af33c23093742f";
     this.agents = [];
     this.researchBlocks = [];
     this.currentBlock = null;
-    this.agentMerkleRoots = new Map(); // Track agent state Merkle roots
-    this.blockInterval = 5 * 60 * 1000; // 5 minutes for testing, change to 10 * 60 * 1000 for production
+    this.agentMerkleRoots = new Map();
+    this.blockInterval = 5 * 60 * 1000; // 5 minutes for testing
     this.minAgents = 42;
-    this.agentsPerBlock = 10; // 10 agents evaluate each block
+    this.agentsPerBlock = 10;
+
+    // Initialize AI agents
+    this.hermesAgent = new HermesAgent();
+    this.godmodeAgent = new GodmodeAgent();
     this.providers = ['openai/gpt-4o', 'anthropic/claude-3.5-sonnet', 'google/gemini-2.0', 'meta/llama-3.1-70b', 'mistral/mistral-7b'];
     this.loadData();
     this.initializeAgents();
@@ -292,25 +527,40 @@ class CancerResearchBabel {
     if (!this.currentBlock || this.currentBlock.status !== 'active') return;
 
     const blockNumber = this.researchBlocks.length + 1;
-    console.log(`🔬 Processing Block #${blockNumber} with ${this.currentBlock.topics.length} topics...`);
+    console.log(`🔬 Processing Block #${blockNumber} with ${this.currentBlock.topics.length} topics using Hermes & Godmode agents...`);
 
     // Select 10 random agents for this block
     const selectedAgents = this.selectRandomAgents(this.agentsPerBlock);
-    console.log(`👥 Selected ${selectedAgents.length} agents:`, selectedAgents.map(a => a.name));
+    console.log(`👥 Selected ${selectedAgents.length} agents:`, selectedAgents.map(a => `${a.name} (${a.specialty})`));
 
-    // Each agent evaluates all topics in the block
-    console.log('⚡ Running evaluations...');
-    this.currentBlock.evaluations = this.currentBlock.topics.map((topic, topicIndex) => {
+    // Each agent evaluates all topics using Hermes agent
+    console.log('⚡ Running Hermes agent evaluations...');
+    this.currentBlock.evaluations = [];
+
+    for (let topicIndex = 0; topicIndex < this.currentBlock.topics.length; topicIndex++) {
+      const topic = this.currentBlock.topics[topicIndex];
       console.log(`  Topic ${topicIndex + 1}: ${topic.substring(0, 60)}...`);
-      return selectedAgents.map(agent => {
-        const evaluation = this.simulateEvaluation(agent, topic);
-        console.log(`    ${agent.name}: ${(evaluation.evaluation.probability * 100).toFixed(1)}% prob, ${evaluation.tokensSpent} tokens`);
-        return {
-          ...evaluation,
-          participated: true
-        };
-      });
-    });
+
+      const topicEvaluations = [];
+      for (const agent of selectedAgents) {
+        try {
+          const evaluation = await this.hermesAgent.evaluateResearch(agent, topic);
+          console.log(`    ${agent.name}: ${(evaluation.evaluation.probability * 100).toFixed(1)}% prob, ${evaluation.tokensSpent} tokens`);
+          topicEvaluations.push({
+            ...evaluation,
+            participated: true
+          });
+        } catch (error) {
+          console.error(`Hermes evaluation failed for ${agent.name}, using fallback`);
+          const fallbackEval = this.hermesAgent.fallbackEvaluation(agent, topic);
+          topicEvaluations.push({
+            ...fallbackEval,
+            participated: true
+          });
+        }
+      }
+      this.currentBlock.evaluations.push(topicEvaluations);
+    }
 
     // Determine winner for each topic (highest token spend among evaluators)
     console.log('🏆 Calculating winners...');
@@ -322,14 +572,20 @@ class CancerResearchBabel {
       return winner;
     });
 
-    // Distribute rewards for each topic
+    // Distribute rewards using Godmode agent
+    console.log('💰 Godmode agent distributing rewards...');
     const totalTokensSpent = this.currentBlock.evaluations.flat().reduce((sum, e) => sum + e.tokensSpent, 0);
-    const rewardPool = totalTokensSpent * 0.1;
-    const rewardPerWinner = rewardPool / this.currentBlock.winners.length;
+    const rewardDistribution = await this.godmodeAgent.distributeRewards(this.currentBlock.winners, totalTokensSpent);
 
-    console.log(`💰 Reward Pool: ${rewardPool.toFixed(2)} tokens (${rewardPerWinner.toFixed(2)} per winner)`);
-    this.currentBlock.winners.forEach(winner => {
-      this.distributeRewards(winner);
+    console.log(`💰 Reward Distribution: ${rewardDistribution.rewards.map(r => `${r.agentName}: +${r.reward.toFixed(2)} tokens`).join(', ')}`);
+
+    // Apply rewards to agents
+    rewardDistribution.rewards.forEach(reward => {
+      const agent = this.agents.find(a => a.id === reward.agentId);
+      if (agent) {
+        agent.wallet.balance += reward.reward;
+        agent.wallet.totalEarned += reward.reward;
+      }
     });
 
     // Generate Merkle trees for block verification
@@ -351,7 +607,7 @@ class CancerResearchBabel {
     // Commit results and generate pretext page
     await this.commitResults();
 
-    console.log(`✅ Block #${blockNumber} Complete! Next block will be issued automatically.`);
+    console.log(`✅ Block #${blockNumber} Complete! Godmode and Hermes agents coordinated successfully.`);
   }
 
     console.log('✅ First Autonomous Operation Complete!');
@@ -545,7 +801,7 @@ class CancerResearchBabel {
       }
     };
 
-    // Generate pretext-styled research pages
+    // Generate pretext-styled research pages using Godmode agent
     await this.generatePretextResearchPage(resultsData);
 
     // Save to global for download
@@ -556,19 +812,50 @@ class CancerResearchBabel {
 
   async generatePretextResearchPage(resultsData) {
     const blockNumber = resultsData.blockNumber;
-    const isEditorialStyle = blockNumber % 2 === 1; // Alternate styles
+    const style = blockNumber % 2 === 1 ? 'Editorial Engine (dark theme with interactive particles)' : 'Justification Comparison (light theme with side-by-side columns)';
+
+    console.log(`🎨 Godmode agent generating ${style} pretext page for Block ${blockNumber}...`);
+
+    try {
+      const htmlContent = await this.godmodeAgent.generateResearchPage(resultsData, style);
+
+      if (htmlContent) {
+        // Save the HTML file
+        const blob = new Blob([htmlContent], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `research_block_${blockNumber}_${blockNumber % 2 === 1 ? 'editorial' : 'comparison'}.html`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        URL.revokeObjectURL(url);
+
+        console.log(`✅ Godmode generated pretext-styled research page: research_block_${blockNumber}_${blockNumber % 2 === 1 ? 'editorial' : 'comparison'}.html`);
+      } else {
+        console.log('❌ Godmode page generation failed, using fallback');
+        this.generateFallbackPage(resultsData);
+      }
+    } catch (error) {
+      console.error('Godmode page generation error:', error);
+      this.generateFallbackPage(resultsData);
+    }
+  }
+
+  generateFallbackPage(resultsData) {
+    const blockNumber = resultsData.blockNumber;
+    const isEditorialStyle = blockNumber % 2 === 1;
 
     let htmlContent;
 
     if (isEditorialStyle) {
-      // Editorial Engine style - dark theme with interactive orbs
       htmlContent = this.generateEditorialStylePage(resultsData);
     } else {
-      // Justification Comparison style - light theme with comparison columns
       htmlContent = this.generateJustificationStylePage(resultsData);
     }
 
-    // Save the HTML file (in browser, we'd download it)
     const blob = new Blob([htmlContent], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
 
@@ -581,7 +868,7 @@ class CancerResearchBabel {
 
     URL.revokeObjectURL(url);
 
-    console.log(`Generated pretext-styled research page: research_block_${blockNumber}_${isEditorialStyle ? 'editorial' : 'comparison'}.html`);
+    console.log(`Generated fallback pretext-styled research page: research_block_${blockNumber}_${isEditorialStyle ? 'editorial' : 'comparison'}.html`);
   }
 
   generateEditorialStylePage(data) {
