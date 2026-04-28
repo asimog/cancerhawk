@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Node
+node_modules/
+
+# Generated run output
+results/
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.vscode/*.log
+
+# Env / secrets
+.env
+.env.*
+!.env.example

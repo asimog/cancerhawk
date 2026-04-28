@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>CancerHawk · Autonomous Oncology Research Engine</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+<header>
+  <h1>🦅 CancerHawk</h1>
+  <p class="tagline">Autonomous oncology research · paper engine + multi-archetype analysis · runs on OpenRouter</p>
+</header>
+
+<main>
+  <section class="config">
+    <h2>1 · Configure</h2>
+
+    <div class="row">
+      <label>OpenRouter API key
+        <input type="password" id="api_key" placeholder="sk-or-v1-…" autocomplete="off" />
+      </label>
+      <label class="inline">
+        <input type="checkbox" id="remember" /> remember in this browser
+      </label>
+    </div>
+
+    <div class="row">
+      <label>Research goal (one line is fine — be specific)
+        <textarea id="research_goal" rows="3" placeholder="e.g. Mechanism for overcoming PD-1/PD-L1 resistance in microsatellite-stable colorectal cancer via tumor-microenvironment reprogramming"></textarea>
+      </label>
+    </div>
+
+    <h3>Model menu</h3>
+    <div class="model-grid">
+      <label>Submitter (parallel brainstormers)<select id="submitter"></select></label>
+      <label>Validator (rejects, steers)<select id="validator"></select></label>
+      <label>Compiler (paper writer)<select id="compiler"></select></label>
+      <label>Archetype agents (analysis)<select id="archetype"></select></label>
+      <label>Topic deriver (next-block seeds)<select id="topic_deriver"></select></label>
+      <label>Submitter count
+        <input type="number" id="n_submitters" min="1" max="8" value="3" />
+      </label>
+    </div>
+
+    <div class="row inline-row">
+      <label class="inline"><input type="checkbox" id="auto_publish" checked /> auto-publish to <code>results/block-N/</code></label>
+      <label class="inline"><input type="checkbox" id="git_push" /> also <code>git add/commit/push</code> (live to GitHub Pages)</label>
+    </div>
+
+    <button id="run_btn" class="primary">▶ Run a fresh CancerHawk block</button>
+  </section>
+
+   <section class="progress" id="progress_section" hidden>
+     <h2>2 · Live progress</h2>
+
+     <!-- Stats Dashboard -->
+     <div class="stats-dashboard" id="stats_dashboard">
+       <div class="stat-card">
+         <div class="stat-label">Calls</div>
+         <div class="stat-value" id="stat_calls">0</div>
+       </div>
+       <div class="stat-card">
+         <div class="stat-label">Tokens</div>
+         <div class="stat-value" id="stat_tokens">0</div>
+       </div>
+       <div class="stat-card">
+         <div class="stat-label">Phase</div>
+         <div class="stat-value phase" id="stat_phase">idle</div>
+       </div>
+       <div class="stat-card">
+         <div class="stat-label">Success Rate</div>
+         <div class="stat-value" id="stat_success">—</div>
+       </div>
+       <div class="stat-card">
+         <div class="stat-label">Latency</div>
+         <div class="stat-value" id="stat_latency">—</div>
+       </div>
+       <div class="stat-card">
+         <div class="stat-label">Cost</div>
+         <div class="stat-value" id="stat_cost">$0.00</div>
+       </div>
+     </div>
+
+     <div class="totals" id="totals">
+       <div class="total"><span class="label">Calls</span><span class="value" id="t_calls">0</span></div>
+       <div class="total"><span class="label">In tokens</span><span class="value" id="t_in">0</span></div>
+       <div class="total"><span class="label">Out tokens</span><span class="value" id="t_out">0</span></div>
+       <div class="total"><span class="label">Total tokens</span><span class="value" id="t_total">0</span></div>
+       <div class="total"><span class="label">Cost (USD)</span><span class="value" id="t_cost">$0.0000</span></div>
+       <div class="total"><span class="label">Elapsed</span><span class="value" id="t_elapsed">0s</span></div>
+     </div>
+
+     <div class="log-tabs">
+       <button class="tab active" data-tab="events">Pipeline events</button>
+       <button class="tab" data-tab="calls">API calls (<span id="call_count">0</span>)</button>
+     </div>
+
+     <div id="log" class="log tab-pane active"></div>
+
+      <div id="calls" class="log tab-pane">
+        <div class="calls-filters" id="calls_filters">
+          <select id="filter_role">
+            <option value="all">All roles</option>
+            <option value="submitter">Submitter</option>
+            <option value="validator">Validator</option>
+            <option value="compiler">Compiler</option>
+            <option value="archetype">Archetype</option>
+            <option value="topic_deriver">Topic Deriver</option>
+          </select>
+          <select id="filter_status">
+            <option value="all">All status</option>
+            <option value="ok">Success</option>
+            <option value="fail">Failed</option>
+          </select>
+        </div>
+        <div class="calls-summary" id="calls_summary">
+          <span id="summary_total">0 calls</span>
+          <span id="summary_success">0% success</span>
+          <span id="summary_latency">~0ms avg</span>
+          <span id="summary_cost">$0.0000</span>
+        </div>
+        <table class="calls-table">
+         <thead><tr>
+           <th>Role</th><th>Model</th>
+           <th>In</th><th>Out</th><th>Total</th><th>Latency</th><th>Cost</th><th>OK</th>
+         </tr></thead>
+         <tbody id="calls_tbody"></tbody>
+       </table>
+     </div>
+   </section>
+
+  <section class="result" id="result_section" hidden>
+    <h2>3 · Result</h2>
+    <p id="result_summary"></p>
+    <p><a id="result_link" target="_blank">→ Open published block page</a></p>
+  </section>
+
+   <footer>
+     <p>Local-only. Your API key never leaves this machine; it's sent only to <code>openrouter.ai</code> on each call. Source: <a href="https://github.com/asimog/cancerhawk">github.com/asimog/cancerhawk</a></p>
+   </footer>
+ </main>
+
+ <!-- Eternal Sidebar -->
+ <aside class="sidebar" id="sidebar">
+   <button class="sidebar-toggle" id="sidebar_toggle" title="Toggle sidebar">
+     <span class="arrow">◀</span>
+   </button>
+   <div class="sidebar-content">
+     <div class="sidebar-header">
+       <span class="mode-badge" id="mode_badge">idle</span>
+       <div class="research-timer" id="research_timer">00:00:00</div>
+     </div>
+
+     <div class="sidebar-section">
+       <div class="section-title">Token Totals</div>
+       <div class="token-row">
+         <span class="token-label">Input</span>
+         <span class="token-value token-in" id="sidebar_in">0</span>
+       </div>
+       <div class="token-row">
+         <span class="token-label">Output</span>
+         <span class="token-value token-out" id="sidebar_out">0</span>
+       </div>
+       <div class="token-row total">
+         <span class="token-label">Total</span>
+         <span class="token-value" id="sidebar_total">0</span>
+       </div>
+     </div>
+
+     <div class="sidebar-section collapsible">
+       <div class="collapsible-header" id="model_breakdown_header">
+         <span>Per-Model Breakdown</span>
+         <span class="collapsible-arrow">▼</span>
+       </div>
+       <div class="collapsible-content" id="model_breakdown">
+         <!-- Populated dynamically -->
+       </div>
+     </div>
+
+     <div class="sidebar-section collapsible">
+       <div class="collapsible-header" id="api_stats_header">
+         <span>API Call Stats</span>
+         <span class="collapsible-arrow">▼</span>
+       </div>
+       <div class="collapsible-content" id="api_stats">
+         <div class="stat-row"><span>Total Calls</span><span id="api_total_calls">0</span></div>
+         <div class="stat-row"><span>Successful</span><span id="api_success">0</span></div>
+         <div class="stat-row"><span>Failed</span><span id="api_failed">0</span></div>
+         <div class="stat-row"><span>Success Rate</span><span id="api_success_rate">—</span></div>
+       </div>
+     </div>
+   </div>
+ </aside>
+
+ <script src="/static/app.js"></script>
+ </body>
+ </html>
