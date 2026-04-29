@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Run a CancerHawk Block</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root{color-scheme:dark}
+*{box-sizing:border-box}
+body{font:16px/1.6 -apple-system,Segoe UI,Helvetica,Arial,sans-serif;margin:0;background:#050a06;color:#c8e6c9}
+header{padding:24px clamp(18px,4vw,44px);border-bottom:1px solid #1a3a1a;background:#071407}
+h1{color:#6fdb6f;margin:0 0 8px;line-height:1.15}
+a{color:#6fdb6f}
+.site-nav{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.site-nav a{color:#071407;background:#6fdb6f;border-radius:999px;padding:6px 11px;text-decoration:none;font-size:13px;font-weight:700}
+main{padding:24px clamp(18px,4vw,44px)}
+.status{border:1px solid #1a3a1a;background:#0a1f0a;border-radius:10px;padding:14px 16px;margin-bottom:18px}
+.status strong{color:#d7ffd7}
+.actions{display:flex;flex-wrap:wrap;gap:12px;margin:14px 0}
+.button{border:1px solid #6fdb6f;background:#6fdb6f;color:#061006;border-radius:8px;padding:10px 13px;text-decoration:none;font-weight:700}
+.button.secondary{background:#071407;color:#c8e6c9;border-color:#1a3a1a}
+code,pre{font-family:ui-monospace,Menlo,Consolas,monospace}
+pre{background:#071407;border:1px solid #1a3a1a;border-radius:10px;padding:14px;overflow:auto}
+.backend-frame{width:100%;height:78vh;border:1px solid #1a3a1a;border-radius:12px;background:#000;display:none}
+.notes{max-width:920px;color:#a4c4a4}
+</style></head><body>
+<header>
+  <h1>Run a CancerHawk Block</h1>
+  <p>Generate the next research block from your own OpenRouter API key using the local backend.</p>
+  <nav class="site-nav"><a href="./">Latest block</a><a href="blocks.html">All blocks</a></nav>
+</header>
+<main>
+  <section class="status" id="status"><strong>Checking local backend...</strong></section>
+  <div class="actions">
+    <a class="button" href="http://localhost:8765" target="_blank" rel="noreferrer">Open local backend</a>
+    <button class="button secondary" type="button" id="retry">Check again</button>
+  </div>
+  <iframe class="backend-frame" id="backend" title="CancerHawk local backend" src="about:blank"></iframe>
+  <section class="notes">
+    <h2>Start the backend</h2>
+    <p>GitHub Pages is static, so it cannot run Python by itself. Start CancerHawk locally, then this page will display the backend here.</p>
+    <pre>uv run --with-requirements app/requirements.txt --with-requirements app/requirements-dev.txt python -m app.main</pre>
+    <p>Once the backend is running, paste your OpenRouter API key, choose models, and run a fresh block. Completed blocks publish into <code>results/block-N/</code>. If you enable git publishing locally, the backend can commit and push the generated block to GitHub Pages.</p>
+  </section>
+</main>
+<script>
+const statusEl = document.getElementById('status');
+const frame = document.getElementById('backend');
+async function checkBackend(){
+  statusEl.innerHTML = '<strong>Checking local backend...</strong>';
+  try {
+    const res = await fetch('http://localhost:8765/api/health', {cache:'no-store'});
+    if (!res.ok) throw new Error('health check failed');
+    statusEl.innerHTML = '<strong>Backend detected.</strong> The local CancerHawk control panel is embedded below.';
+    frame.src = 'http://localhost:8765';
+    frame.style.display = 'block';
+  } catch (err) {
+    statusEl.innerHTML = '<strong>Backend not running.</strong> Start it locally, then check again.';
+    frame.style.display = 'none';
+  }
+}
+document.getElementById('retry').addEventListener('click', checkBackend);
+checkBackend();
+</script>
+</body></html>

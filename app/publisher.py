@@ -135,6 +135,7 @@ def _rewrite_index() -> None:
         index_html = _empty_index()
     (RESULTS_DIR / "index.html").write_text(index_html, encoding="utf-8")
     (RESULTS_DIR / "blocks.html").write_text(_render_archive(blocks), encoding="utf-8")
+    (RESULTS_DIR / "run.html").write_text(_render_run_page(), encoding="utf-8")
 
 
 def _load_blocks() -> list[tuple[int, dict, dict, str]]:
@@ -283,10 +284,12 @@ def _render_simulations(simulations: list[dict]) -> str:
 
 
 def _render_block_page(paper, analysis_payload: dict, meta: dict) -> str:
+    abstract = next((s for s in paper.sections if s["heading"].lower() == "abstract"), None)
     sections_html = "\n".join(
         f'<section><h2>{html.escape(s["heading"])}</h2>'
         f'<div class="prose">{_md_inline_to_html(s["content"])}</div></section>'
         for s in paper.sections
+        if s["heading"].lower() != "abstract"
     )
     archetype_table = _archetype_table(analysis_payload["archetypes"])
     topics_table = _topics_table(analysis_payload.get("derived_topics", []))
@@ -308,6 +311,7 @@ def _render_block_page(paper, analysis_payload: dict, meta: dict) -> str:
         catalysts_html=catalysts_html,
         peer_reviews_html=peer_reviews_html,
         simulations_html=simulations_html,
+        abstract_html=_abstract_html(abstract["content"] if abstract else ""),
         analysis_json=html.escape(json.dumps(analysis_payload, indent=2)),
         consensus_json=html.escape(json.dumps(analysis_payload["consensus_dim"])),
         score_matrix_json=html.escape(json.dumps(analysis_payload["score_matrix"])),
@@ -319,7 +323,7 @@ def _render_block_page(paper, analysis_payload: dict, meta: dict) -> str:
 def _render_index(latest, all_blocks) -> str:
     block_n, meta, analysis_payload, paper_md = latest
     # Reconstruct paper sections from markdown for display
-    sections_html = _md_to_sections_html(paper_md)
+    sections_html = _md_to_sections_html(paper_md, skip_headings={"abstract"})
     archetype_table = _archetype_table(analysis_payload["archetypes"])
     topics_table = _topics_table(analysis_payload.get("derived_topics", []))
     catalysts_html = _catalysts_html(analysis_payload.get("headline_catalysts", []))
@@ -341,6 +345,7 @@ def _render_index(latest, all_blocks) -> str:
         catalysts_html=catalysts_html,
         peer_reviews_html=peer_reviews_html,
         simulations_html=simulations_html,
+        abstract_html=_abstract_html(_md_section_content(paper_md, "Abstract")),
         analysis_json=html.escape(json.dumps(analysis_payload, indent=2)),
         consensus_json=html.escape(json.dumps(analysis_payload["consensus_dim"])),
         score_matrix_json=html.escape(json.dumps(analysis_payload["score_matrix"])),
@@ -396,7 +401,7 @@ a{{color:#6fdb6f}} h1,h2{{color:#6fdb6f}} header{{border-bottom:1px solid #1a3a1
 <header>
   <h1>CancerHawk Block Archive</h1>
   <p>All published research blocks. Future blocks can cite and extend these papers when appropriate.</p>
-  <p><a href="./">Latest block</a></p>
+  <p><a href="./">Latest block</a> · <a href="run.html">Run a block</a></p>
 </header>
 {body}
 </body></html>
@@ -406,10 +411,12 @@ a{{color:#6fdb6f}} h1,h2{{color:#6fdb6f}} header{{border-bottom:1px solid #1a3a1
 def _nav_html(block: int, *, in_block_page: bool) -> str:
     latest_href = "../" if in_block_page else "./"
     archive_href = "../blocks.html" if in_block_page else "blocks.html"
+    run_href = "../run.html" if in_block_page else "run.html"
     permanent_href = "paper.html" if in_block_page else f"block-{block}/paper.html"
     return (
         '<nav class="site-nav">'
         f'<a href="{latest_href}">Latest block</a><a href="{archive_href}">All blocks</a>'
+        f'<a href="{run_href}">Run a block</a>'
         f'<a href="{permanent_href}">Permanent link</a>'
         '</nav>'
     )
@@ -672,9 +679,94 @@ def _history_html(blocks) -> str:
     )
 
 
+def _md_span_to_html(text: str) -> str:
+    escaped = html.escape(text)
+    escaped = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", escaped)
+    escaped = re.sub(r"`([^`]+)`", r"<code>\1</code>", escaped)
+    return escaped
+
+
+def _split_table_row(line: str) -> list[str]:
+    return [cell.strip() for cell in line.strip().strip("|").split("|")]
+
+
+def _is_table_separator(line: str) -> bool:
+    cells = _split_table_row(line)
+    return bool(cells) and all(re.fullmatch(r":?-{3,}:?", cell or "") for cell in cells)
+
+
 def _md_inline_to_html(text: str) -> str:
-    paras = [p.strip() for p in text.split("\n\n") if p.strip()]
-    return "\n".join(f"<p>{html.escape(p)}</p>" for p in paras)
+    lines = text.splitlines()
+    html_blocks: list[str] = []
+    paragraph: list[str] = []
+
+    def flush_paragraph() -> None:
+        if not paragraph:
+            return
+        html_blocks.append(f"<p>{_md_span_to_html(' '.join(line.strip() for line in paragraph))}</p>")
+        paragraph.clear()
+
+    i = 0
+    while i < len(lines):
+        line = lines[i].rstrip()
+        stripped = line.strip()
+        if not stripped:
+            flush_paragraph()
+            i += 1
+            continue
+
+        if (
+            stripped.startswith("|")
+            and i + 1 < len(lines)
+            and lines[i + 1].strip().startswith("|")
+            and _is_table_separator(lines[i + 1].strip())
+        ):
+            flush_paragraph()
+            headers = _split_table_row(stripped)
+            i += 2
+            rows = []
+            while i < len(lines) and lines[i].strip().startswith("|"):
+                rows.append(_split_table_row(lines[i].strip()))
+                i += 1
+            thead = "".join(f"<th>{_md_span_to_html(cell)}</th>" for cell in headers)
+            body_rows = []
+            for row in rows:
+                cells = row + [""] * max(0, len(headers) - len(row))
+                body_rows.append(
+                    "<tr>" + "".join(f"<td>{_md_span_to_html(cell)}</td>" for cell in cells[: len(headers)]) + "</tr>"
+                )
+            html_blocks.append(
+                '<table class="paper-table"><thead><tr>'
+                + thead
+                + "</tr></thead><tbody>"
+                + "".join(body_rows)
+                + "</tbody></table>"
+            )
+            continue
+
+        if re.match(r"^\d+\.\s+", stripped):
+            flush_paragraph()
+            items = []
+            while i < len(lines) and re.match(r"^\d+\.\s+", lines[i].strip()):
+                items.append(re.sub(r"^\d+\.\s+", "", lines[i].strip()))
+                i += 1
+            html_blocks.append("<ol>" + "".join(f"<li>{_md_span_to_html(item)}</li>" for item in items) + "</ol>")
+            continue
+
+        if stripped.startswith("- "):
+            flush_paragraph()
+            items = []
+            while i < len(lines) and lines[i].strip().startswith("- "):
+                items.append(lines[i].strip()[2:])
+                i += 1
+            html_blocks.append("<ul>" + "".join(f"<li>{_md_span_to_html(item)}</li>" for item in items) + "</ul>")
+            continue
+
+        paragraph.append(stripped)
+        i += 1
+
+    flush_paragraph()
+    return "\n".join(html_blocks)
 
 
 def _paper_excerpt(md: str, max_chars: int = 1200) -> str:
@@ -691,7 +783,33 @@ def _paper_excerpt(md: str, max_chars: int = 1200) -> str:
     return (excerpt[: max_chars - 1].rstrip() + "…") if len(excerpt) > max_chars else excerpt
 
 
-def _md_to_sections_html(md: str) -> str:
+def _md_section_content(md: str, heading: str) -> str:
+    target = heading.strip().lower()
+    current = None
+    buf: list[str] = []
+    for line in md.splitlines():
+        if line.startswith("## "):
+            if current == target:
+                break
+            current = line[3:].strip().lower()
+            buf = []
+            continue
+        if current == target:
+            buf.append(line)
+    return "\n".join(buf).strip()
+
+
+def _abstract_html(content: str) -> str:
+    if not content.strip():
+        return ""
+    return (
+        '<section class="abstract-summary"><h2>Abstract</h2>'
+        f'<div class="prose">{_md_inline_to_html(content)}</div></section>'
+    )
+
+
+def _md_to_sections_html(md: str, skip_headings: set[str] | None = None) -> str:
+    skip = {h.lower() for h in (skip_headings or set())}
     lines = md.splitlines()
     sections = []
     cur_heading = None
@@ -712,6 +830,7 @@ def _md_to_sections_html(md: str) -> str:
         f'<section><h2>{html.escape(h)}</h2>'
         f'<div class="prose">{_md_inline_to_html(c)}</div></section>'
         for h, c in sections
+        if h.lower() not in skip
     )
 
 
@@ -728,6 +847,73 @@ def try_git_publish(block_n: int) -> str:
         return f"git failed: {exc.stderr.decode(errors='replace')[:200] if exc.stderr else exc}"
     except FileNotFoundError:
         return "git not available"
+
+
+def _render_run_page() -> str:
+    return """<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Run a CancerHawk Block</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root{color-scheme:dark}
+*{box-sizing:border-box}
+body{font:16px/1.6 -apple-system,Segoe UI,Helvetica,Arial,sans-serif;margin:0;background:#050a06;color:#c8e6c9}
+header{padding:24px clamp(18px,4vw,44px);border-bottom:1px solid #1a3a1a;background:#071407}
+h1{color:#6fdb6f;margin:0 0 8px;line-height:1.15}
+a{color:#6fdb6f}
+.site-nav{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.site-nav a{color:#071407;background:#6fdb6f;border-radius:999px;padding:6px 11px;text-decoration:none;font-size:13px;font-weight:700}
+main{padding:24px clamp(18px,4vw,44px)}
+.status{border:1px solid #1a3a1a;background:#0a1f0a;border-radius:10px;padding:14px 16px;margin-bottom:18px}
+.status strong{color:#d7ffd7}
+.actions{display:flex;flex-wrap:wrap;gap:12px;margin:14px 0}
+.button{border:1px solid #6fdb6f;background:#6fdb6f;color:#061006;border-radius:8px;padding:10px 13px;text-decoration:none;font-weight:700}
+.button.secondary{background:#071407;color:#c8e6c9;border-color:#1a3a1a}
+code,pre{font-family:ui-monospace,Menlo,Consolas,monospace}
+pre{background:#071407;border:1px solid #1a3a1a;border-radius:10px;padding:14px;overflow:auto}
+.backend-frame{width:100%;height:78vh;border:1px solid #1a3a1a;border-radius:12px;background:#000;display:none}
+.notes{max-width:920px;color:#a4c4a4}
+</style></head><body>
+<header>
+  <h1>Run a CancerHawk Block</h1>
+  <p>Generate the next research block from your own OpenRouter API key using the local backend.</p>
+  <nav class="site-nav"><a href="./">Latest block</a><a href="blocks.html">All blocks</a></nav>
+</header>
+<main>
+  <section class="status" id="status"><strong>Checking local backend...</strong></section>
+  <div class="actions">
+    <a class="button" href="http://localhost:8765" target="_blank" rel="noreferrer">Open local backend</a>
+    <button class="button secondary" type="button" id="retry">Check again</button>
+  </div>
+  <iframe class="backend-frame" id="backend" title="CancerHawk local backend" src="about:blank"></iframe>
+  <section class="notes">
+    <h2>Start the backend</h2>
+    <p>GitHub Pages is static, so it cannot run Python by itself. Start CancerHawk locally, then this page will display the backend here.</p>
+    <pre>uv run --with-requirements app/requirements.txt --with-requirements app/requirements-dev.txt python -m app.main</pre>
+    <p>Once the backend is running, paste your OpenRouter API key, choose models, and run a fresh block. Completed blocks publish into <code>results/block-N/</code>. If you enable git publishing locally, the backend can commit and push the generated block to GitHub Pages.</p>
+  </section>
+</main>
+<script>
+const statusEl = document.getElementById('status');
+const frame = document.getElementById('backend');
+async function checkBackend(){
+  statusEl.innerHTML = '<strong>Checking local backend...</strong>';
+  try {
+    const res = await fetch('http://localhost:8765/api/health', {cache:'no-store'});
+    if (!res.ok) throw new Error('health check failed');
+    statusEl.innerHTML = '<strong>Backend detected.</strong> The local CancerHawk control panel is embedded below.';
+    frame.src = 'http://localhost:8765';
+    frame.style.display = 'block';
+  } catch (err) {
+    statusEl.innerHTML = '<strong>Backend not running.</strong> Start it locally, then check again.';
+    frame.style.display = 'none';
+  }
+}
+document.getElementById('retry').addEventListener('click', checkBackend);
+checkBackend();
+</script>
+</body></html>
+"""
 
 
 _PAGE_SHELL = """<!doctype html>
@@ -764,6 +950,10 @@ table {{ width: 100%; border-collapse: collapse; font-size: 14px; }}
 th, td {{ padding: 8px 10px; border-bottom: 1px solid #1a3a1a; text-align: left; vertical-align: top; }}
 th {{ color: #6fdb6f; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }}
 td.verdict, td.rationale {{ color: #c8e6c9; max-width: 320px; font-size: 13px; line-height: 1.4; }}
+.paper-table {{ margin: 16px 0 20px; background: #071407; border: 1px solid #1a3a1a; border-radius: 8px; overflow: hidden; display: block; overflow-x: auto; }}
+.paper-table th, .paper-table td {{ min-width: 150px; }}
+.abstract-summary {{ background: #071407; border: 1px solid #1a3a1a; border-radius: 12px; padding: 18px; margin: 18px 0 22px; }}
+.abstract-summary h2 {{ margin-top: 0; }}
 .catalysts {{ background: #0a1f0a; border-radius: 8px; padding: 12px 28px; }}
 .catalysts li {{ margin: 6px 0; color: #c8e6c9; }}
 .muted {{ color: #6a8a6a; }}
@@ -815,20 +1005,38 @@ pre {{ white-space: pre-wrap; word-wrap: break-word; background: #0a1f0a; paddin
   Autonomously generated by CancerHawk. This paper has undergone automated peer review by MiroShark archetype agents. May contain incorrect, incomplete, or fabricated claims. Independently verify before acting on any content.
 </aside>
 
-<div class="market-banner">
-  <div><div class="label">Synthesis market price</div><div class="price">{market_pct}%</div></div>
-  <div><div class="label">Verdict</div><div>Aggregated archetype confidence in clinical + commercial viability</div></div>
-</div>
+{abstract_html}
 
 <!-- Page Tabs -->
 <div class="page-tabs">
   <button class="page-tab active" data-tab="paper">Paper</button>
   <button class="page-tab" data-tab="peer-reviews">Peer Reviews</button>
   <button class="page-tab" data-tab="simulations">Simulations</button>
+  <button class="page-tab" data-tab="analysis">Market Analysis</button>
 </div>
 
 <!-- Paper Content -->
 <div id="paper-tab" class="page-content active">
+{sections_html}
+</div>
+
+<!-- Peer Reviews Tab -->
+<div id="peer-reviews-tab" class="page-content">
+{peer_reviews_html}
+</div>
+
+<!-- Simulations Tab -->
+<div id="simulations-tab" class="page-content">
+{simulations_html}
+</div>
+
+<!-- Market Analysis Tab -->
+<div id="analysis-tab" class="page-content">
+<div class="market-banner">
+  <div><div class="label">Synthesis market price</div><div class="price">{market_pct}%</div></div>
+  <div><div class="label">Verdict</div><div>Aggregated archetype confidence in clinical + commercial viability</div></div>
+</div>
+
 <section>
   <h2>Visualizations</h2>
   <div class="charts">
@@ -853,18 +1061,6 @@ pre {{ white-space: pre-wrap; word-wrap: break-word; background: #0a1f0a; paddin
   <h2>Next-block topics derived</h2>
   {topics_table}
 </section>
-
-{sections_html}
-</div>
-
-<!-- Peer Reviews Tab -->
-<div id="peer-reviews-tab" class="page-content">
-{peer_reviews_html}
-</div>
-
-<!-- Simulations Tab -->
-<div id="simulations-tab" class="page-content">
-{simulations_html}
 </div>
 
 {block_history_html}

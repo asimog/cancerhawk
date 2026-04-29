@@ -23,6 +23,7 @@ from pathlib import Path
 
 import uvicorn
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -52,6 +53,17 @@ from .peer_review_engine import (  # noqa: E402
 PORT = 8765
 
 app = FastAPI(title="CancerHawk")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "https://asimog.github.io",
+        "https://asimog.github.io/cancerhawk",
+        "http://localhost:8765",
+        "http://127.0.0.1:8765",
+    ],
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["*"],
+)
 app.mount("/static", StaticFiles(directory=str(APP_DIR / "web")), name="static")
 RESULTS_DIR = APP_DIR.parent / "results"
 RESULTS_DIR.mkdir(parents=True, exist_ok=True)

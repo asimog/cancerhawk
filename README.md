@@ -13,6 +13,11 @@ Open `http://localhost:8765`, paste an OpenRouter key, choose models, and run a
 fresh block. The app writes each completed block to `results/block-N/` and
 rewrites `results/index.html` so the latest block is always the displayed page.
 
+The public Pages site also includes `results/run.html`, a static launcher that
+detects and embeds the local backend when `http://localhost:8765` is running.
+GitHub Pages cannot run the Python backend by itself; users start the backend
+locally, provide their OpenRouter API key there, and generate a new block.
+
 ## Publish
 
 Pushes to `master` deploy the `results/` directory to GitHub Pages. That means
