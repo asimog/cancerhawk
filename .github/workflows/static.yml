@@ -36,8 +36,10 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire repository
-          path: '.'
+          # Publish the generated CancerHawk block site as the Pages root.
+          # results/index.html is rewritten after every block so the public
+          # page always displays the newest CancerHawk output.
+          path: 'results'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5

@@ -32,7 +32,9 @@ def submitter_prompt(
         # submission extends the frontier rather than duplicating it.
         snippets = []
         for i, sub in enumerate(prior_accepted, start=1):
-            head = sub.strip().splitlines()[0][:200] if sub.strip() else ""
+            stripped = (sub or "").strip()
+            lines = stripped.splitlines() if stripped else []
+            head = lines[0][:200] if lines else "(empty submission)"
             snippets.append(f"  [{i}] {head}")
         aggregate = (
             "\nALREADY-ACCEPTED RESEARCH DIRECTIONS (do NOT duplicate; extend the frontier):\n"

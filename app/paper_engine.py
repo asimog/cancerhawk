@@ -83,11 +83,6 @@ class Paper:
         return f"# {self.title}\n\n{body}"
 
 
-def _avg_novelty(scores_log: list[dict]) -> float:
-    vals = [s.get("novelty") for s in scores_log if isinstance(s.get("novelty"), (int, float))]
-    return sum(vals) / len(vals) if vals else 0.0
-
-
 def _check_convergence(
     *,
     accepted_count: int,
@@ -97,16 +92,21 @@ def _check_convergence(
     api_calls: int,
     elapsed_s: float,
 ) -> tuple[bool, str]:
-    """Return (should_stop, reason)."""
-    # Hard floor: never stop until we have a real research aggregate.
-    if accepted_count < MIN_ACCEPTED_FLOOR:
-        return False, ""
+    """Return (should_stop, reason).
 
-    # Soft safety guards — only trip on pathological runs.
+    Safety guards (api-call and wall-clock) are checked FIRST so a
+    pathological run (e.g. every submitter erroring forever) can't loop
+    indefinitely just because the acceptance floor was never reached.
+    """
+    # Hard safety guards — must fire even if MIN_ACCEPTED_FLOOR is unmet.
     if MAX_API_CALLS_SOFT and api_calls >= MAX_API_CALLS_SOFT:
         return True, f"safety_guard:api_calls>={MAX_API_CALLS_SOFT}"
     if MAX_WALL_CLOCK_SECONDS and elapsed_s >= MAX_WALL_CLOCK_SECONDS:
         return True, f"safety_guard:wall_clock>={MAX_WALL_CLOCK_SECONDS}s"
+
+    # Floor: don't stop on convergence signals until we have a real aggregate.
+    if accepted_count < MIN_ACCEPTED_FLOOR:
+        return False, ""
 
     # Saturation: K consecutive rounds with zero acceptances.
     if rounds_run >= SATURATION_ROUNDS:
@@ -292,7 +292,7 @@ async def run_paper_engine(
         models["compiler"],
         compiler_outline_prompt(accepted, research_goal),
         temperature=0.4,
-        max_tokens=2000,
+        max_tokens=4000,
         role="compiler_outline",
         tracker=tracker,
         on_call=on_call,

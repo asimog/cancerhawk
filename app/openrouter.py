@@ -9,7 +9,6 @@ from __future__ import annotations
 
 import json
 import time
-from itertools import permutations
 from typing import Any, Awaitable, Callable
 
 import httpx
@@ -162,12 +161,13 @@ def _extract_json(text: str) -> dict:
     Handles:
       - Markdown code fences (```json ... ```)
       - Leading/trailing explanatory text
-      - Truncated JSON (missing closing braces/brackets) by trying
-        all permutations of needed closing characters.
+      - Truncated JSON (response cut off by max_tokens) — repaired by
+        closing the open string (if any), then trimming back to the last
+        complete element and closing all unclosed containers.
     """
     text = text.strip()
 
-    # Strip code fences
+    # Strip code fences.
     if text.startswith("```"):
         lines = text.splitlines()
         if lines and lines[0].startswith("```"):
@@ -176,75 +176,88 @@ def _extract_json(text: str) -> dict:
             lines = lines[:-1]
         text = "\n".join(lines).strip()
 
-    # Fast path: whole text valid JSON
+    # Fast path: whole text valid JSON.
     try:
         return json.loads(text)
     except json.JSONDecodeError:
         pass
 
-    # Find first {
     start = text.find("{")
     if start == -1:
         raise OpenRouterError(f"no JSON object found in response: {text[:200]!r}")
 
-    # Walk to compute unclosed { and [
-    # Walk to compute depth and optionally find a balanced candidate
-    candidate = None
-    for i in range(start, len(text)):
-        ch = text[i]
+    body = text[start:]
 
+    # Walk the body tracking string/escape state and the container stack.
+    # Record the index of the last complete element boundary (a `,` or
+    # an opening `{`/`[` at the current top level) so we can trim back to
+    # it if the response was truncated mid-value.
+    in_string = False
+    escape_next = False
+    stack: list[str] = []
+    last_safe_trim: int | None = None
+    balanced_end: int | None = None
+
+    for i, ch in enumerate(body):
         if escape_next:
             escape_next = False
             continue
-        if ch == '\\' and in_string:
-            escape_next = True
+        if in_string:
+            if ch == "\\":
+                escape_next = True
+            elif ch == '"':
+                in_string = False
             continue
-        if ch == '"' and not in_string:
+        if ch == '"':
             in_string = True
-        elif ch == '"' and in_string:
-            in_string = False
-        elif not in_string:
-            if ch == '{':
-                depth += 1
-            elif ch == '}':
-                depth -= 1
-                if depth == 0:
-                    candidate = text[start : i + 1]
-                    break  # found complete object span
-            elif ch == '[':
-                bracket_depth += 1
-            elif ch == ']':
-                bracket_depth -= 1
-
-    if candidate is None:
-        candidate = text[start:]
-
-    # If we have unclosed containers, generate closing permutations
-    if depth < 0:
-        depth = 0
-    if bracket_depth < 0:
-        bracket_depth = 0
-
-    if depth == 0 and bracket_depth == 0:
-        # No unclosed; but earlier fast parse failed, so candidate itself might be malformed
-        # We'll still try a few repairs just in case minor truncation occurred within structures
-        closing_variants = {''}
-    else:
-        needed = '}' * depth + ']' * bracket_depth
-        # Generate unique permutations (multiset). If N is large, limit attempts.
-        closing_variants = set([''.join(p) for p in permutations(needed)])
-        closing_variants.add('')  # also try as-is
-
-    # Try parsing candidate with each repair suffix
-    for repair in closing_variants:
-        try:
-            return json.loads(candidate + repair)
-        except json.JSONDecodeError:
             continue
+        if ch in "{[":
+            stack.append(ch)
+            # After an opener, a safe trim is just before this point — i.e.
+            # the empty container "{}" / "[]" is always a valid fallback.
+            last_safe_trim = i + 1
+            continue
+        if ch in "}]":
+            if stack:
+                stack.pop()
+            if not stack:
+                balanced_end = i + 1
+                break
+            continue
+        if ch == "," and stack:
+            # End of a complete element at the current container level.
+            last_safe_trim = i
 
-    raise OpenRouterError(
-        f"unbalanced JSON (depth={depth}, brackets={bracket_depth}): {text[:200]!r}"
-    )
+    if balanced_end is not None:
+        candidate = body[:balanced_end]
+        try:
+            return json.loads(candidate)
+        except json.JSONDecodeError:
+            pass
+
+    # Truncated. Build a repaired candidate.
+    repaired = body
+    if in_string:
+        repaired += '"'  # close the open string
+    # Trim trailing whitespace and dangling separators that follow the
+    # last completed element.
+    if last_safe_trim is not None and last_safe_trim < len(repaired):
+        # Trim back to last complete element; this drops the partial
+        # (truncated) element entirely.
+        repaired = repaired[:last_safe_trim].rstrip().rstrip(",:")
+    else:
+        repaired = repaired.rstrip().rstrip(",:")
+
+    # Close remaining open containers in reverse order.
+    closers = {"{": "}", "[": "]"}
+    repaired += "".join(closers[c] for c in reversed(stack))
+
+    try:
+        return json.loads(repaired)
+    except json.JSONDecodeError as exc:
+        raise OpenRouterError(
+            f"could not repair truncated JSON ({exc}): {text[:200]!r}"
+        ) from exc
 
 
 async def close() -> None:

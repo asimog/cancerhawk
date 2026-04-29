@@ -111,12 +111,27 @@ def mock_engines():
             individual_reviews=[review],
             acceptance_probability=0.9,
             major_concerns=[],
-            recommended_simulations=[],
+            recommended_simulations=[
+                {
+                    "type": "statistical",
+                    "description": "Run a bootstrap survival analysis.",
+                    "rationale": "Check robustness of the claimed effect.",
+                    "expected_metrics": ["hazard_ratio", "confidence_interval"],
+                }
+            ],
             revision_priorities=[],
         )
         return cons
 
     def fake_publish_block(*args, **kwargs):
+        assert kwargs["simulations"] == [
+            {
+                "type": "statistical",
+                "description": "Run a bootstrap survival analysis.",
+                "rationale": "Check robustness of the claimed effect.",
+                "expected_metrics": ["hazard_ratio", "confidence_interval"],
+            }
+        ]
         return {"block": 1, "path": "results/block-1/paper.html"}
 
     def fake_try_git_publish(*args, **kwargs):
@@ -162,13 +177,14 @@ def test_websocket_run_success(mock_engines):
             if data.get("stage") == "done":
                 break
 
-        # Verify we got a sequence of stages
+        # Verify we got the high-level orchestrator stages. The fake
+        # engines don't emit per-engine stages (analyze/review/...) — those
+        # are tested in their own engine-level unit tests. Here we only
+        # assert main.py's orchestration sends start, paper_done,
+        # publish_done, done.
         stages = [json.loads(m)["stage"] for m in messages]
         assert "start" in stages
         assert "paper_done" in stages
-        assert "analyze" in stages or "analysis" in stages  # actual stage name is 'analyze'?
-        # The analysis_engine emits 'analyze' stage? Let's check: analysis_engine emits stages: each archetype's "analyze". So that'll be 'analyze'.
-        assert "review" in stages or "review_complete" in stages
         assert "publish_done" in stages
         assert "done" in stages
 

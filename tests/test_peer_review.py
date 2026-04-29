@@ -45,10 +45,12 @@ def mock_chat_json():
 
 @pytest.mark.asyncio
 async def test_review_one_parses_response(mock_chat_json):
-    archetype = ARCHETYPES[0]  # Oncogene Hunter
+    archetype = ARCHETYPES[0]  # Practicing Oncologist
     tracker = None  # not needed
-    # We'll patch chat_json in openrouter module
-    with patch("app.openrouter.chat_json", new=mock_chat_json):
+    # `peer_review_engine` does `from .openrouter import chat_json` so the
+    # symbol resolves in its own namespace — patching the source module
+    # would not be picked up.
+    with patch("app.peer_review_engine.chat_json", new=mock_chat_json):
         review = await _review_one(
             api_key="sk-test",
             archetype=archetype,
@@ -107,9 +109,12 @@ def test_synthesize_simulation_priority():
         simulation_proposal={"type": "sim", "description": "bad", "rationale": "", "expected_metrics": []},
     )
     consolidated = _synthesize([r_accept, r_reject])
-    # The accept one should be prioritized
+    # The accept one should be prioritized. `recommended_simulations`
+    # is a list of proposal dicts (the source archetype is stripped by
+    # `_synthesize`), so we identify provenance via `description`.
     assert len(consolidated.recommended_simulations) == 2
-    assert consolidated.recommended_simulations[0]["archetype"] == "High"
+    assert consolidated.recommended_simulations[0]["description"] == "good"
+    assert consolidated.recommended_simulations[1]["description"] == "bad"
 
 
 def test_reviews_to_dict():

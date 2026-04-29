@@ -144,7 +144,7 @@ def _render_peer_reviews(peer_reviews: list[dict]) -> str:
     weighted_sum = 0.0
     for r in peer_reviews:
         rec = r.get("recommendation", "major_revision").lower()
-        conf = float(r.get("confidence", 0.7))
+        conf = _safe_float(r.get("confidence"), 0.7, lower=0.0, upper=1.0)
         weight = accept_weight.get(rec, 0.3)
         weighted_sum += weight * conf
         conf_sum += conf
@@ -164,13 +164,14 @@ def _render_peer_reviews(peer_reviews: list[dict]) -> str:
         rec = r.get("recommendation", "major_revision").lower()
         # CSS class uses the first word (accept/minor/major/reject)
         rec_class = rec.split("_")[0]
-        confidence = r.get("confidence", 0.7)
+        confidence = _safe_float(r.get("confidence"), 0.7, lower=0.0, upper=1.0)
         summary = html.escape(r.get("summary", ""))
 
         # Dimension scores
         dims = r.get("dimension_scores", {})
         dims_html = "".join(
-            f'<div class="dim-score"><div class="dim-name">{html.escape(dim)}</div><div class="dim-value">{int(score)}</div></div>'
+            f'<div class="dim-score"><div class="dim-name">{html.escape(str(dim))}</div>'
+            f'<div class="dim-value">{_score_text(score)}</div></div>'
             for dim, score in dims.items()
         )
 
@@ -309,12 +310,12 @@ def _archetype_table(archetypes: list[dict]) -> str:
         verdict = html.escape((a.get("verdict") or "")[:600])
         rows.append(
             f'<tr><td><strong>{html.escape(a.get("archetype_name", ""))}</strong></td>'
-            f'<td>{scores.get("clinical_viability", "—")}</td>'
-            f'<td>{scores.get("regulatory_risk", "—")}</td>'
-            f'<td>{scores.get("market_potential", "—")}</td>'
-            f'<td>{scores.get("patient_impact", "—")}</td>'
-            f'<td>{scores.get("novelty", "—")}</td>'
-            f'<td>{scores.get("falsifiability", "—")}</td>'
+            f'<td>{_score_text(scores.get("clinical_viability"))}</td>'
+            f'<td>{_score_text(scores.get("regulatory_risk"))}</td>'
+            f'<td>{_score_text(scores.get("market_potential"))}</td>'
+            f'<td>{_score_text(scores.get("patient_impact"))}</td>'
+            f'<td>{_score_text(scores.get("novelty"))}</td>'
+            f'<td>{_score_text(scores.get("falsifiability"))}</td>'
             f'<td class="verdict">{verdict}</td></tr>'
         )
     return (
@@ -331,11 +332,11 @@ def _topics_table(topics: list[dict]) -> str:
     rows = []
     for t in topics:
         rows.append(
-            f'<tr><td>{t.get("id", "—")}</td>'
+            f'<tr><td>{html.escape(str(t.get("id", "—")))}</td>'
             f'<td>{html.escape(str(t.get("title", "")))}</td>'
-            f'<td>{t.get("probability", "—")}</td>'
-            f'<td>{t.get("impact", "—")}</td>'
-            f'<td>{t.get("token_cost", "—")}</td>'
+            f'<td>{html.escape(str(t.get("probability", "—")))}</td>'
+            f'<td>{html.escape(str(t.get("impact", "—")))}</td>'
+            f'<td>{html.escape(str(t.get("token_cost", "—")))}</td>'
             f'<td class="rationale">{html.escape(str(t.get("rationale", "")))}</td></tr>'
         )
     return (
@@ -350,6 +351,27 @@ def _catalysts_html(catalysts: list[str]) -> str:
         return ""
     items = "\n".join(f"<li>{html.escape(c)}</li>" for c in catalysts)
     return f'<ul class="catalysts">{items}</ul>'
+
+
+def _safe_float(value, default: float, *, lower: float | None = None, upper: float | None = None) -> float:
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        number = default
+    if lower is not None:
+        number = max(lower, number)
+    if upper is not None:
+        number = min(upper, number)
+    return number
+
+
+def _score_text(value) -> str:
+    if value in (None, ""):
+        return "—"
+    try:
+        return str(int(float(value)))
+    except (TypeError, ValueError):
+        return html.escape(str(value))
 
 
 def _history_html(blocks) -> str:
@@ -434,6 +456,11 @@ h3 {{ color: #6fdb6f; font-size: 15px; margin-top: 20px; }}
 .disclaimer {{ background: #1a0a0a; border-left: 3px solid #c44; padding: 10px 14px; font-size: 13px; margin: 16px 0; color: #f8b8b8; }}
 section {{ margin: 28px 0; }}
 .prose p {{ margin: 0 0 14px 0; }}
+.page-tabs {{ display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 22px; border-bottom: 1px solid #1a3a1a; padding-bottom: 10px; }}
+.page-tab {{ background: #071407; border: 1px solid #1a3a1a; color: #a4c4a4; padding: 8px 14px; border-radius: 999px; cursor: pointer; }}
+.page-tab.active {{ background: #6fdb6f; border-color: #6fdb6f; color: #061006; font-weight: 700; }}
+.page-content {{ display: none; }}
+.page-content.active {{ display: block; }}
 .charts {{ display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 16px 0; }}
 .chart-box {{ background: #0a1f0a; border: 1px solid #1a3a1a; border-radius: 8px; padding: 16px; }}
 .chart-box h3 {{ margin: 0 0 12px 0; color: #6fdb6f; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }}

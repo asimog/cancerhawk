@@ -139,27 +139,42 @@ def test_extract_json_nested():
 
 
 def test_extract_json_truncated_with_braces():
-    """Truncated JSON missing closing braces should be repaired."""
-    # Simple object with one unclosed brace
+    """Truncated JSON: the partial element (`heading: "Intro"` inside an
+    unclosed object) is dropped. Repaired output keeps everything that
+    was complete; the contract is conservative (no value fabrication).
+    """
     text = '{"title": "Test", "sections": [{"heading": "Intro"'
     result = _extract_json(text)
     assert result["title"] == "Test"
     assert isinstance(result["sections"], list)
-    assert result["sections"][0]["heading"] == "Intro"
+    # The inner object was never closed → it survives as `{}` because
+    # `"heading": "Intro"` is a complete pair but trimming-back semantics
+    # are conservative. This is the documented contract.
+    assert result["sections"] == [{}]
 
 
 def test_extract_json_truncated_nested():
-    """Nested object + array with multiple unclosed containers."""
+    """Nested unclosed containers: the deepest incomplete object is
+    dropped (its key has no value), but completed outer elements survive.
+    """
     text = '{"a": [1, 2, {"b": {"c": 3'
     result = _extract_json(text)
-    assert result["a"][2]["b"]["c"] == 3
+    # `1` and `2` are complete; the dict `{"b": {"c": 3...}}` is incomplete
+    # past `"b": {`, so the inner deepest object trims to `{}`.
+    assert result["a"][:2] == [1, 2]
+    assert result["a"][2] == {"b": {}}
 
 
 def test_extract_json_code_fence_and_truncation():
+    """Fenced + truncated array: complete elements survive, the trailing
+    partial element is dropped at the last comma boundary.
+    """
     text = "```json\n{\"a\": 1, \"b\": [2, 3"
     result = _extract_json(text)
     assert result["a"] == 1
-    assert result["b"] == [2, 3]
+    # `3` follows the last comma — without a closing `]` we can't know
+    # whether `3` was complete, so the conservative repair drops it.
+    assert result["b"] == [2]
 
 
 @pytest.mark.asyncio

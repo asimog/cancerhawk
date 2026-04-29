@@ -276,9 +276,7 @@ async def ws_run(ws: WebSocket) -> None:
                 research_goal=research_goal,
                 models=models_cfg,
                 peer_reviews=peer_reviews_dict,
-                simulations=[
-                    s["proposal"] for s in simulations_dict.get("recommended_simulations", [])
-                ],
+                simulations=simulations_dict.get("recommended_simulations", []),
             )
             logger.info(
                 "publish_done",

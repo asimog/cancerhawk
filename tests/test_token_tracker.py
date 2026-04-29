@@ -36,7 +36,9 @@ def test_token_tracker_record_single_call():
     assert tracker.total_calls == 1
     assert tracker.total_input == 100
     assert tracker.total_output == 50
-    assert tracker.total_tokens == 150
+    # `total_tokens` is exposed on the stats() dict (computed), not as an
+    # attribute on the dataclass.
+    assert tracker.stats()["total_tokens"] == 150
     assert tracker.failed_calls == 0
     assert call.seq == 1
     assert call.ok

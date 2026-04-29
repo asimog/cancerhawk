@@ -3,11 +3,13 @@
 import html
 import json
 
+from app import publisher
 from app.publisher import (
     _render_peer_reviews,
     _render_simulations,
     _archetype_table,
     _topics_table,
+    publish_block,
 )
 
 
@@ -52,15 +54,14 @@ def test_render_peer_reviews_with_one_review():
     assert "9" in html_out
     assert "8" in html_out
 
-    # Should contain simulation card
-    assert "in_silico" in html_out
-    assert "Virtual trial" in html_out
+    # `_render_peer_reviews` does NOT render `simulation_proposal` — that
+    # field is rendered separately by `_render_simulations`. So neither
+    # the proposal type nor description should appear here.
+    assert "in_silico" not in html_out
+    assert "Virtual trial" not in html_out
 
-    # Ensure no raw < or > from any field
+    # No raw script tags or unescaped HTML.
     assert "<script>" not in html_out
-    assert "&lt;" not in html_out  # we didn't escape the archetype name? It should be escaped via html.escape
-    # The function uses html.escape on archetype_name and summaries etc.
-    # So any dangerous characters should be escaped.
 
 
 def test_render_peer_reviews_xss_protection():
@@ -130,6 +131,23 @@ def test_archetype_table_renders():
     assert "Promising but needs more validation" in html_out
 
 
+def test_archetype_table_escapes_non_numeric_scores():
+    archetypes = [
+        {
+            "archetype_name": "Injected",
+            "scores": {
+                "clinical_viability": "<img src=x onerror=alert(1)>",
+            },
+            "verdict": "<script>alert(1)</script>",
+        }
+    ]
+    html_out = _archetype_table(archetypes)
+    assert "<img" not in html_out
+    assert "<script>" not in html_out
+    assert "&lt;img" in html_out
+    assert "&lt;script&gt;" in html_out
+
+
 def test_topics_table_renders():
     topics = [
         {
@@ -145,3 +163,74 @@ def test_topics_table_renders():
     assert "T1" in html_out
     assert "Next block topic" in html_out
     assert "0.75" in html_out
+
+
+def test_topics_table_escapes_all_cells():
+    topics = [
+        {
+            "id": "<script>1</script>",
+            "title": "<img src=x>",
+            "probability": "<b>bad</b>",
+            "impact": "<svg>",
+            "token_cost": "<iframe>",
+            "rationale": "<script>2</script>",
+        }
+    ]
+    html_out = _topics_table(topics)
+    assert "<script>" not in html_out
+    assert "<img" not in html_out
+    assert "<b>" not in html_out
+    assert "<svg>" not in html_out
+    assert "<iframe>" not in html_out
+    assert "&lt;script&gt;" in html_out
+
+
+def test_publish_block_rewrites_index_to_latest_block(tmp_path, monkeypatch):
+    """The Pages root is `results/index.html`, so every publish must rewrite
+    it with the newest block rather than leaving an older result visible.
+    """
+
+    class FakePaper:
+        title = "Fresh CancerHawk Block"
+        sections = [{"heading": "Finding", "content": "Latest block content."}]
+        accepted_submissions = ["direction"]
+        rejections = []
+
+        def full_text(self):
+            return "# Fresh CancerHawk Block\n\n## Finding\n\nLatest block content."
+
+    class FakeAnalysis:
+        archetypes = []
+        market_price = 0.61
+        score_matrix = {}
+        consensus_dim = {}
+        headline_catalysts = []
+
+    monkeypatch.setattr(publisher, "REPO_ROOT", tmp_path)
+    monkeypatch.setattr(publisher, "RESULTS_DIR", tmp_path / "results")
+
+    meta_1 = publish_block(
+        paper=FakePaper(),
+        analysis=FakeAnalysis(),
+        derived_topics=[],
+        research_goal="first goal",
+        models={},
+        peer_reviews=[],
+        simulations=[],
+    )
+    meta_2 = publish_block(
+        paper=FakePaper(),
+        analysis=FakeAnalysis(),
+        derived_topics=[],
+        research_goal="second goal",
+        models={},
+        peer_reviews=[],
+        simulations=[],
+    )
+
+    index_html = (tmp_path / "results" / "index.html").read_text(encoding="utf-8")
+    assert meta_1["block"] == 1
+    assert meta_2["block"] == 2
+    assert "CancerHawk · Block 2" in index_html
+    assert "second goal" in index_html
+    assert "block-2/paper.html" in index_html
