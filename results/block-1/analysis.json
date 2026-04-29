@@ -1,0 +1,488 @@
+{
+  "archetypes": [
+    {
+      "scores": {
+        "clinical_viability": 3,
+        "regulatory_risk": 8,
+        "market_potential": 4,
+        "patient_impact": 2,
+        "novelty": 8,
+        "falsifiability": 5
+      },
+      "verdict": "This is a sophisticated computational vision paper that mistakes epistemological ambition for clinical traction. The core claim\u2014that video diffusion models trained on live-cell imaging can serve as counterfactual engines for drug discovery\u2014is mechanistically interesting but operationally disconnected from how oncology actually works. The paper correctly identifies that static omics collapse time and that commitment events are dynamical. But it then proposes solving this by training generative priors on 10^4 multichannel trajectories and querying them for 'in silico perturbation screening.' This conflates two distinct problems: (1) learning what cells *can* do under observed conditions, and (2) predicting what they *will* do under untested drug combinations in a patient. The first is tractable; the second requires not just a learned simulator but a model of patient-specific tumor microenvironment, clonal heterogeneity, pharmacokinetics, and immune context\u2014none of which are present in organoid video. The 'trajectory fingerprint' stratification proposal is particularly vulnerable: a 48-hour organoid perturbation panel predicting response to systemic therapy is a leap without empirical grounding. Regulatory path is murky\u2014this is neither a drug nor a diagnostic, but a research tool claiming predictive authority. The paper reads as a manifesto for what computational oncology *could* be, not a proposal for what it *will* be in the next five years.",
+      "would_move_price": "Demonstration that a cell-cinema model trained on one cell line's live-cell trajectories predicts drug response in an independent patient-derived organoid better than baseline (IC50 prediction, AUC >0.75) would move price up sharply; failure to outperform transcriptional classifiers on the same task would move it down.",
+      "archetype_id": "oncologist",
+      "archetype_name": "Practicing Oncologist"
+    },
+    {
+      "scores": {
+        "clinical_viability": 3,
+        "regulatory_risk": 8,
+        "market_potential": 4,
+        "patient_impact": 2,
+        "novelty": 7,
+        "falsifiability": 4
+      },
+      "verdict": "This is a sophisticated architectural vision paper that mistakes conceptual elegance for experimental tractability. The core claim\u2014that video diffusion models trained on live-cell imaging can serve as counterfactual engines for mechanism discovery and therapeutic prediction\u2014is mechanistically interesting but statistically and operationally underdeveloped. The paper conflates three distinct problems: (1) whether generative video models can extrapolate cellular dynamics faithfully beyond their training distribution, (2) whether latent-space interrogation of such models yields molecular correlates that are experimentally falsifiable, and (3) whether patient-level trajectory fingerprints from 48-hour organoid films predict drug response better than existing biomarkers. None of these has been demonstrated. The sample-size arithmetic is absent: how many trajectories per condition? Per cell line? What is the validation strategy for out-of-distribution perturbations? The paper promises 'twenty concrete research directions' but provides zero power calculations, no discussion of confound risk (media batch effects, imaging drift, clonal heterogeneity), and no specification of what 'failure' looks like quantitatively. The regulatory path is opaque\u2014FDA has no precedent for approving therapeutics on the basis of generative-model counterfactuals. Most critically, the paper assumes that learning a good video prior *on cells that were filmed* automatically transfers to *cells that were not*, a claim that requires explicit out-of-sample validation and is historically fragile in computational biology.",
+      "would_move_price": "Demonstration of a prospective prediction task\u2014training a video model on 80% of a JUMP-CP or LINCS dataset and predicting held-out drug-response trajectories with AUC >0.75 for binary outcomes (death/survival at 72h) across \u22655 independent cell lines\u2014would raise the price; failure to outperform a logistic regression on frame-0 morphology + dose would lower it sharply.",
+      "archetype_id": "biostatistician",
+      "archetype_name": "Biostatistician"
+    },
+    {
+      "scores": {
+        "clinical_viability": 3,
+        "regulatory_risk": 8,
+        "market_potential": 4,
+        "patient_impact": 5,
+        "novelty": 8,
+        "falsifiability": 6
+      },
+      "verdict": "This is a sophisticated computational vision paper masquerading as a therapeutic development framework. The core claim\u2014that video diffusion models trained on live-cell imaging can serve as 'counterfactual engines' for drug discovery and patient stratification\u2014is mechanistically interesting but regulatory-stage premature. The paper correctly identifies that static omics collapse temporal commitment decisions; the proposed solution (generative priors over cell trajectories) is novel. However, it conflates three separable problems: (1) Can video models learn cell dynamics? Likely yes. (2) Do learned latent coordinates map to causal molecular mechanisms? Unproven and hard. (3) Can trajectory fingerprints from 48-hour organoid films predict clinical response? This is the claim that matters clinically, and it is entirely untested. The paper provides zero IND-enabling data: no prospective validation of in-silico perturbation predictions against held-out experiments, no demonstration that latent-space interrogation recovers known driver mutations, no patient cohort linking organoid trajectories to actual treatment outcomes. For FDA review, this would require: (a) locked analytical protocol specifying how latent coordinates map to molecular hypotheses; (b) prospective experimental validation (wet-lab confirmation of model-nominated mechanisms in \u22653 independent systems); (c) retrospective organoid-to-clinical correlation in \u226550 patient samples with known response data; (d) failure-mode specification (what trajectory patterns would falsify the model?). The paper is long on conceptual coherence and short on empirical grounding. It is a research agenda, not a regulatory submission.",
+      "would_move_price": "Prospective validation showing that model-nominated latent coordinates predict CRISPR-knockout phenotypes better than random (>70% accuracy on held-out cell lines) would move price up; failure to recover known oncogenic drivers (TP53, KRAS, MYC) as separable latent modes would move price down sharply.",
+      "archetype_id": "fda",
+      "archetype_name": "FDA Regulator"
+    },
+    {
+      "scores": {
+        "clinical_viability": 4,
+        "regulatory_risk": 3,
+        "market_potential": 5,
+        "patient_impact": 6,
+        "novelty": 8,
+        "falsifiability": 6
+      },
+      "verdict": "This is a sophisticated conceptual framework masquerading as a near-term therapeutic engine. The core insight\u2014that cancer decisions are dynamical commitments, not static states\u2014is mechanistically sound and well-articulated. The proposed computational object (conditional video diffusion as a cellular simulator) is technically coherent and sits at a genuine convergence of three mature technologies (video DiTs, live-cell imaging throughput, perturbation libraries). However, the paper conflates three distinct claims: (1) video models can learn cellular dynamics [plausible], (2) latent-space interrogation will nominate causal mechanisms [speculative], and (3) this enables patient stratification and therapeutic prediction [premature]. The failure modes are underspecified. What does the model do when it hallucinates? How do you distinguish learned physical constraints from memorized training correlations? The TAM is real but distant: this is a 7\u201310 year platform play, not a 3\u20135 year clinical asset. Capital intensity is high (imaging infrastructure, compute, wet-lab validation loops). Syndicate appeal is strong among AI/ML VCs and genomics funds, but pharma will wait for Phase 1 data. No comparable exits exist; this is closer to foundational-model risk than to validated-biomarker risk. IP defensibility is moderate\u2014video diffusion architectures are crowded, but application-specific conditioning schemes and latent-space mechanistic mapping could be patentable. The honest read: this is visionary but not yet investable as a near-term value creator.",
+      "would_move_price": "Demonstration that latent coordinates learned by the model causally map to experimentally validated molecular nodes (e.g., CDK4/6 inhibition shifts a learned persister-entry manifold in a way that predicts actual drug response in held-out cell lines) would move the price up sharply; conversely, evidence that the model's uncertainty is dominated by overfitting rather than genuine aleatoric variance would crater it.",
+      "archetype_id": "investor",
+      "archetype_name": "Biotech Investor"
+    },
+    {
+      "scores": {
+        "clinical_viability": 4,
+        "regulatory_risk": 7,
+        "market_potential": 6,
+        "patient_impact": 5,
+        "novelty": 8,
+        "falsifiability": 6
+      },
+      "verdict": "This is a *conceptually audacious* position paper that correctly identifies a real epistemological gap \u2014 static omics collapse dynamics, and cancer decisions are trajectories, not snapshots. The technical convergence argument (video diffusion + live imaging throughput + perturbation libraries) is sound and timely. However, the paper is a *framework proposal*, not a validated method. It reads as a vision document for a five-year program, not a falsifiable hypothesis ready for peer review. The core claim \u2014 that conditional video diffusion trained on multichannel live-cell data will nominate mechanistic insights *better than existing approaches* \u2014 is stated but not yet demonstrated. The 'failure modes' are listed but not operationalized. Crucially: no preliminary data. A generative model trained on 10^4 trajectories will produce plausible-looking videos; the hard question \u2014 whether the latent dynamics it learns correspond to *real* biological commitment points, and whether projecting a patient biopsy into that latent space actually predicts drug response \u2014 remains entirely open. This will be championed by computational biologists and ML-for-bio venues (NeurIPS, ICLR workshops, Nature Methods if preliminary results appear). It will be attacked by mechanistic oncologists as 'sophisticated pattern-matching without causal insight' and by clinicians as 'not yet a tool.' Publishable as a Perspective or Methods Outlook in a top-tier journal, but only if paired with at least one proof-of-concept (e.g., model trained on CDK4/6i trajectories, latent coordinate mapped to known S-phase checkpoint markers, novel combination predicted and validated). Without that, it remains aspirational.",
+      "would_move_price": "Demonstration that a video diffusion model's latent coordinates for a known commitment transition (e.g., apoptosis entry under BH3 mimetics) recover known molecular correlates (BAX/BAK activation, caspase-3 kinetics) with R\u00b2 > 0.7 on held-out cell lines would sharply raise credibility; conversely, evidence that the model's uncertainty is uncalibrated or that latent coordinates don't map to measurable markers would crater it.",
+      "archetype_id": "kol",
+      "archetype_name": "Academic KOL"
+    },
+    {
+      "scores": {
+        "clinical_viability": 4,
+        "regulatory_risk": 8,
+        "market_potential": 3,
+        "patient_impact": 5,
+        "novelty": 8,
+        "falsifiability": 6
+      },
+      "verdict": "This is a beautiful, ambitious vision that mistakes computational elegance for clinical utility. The authors are right that static omics collapse time\u2014I've lived that: my tumor was 'responding' on RNA-seq while I was relapsing. But here's what patients actually need: a drug that works *now*, not a simulator that might predict what *would* have worked six months ago. The paper conflates three distinct problems: (1) learning cellular dynamics from video (tractable), (2) predicting patient response from organoid trajectories (very hard\u2014tumor microenvironment, immune escape, pharmacokinetics all absent), and (3) discovering new mechanisms (useful only if they lead to actionable targets). The 'counterfactual engine' framing is seductive but operationally hollow\u2014generating a plausible trajectory under a hypothetical CDK4/6 inhibition at M-phase tells you nothing about whether that cell will respond in *your* tumor, in *your* body, with *your* comorbidities and drug metabolism. The side-effect burden of living through failed predictions based on elegant simulations is real. This is a tool for mechanism discovery, not patient stratification. That's valuable, but it's not what the abstract promises.",
+      "would_move_price": "Demonstration that latent-space projections of patient-derived organoid trajectories (48h, minimal perturbation panel) prospectively predict response/resistance in a held-out cohort of 50+ patients with matched clinical outcomes would move this sharply upward; conversely, failure to outperform simpler clinical/genomic baselines (age, stage, ER/PR/HER2, TMB) would crater it.",
+      "archetype_id": "patient",
+      "archetype_name": "Patient Advocate"
+    },
+    {
+      "scores": {
+        "clinical_viability": 3,
+        "regulatory_risk": 8,
+        "market_potential": 4,
+        "patient_impact": 5,
+        "novelty": 8,
+        "falsifiability": 6
+      },
+      "verdict": "This is an intellectually ambitious framework paper that correctly identifies a real gap \u2014 cancer biology has collapsed time into snapshots \u2014 but proposes a solution whose path to clinical utility remains speculative and economically opaque. From a payer lens: the paper offers no cost-benefit model, no ICER estimate, no prior-auth decision tree, and no budget-impact analysis. It describes a *computational infrastructure* (learned video diffusion priors for cell dynamics) rather than a therapeutic or diagnostic product. If realized, it could theoretically accelerate drug discovery (reducing preclinical cycle time, improving mechanistic nomination) and enable patient stratification via 'trajectory fingerprinting' from organoid films. But the claimed capabilities \u2014 in silico perturbation screening orders of magnitude beyond wet-lab throughput, latent-space mechanism discovery, organoid-to-patient generalization \u2014 are not yet demonstrated. The regulatory pathway is undefined: is this a software as a medical device (SaMD) for trial enrichment? A companion diagnostic? A research tool? The failure modes are stated but not quantified. Most critically for coverage: there is no evidence that predictions from a video diffusion model trained on bulk imaging will outperform existing transcriptomic or proteomic stratification at a cost that justifies adoption. The paper reads as a research agenda, not a health-economic proposal. Recommend: fund as basic research; revisit for coverage only when a specific clinical application (e.g., organoid-based CDK4/6 response prediction) shows prospective superiority over standard-of-care stratification at a defined ICER threshold.",
+      "would_move_price": "A prospective clinical trial showing that organoid trajectory fingerprints predict immunotherapy response better than PD-L1/TMB and at <$5k per patient would move the needle upward; conversely, demonstration that video diffusion model predictions on held-out cell lines fail to generalize to primary patient samples would move it sharply downward.",
+      "archetype_id": "payer",
+      "archetype_name": "Insurance Payer"
+    },
+    {
+      "scores": {
+        "clinical_viability": 3,
+        "regulatory_risk": 8,
+        "market_potential": 4,
+        "patient_impact": 2,
+        "novelty": 7,
+        "falsifiability": 2
+      },
+      "verdict": "This is an elegant epistemological critique dressed as a technical roadmap, but it collapses under three fatal pressures. First: the authors propose using video diffusion models as 'counterfactual engines' for cell fate prediction, yet provide zero evidence that these models learn causal structure rather than correlational texture. A diffusion model trained on JUMP-CP + live imaging will become a sophisticated interpolator of the training distribution's morphological manifold\u2014it will hallucinate plausible-looking futures, not mechanistically faithful ones. The claim that latent coordinates 'control commitment transitions' is pure hope; there is no mechanism by which unsupervised video generation learns causal intervention points rather than aesthetic features. Second: the paper conflates temporal resolution with mechanistic insight. Yes, snapshots miss dynamics. But a video diffusion model trained on 48-hour organoid movies will learn statistical regularities of *observed* trajectories under *observed* perturbations. Extrapolating to untested drug combinations, novel genetic backgrounds, or patient-specific contexts requires the model to generalize outside its training regime\u2014precisely where diffusion models are known to fail catastrophically and produce confident hallucinations. The 'predictive uncertainty' they mention as a guide for experimental triage is not epistemic uncertainty about mechanism; it's sampling variance. Third: the regulatory pathway is a graveyard. The FDA does not approve drugs on the basis of in silico trajectory predictions from generative models, no matter how well-calibrated on retrospective imaging. Phase I will demand mechanistic biomarkers (which this framework does not produce\u2014it produces latent embeddings), and Phase II will demand that the model's predictions on *held-out patient populations* match clinical outcome. The paper provides no protocol for prospective validation. The authors correctly identify that static omics cannot capture commitment dynamics, but their solution\u2014learn a black-box video prior\u2014does not solve the problem; it aestheticizes it. A working approach would require either (a) explicit mechanistic constraints baked into the architecture (e.g., physics-informed neural operators for diffusion/advection of molecular species), or (b) tight coupling to live-cell reporters of known causal nodes (BAX translocation, ferroptotic lipid peroxidation, calcium oscillation frequency). Neither is proposed. This reads as a well-funded research program that will generate beautiful movies and publishable latent-space visualizations while producing zero new drugs.",
+      "would_move_price": "A prospective validation on a held-out cohort of patient-derived organoids, where the model predicts response to a blinded panel of 10+ drugs and achieves >75% accuracy on binary responder/non-responder classification, would move the price up; failure to beat a simple baseline (e.g., pre-treatment transcriptomics + logistic regression) would crater it.",
+      "archetype_id": "short_seller",
+      "archetype_name": "Adversarial Short-Seller"
+    }
+  ],
+  "market_price": 0.4131250000000001,
+  "score_matrix": {
+    "oncologist": {
+      "clinical_viability": 3,
+      "regulatory_risk": 8,
+      "market_potential": 4,
+      "patient_impact": 2,
+      "novelty": 8,
+      "falsifiability": 5
+    },
+    "biostatistician": {
+      "clinical_viability": 3,
+      "regulatory_risk": 8,
+      "market_potential": 4,
+      "patient_impact": 2,
+      "novelty": 7,
+      "falsifiability": 4
+    },
+    "fda": {
+      "clinical_viability": 3,
+      "regulatory_risk": 8,
+      "market_potential": 4,
+      "patient_impact": 5,
+      "novelty": 8,
+      "falsifiability": 6
+    },
+    "investor": {
+      "clinical_viability": 4,
+      "regulatory_risk": 3,
+      "market_potential": 5,
+      "patient_impact": 6,
+      "novelty": 8,
+      "falsifiability": 6
+    },
+    "kol": {
+      "clinical_viability": 4,
+      "regulatory_risk": 7,
+      "market_potential": 6,
+      "patient_impact": 5,
+      "novelty": 8,
+      "falsifiability": 6
+    },
+    "patient": {
+      "clinical_viability": 4,
+      "regulatory_risk": 8,
+      "market_potential": 3,
+      "patient_impact": 5,
+      "novelty": 8,
+      "falsifiability": 6
+    },
+    "payer": {
+      "clinical_viability": 3,
+      "regulatory_risk": 8,
+      "market_potential": 4,
+      "patient_impact": 5,
+      "novelty": 8,
+      "falsifiability": 6
+    },
+    "short_seller": {
+      "clinical_viability": 3,
+      "regulatory_risk": 8,
+      "market_potential": 4,
+      "patient_impact": 2,
+      "novelty": 7,
+      "falsifiability": 2
+    }
+  },
+  "consensus_dim": {
+    "clinical_viability": 3.375,
+    "regulatory_risk": 7.25,
+    "market_potential": 4.25,
+    "patient_impact": 4.0,
+    "novelty": 7.75,
+    "falsifiability": 5.125
+  },
+  "headline_catalysts": [
+    "[Practicing Oncologist] Demonstration that a cell-cinema model trained on one cell line's live-cell trajectories predicts drug response in an independent patient-derived organoid better than baseline (IC50 prediction, AUC >0.75) would move price up sharply; failure to outperform transcriptional classifiers on the same task would move it down.",
+    "[Biostatistician] Demonstration of a prospective prediction task\u2014training a video model on 80% of a JUMP-CP or LINCS dataset and predicting held-out drug-response trajectories with AUC >0.75 for binary outcomes (death/survival at 72h) across \u22655 independent cell lines\u2014would raise the price; failure to outperform a logistic regression on frame-0 morphology + dose would lower it sharply.",
+    "[FDA Regulator] Prospective validation showing that model-nominated latent coordinates predict CRISPR-knockout phenotypes better than random (>70% accuracy on held-out cell lines) would move price up; failure to recover known oncogenic drivers (TP53, KRAS, MYC) as separable latent modes would move price down sharply.",
+    "[Biotech Investor] Demonstration that latent coordinates learned by the model causally map to experimentally validated molecular nodes (e.g., CDK4/6 inhibition shifts a learned persister-entry manifold in a way that predicts actual drug response in held-out cell lines) would move the price up sharply; conversely, evidence that the model's uncertainty is dominated by overfitting rather than genuine aleatoric variance would crater it.",
+    "[Academic KOL] Demonstration that a video diffusion model's latent coordinates for a known commitment transition (e.g., apoptosis entry under BH3 mimetics) recover known molecular correlates (BAX/BAK activation, caspase-3 kinetics) with R\u00b2 > 0.7 on held-out cell lines would sharply raise credibility; conversely, evidence that the model's uncertainty is uncalibrated or that latent coordinates don't map to measurable markers would crater it.",
+    "[Patient Advocate] Demonstration that latent-space projections of patient-derived organoid trajectories (48h, minimal perturbation panel) prospectively predict response/resistance in a held-out cohort of 50+ patients with matched clinical outcomes would move this sharply upward; conversely, failure to outperform simpler clinical/genomic baselines (age, stage, ER/PR/HER2, TMB) would crater it.",
+    "[Insurance Payer] A prospective clinical trial showing that organoid trajectory fingerprints predict immunotherapy response better than PD-L1/TMB and at <$5k per patient would move the needle upward; conversely, demonstration that video diffusion model predictions on held-out cell lines fail to generalize to primary patient samples would move it sharply downward.",
+    "[Adversarial Short-Seller] A prospective validation on a held-out cohort of patient-derived organoids, where the model predicts response to a blinded panel of 10+ drugs and achieves >75% accuracy on binary responder/non-responder classification, would move the price up; failure to beat a simple baseline (e.g., pre-treatment transcriptomics + logistic regression) would crater it."
+  ],
+  "derived_topics": [
+    {
+      "id": 1,
+      "title": "Latent-to-molecular grounding: causal validation that video-diffusion latent axes map to measurable commitment markers (BAX, GPX4, CDK2-activity)",
+      "probability": 0.7,
+      "impact": 9,
+      "token_cost": 8000,
+      "rationale": "Paper claims latent coordinates control commitment transitions but offers no grounding protocol. A falsifiable mapping pipeline (perturb latent axis in silico \u2192 predict marker kinetics \u2192 validate with live reporters) is the linchpin for mechanism nomination credibility; multiple archetypes flagged this as make-or-break."
+    },
+    {
+      "id": 2,
+      "title": "Benchmark design: does cell-cinema beat frame-0 morphology + dose logistic regression on 72h viability across held-out cell lines?",
+      "probability": 0.85,
+      "impact": 8,
+      "token_cost": 6000,
+      "rationale": "Biostatistician and short-seller converge on this exact falsifier. Without a specified baseline-beating benchmark on JUMP-CP or LINCS-paired timelapses, the entire program is unfalsifiable. Extends the paper's 'in silico screening' capability claim into a measurable protocol."
+    },
+    {
+      "id": 3,
+      "title": "Persister-entry basin geometry: can latent flow fields predict DTP reseeding probability months before macroscopic regrowth?",
+      "probability": 0.45,
+      "impact": 10,
+      "token_cost": 9000,
+      "rationale": "Paper explicitly names GPX4-dependent persister as a key commitment phenomenon invisible to endpoint assays. Extending this to a temporal-horizon prediction task (48h imaging \u2192 6-month regrowth) is the highest-impact clinical counterfactual and tests whether the prior captures rare-event basins, not just frequent transitions."
+    },
+    {
+      "id": 4,
+      "title": "Out-of-distribution perturbation generalization: can a model trained on compound library A extrapolate to novel MoA class B?",
+      "probability": 0.35,
+      "impact": 9,
+      "token_cost": 7000,
+      "rationale": "The counterfactual-engine claim (Pearl-style interventional) requires extrapolation beyond training perturbations. Extends the conditioning-token framework with a specific stress test: held-out MoA classes (e.g., train on kinase inhibitors, test on PROTACs). Failure here collapses the 'untested regimen' stratification claim."
+    },
+    {
+      "id": 5,
+      "title": "Immunological synapse dwell-time prior: conditional video generation of T cell\u2013tumor encounters predicting cytotoxic commitment",
+      "probability": 0.55,
+      "impact": 8,
+      "token_cost": 7000,
+      "rationale": "Paper names synapse productivity as a named commitment attractor but leaves it undeveloped. Extends cell-cinema to multicellular immuno-oncology where dwell-time geometry and calcium oscillations are dynamical-by-definition; addresses payer demand for better-than-PD-L1/TMB biomarkers via organoid\u2013TIL co-cultures."
+    }
+  ],
+  "peer_reviews": [
+    {
+      "archetype_id": "oncologist",
+      "archetype_name": "Practicing Oncologist",
+      "recommendation": "major_revision",
+      "confidence": 0.72,
+      "summary": "This is a conceptually ambitious position paper that correctly identifies a real gap in cancer biology\u2014the collapse of time in static omics\u2014and proposes video diffusion models as a computational substrate for trajectory-level mechanism discovery. The core insight is sound and the motivation is compelling. However, the paper is incomplete in critical ways: it presents a framework and 20 research directions without a single end-to-end proof-of-concept, lacks quantitative validation of the central claim (that video diffusion latents recover dynamical manifolds), provides no comparison to existing trajectory inference methods (RNA velocity, CellRank, pseudotime), and conflates architectural capability (video generation works) with biological utility (learned latents map to causal reaction coordinates). The clinical integration claims are underdeveloped. For a major venue, this requires either (1) a complete worked example with wet-lab validation, or (2) honest repositioning as a methods-development roadmap with explicit failure modes and preliminary data.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 7,
+        "experimental_design": 4,
+        "evidence_support": 2,
+        "statistical_rigor": 3,
+        "clarity_of_writing": 8
+      },
+      "criticisms": [
+        "**No proof-of-concept experiment.** The paper proposes a framework but presents zero data: no trained model, no generated trajectories, no latent-space interrogation, no comparison of model predictions to held-out imaging. Section 3 begins to outline subnuclear condensate dynamics but cuts off mid-sentence. For a computational biology paper, this is a fatal gap. The reader cannot assess whether the approach works at any scale.",
+        "**Conflation of architectural capability with biological validity.** That video diffusion models can generate plausible pixel sequences (Stable Video Diffusion, Lumiere) does not imply their latent dynamics recover causal reaction coordinates. This is asserted but not proven. A diffusion model trained on drug-treated cell videos might learn to extrapolate morphology without learning the underlying biochemistry. The paper needs explicit tests: (a) can latent coordinates predict unmeasured molecular states? (b) do latent trajectories satisfy conservation laws (mass, energy, probability)? (c) do perturbations in latent space correspond to known mechanistic interventions?",
+        "**Missing comparison to existing trajectory methods.** RNA velocity (Manno et al., La Manno et al.), CellRank, pseudotime inference, and Waddington ODE models already infer dynamical structure from omics. The paper never acknowledges these or explains why pixel-level video diffusion is superior to state-of-the-art trajectory inference on matched data. This is a critical omission for a methods paper.",
+        "**Unspecified conditioning architecture.** The paper claims perturbations (compound structure, CRISPR guide, cytokine milieu, mechanical boundary) will be embedded and cross-attended. But: (a) How are chemical structures encoded? (b) How are dose-response curves represented? (c) How is temporal exposure (pulse vs. continuous) encoded? (d) What is the latent dimensionality and how is it chosen? Without these details, reproducibility is impossible and the claim that 'the conditioning alphabet is no longer a bottleneck' is unsupported.",
+        "**Scale-mismatch problem underaddressed.** The paper proposes training a single model across subnuclear (nanometer, seconds), single-cell (micrometer, minutes), and intravital (millimeter, hours) scales. This is not a minor engineering problem\u2014it requires learning a prior that respects vastly different physics (reaction-diffusion at subcellular scale vs. collective migration at tissue scale). The paper asserts this is possible but provides no mechanism for scale-invariant latent representation. How does the model know whether a latent coordinate represents a chromatin domain or a tumor boundary?",
+        "**Patient stratification claim is speculative and lacks validation.** Section 1 claims a 48-hour organoid video under 'a small panel of perturbations' will predict response to 'a much larger space of untested regimens.' This is a strong extrapolation claim with no supporting data, no error bars, and no discussion of how many perturbations are needed or how prediction uncertainty scales with extrapolation distance. For clinical translation, this requires prospective validation.",
+        "**Failure modes are stated but not operationalized.** The paper says it will specify 'the failure mode that would falsify the approach' for each of 20 research directions, but then provides almost none. What would it mean for the approach to fail? If a generated trajectory diverges from observed data after 24 hours, is that failure or expected uncertainty? If latent coordinates do not correlate with any measured molecular feature, does the model still have value? These need quantitative thresholds.",
+        "**Clinical workflow integration is absent.** The paper is framed as addressing oncology but provides no discussion of: (a) turnaround time (how fast can a patient organoid be imaged, model queried, and results returned?), (b) sample requirements (how many cells, how long to establish organoid?), (c) regulatory pathway (is this a companion diagnostic, a research tool, or a therapeutic development tool?), (d) cost and accessibility, (e) comparison to current standard-of-care decision-making (genomic profiling, PDX, cell-line panels). Without this, the clinical claims are hollow.",
+        "**Persister and DTP claims need mechanistic specificity.** The paper invokes GPX4-dependent lipidomic rewiring in persisters but does not explain how video diffusion would detect this. Lipid composition is not directly visible in brightfield or standard fluorescence; it requires specialized imaging (BODIPY, Raman, etc.). How does the model condition on or predict lipid state? This is a concrete example where the framework's limits become apparent.",
+        "**Temporal resolution mismatch.** BAX translocation occurs over seconds to minutes; drug-induced transcriptional changes occur over hours; persister emergence over days. A single video diffusion model trained on all timescales will have to compress this into a shared latent space. The paper does not address how temporal scale is encoded or how the model avoids conflating fast and slow processes."
+      ],
+      "required_fixes": [],
+      "suggested_experiments": [],
+      "simulation_proposal": null
+    },
+    {
+      "archetype_id": "biostatistician",
+      "archetype_name": "Biostatistician",
+      "recommendation": "reject",
+      "confidence": 0.92,
+      "summary": "This paper presents an intellectually ambitious vision for generative modeling of cellular dynamics but fails to meet the evidentiary bar for publication in a peer-reviewed venue. The core claim\u2014that video diffusion models trained on live-cell imaging can recover dynamical manifolds whose latent coordinates map to mechanistic commit points\u2014is stated as established fact rather than hypothesis. Critically, the paper contains zero experimental validation, zero quantitative endpoints, zero failure modes, and no statistical framework. The 'twenty concrete research directions' are conceptual sketches without design specifications. The mechanistic claims about condensate coarsening, ferroptotic waves, and synapse dwell-time geometry are asserted without derivation or testable prediction. This reads as a position paper or research proposal, not a completed study. For a journal expecting mechanism-level falsifiability, this is a fundamental mismatch.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 6,
+        "experimental_design": 2,
+        "evidence_support": 1,
+        "statistical_rigor": 1,
+        "clarity_of_writing": 8
+      },
+      "criticisms": [
+        "**No experimental data presented.** The paper describes a computational framework but provides zero results, figures, or validation. Section 3 ('Mechanism') is incomplete mid-sentence and contains no quantitative predictions or measurements.",
+        "**Endpoint selection undefined.** The paper criticizes static omics for 'collapsing time' but proposes no concrete, measurable endpoint for validating trajectory predictions. What constitutes a successful prediction of a 'commit point'? How is prediction error quantified?",
+        "**Sample size and power analysis absent.** How many trajectories are required to train a model that reliably predicts, e.g., mitotic slippage versus catastrophe? What is the expected effect size? What is the statistical power to detect a difference in latent-space geometry between drug-treated and control populations?",
+        "**Confounding and generalization risk unaddressed.** Live-cell imaging is confounded by phototoxicity, phototransduction artifacts, media osmolarity drift, and temperature gradients. The paper does not discuss how these are controlled or how they affect model generalization to in vivo settings. Organoid imaging is further confounded by hypoxia, nutrient gradients, and stromal heterogeneity\u2014none mentioned.",
+        "**Conditioning scheme vague.** The paper claims perturbations (compound structure, CRISPR guide, cytokine milieu) can be 'embedded and injected as cross-attention keys' but provides no detail on embedding dimensionality, dose-response encoding, or how continuous variables (concentration, exposure time) are discretized or normalized. Without this, reproducibility is impossible.",
+        "**Latent manifold claim is unfalsifiable as stated.** The assertion that video diffusion models 'recover a dynamical manifold' and that 'latent trajectories approximate reaction coordinates' is metaphorical, not mechanistic. What is the null hypothesis? How would you prove the latent space does *not* recover reaction coordinates? What would constitute evidence of failure?",
+        "**Scale separation ignored.** The paper claims a 'common architectural prior' works across subnuclear (nanometer, millisecond), single-cell (micrometer, minute), and multicellular (millimeter, hour) scales. This is implausible without explicit hierarchical or multi-scale structure. A U-Net trained on brightfield organoid video will not recover subnuclear chromatin dynamics; the information is not in the pixels.",
+        "**Validation strategy missing.** How do you validate that a latent coordinate truly corresponds to a 'persister-entry basin' or 'anaphase-onset manifold'? The paper proposes 'mapping coordinates back to measurable molecular correlates' but does not specify the statistical test. Correlation? Causal inference? If the model predicts a latent trajectory that correlates with BAX translocation, is that mechanistic insight or post-hoc storytelling?",
+        "**Counterfactual semantics unclear.** The paper invokes Pearl's counterfactual framework but does not specify the causal graph, the do-operator, or the identification assumptions. A video diffusion model is a conditional density estimator, not a causal model. Generating a plausible video under a hypothetical perturbation is interpolation, not causal inference, unless the training data satisfy strong assumptions (no hidden confounders, no feedback loops, no selection bias) that are not stated.",
+        "**Patient stratification claim unsupported.** The proposal that a 48-hour organoid time-lapse 'projected into the generative model's latent space' can predict response to 'a much larger space of untested regimens' requires: (1) a metric for trajectory similarity in latent space, (2) a training set linking latent trajectories to clinical outcomes, (3) validation on held-out patients, and (4) comparison to existing stratification methods. None of this is present.",
+        "**Biological claims lack citations or derivation.** The claim that 'super-enhancer\u2013driven oncogenes depend on a narrow window of condensate stability' and that 'BET-inhibitor exposure predicts critical coarsening slowdown' is stated without reference to the condensate-physics literature or to quantitative data on MYC/BRD4 dynamics. [citation needed]",
+        "**Failure modes not specified.** The paper promises 'failure modes that would falsify the approach' but provides none. What result would convince you the method does not work? If a model trained on 10,000 trajectories fails to predict a held-out test set, is that a failure of the architecture, the training data, the conditioning scheme, or the underlying assumption that dynamics are learnable? The paper does not distinguish.",
+        "**Reproducibility impossible.** No code, no data, no hyperparameters, no training procedure, no validation protocol. The paper is a conceptual proposal, not a reproducible study.",
+        "**Overstated claims about existing models.** The assertion that Stable Video Diffusion and CogVideoX 'preserve object identity across occlusion' and 'interpolate between distant states' is true for macroscopic scenes but unvalidated for subcellular dynamics. Cells are not rigid objects; they deform, divide, and fuse. A model trained on YouTube videos may not transfer to live-cell imaging."
+      ],
+      "required_fixes": [],
+      "suggested_experiments": [],
+      "simulation_proposal": null
+    },
+    {
+      "archetype_id": "fda",
+      "archetype_name": "FDA Regulator",
+      "recommendation": "major_revision",
+      "confidence": 0.72,
+      "summary": "This is a conceptually ambitious position paper that correctly identifies a genuine gap in cancer biology \u2014 the collapse of temporal dynamics into static snapshots \u2014 and proposes a mechanistically interesting solution: video diffusion models as counterfactual engines for cell fate. However, the paper is incomplete in critical ways. It presents a framework and twenty research directions but provides zero experimental validation, no quantitative benchmarks against existing methods, no demonstration that learned latent coordinates actually map to mechanistic variables, and no concrete failure modes that would falsify the approach. The mechanistic claims about dynamical manifolds and reaction coordinates are stated rather than derived or tested. For FDA regulatory purposes, this reads as a pre-IND white paper, not a submission-ready package. The paper would benefit from: (1) proof-of-concept on one well-characterized system (e.g., mitotic catastrophe under taxanes), (2) explicit validation that latent coordinates correlate with known molecular markers, (3) quantitative comparison to existing perturbation-response models, and (4) honest discussion of failure modes (model hallucination, distribution shift, latent-space interpretability).",
+      "dimension_scores": {
+        "mechanistic_plausibility": 7,
+        "experimental_design": 3,
+        "evidence_support": 2,
+        "statistical_rigor": 2,
+        "clarity_of_writing": 8
+      },
+      "criticisms": [
+        "**No experimental data.** The paper is entirely conceptual. Zero videos are generated, zero latent coordinates are extracted, zero mechanistic hypotheses are validated. This is a research proposal, not a research report.",
+        "**Unvalidated core claim: latent coordinates = reaction coordinates.** Section 3 asserts that video diffusion latents 'approximate the reaction coordinates of the underlying cell-state dynamics' and are 'the same attractors a medicinal chemist is trying to reach.' This is stated as fact but is precisely what requires proof. How would you measure this? What would falsify it? No answer is given.",
+        "**No quantitative comparison to baselines.** The paper criticizes static omics but offers no head-to-head benchmark: Does a video diffusion model predict drug response better than (a) a temporal ODE model fit to the same imaging data? (b) a recurrent neural network? (c) a mechanistic systems model? Without this, the claim that video generation is the 'natural object' is rhetorical, not empirical.",
+        "**Latent-space interpretability is assumed, not demonstrated.** The paper proposes to 'interrogate which latent coordinates control commitment transitions' and 'map these coordinates back to measurable molecular correlates.' This is the hardest problem in deep learning applied to biology. Citing no methods (attention rollback? gradient-based saliency? causal intervention in latent space?) and no precedent (where has this worked?), the proposal reads as wishful thinking.",
+        "**Distribution shift and generalization are not discussed.** A video diffusion model trained on HeLa cells in standard media under a fixed set of perturbations will hallucinate plausible-looking but incorrect trajectories when asked about patient-derived organoids, 3D culture, or novel compounds outside the training set. The paper does not acknowledge this or propose validation strategies.",
+        "**Patient stratification claim is premature.** The paper proposes that 'a biopsy-derived organoid filmed for forty-eight hours under a small panel of perturbations yields a trajectory fingerprint' that predicts response to 'a much larger space of untested regimens.' This is a massive extrapolation claim with zero supporting data. How many perturbations? Which ones? What is the sample size required to validate this? What is the false-positive rate?",
+        "**Failure modes are not specified.** The paper claims to specify 'the failure mode that would falsify the approach' for each of twenty research directions, but the excerpt provided contains no such specifications. This is a critical omission for FDA review.",
+        "**Subnuclear mechanism section is incomplete.** Section 3 begins to discuss MED1/BRD4 condensate coarsening but cuts off mid-sentence. The actual mechanistic argument is not presented.",
+        "**No discussion of data requirements or computational cost.** Training a video diffusion model on 10^4 trajectories with 10^2\u201310^3 frames each at multichannel resolution is computationally expensive. What is the GPU budget? Training time? How sensitive is performance to dataset size? These are not addressed.",
+        "**Conflation of correlation and causation in latent space.** Even if a latent coordinate correlates with a molecular marker (e.g., BAX translocation), this does not prove the coordinate *controls* the transition. Causal inference in latent space requires intervention, not observation.",
+        "**No discussion of model validation on held-out data.** How would you test whether the model's generated trajectories are actually predictive of real cell behavior? Pixel-level reconstruction loss is not sufficient; you need to measure whether predicted *phenotypic outcomes* (death, persistence, invasion) match experimental ground truth.",
+        "**Regulatory pathway is not discussed.** If the goal is to use this as a tool for drug development, what is the FDA pathway? Is this a software tool (SaMD)? A biomarker? A surrogate endpoint? Each has different evidentiary requirements, and none are addressed."
+      ],
+      "required_fixes": [
+        "**Provide proof-of-concept on one well-characterized system.** Train a video diffusion model on live-cell imaging of HeLa or MCF7 cells under taxane treatment (a system with well-understood mitotic catastrophe dynamics). Generate trajectories for held-out drug doses. Quantitatively validate that (a) generated trajectories match real trajectories in held-out test set (frame-by-frame pixel metrics + phenotypic outcome accuracy), (b) the model correctly predicts the dose-response curve for mitotic slippage vs. catastrophe, and (c) latent coordinates correlate with known markers (cyclin B degradation, caspase-3 activation, mitotic duration). Report confidence intervals and failure cases."
+      ],
+      "suggested_experiments": [],
+      "simulation_proposal": null
+    },
+    {
+      "archetype_id": "investor",
+      "archetype_name": "Biotech Investor",
+      "recommendation": "major_revision",
+      "confidence": 0.72,
+      "summary": "This is a conceptually ambitious position paper that correctly identifies a real gap in cancer biology\u2014the collapse of temporal dynamics into static endpoints\u2014and proposes a plausible computational solution. However, the paper is a research direction manifesto, not a validated method. It contains zero empirical results, no trained models, no comparative benchmarks, and no demonstration that video diffusion models trained on cell imaging actually recover mechanistically meaningful latent dynamics rather than pixel-space artifacts. The mechanistic claims about dynamical manifolds and reaction coordinates are stated as axioms, not derived. For a peer-reviewed venue, this requires either (1) proof-of-concept experiments on at least one biological system, or (2) repositioning as a perspective/methods proposal with explicit acknowledgment of unvalidated assumptions.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 7,
+        "experimental_design": 3,
+        "evidence_support": 2,
+        "statistical_rigor": 2,
+        "clarity_of_writing": 8
+      },
+      "criticisms": [
+        "**No empirical validation.** The paper proposes a framework but presents zero trained models, no imaging datasets, no generative outputs, and no comparison to ground truth. The claim that video diffusion models recover 'dynamical manifolds' and 'reaction coordinates' is asserted, not demonstrated. How would you know if the model learned biology vs. pixel statistics?",
+        "**Manifold hypothesis is underspecified.** Section 3 claims that latent trajectories 'approximate the reaction coordinates of the underlying cell-state dynamics' and that 'free energy minima they encode are the same attractors a medicinal chemist is trying to reach.' This is a strong claim but lacks: (a) a definition of what constitutes a 'reaction coordinate' in latent space, (b) a method to validate that learned coordinates match biochemical reaction coordinates, (c) any discussion of why a pixel-level generative model should recover thermodynamic or kinetic quantities. This is not mechanistically obvious.",
+        "**Conditioning scheme is vague.** The paper mentions 'perturbation tokens' (compound structure, CRISPR guide, cytokine milieu, mechanical boundary) but does not specify: How are chemical structures embedded? What is the dimensionality of the conditioning space? How is dose encoded? How are multi-modal conditions (e.g., drug + hypoxia + stromal contact) jointly represented? Without this, the counterfactual claim ('what would this cell have done had I inhibited CDK4/6 at G1/S instead of at M?') is unexamined.",
+        "**Failure modes are not concrete.** The paper promises 'falsifiable mechanistic hypotheses' but does not specify what would constitute failure. For example: If a video model predicts that CDK4/6i causes G1/S arrest but live-cell imaging shows the arrest occurs at a different phase, is the model falsified? If latent coordinates do not correlate with any measured molecular marker, is the approach abandoned? What is the minimum R\u00b2 or AUC required for mechanism nomination to be credible?",
+        "**Scale integration is aspirational.** The paper claims a 'common architectural prior trained across scales and modalities' (subnuclear to intravital) but provides no evidence that a single model can learn meaningful dynamics across 3\u20134 orders of magnitude in spatial resolution and 5+ orders in temporal resolution. Subnuclear chromatin dynamics (seconds to minutes), single-cell commitment (hours), and tumor growth (days to weeks) may require fundamentally different latent representations. The paper does not address this.",
+        "**Comparison to existing approaches is absent.** How does this compare to: (a) mechanistic ODE models of cell-cycle commitment (e.g., Novak\u2013Tyson, Tyson\u2013Hannsgen)? (b) Bayesian inference on live-cell trajectories (e.g., Kalman filters, particle filters)? (c) Existing single-cell trajectory inference (Monocle, RNA velocity)? The paper frames this as novel but does not position it against the substantial literature on dynamical systems inference in biology.",
+        "**Data requirements are not quantified.** How many trajectories are needed to train a model that generalizes to unseen perturbations? What is the sample complexity as a function of latent dimensionality, number of cell types, and perturbation diversity? The paper cites 10^4 trajectories as available but does not argue this is sufficient. For comparison, GPT-3 required 300 billion tokens; what is the 'token budget' for cell cinema?",
+        "**Generalization to patient samples is unvalidated.** The paper proposes 'patient stratification on dynamical phenotypes' from a 48-hour organoid time-lapse, but: (a) organoid dynamics may not recapitulate in vivo tumor kinetics, (b) a 48-hour window may be too short to resolve commitment transitions (e.g., persister entry occurs over days), (c) no method is given to map organoid latent coordinates to clinical response. This is speculative.",
+        "**Persister and ferroptosis claims need scrutiny.** The paper invokes GPX4-dependent lipidomic rewiring in persisters and ferroptotic wave propagation but does not explain how a video model trained on brightfield or standard fluorescence would detect lipid peroxidation or lipidomic state. These require specialized reporters or mass spectrometry; standard live-cell imaging is blind to them. How does the model condition on or predict lipid state?",
+        "**Mitotic catastrophe example is incomplete.** Section 2 references the Gascoigne\u2013Taylor model (cyclin B degradation vs. apoptotic threshold race) as motivation. But the paper does not show: (a) that video diffusion can resolve cyclin B kinetics and BAX translocation simultaneously, (b) that latent coordinates separate 'catastrophe' from 'slippage' trajectories, (c) that the model's prediction of outcome (death vs. slippage) exceeds the accuracy of a simple ODE model fit to the same data."
+      ],
+      "required_fixes": [],
+      "suggested_experiments": [],
+      "simulation_proposal": null
+    },
+    {
+      "archetype_id": "kol",
+      "archetype_name": "Academic KOL",
+      "recommendation": "major_revision",
+      "confidence": 0.72,
+      "summary": "This is a conceptually ambitious position paper that correctly identifies a genuine epistemological gap in cancer biology \u2014 the collapse of time in static readouts \u2014 and proposes a computationally tractable solution via video diffusion priors. The three-part convergence argument (video architectures + live imaging throughput + perturbation libraries) is sound and timely. However, the paper conflates architectural capability with biological validity. It provides zero empirical evidence that video diffusion models trained on cell imaging recover dynamical manifolds that correspond to actual reaction coordinates or therapeutic decision points. The mechanistic claims about latent geometry (Section 3) are stated as fact rather than hypothesis. The paper reads as a well-motivated research program, not a validated method. For a top-tier venue, this requires either: (1) proof-of-concept experiments on at least one commitment transition (e.g., BAX translocation \u2192 apoptosis, or persister entry), or (2) reframing as a methods perspective with explicit falsifiability criteria and staged experimental roadmap. As written, it is a vision statement masquerading as a research contribution.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 7,
+        "experimental_design": 3,
+        "evidence_support": 2,
+        "statistical_rigor": 2,
+        "clarity_of_writing": 8
+      },
+      "criticisms": [
+        "**No empirical validation of core claim**: The paper asserts that video diffusion models recover dynamical manifolds corresponding to reaction coordinates (Section 3, opening paragraph), but provides zero experimental evidence. This is the crux of the entire proposal, yet it is stated as axiom rather than hypothesis. How would you distinguish a model that has learned true reaction coordinates from one that has merely learned to interpolate pixel space plausibly?",
+        "**Conflation of architectural capability with biological fidelity**: The paper correctly notes that video diffusion architectures can extrapolate physically plausible futures (Section 2, first paragraph). But 'physically plausible' at pixel level \u2260 'biologically faithful' at the level of molecular commitment. A model could generate morphologically convincing mitotic slippage while violating cyclin B degradation kinetics or apoptotic threshold dynamics. No validation strategy is proposed.",
+        "**Latent geometry claims lack grounding**: Section 3 claims that 'free energy minima encoded in the latent space are the same attractors a medicinal chemist is trying to reach.' This is a strong claim about correspondence between learned geometry and thermodynamic reality. What experiment would falsify this? How would you measure whether a latent attractor corresponds to a real cell-state basin?",
+        "**Missing counterfactual validation**: The paper emphasizes counterfactual reasoning (Pearl sense) as a key advantage. But counterfactual predictions are only useful if they can be experimentally validated. The paper provides no strategy for testing whether the model's 'what if I inhibited CDK4/6 at G1/S' predictions are accurate when actually performed. This is critical for therapeutic design claims.",
+        "**Subnuclear scale example is incomplete and speculative**: The MED1/BRD4 condensate example (end of Section 3) is cut off mid-sentence and makes claims about 'critical coarsening slowdown' that would require quantitative validation of Lifshitz\u2013Slyozov exponents from video. No data. No protocol. No failure mode specified.",
+        "**No discussion of confounders in learned dynamics**: Video diffusion models trained on live imaging will absorb not only causal dynamics but also: phototoxicity artifacts, media drift, cell-culture heterogeneity, imaging-plane selection bias, and stochastic noise. How would the model distinguish a true persister-entry trajectory from a cell that has simply drifted out of focus or experienced phototoxic stress? No mitigation strategy proposed.",
+        "**Conditioning scheme is underspecified**: The paper mentions embedding 'chemical structures, sgRNA identities, concentration, exposure time, and clonal barcode' as cross-attention keys, but provides no detail on: (1) how to handle dose-response nonlinearity, (2) how to condition on multi-drug combinations without combinatorial explosion, (3) how to transfer between cell lines or patient samples. These are not minor details; they determine whether the approach scales.",
+        "**Generalization across scales is assumed, not justified**: The paper claims a 'common architectural prior trained across scales and modalities' can work from subnuclear to intravital imaging. But these differ by >6 orders of magnitude in spatial resolution and >3 orders in temporal resolution. How would a single model learn meaningful dynamics at both scales? Would you need separate models? If so, how do you integrate their predictions?",
+        "**Patient stratification claim is premature**: Section 1 proposes that 'a biopsy-derived organoid filmed for forty-eight hours under a small panel of perturbations yields a trajectory fingerprint' that predicts response to untested regimens. This is a strong claim that requires: (1) validation that organoid trajectories predict patient response, (2) demonstration that 48 hours of imaging is sufficient to capture response phenotype, (3) proof that the model generalizes from organoid to in vivo tumor. None of this is provided.",
+        "**Statistical rigor absent**: No discussion of: train/test splits, cross-validation, generalization error bounds, or how to assess whether the model has memorized training trajectories rather than learned generalizable dynamics. For a generative model, this is essential.",
+        "**Failure modes are stated but not operationalized**: The paper repeatedly says 'specify the failure mode that would falsify the approach' but then does not actually do so. For example: 'What would falsify the hypothesis that video diffusion recovers reaction coordinates?' The paper does not answer this."
+      ],
+      "required_fixes": [],
+      "suggested_experiments": [],
+      "simulation_proposal": null
+    },
+    {
+      "archetype_id": "patient",
+      "archetype_name": "Patient Advocate",
+      "recommendation": "major_revision",
+      "confidence": 0.72,
+      "summary": "This is a conceptually ambitious position paper that correctly identifies a genuine epistemological gap in cancer biology\u2014the collapse of temporal dynamics into static snapshots\u2014and proposes video diffusion models as a computational framework to recover dynamical manifolds. The mechanistic intuition is sound and the scale-spanning vision is novel. However, the paper is incomplete: it presents a research program, not validated results. Critical sections (mechanism, experiments, validation) are truncated or missing. Most importantly, there is no demonstration that video diffusion models trained on biological data actually recover causally interpretable latent dynamics rather than learning superficial pixel correlations. The patient-advocate lens reveals a secondary but serious gap: no discussion of how trajectory predictions translate to actionable clinical decisions, side-effect burden, or real-world treatment sequencing. The paper reads as a manifesto; it needs proof of concept.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 7,
+        "experimental_design": 4,
+        "evidence_support": 2,
+        "statistical_rigor": 3,
+        "clarity_of_writing": 8
+      },
+      "criticisms": [
+        "**No proof of concept**: The paper proposes that video diffusion models recover dynamical manifolds but provides zero empirical evidence. No trained model, no validation against held-out trajectories, no comparison to mechanistic simulators (e.g., Gillespie, ODE-based cell-cycle models). The claim that 'latent trajectories approximate reaction coordinates' is stated as fact but is precisely what requires demonstration.",
+        "**Conflation of representation learning with causal inference**: Learning a latent space that predicts future frames does not guarantee that latent coordinates correspond to causal variables (e.g., CDK4/6 activity, ferroptotic threshold). A diffusion model can memorize spurious correlations in pixel space. The paper invokes Pearl's counterfactual framework but does not address identifiability: how do you know a latent coordinate is CDK4/6 activity and not a confounded proxy?",
+        "**Incomplete mechanism section**: Section 3 begins with subnuclear condensate dynamics but is abruptly truncated mid-sentence. The promised 'twenty concrete research directions' are listed only as headers in the introduction. No mathematical formulation of the generative model, no specification of conditioning architecture, no loss functions or training procedures.",
+        "**Unrealistic data requirements underspecified**: The paper claims 10^4 multichannel trajectories are now available but does not cite specific datasets or acknowledge that most live-cell imaging is proprietary (Incucyte, Opera Phenix). How much data is actually needed to train a model that generalizes across cell types, drugs, and doses? What is the sample complexity? No ablation studies.",
+        "**Failure modes not operationalized**: The paper repeatedly promises 'failure modes that would falsify the approach' but rarely specifies them concretely. Example: if a video diffusion model predicts that CDK4/6i + ferroptosis inhibitor synergizes, but the wet-lab experiment shows antagonism, what would that tell you about the model? That it learned bad pixel correlations? That the conditioning was insufficient? That the cell type matters? The paper does not distinguish.",
+        "**Patient-advocate perspective: no pathway from prediction to clinical action**: The paper proposes 'patient stratification on dynamical phenotypes' but does not address: (1) How is a 48-hour organoid trajectory measured in a clinical setting? (2) What is the latency from biopsy to prediction to treatment decision? (3) How do you communicate uncertainty in trajectory predictions to patients? (4) If the model predicts a rare trajectory (e.g., persister entry under drug X), how do you validate it before exposing a patient to that drug? (5) What happens when the model's prediction disagrees with the patient's actual response\u2014how do you update?",
+        "**Side-effect burden invisible**: The paper frames therapeutics as a search over trajectory space but does not model toxicity, pharmacokinetics, or off-target effects. A drug that kills tumor cells via a predicted trajectory but causes hepatotoxicity is not a solution. The generative model is trained on in vitro imaging; how does it account for systemic effects?",
+        "**Conditioning scheme underdeveloped**: The paper mentions 'compound structure, CRISPR guide, cytokine milieu, mechanical boundary condition' as conditioning tokens but does not specify: (1) How are chemical structures embedded? (2) How are dose-response curves represented? (3) How does the model handle polypharmacology (off-target effects of a compound)? (4) Can it condition on patient-specific mutations or copy-number alterations?",
+        "**Comparison to existing approaches absent**: No discussion of how this differs from or improves upon: (1) Mechanistic ODE/PDE models of cell fate (e.g., Tyson's mitotic oscillator, Huang's Waddington landscape), (2) existing neural ODEs or latent-ODE models that explicitly enforce dynamical structure, (3) causal inference methods (e.g., causal discovery from time-series data, instrumental variables), (4) physics-informed neural networks (PINNs) that embed conservation laws.",
+        "**Generalization across scales not demonstrated**: The paper claims a 'common architectural prior trained across scales' but does not explain: (1) How do you align latent spaces across subnuclear, single-cell, and multicellular scales? (2) What is the inductive bias that makes this alignment meaningful? (3) If a latent coordinate at the subnuclear scale (e.g., chromatin compaction) is causally upstream of a single-cell coordinate (e.g., apoptosis entry), how does the model learn this hierarchy?",
+        "**Validation strategy vague**: The paper proposes using 'the model's predictive uncertainty itself guiding which combinations merit experimental confirmation' but does not specify: (1) What uncertainty metric? (2) How many combinations can realistically be validated? (3) What is the cost of false positives (predicting synergy that does not exist) versus false negatives?"
+      ],
+      "required_fixes": [],
+      "suggested_experiments": [],
+      "simulation_proposal": null
+    },
+    {
+      "archetype_id": "payer",
+      "archetype_name": "Insurance Payer",
+      "recommendation": "major_revision",
+      "confidence": 0.72,
+      "summary": "This is a conceptually ambitious position paper that correctly identifies a genuine gap in oncology \u2014 the collapse of temporal dynamics into static readouts \u2014 and proposes video diffusion models as a computational solution. The mechanistic intuition is sound: commitment transitions (mitotic catastrophe, persister entry, ferroptosis) are indeed kinetic phenomena invisible to endpoint assays. However, the paper conflates three distinct claims (video models learn dynamical manifolds; these manifolds correspond to biological reaction coordinates; this enables therapeutic discovery) without providing falsifiable evidence for any of them. The paper reads as a research program prospectus rather than a validated methodology. For a payer reviewing this as a potential clinical-decision tool, the absence of: (1) proof-of-concept on held-out patient data, (2) quantified prediction error bounds, (3) cost-effectiveness modeling, and (4) comparison to standard biomarkers makes coverage decisions impossible. Major revision must include pilot validation data, explicit failure modes with detection thresholds, and ICER framing.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 7,
+        "experimental_design": 4,
+        "evidence_support": 3,
+        "statistical_rigor": 2,
+        "clarity_of_writing": 8
+      },
+      "criticisms": [
+        "**Manifold hypothesis is stated but not proven.** Section 3 claims video diffusion models 'recover a dynamical manifold' on which committed states are 'geometrically localized,' but provides no evidence that learned latent trajectories approximate reaction coordinates rather than merely fitting pixel statistics. The leap from 'the model learns to predict videos' to 'the model has discovered the true phase space of cell fate' is unsupported. What would falsify this? If a model trained on brightfield alone (no molecular reporters) predicts ferroptotic collapse, does that prove it learned ferroptosis dynamics, or merely that morphology correlates with ferroptosis? This distinction is critical and unaddressed.",
+        "**No quantification of prediction error or uncertainty bounds.** The paper invokes 'the model's predictive uncertainty itself guiding which combinations merit experimental confirmation' (Introduction) but never specifies: (i) what uncertainty metric is used (aleatoric vs. epistemic), (ii) what prediction error rate is acceptable for therapeutic nomination, (iii) how to distinguish model ignorance from genuine biological stochasticity. For a payer, this is disqualifying: you cannot reimburse a test whose false-positive rate is unknown.",
+        "**Counterfactual claims lack causal grounding.** The paper states the model answers 'what would this cell have done had I inhibited CDK4/6 at G1/S instead of at M?' (Introduction). This is a causal query. Video diffusion models are trained on observational data (cells exposed to perturbations, outcomes recorded). They do not automatically satisfy the backdoor criterion or other causal identification assumptions. A model trained on 'CDK4/6 inhibition at G1/S \u2192 outcome X' can interpolate similar conditions, but cannot counterfactually predict unobserved intervention timings without explicit causal assumptions (e.g., Markovian dynamics, no hidden confounders). The paper does not articulate these assumptions or validate them.",
+        "**Scale integration is aspirational, not demonstrated.** The paper claims 'a common architectural prior, trained across scales and modalities' (Introduction) will unify subnuclear, single-cell, and multicellular phenomena. No architecture is described. No training procedure is specified. No ablation shows that cross-scale training improves prediction over scale-specific models. This is a design goal, not a result.",
+        "**Conditioning scheme is underspecified.** The paper mentions 'compound structure, CRISPR guide, cytokine milieu, mechanical boundary condition' as conditioning tokens but does not explain: (i) how chemical structures are embedded (SMILES? fingerprints? learned representations?), (ii) how dose-response is captured (concentration as scalar? binned? learned dose-response curve?), (iii) how temporal dynamics of perturbation application (pulse vs. continuous) are encoded. Without this, reproducibility is impossible.",
+        "**No comparison to existing methods.** The paper does not benchmark against: (i) mechanistic ODE models (e.g., Tyson mitotic checkpoint models), (ii) classical machine learning on morphological features + transcriptomics, (iii) physics-informed neural networks (PINNs) that explicitly enforce conservation laws. How much of the claimed advantage comes from video generation per se versus simply having access to temporal data? This is unknown.",
+        "**Patient stratification claim is premature.** Section 1 proposes that 'a biopsy-derived organoid filmed for forty-eight hours under a small panel of perturbations yields a trajectory fingerprint' that predicts response to 'a much larger space of untested regimens.' This requires: (i) proof that 48-hour organoid dynamics are predictive of in vivo tumor response (not shown), (ii) validation that the model generalizes from organoid to patient (not shown), (iii) quantification of how many perturbations are needed in the 'small panel' (not specified). For a payer, this is a coverage-decision blocker.",
+        "**Failure modes are stated but not operationalized.** The paper promises 'the failure mode that would falsify the approach' for each research direction (Introduction) but then provides only vague descriptions (e.g., 'super-enhancer\u2013driven oncogenes depend on a narrow window of condensate stability'). What is the measurable threshold? If condensate coarsening exponent is \u03b1=0.35 instead of \u03b1=0.33, does the model fail? By how much? Without quantified thresholds, 'falsifiability' is rhetorical."
+      ],
+      "required_fixes": [],
+      "suggested_experiments": [],
+      "simulation_proposal": null
+    },
+    {
+      "archetype_id": "short_seller",
+      "archetype_name": "Adversarial Short-Seller",
+      "recommendation": "reject",
+      "confidence": 0.92,
+      "summary": "This paper presents an intellectually ambitious vision for using video diffusion models as generative priors over cancer cell dynamics, with genuine mechanistic insight about why trajectories matter more than snapshots. However, it is fundamentally a position paper masquerading as a research contribution. It contains zero experimental data, zero trained models, zero validation against held-out imaging, and zero demonstration that the claimed latent manifolds actually recover known biology. The core claim\u2014that video diffusion models trained on cell imaging will recover reaction coordinates of cell-state transitions\u2014is mechanistically plausible but entirely unvalidated. The paper conflates architectural capability (video generation works on natural images) with biological applicability (video generation will recover causal dynamics in cells), a leap that requires empirical grounding. As written, it is a research proposal, not a research result.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 7,
+        "experimental_design": 2,
+        "evidence_support": 1,
+        "statistical_rigor": 1,
+        "clarity_of_writing": 8
+      },
+      "criticisms": [
+        "**Zero empirical validation**: The paper presents no trained models, no imaging datasets, no latent-space visualizations, no comparison to ground-truth molecular measurements, and no demonstration that a video diffusion model can predict a single known cell-fate transition (e.g., BAX translocation \u2192 apoptosis, GPX4 rewiring \u2192 ferroptosis). The entire mechanistic argument rests on 'in principle' reasoning.",
+        "**Unvalidated manifold hypothesis**: The claim that video diffusion latent trajectories approximate 'reaction coordinates' of cell-state dynamics is stated without proof. Video models are trained to minimize pixel reconstruction loss, not to recover thermodynamic or kinetic coordinates. There is no argument for why minimizing diffusion loss should align with biological causality. Counterexample: a model could learn to predict morphological changes that are epiphenomenal to the actual commitment decision.",
+        "**Conflation of architectural capability with biological applicability**: The paper argues that because Stable Video Diffusion works on natural images, it will work on cells. This ignores: (i) cells obey different physical constraints (no rigid-body motion, stochastic branching, phase transitions); (ii) the conditioning signal (drug structure, sgRNA) must be embedded in a way that actually controls latent dynamics\u2014no evidence this is possible; (iii) generalization to unseen perturbations is not guaranteed and is likely to fail catastrophically outside the training distribution.",
+        "**No discussion of failure modes for the core claim**: Section 1 promises 'failure modes that would falsify the approach' but Section 3 does not deliver them. What would it look like if the latent manifold *doesn't* recover reaction coordinates? How would you distinguish a model that has learned spurious morphological correlates from one that has learned causal dynamics? No falsifiable prediction is made.",
+        "**Circular reasoning on mechanism nomination**: The paper claims that interrogating latent coordinates will 'map back to measurable molecular correlates, producing falsifiable mechanistic hypotheses.' But this is backwards: you need to know the molecular ground truth *a priori* to validate that the latent coordinate corresponds to it. The paper provides no protocol for this validation. How do you confirm that the latent coordinate controlling 'persister entry' is actually GPX4-dependent lipidomic rewiring and not, say, a spurious correlation with cell-cycle phase?",
+        "**Conditioning scheme is underspecified**: The paper claims perturbations can be 'embedded and injected as cross-attention keys' but provides no detail on how a chemical structure, concentration, and exposure time are jointly embedded such that the model learns the correct dose-response relationship. Video models are not trained on dose-response data; LINCS provides transcriptional responses, not trajectories. How is the gap bridged?",
+        "**Scale-crossing is assumed, not demonstrated**: The paper claims a 'common architectural prior trained across scales' will work from subnuclear to intravital. This is extraordinarily ambitious and entirely unvalidated. Subnuclear condensate dynamics (millisecond-scale, nanometer resolution) and intravital tumor dynamics (hour-scale, micrometer resolution) have radically different physics. No argument is made for why a single architecture should capture both, nor is there any precedent for this in generative modeling.",
+        "**Patient stratification claim is premature**: The paper proposes that a 48-hour organoid video will predict response to 'a much larger space of untested regimens' via latent-space projection. This is a strong extrapolation claim with no supporting evidence. Organoids are not tumors; 48 hours is not sufficient to observe many commitment transitions; and latent-space distance is not a validated predictor of therapeutic response.",
+        "**No comparison to simpler baselines**: The paper does not discuss whether simpler approaches\u2014e.g., training a recurrent neural network to predict the next frame, or using optical flow to extract velocity fields\u2014might achieve the same mechanistic insights with lower computational cost and greater interpretability.",
+        "**Data requirements are vastly underestimated**: The paper claims 10^4 multichannel trajectories are available. For a video diffusion model to generalize across perturbations, cell types, and scales, you likely need 10^5\u201310^6 trajectories with dense, consistent perturbation annotations. The JUMP-CP and LINCS consortia do not provide this. The paper does not address data scarcity.",
+        "**Temporal resolution mismatch**: Many of the claimed commitment events (BAX translocation, mitotic slippage, nuclear envelope rupture) occur on timescales of seconds to minutes. Standard live-cell imaging is 5\u201330 minute intervals. A video model trained on 30-minute-interval data cannot resolve 5-minute dynamics and will hallucinate plausible-looking but physically incorrect trajectories.",
+        "**No discussion of adversarial robustness**: Video diffusion models are known to produce physically implausible outputs when conditioned on out-of-distribution inputs. How will the model behave when asked to predict the trajectory of a cell under a novel drug that has no close analog in the training set? The paper does not address this."
+      ],
+      "required_fixes": [],
+      "suggested_experiments": [],
+      "simulation_proposal": null
+    }
+  ],
+  "simulations": []
+}

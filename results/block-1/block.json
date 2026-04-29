@@ -1,0 +1,19 @@
+{
+  "block": 1,
+  "title": "Cell Cinema for Oncology: Video-Generative Priors Across Scales as a Unifying Framework for Mechanism Discovery and Therapeutic Design",
+  "research_goal": "generating cell cinema using video gen models for novel cures",
+  "models": {
+    "submitter": "anthropic/claude-opus-4.7",
+    "validator": "anthropic/claude-opus-4.7",
+    "compiler": "anthropic/claude-opus-4.7",
+    "archetype": "anthropic/claude-haiku-4.5",
+    "topic_deriver": "anthropic/claude-opus-4.7"
+  },
+  "timestamp": "2026-04-28T19:24:14.664493+00:00",
+  "section_count": 8,
+  "accepted_submissions": 20,
+  "rejection_count": 0,
+  "market_price": 0.4131250000000001,
+  "has_peer_review": true,
+  "has_simulations": false
+}

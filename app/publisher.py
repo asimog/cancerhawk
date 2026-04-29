@@ -424,7 +424,7 @@ def _md_to_sections_html(md: str) -> str:
 def try_git_publish(block_n: int) -> str:
     msg = f"publish: block {block_n}"
     try:
-        subprocess.run(["git", "add", "results"], cwd=REPO_ROOT, check=True, capture_output=True)
+        subprocess.run(["git", "add", "-f", "results"], cwd=REPO_ROOT, check=True, capture_output=True)
         subprocess.run(
             ["git", "commit", "-m", msg], cwd=REPO_ROOT, check=True, capture_output=True
         )
