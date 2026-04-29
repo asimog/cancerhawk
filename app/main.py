@@ -61,7 +61,9 @@ app = FastAPI(title="CancerHawk")
 _default_cors = (
     "https://asimog.github.io,"
     "https://asimog.github.io/cancerhawk,"
+    "https://cancerhawk.vercel.app,"
     "http://localhost:8765,"
+    "http://localhost:3000,"
     "http://127.0.0.1:8765"
 )
 _cors_origins = [

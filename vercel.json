@@ -1,14 +1,7 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": null,
-  "installCommand": null,
-  "outputDirectory": "results",
-  "cleanUrls": true,
-  "trailingSlash": false,
-  "rewrites": [
-    { "source": "/run", "destination": "/run.html" },
-    { "source": "/blocks", "destination": "/blocks.html" }
-  ],
+  "framework": "nextjs",
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
   "headers": [
     {
       "source": "/(.*)",
