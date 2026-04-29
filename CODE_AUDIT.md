@@ -147,8 +147,8 @@ All tests import cleanly; ready to run once dependencies installed.
 
 ## Batch Files
 
-- **Start CancerHawk.bat** — One-click launcher: checks Python, creates dirs, installs deps, kills old port, starts backend in new window, opens browser.
-- **Run Backend.bat** — Manual backend starter (logs visible in that window).
+- **install_cancerhawk.bat** — One-time installer: checks Python, upgrades pip, installs `app/requirements.txt`, creates `results/`.
+- **run_cancerhawk.bat** — Daily launcher: frees port 8765, opens browser, runs the FastAPI worker in the foreground with live API call logs.
 Both use `--no-access-log` for clean console output mirroring MOTO.
 
 ---

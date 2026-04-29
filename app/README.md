@@ -92,6 +92,15 @@ live to Pages automatically.
 - **Change submitters per round** — `n_submitters` in the WebSocket config
   (UI input, 1–8).
 
+## Deployment
+
+This package is the worker process that runs on Railway in production. The
+public site is served from Vercel (static `results/`) and pushes from the
+worker land on GitHub, which auto-rebuilds Vercel. See the root
+[README.md](../README.md) for the deploy commands and environment-variable
+reference (`GITHUB_TOKEN`, `CANCERHAWK_BACKEND_URL`,
+`CANCERHAWK_PUBLIC_BASE_URL`, `CANCERHAWK_CORS_ORIGINS`, `PORT`).
+
 ## Privacy
 
 The OpenRouter API key lives in your browser only. It is sent to the local

@@ -125,10 +125,16 @@ def mock_engines():
 
     def fake_publish_block(*args, **kwargs):
         simulations = kwargs["simulations"]
-        assert len(simulations) == 3
-        assert all(sim["type"] == "html5_canvas" for sim in simulations)
-        assert simulations[0]["description"] == "Run a bootstrap survival analysis."
-        assert all(sim.get("scene") for sim in simulations)
+        # Dual-track output: 3 × html5_canvas + 3 × threejs.
+        assert len(simulations) == 6
+        canvas_sims = [s for s in simulations if s["type"] == "html5_canvas"]
+        three_sims = [s for s in simulations if s["type"] == "threejs"]
+        assert len(canvas_sims) == 3
+        assert len(three_sims) == 3
+        # Reviewer-supplied proposal still claims the first canvas slot.
+        assert canvas_sims[0]["description"] == "Run a bootstrap survival analysis."
+        assert all(sim.get("scene") for sim in canvas_sims)
+        assert all(sim.get("three_scene") for sim in three_sims)
         return {"block": 1, "path": "results/block-1/paper.html"}
 
     def fake_try_git_publish(*args, **kwargs):

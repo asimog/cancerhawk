@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import html
 import json
+import os
 import re
 import subprocess
 from dataclasses import asdict
@@ -24,7 +25,17 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 RESULTS_DIR = REPO_ROOT / "results"
 BLOCK_DIR_RE = re.compile(r"^block-(\d+)$")
-PUBLIC_BASE_URL = "https://asimog.github.io/cancerhawk"
+
+# Public site URL (where Vercel/GH Pages serves the published blocks). Used in
+# absolute links inside generated HTML and the run-control page.
+PUBLIC_BASE_URL = os.environ.get(
+    "CANCERHAWK_PUBLIC_BASE_URL",
+    "https://asimog.github.io/cancerhawk",
+)
+
+# Backend WebSocket origin (the Railway worker, or localhost in dev).
+# Embedded into the run-control page so the static site knows where to connect.
+BACKEND_URL = os.environ.get("CANCERHAWK_BACKEND_URL", "http://localhost:8765")
 
 
 def next_block_number() -> int:
@@ -233,54 +244,185 @@ def _render_peer_reviews(peer_reviews: list[dict]) -> str:
 
 
 def _render_simulations(simulations: list[dict]) -> str:
-    """Render the simulations proposals section."""
+    """Render the simulations section.
+
+    Two visualization tracks side-by-side per spec:
+      - ``type: "html5_canvas"`` → inline 2D canvas + vanilla-JS animation.
+      - ``type: "threejs"``      → 3D scene rendered via Three.js (loaded
+        from CDN with an importmap; only injected when at least one threejs
+        spec is present, so non-3D blocks stay lean).
+    """
     if not simulations:
         return '<p class="muted">No simulation proposals recommended.</p>'
 
-    sims_html = []
-    scene_payloads = []
+    canvas_cards: list[str] = []
+    three_cards: list[str] = []
+    canvas_payloads: list[dict] = []
+    three_payloads: list[dict] = []
+
     for idx, s in enumerate(simulations):
         sim_id = _slugify(str(s.get("id") or f"simulation-{idx + 1}"))
-        sim_type = html.escape(str(s.get("type", "html5_canvas")))
-        title = html.escape(str(s.get("title") or f"Simulation {idx + 1}"))
+        sim_type = str(s.get("type", "html5_canvas")).strip().lower() or "html5_canvas"
+        sim_type_html = html.escape(sim_type)
+        title_raw = str(s.get("title") or f"Simulation {idx + 1}")
+        title = html.escape(title_raw)
         desc = html.escape(str(s.get("description", "No description provided.")))
         rationale = html.escape(str(s.get("rationale", "")))
         metrics = s.get("expected_metrics", [])
         metrics_html = "".join(f"<li>{html.escape(str(m))}</li>" for m in metrics)
-        scene_payloads.append(
-            {
-                "id": sim_id,
-                "title": str(s.get("title") or f"Simulation {idx + 1}"),
-                "scene": str(s.get("scene") or "trajectory_manifold"),
-                "seed": int(_safe_float(s.get("seed"), idx + 1)),
-                "parameters": s.get("parameters") or {},
-            }
-        )
 
-        sims_html.append(
-            f'<div class="simulation-card" data-simulation="{sim_id}">'
-            f'<div class="simulation-copy">'
-            f'<div class="simulation-type">{sim_type}</div>'
-            f'<h3>{title}</h3>'
-            f'<p>{desc}</p>'
-            f'<h4>Why this matters</h4><p>{rationale}</p>'
-            f'<h4>Readouts</h4><ul>{metrics_html}</ul>'
-            f'</div>'
-            f'<div class="simulation-stage">'
-            f'<canvas id="sim-{sim_id}" aria-label="{title} interactive HTML5 canvas simulation"></canvas>'
-            f'<div class="simulation-overlay"><span>Native HTML5 canvas</span><strong>{title}</strong></div>'
-            f'</div>'
-            f'</div>'
-        )
+        if sim_type == "threejs":
+            three_payloads.append(
+                {
+                    "id": sim_id,
+                    "title": title_raw,
+                    "three_scene": str(s.get("three_scene") or "tumor_volume_3d"),
+                    "seed": int(_safe_float(s.get("seed"), idx + 1)),
+                    "parameters": s.get("parameters") or {},
+                }
+            )
+            three_cards.append(
+                f'<div class="simulation-card threejs" data-simulation="{sim_id}">'
+                f'<div class="simulation-copy">'
+                f'<div class="simulation-type">{sim_type_html}</div>'
+                f'<h3>{title}</h3>'
+                f'<p>{desc}</p>'
+                f'<h4>Why this matters</h4><p>{rationale}</p>'
+                f'<h4>Readouts</h4><ul>{metrics_html}</ul>'
+                f'</div>'
+                f'<div class="three-stage" id="three-{sim_id}" '
+                f'aria-label="{title} interactive Three.js WebGL simulation"></div>'
+                f'<div class="simulation-overlay"><span>Three.js (WebGL)</span><strong>{title}</strong></div>'
+                f'</div>'
+            )
+        else:
+            canvas_payloads.append(
+                {
+                    "id": sim_id,
+                    "title": title_raw,
+                    "scene": str(s.get("scene") or "trajectory_manifold"),
+                    "seed": int(_safe_float(s.get("seed"), idx + 1)),
+                    "parameters": s.get("parameters") or {},
+                }
+            )
+            canvas_cards.append(
+                f'<div class="simulation-card" data-simulation="{sim_id}">'
+                f'<div class="simulation-copy">'
+                f'<div class="simulation-type">{sim_type_html}</div>'
+                f'<h3>{title}</h3>'
+                f'<p>{desc}</p>'
+                f'<h4>Why this matters</h4><p>{rationale}</p>'
+                f'<h4>Readouts</h4><ul>{metrics_html}</ul>'
+                f'</div>'
+                f'<div class="simulation-stage">'
+                f'<canvas id="sim-{sim_id}" aria-label="{title} interactive HTML5 canvas simulation"></canvas>'
+                f'<div class="simulation-overlay"><span>Native HTML5 canvas</span><strong>{title}</strong></div>'
+                f'</div>'
+                f'</div>'
+            )
 
-    return (
+    intro = (
         '<div class="simulation-intro">'
         '<p>Runnable browser-native simulations generated after peer review. '
-        'Each scene uses only inline HTML5 Canvas 2D to turn the paper into a falsifiable visual model.</p>'
+        'Each block ships two visualization tracks: 2D HTML5 Canvas scenes for '
+        'fast falsifier views, and Three.js (WebGL) 3D scenes for volumetric '
+        'tumor / mitotic / perturbation views.</p>'
         '</div>'
-        + "".join(sims_html)
-        + _simulation_script(scene_payloads)
     )
+
+    parts = [intro]
+    if canvas_cards:
+        parts.append('<h3 class="simulation-track-heading">HTML5 Canvas (2D)</h3>')
+        parts.extend(canvas_cards)
+        parts.append(_simulation_script(canvas_payloads))
+    if three_cards:
+        parts.append('<h3 class="simulation-track-heading">Three.js (3D / WebGL)</h3>')
+        parts.extend(three_cards)
+        parts.append(_threejs_script(three_payloads))
+    return "".join(parts)
+
+
+def _threejs_script(scene_payloads: list[dict]) -> str:
+    """Three.js renderer script. Injected only when at least one threejs spec
+    is present so non-3D blocks stay lean. Uses an ES-module importmap to load
+    `three` from the unpkg CDN — no build step needed.
+    """
+    if not scene_payloads:
+        return ""
+    payload_json = _script_json(scene_payloads)
+    template = """
+<script type="application/json" id="threejs-scenes">__THREE_PAYLOAD__</script>
+<script type="importmap">
+{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js"}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+const scenes = JSON.parse(document.getElementById('threejs-scenes')?.textContent || '[]');
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function buildTumorVolume(group, rand, params){
+  const colors=[0x6fdb6f,0xff8a65,0x80cbc4,0xffd54f];
+  for(let i=0;i<420;i++){
+    const r=Math.cbrt(rand())*1.4;
+    const t=rand()*Math.PI*2; const p=Math.acos(2*rand()-1);
+    const x=r*Math.sin(p)*Math.cos(t), y=r*Math.sin(p)*Math.sin(t), z=r*Math.cos(p);
+    const m=new THREE.Mesh(new THREE.SphereGeometry(0.04+rand()*0.04,8,8),
+      new THREE.MeshStandardMaterial({color:colors[Math.floor(rand()*colors.length)],emissive:0x0a1f0a,roughness:0.4}));
+    m.position.set(x,y,z); m.userData.phase=rand()*Math.PI*2; group.add(m);
+  }
+}
+function buildMitoticLattice(group, rand, params){
+  const N=6;
+  for(let x=-N;x<=N;x++) for(let y=-N;y<=N;y++) for(let z=-N;z<=N;z++){
+    if(rand()>0.18) continue;
+    const m=new THREE.Mesh(new THREE.BoxGeometry(0.18,0.18,0.18),
+      new THREE.MeshStandardMaterial({color:rand()>0.5?0x6fdb6f:0xff8a65,emissive:0x071407,roughness:0.5}));
+    m.position.set(x*0.32,y*0.32,z*0.32); m.userData.div=rand(); group.add(m);
+  }
+}
+function buildPerturbationCone(group, rand, params){
+  const conf=Math.max(0.05,Math.min(1,Number(params&&params.confidence)||0.5));
+  const aperture=0.4+(1-conf)*0.9;
+  for(let i=0;i<260;i++){
+    const t=rand(); const r=t*aperture; const ang=rand()*Math.PI*2;
+    const m=new THREE.Mesh(new THREE.SphereGeometry(0.03,6,6),
+      new THREE.MeshStandardMaterial({color:t<0.05?0xffffff:(t<0.5?0x6fdb6f:0xff8a65),emissive:0x000000,roughness:0.5}));
+    m.position.set(r*Math.cos(ang),(t-0.5)*2.4,r*Math.sin(ang)); m.userData.t=t; group.add(m);
+  }
+}
+const builders={tumor_volume_3d:buildTumorVolume,mitotic_lattice_3d:buildMitoticLattice,perturbation_cone_3d:buildPerturbationCone};
+function boot(spec){
+  const host=document.getElementById('three-'+spec.id); if(!host) return;
+  const w=host.clientWidth||640, h=host.clientHeight||360;
+  const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+  renderer.setSize(w,h,false); host.appendChild(renderer.domElement);
+  const scene=new THREE.Scene(); scene.background=new THREE.Color(0x050a06);
+  const cam=new THREE.PerspectiveCamera(55,w/h,0.1,100); cam.position.set(0,0.6,4.2);
+  scene.add(new THREE.AmbientLight(0x445544,0.7));
+  const pl=new THREE.PointLight(0x6fdb6f,40,40); pl.position.set(2,3,4); scene.add(pl);
+  const group=new THREE.Group(); scene.add(group);
+  const rand=mulberry32(spec.seed||1); const builder=builders[spec.three_scene]||buildTumorVolume;
+  builder(group,rand,spec.parameters||{});
+  let raf=0,start=performance.now();
+  function tick(){
+    const t=(performance.now()-start)*0.001;
+    group.rotation.y=t*0.25; group.rotation.x=Math.sin(t*0.15)*0.18;
+    if(spec.three_scene==='mitotic_lattice_3d'){
+      group.children.forEach((m,i)=>{m.scale.setScalar(1+Math.sin(t*1.2+m.userData.div*7)*0.18);});
+    }
+    if(spec.three_scene==='tumor_volume_3d'){
+      group.children.forEach((m)=>{const s=1+Math.sin(t*0.8+m.userData.phase)*0.12;m.scale.setScalar(s);});
+    }
+    renderer.render(scene,cam); raf=requestAnimationFrame(tick);
+  }
+  tick();
+  const ro=new ResizeObserver(()=>{const nw=host.clientWidth,nh=host.clientHeight; if(nw&&nh){renderer.setSize(nw,nh,false);cam.aspect=nw/nh;cam.updateProjectionMatrix();}});
+  ro.observe(host);
+}
+scenes.forEach(boot);
+</script>
+"""
+    return template.replace("__THREE_PAYLOAD__", payload_json)
 
 
 def _render_block_page(paper, analysis_payload: dict, meta: dict) -> str:
@@ -355,14 +497,16 @@ def _render_index(latest, all_blocks) -> str:
 
 
 def _empty_index() -> str:
-    return """<!doctype html>
+    backend = html.escape(BACKEND_URL)
+    label = html.escape(BACKEND_URL.replace("https://", "").replace("http://", "").rstrip("/"))
+    return f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <title>CancerHawk — Research Evolution Record</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<style>body{font:16px/1.55 system-ui;max-width:880px;margin:0 auto;padding:24px;color:#0f0;background:#000}a{color:#0f7}</style>
+<style>body{{font:16px/1.55 system-ui;max-width:880px;margin:0 auto;padding:24px;color:#0f0;background:#000}}a{{color:#0f7}}</style>
 </head><body>
 <h1>CancerHawk · Research Evolution Record</h1>
-<p>No blocks published yet. Start the local engine: <code>python app/main.py</code>, open <a href="http://localhost:8765">localhost:8765</a>, paste your OpenRouter key and run.</p>
+<p>No blocks published yet. Start the engine: <code>python -m app.main</code>, open <a href="{backend}">{label}</a>, paste your OpenRouter key and run.</p>
 </body></html>
 """
 
@@ -835,80 +979,128 @@ def _md_to_sections_html(md: str, skip_headings: set[str] | None = None) -> str:
 
 
 def try_git_publish(block_n: int) -> str:
+    """Commit ``results/`` and push.
+
+    Two modes:
+      - **Worker mode** (Railway): if ``GITHUB_TOKEN`` and ``GITHUB_REPO`` are
+        in the environment, use a token-authenticated remote URL
+        (``https://x-access-token:<TOKEN>@github.com/<REPO>.git``) and
+        non-interactive committer identity. This is how the deployed worker
+        publishes back to the GitHub repo so Vercel + Pages rebuild.
+      - **Local mode** (laptop): if no token is set, fall back to the ambient
+        ``git push`` which uses the user's configured remote and credentials.
+    """
     msg = f"publish: block {block_n}"
+    token = os.environ.get("GITHUB_TOKEN", "").strip()
+    repo = os.environ.get("GITHUB_REPO", "").strip()
+    branch = os.environ.get("GITHUB_BRANCH", "master").strip() or "master"
+    committer_name = os.environ.get("GIT_COMMITTER_NAME", "cancerhawk-worker")
+    committer_email = os.environ.get("GIT_COMMITTER_EMAIL", "worker@cancerhawk.local")
+
+    env = os.environ.copy()
+    env["GIT_TERMINAL_PROMPT"] = "0"  # never prompt for credentials
+    env.setdefault("GIT_AUTHOR_NAME", committer_name)
+    env.setdefault("GIT_AUTHOR_EMAIL", committer_email)
+    env.setdefault("GIT_COMMITTER_NAME", committer_name)
+    env.setdefault("GIT_COMMITTER_EMAIL", committer_email)
+
+    def _run(args: list[str]) -> subprocess.CompletedProcess:
+        return subprocess.run(args, cwd=REPO_ROOT, check=True, capture_output=True, env=env)
+
     try:
-        subprocess.run(["git", "add", "-f", "results"], cwd=REPO_ROOT, check=True, capture_output=True)
-        subprocess.run(
-            ["git", "commit", "-m", msg], cwd=REPO_ROOT, check=True, capture_output=True
-        )
-        subprocess.run(["git", "push"], cwd=REPO_ROOT, check=True, capture_output=True)
+        _run(["git", "add", "-f", "results"])
+        # Allow empty commit when the only change is rewriting index.html — but
+        # `git commit` will still error "nothing to commit" if all paths match
+        # HEAD. Use `--allow-empty=False` and tolerate the no-op exit.
+        try:
+            _run(["git", "commit", "-m", msg])
+        except subprocess.CalledProcessError as exc:
+            stderr = (exc.stderr or b"").decode(errors="replace")
+            if "nothing to commit" in stderr or "no changes added" in stderr:
+                return f"no changes for block {block_n}"
+            raise
+
+        if token and repo:
+            push_url = f"https://x-access-token:{token}@github.com/{repo}.git"
+            _run(["git", "push", push_url, f"HEAD:{branch}"])
+        else:
+            _run(["git", "push"])
+
         return f"pushed block {block_n}"
     except subprocess.CalledProcessError as exc:
-        return f"git failed: {exc.stderr.decode(errors='replace')[:200] if exc.stderr else exc}"
+        stderr = (exc.stderr or b"").decode(errors="replace")
+        # Strip the token from any error message before returning it.
+        if token:
+            stderr = stderr.replace(token, "***")
+        return f"git failed: {stderr[:200] if stderr else exc}"
     except FileNotFoundError:
         return "git not available"
 
 
 def _render_run_page() -> str:
-    return """<!doctype html>
+    backend = BACKEND_URL.rstrip("/")
+    backend_js = json.dumps(backend)
+    backend_html = html.escape(backend)
+    return f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <title>Run a CancerHawk Block</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
-:root{color-scheme:dark}
-*{box-sizing:border-box}
-body{font:16px/1.6 -apple-system,Segoe UI,Helvetica,Arial,sans-serif;margin:0;background:#050a06;color:#c8e6c9}
-header{padding:24px clamp(18px,4vw,44px);border-bottom:1px solid #1a3a1a;background:#071407}
-h1{color:#6fdb6f;margin:0 0 8px;line-height:1.15}
-a{color:#6fdb6f}
-.site-nav{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
-.site-nav a{color:#071407;background:#6fdb6f;border-radius:999px;padding:6px 11px;text-decoration:none;font-size:13px;font-weight:700}
-main{padding:24px clamp(18px,4vw,44px)}
-.status{border:1px solid #1a3a1a;background:#0a1f0a;border-radius:10px;padding:14px 16px;margin-bottom:18px}
-.status strong{color:#d7ffd7}
-.actions{display:flex;flex-wrap:wrap;gap:12px;margin:14px 0}
-.button{border:1px solid #6fdb6f;background:#6fdb6f;color:#061006;border-radius:8px;padding:10px 13px;text-decoration:none;font-weight:700}
-.button.secondary{background:#071407;color:#c8e6c9;border-color:#1a3a1a}
-code,pre{font-family:ui-monospace,Menlo,Consolas,monospace}
-pre{background:#071407;border:1px solid #1a3a1a;border-radius:10px;padding:14px;overflow:auto}
-.backend-frame{width:100%;height:78vh;border:1px solid #1a3a1a;border-radius:12px;background:#000;display:none}
-.notes{max-width:920px;color:#a4c4a4}
+:root{{color-scheme:dark}}
+*{{box-sizing:border-box}}
+body{{font:16px/1.6 -apple-system,Segoe UI,Helvetica,Arial,sans-serif;margin:0;background:#050a06;color:#c8e6c9}}
+header{{padding:24px clamp(18px,4vw,44px);border-bottom:1px solid #1a3a1a;background:#071407}}
+h1{{color:#6fdb6f;margin:0 0 8px;line-height:1.15}}
+a{{color:#6fdb6f}}
+.site-nav{{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}}
+.site-nav a{{color:#071407;background:#6fdb6f;border-radius:999px;padding:6px 11px;text-decoration:none;font-size:13px;font-weight:700}}
+main{{padding:24px clamp(18px,4vw,44px)}}
+.status{{border:1px solid #1a3a1a;background:#0a1f0a;border-radius:10px;padding:14px 16px;margin-bottom:18px}}
+.status strong{{color:#d7ffd7}}
+.actions{{display:flex;flex-wrap:wrap;gap:12px;margin:14px 0}}
+.button{{border:1px solid #6fdb6f;background:#6fdb6f;color:#061006;border-radius:8px;padding:10px 13px;text-decoration:none;font-weight:700}}
+.button.secondary{{background:#071407;color:#c8e6c9;border-color:#1a3a1a}}
+code,pre{{font-family:ui-monospace,Menlo,Consolas,monospace}}
+pre{{background:#071407;border:1px solid #1a3a1a;border-radius:10px;padding:14px;overflow:auto}}
+.backend-frame{{width:100%;height:78vh;border:1px solid #1a3a1a;border-radius:12px;background:#000;display:none}}
+.notes{{max-width:920px;color:#a4c4a4}}
 </style></head><body>
 <header>
   <h1>Run a CancerHawk Block</h1>
-  <p>Generate the next research block from your own OpenRouter API key using the local backend.</p>
+  <p>Generate the next research block from your own OpenRouter API key using the deployed Railway worker.</p>
   <nav class="site-nav"><a href="./">Latest block</a><a href="blocks.html">All blocks</a></nav>
 </header>
 <main>
-  <section class="status" id="status"><strong>Checking local backend...</strong></section>
+  <section class="status" id="status"><strong>Checking backend...</strong></section>
   <div class="actions">
-    <a class="button" href="http://localhost:8765" target="_blank" rel="noreferrer">Open local backend</a>
+    <a class="button" href="{backend_html}" target="_blank" rel="noreferrer">Open backend</a>
     <button class="button secondary" type="button" id="retry">Check again</button>
   </div>
-  <iframe class="backend-frame" id="backend" title="CancerHawk local backend" src="about:blank"></iframe>
+  <iframe class="backend-frame" id="backend" title="CancerHawk backend" src="about:blank"></iframe>
   <section class="notes">
-    <h2>Start the backend</h2>
-    <p>GitHub Pages is static, so it cannot run Python by itself. Start CancerHawk locally, then this page will display the backend here.</p>
-    <pre>uv run --with-requirements app/requirements.txt --with-requirements app/requirements-dev.txt python -m app.main</pre>
-    <p>Once the backend is running, paste your OpenRouter API key, choose models, and run a fresh block. Completed blocks publish into <code>results/block-N/</code>. If you enable git publishing locally, the backend can commit and push the generated block to GitHub Pages.</p>
+    <h2>Backend</h2>
+    <p>The static site (Vercel/Pages) cannot run Python; it talks to a deployed FastAPI worker over WebSocket. The worker URL is <code>{backend_html}</code>.</p>
+    <pre>python -m app.main   # local dev (port 8765 by default)</pre>
+    <p>Once the backend is reachable, paste your OpenRouter API key, choose models, and run. Completed blocks publish into <code>results/block-N/</code>. If <code>GITHUB_TOKEN</code> is set in the worker environment, blocks are auto-pushed to GitHub and Vercel auto-rebuilds the public site.</p>
   </section>
 </main>
 <script>
+const BACKEND_URL = {backend_js};
 const statusEl = document.getElementById('status');
 const frame = document.getElementById('backend');
-async function checkBackend(){
-  statusEl.innerHTML = '<strong>Checking local backend...</strong>';
-  try {
-    const res = await fetch('http://localhost:8765/api/health', {cache:'no-store'});
+async function checkBackend(){{
+  statusEl.innerHTML = '<strong>Checking backend...</strong>';
+  try {{
+    const res = await fetch(BACKEND_URL + '/api/health', {{cache:'no-store'}});
     if (!res.ok) throw new Error('health check failed');
-    statusEl.innerHTML = '<strong>Backend detected.</strong> The local CancerHawk control panel is embedded below.';
-    frame.src = 'http://localhost:8765';
+    statusEl.innerHTML = '<strong>Backend detected.</strong> The CancerHawk control panel is embedded below.';
+    frame.src = BACKEND_URL;
     frame.style.display = 'block';
-  } catch (err) {
-    statusEl.innerHTML = '<strong>Backend not running.</strong> Start it locally, then check again.';
+  }} catch (err) {{
+    statusEl.innerHTML = '<strong>Backend not reachable.</strong> Confirm the worker is deployed at ' + BACKEND_URL + ' and check again.';
     frame.style.display = 'none';
-  }
-}
+  }}
+}}
 document.getElementById('retry').addEventListener('click', checkBackend);
 checkBackend();
 </script>
@@ -988,10 +1180,14 @@ pre {{ white-space: pre-wrap; word-wrap: break-word; background: #0a1f0a; paddin
 .simulation-copy h4 {{ margin-bottom: 4px; }}
 .simulation-stage {{ position: relative; height: 320px; border-radius: 14px; overflow: hidden; background: radial-gradient(circle at 50% 40%, rgba(111,219,111,0.18), rgba(5,10,6,0.96) 62%); border: 1px solid rgba(111,219,111,0.24); overflow-anchor: none; }}
 .simulation-stage canvas {{ width: 100%; height: 100%; display: block; }}
+.three-stage {{ position: relative; aspect-ratio: 16/9; min-height: 320px; border-radius: 14px; overflow: hidden; background: #000; border: 1px solid rgba(66,198,255,0.32); }}
+.three-stage canvas {{ width: 100%; height: 100%; display: block; }}
+.simulation-card.threejs {{ border-left-color: #42c6ff; }}
+.simulation-track-heading {{ color: #6fdb6f; margin: 28px 0 12px; font-size: 14px; letter-spacing: 0.08em; text-transform: uppercase; border-bottom: 1px solid #1a3a1a; padding-bottom: 6px; }}
 .simulation-overlay {{ position: absolute; left: 14px; right: 14px; bottom: 12px; display: flex; justify-content: space-between; gap: 10px; align-items: center; color: #d7ffd7; font-size: 12px; text-shadow: 0 1px 8px #000; pointer-events: none; }}
 .simulation-overlay span {{ color: #42c6ff; text-transform: uppercase; letter-spacing: 0.08em; }}
 .simulation-overlay strong {{ text-align: right; max-width: 60%; }}
-@media (max-width: 860px) {{ .simulation-card {{ grid-template-columns: 1fr; }} .simulation-stage {{ height: 280px; }} }}
+@media (max-width: 860px) {{ .simulation-card {{ grid-template-columns: 1fr; }} .simulation-stage {{ height: 280px; }} .three-stage {{ min-height: 240px; }} }}
 </style>
 </head><body>
 <header>

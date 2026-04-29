@@ -54,14 +54,23 @@ from .peer_review_engine import (  # noqa: E402
 PORT = int(os.environ.get("PORT", "8765"))
 
 app = FastAPI(title="CancerHawk")
+
+# CORS allowlist — set CANCERHAWK_CORS_ORIGINS as a comma-separated list to
+# add the Vercel and any custom origins on Railway. Default keeps GH Pages +
+# localhost dev working.
+_default_cors = (
+    "https://asimog.github.io,"
+    "https://asimog.github.io/cancerhawk,"
+    "http://localhost:8765,"
+    "http://127.0.0.1:8765"
+)
+_cors_origins = [
+    o.strip() for o in os.environ.get("CANCERHAWK_CORS_ORIGINS", _default_cors).split(",")
+    if o.strip()
+]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://asimog.github.io",
-        "https://asimog.github.io/cancerhawk",
-        "http://localhost:8765",
-        "http://127.0.0.1:8765",
-    ],
+    allow_origins=_cors_origins,
     allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )

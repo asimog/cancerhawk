@@ -49,22 +49,15 @@ The `results/index.html` landing page shows the latest block with all three sect
 ## Quick Start
 
 ### Windows
-Double-click **"Start CancerHawk.bat"**
-
-Backend and frontend windows open automatically. The **backend window** shows live API call logs.
+Double-click **`install_cancerhawk.bat`** once, then **`run_cancerhawk.bat`** to start the worker. The run window shows live API call logs.
 
 ### Manual
 ```bash
-# Terminal 1 — Backend
 cd D:\mythOS\cancerhawk
-python -m uvicorn app.main:app --host 127.0.0.1 --port 8765
-
-# Terminal 2 — Frontend
-cd D:\mythOS\cancerhawk\app\web
-npm install
-npm run dev
+pip install -r app/requirements.txt
+python -m app.main
 ```
-Open http://localhost:8765
+Open <http://localhost:8765>. The FastAPI backend serves both the API and the static UI from `app/web/` — there is no separate frontend dev server.
 
 ## Architecture
 
@@ -112,8 +105,7 @@ Each `results/block-N/` contains:
 
 | File | Purpose |
 |------|---------|
-| **Start CancerHawk.bat** | Full launcher — checks deps, installs, starts both servers |
-| **Run Backend.bat** | Just start the backend (logs in this window) |
-| **Run Frontend.bat** | Just start the frontend dev server |
+| **install_cancerhawk.bat** | One-time setup — checks Python, upgrades pip, installs `app/requirements.txt`, creates `results/` |
+| **run_cancerhawk.bat** | Daily launcher — frees port 8765 if stale, opens browser, runs the FastAPI worker in the foreground with live API call logs |
 
 The backend window displays the same structured log format as MOTO.

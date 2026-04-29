@@ -119,6 +119,62 @@ def test_render_simulations_with_entry():
     assert "counterfactual_perturbation" in html_out
 
 
+def test_render_simulations_includes_threejs_when_present():
+    sims = [
+        {
+            "id": "canvas-2d",
+            "title": "Canvas 2D",
+            "type": "html5_canvas",
+            "description": "2D scene.",
+            "rationale": "fast",
+            "expected_metrics": ["x"],
+            "scene": "trajectory_manifold",
+            "seed": 1,
+        },
+        {
+            "id": "tumor-volume-3d",
+            "title": "Tumor Volume 3D",
+            "type": "threejs",
+            "description": "3D volumetric scene.",
+            "rationale": "depth",
+            "expected_metrics": ["volumetric_stability"],
+            "three_scene": "tumor_volume_3d",
+            "seed": 2,
+            "parameters": {"confidence": 0.6},
+        },
+    ]
+    out = _render_simulations(sims)
+    assert '<canvas id="sim-canvas-2d"' in out
+    assert 'id="three-tumor-volume-3d"' in out
+    assert "three-stage" in out
+    assert 'type="importmap"' in out
+    assert "three.module.js" in out
+    assert "HTML5 Canvas (2D)" in out
+    assert "Three.js (3D / WebGL)" in out
+
+
+def test_render_simulations_omits_threejs_when_absent():
+    sims = [
+        {
+            "id": "only-2d",
+            "title": "Only 2D",
+            "type": "html5_canvas",
+            "description": "2D scene.",
+            "rationale": "fast",
+            "expected_metrics": ["x"],
+            "scene": "trajectory_manifold",
+            "seed": 1,
+        }
+    ]
+    out = _render_simulations(sims)
+    assert '<canvas id="sim-only-2d"' in out
+    # Three.js plumbing must not be injected when no 3D specs are present.
+    assert 'type="importmap"' not in out
+    assert "three.module.js" not in out
+    assert "three-stage" not in out
+    assert "Three.js (3D / WebGL)" not in out
+
+
 def test_render_simulations_escapes_script_payload():
     sims = [
         {

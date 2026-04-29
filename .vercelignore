@@ -1,0 +1,13 @@
+# Vercel only needs the static publishable assets — keep the deploy bundle
+# tiny by excluding everything except results/, app/web/, and the vercel
+# config itself.
+*
+
+!results
+!results/**
+
+!app
+!app/web
+!app/web/**
+
+!vercel.json

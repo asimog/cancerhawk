@@ -1,8 +1,15 @@
-"""Native HTML5 canvas simulation generation for CancerHawk blocks.
+"""Native browser simulation generation for CancerHawk blocks.
 
 The peer-review engine may return prose simulation proposals. This module turns
 the completed paper and review context into runnable browser-native scenes that
 can be published alongside each block without a separate build step.
+
+Two visualization tracks per block:
+  - **HTML5 Canvas (2D)** — fast, dependency-free, deterministic.
+  - **Three.js (WebGL 3D)** — loaded from a CDN via importmap; deterministic
+    from the same seed. Renders tumor-volume / mitotic-lattice /
+    perturbation-cone scenes that are hard to convey in 2D.
+The publisher renders both and toggles them in the Simulations tab.
 """
 
 from __future__ import annotations
@@ -19,12 +26,16 @@ def generate_html5_simulations(
     peer_reviews: list[dict],
     recommended_simulations: list[dict] | None = None,
 ) -> list[dict]:
-    """Return runnable HTML5 canvas simulation specs for the published page.
+    """Return runnable simulation specs (2D canvas + Three.js) for publishing.
 
     Peer reviews are still the source of truth for scientific pressure-testing,
     but they are often conservative and may not emit a full runnable proposal.
     In that case we synthesize a small, deterministic set of visual experiments
     from the current paper so the Simulations tab is never empty.
+
+    Returns up to 6 specs (3 × 2D canvas + 3 × Three.js). Each spec carries
+    ``type`` (``html5_canvas`` or ``threejs``), a deterministic ``seed``, and
+    ``parameters`` for the renderer.
     """
 
     base_specs = _normalise_peer_review_simulations(recommended_simulations or [])
@@ -115,8 +126,93 @@ def generate_html5_simulations(
         },
     ]
 
-    merged = base_specs + [s for s in generated if s["id"] not in {b.get("id") for b in base_specs}]
-    return merged[:3]
+    threejs_specs = [
+        {
+            "id": "tumor-volume-3d",
+            "title": "Tumor Volume (3D)",
+            "type": "threejs",
+            "description": (
+                "Volumetric point-cloud tumor with phenotype-coloured clusters that grow, "
+                "divide, and apoptose over time. Rotates the mass to expose where the "
+                "model places phenotype boundaries."
+            ),
+            "rationale": (
+                "The 2D manifold view collapses depth — a 3D volumetric rendering tests "
+                "whether claimed phenotype clusters survive when seen from arbitrary angles."
+            ),
+            "expected_metrics": [
+                "phenotype-cluster volumetric stability",
+                "intra-cluster density",
+                "boundary sharpness under rotation",
+            ],
+            "three_scene": "tumor_volume_3d",
+            "seed": seed + 53,
+            "parameters": {
+                "title": title,
+                "confidence": market_price,
+                "critique": critique,
+                "catalyst": catalysts[0] if catalysts else "",
+            },
+        },
+        {
+            "id": "mitotic-lattice-3d",
+            "title": "Mitotic Lattice (3D)",
+            "type": "threejs",
+            "description": (
+                "Rotating 3D lattice of cells with division events sampled from the "
+                "validator-emitted novelty distribution. Daughter cells inherit colour "
+                "from parent phenotype, exposing lineage drift."
+            ),
+            "rationale": (
+                "Hooks the falsifier visually: if the paper's mechanism predicts a specific "
+                "division geometry, this scene makes deviations from it immediately visible."
+            ),
+            "expected_metrics": [
+                "division-rate per phenotype",
+                "lineage-drift entropy",
+                "spatial clustering of mitotic events",
+            ],
+            "three_scene": "mitotic_lattice_3d",
+            "seed": seed + 71,
+            "parameters": {
+                "title": title,
+                "confidence": market_price,
+                "critique": critique,
+                "catalyst": catalysts[1] if len(catalysts) > 1 else "",
+            },
+        },
+        {
+            "id": "perturbation-cone-3d",
+            "title": "Perturbation Cone (3D)",
+            "type": "threejs",
+            "description": (
+                "3D analog of the counterfactual scene: treated trajectories spread out "
+                "from a baseline manifold along a confidence-weighted cone. Cone width "
+                "tracks acceptance probability."
+            ),
+            "rationale": (
+                "Forces the prediction-vs-observation gap into a single visual. A narrow, "
+                "well-aimed cone implies confident divergence; a fat cone signals high "
+                "predictive uncertainty."
+            ),
+            "expected_metrics": [
+                "cone aperture",
+                "trajectory bundle coherence",
+                "off-axis trajectory frequency",
+            ],
+            "three_scene": "perturbation_cone_3d",
+            "seed": seed + 89,
+            "parameters": {
+                "title": title,
+                "confidence": market_price,
+                "critique": critique,
+                "catalyst": catalysts[2] if len(catalysts) > 2 else "",
+            },
+        },
+    ]
+
+    merged_2d = base_specs + [s for s in generated if s["id"] not in {b.get("id") for b in base_specs}]
+    return merged_2d[:3] + threejs_specs[:3]
 
 
 def _normalise_peer_review_simulations(simulations: list[dict]) -> list[dict]:

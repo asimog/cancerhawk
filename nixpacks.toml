@@ -1,0 +1,18 @@
+# Nixpacks build config for the Railway worker.
+#
+# Pins Python 3.12 (matches the dev Python tested locally). The worker only
+# needs the `app/` package and its requirements; the vendored `hermes-agent/`,
+# `MiroShark/`, `G0DM0D3/`, and `pretext/` directories are NOT installed on
+# the worker — they're vendored for reference and stay out of the build.
+
+[phases.setup]
+nixPkgs = ["python312", "gcc", "git"]
+
+[phases.install]
+cmds = [
+  "python -m pip install --upgrade pip",
+  "python -m pip install --no-cache-dir -r app/requirements.txt"
+]
+
+[start]
+cmd = "python -m app.main"
