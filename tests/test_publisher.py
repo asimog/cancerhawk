@@ -9,6 +9,7 @@ from app.publisher import (
     _render_simulations,
     _archetype_table,
     _topics_table,
+    load_previous_block_context,
     publish_block,
 )
 
@@ -254,8 +255,48 @@ def test_publish_block_rewrites_index_to_latest_block(tmp_path, monkeypatch):
     )
 
     index_html = (tmp_path / "results" / "index.html").read_text(encoding="utf-8")
+    archive_html = (tmp_path / "results" / "blocks.html").read_text(encoding="utf-8")
     assert meta_1["block"] == 1
     assert meta_2["block"] == 2
     assert "CancerHawk · Block 2" in index_html
     assert "second goal" in index_html
     assert "block-2/paper.html" in index_html
+    assert "CancerHawk Block Archive" in archive_html
+    assert "block-1/paper.html" in archive_html
+    assert "block-2/paper.html" in archive_html
+
+
+def test_load_previous_block_context_includes_citable_urls(tmp_path, monkeypatch):
+    monkeypatch.setattr(publisher, "REPO_ROOT", tmp_path)
+    monkeypatch.setattr(publisher, "RESULTS_DIR", tmp_path / "results")
+
+    class FakePaper:
+        title = "Prior Mechanism"
+        sections = [{"heading": "Mechanism", "content": "A useful prior finding."}]
+        accepted_submissions = ["direction"]
+        rejections = []
+
+        def full_text(self):
+            return "# Prior Mechanism\n\n## Mechanism\n\nA useful prior finding."
+
+    class FakeAnalysis:
+        archetypes = []
+        market_price = 0.5
+        score_matrix = {}
+        consensus_dim = {}
+        headline_catalysts = []
+
+    publish_block(
+        paper=FakePaper(),
+        analysis=FakeAnalysis(),
+        derived_topics=[{"title": "Follow the signal", "rationale": "It extends the prior."}],
+        research_goal="prior goal",
+        models={},
+        peer_reviews=[],
+        simulations=[],
+    )
+
+    context = load_previous_block_context()
+    assert "CancerHawk Block 1" in context
+    assert "https://asimog.github.io/cancerhawk/block-1/paper.html" in context
+    assert "A useful prior finding" in context

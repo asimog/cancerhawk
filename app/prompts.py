@@ -19,6 +19,7 @@ def submitter_prompt(
     research_goal: str,
     prior_rejections: list[str],
     prior_accepted: list[str] | None = None,
+    previous_block_context: str = "",
 ) -> list[dict]:
     rejections = ""
     if prior_rejections:
@@ -44,6 +45,16 @@ def submitter_prompt(
             "Adjacent extensions are welcome; near-duplicates will be rejected."
         )
 
+    prior_blocks = ""
+    if previous_block_context.strip():
+        prior_blocks = (
+            "\nPREVIOUS CANCERHAWK BLOCKS YOU MAY CITE OR EXTEND WHEN RELEVANT:\n"
+            f"{previous_block_context[:6000]}\n\n"
+            "If a prior block is relevant, explicitly cite it as "
+            "`CancerHawk Block N` and explain whether you are extending, "
+            "challenging, or reusing its mechanism. Do not repeat prior work."
+        )
+
     return [
         {"role": "system", "content": DOMAIN_FRAME},
         {
@@ -57,6 +68,7 @@ def submitter_prompt(
                 "  3. The single most likely failure mode.\n"
                 "  4. A 3-paragraph case for why this is worth pursuing.\n"
                 f"{aggregate}"
+                f"{prior_blocks}"
                 f"{rejections}\n\n"
                 "Be specific. Cite real biology where you can; mark uncertainty."
             ),
@@ -82,8 +94,20 @@ def validator_prompt(submission: str) -> list[dict]:
     ]
 
 
-def compiler_outline_prompt(accepted_submissions: list[str], research_goal: str) -> list[dict]:
+def compiler_outline_prompt(
+    accepted_submissions: list[str],
+    research_goal: str,
+    previous_block_context: str = "",
+) -> list[dict]:
     joined = "\n\n".join(f"[{i + 1}] {s}" for i, s in enumerate(accepted_submissions))
+    prior = ""
+    if previous_block_context.strip():
+        prior = (
+            "\n\nPRIOR CANCERHAWK BLOCKS THAT MAY BE CITED WHEN APPROPRIATE:\n"
+            f"{previous_block_context[:7000]}\n\n"
+            "When the new paper depends on a prior result, include a section note "
+            "or citation phrase such as `as established in CancerHawk Block N`."
+        )
     return [
         {"role": "system", "content": DOMAIN_FRAME},
         {
@@ -100,6 +124,7 @@ def compiler_outline_prompt(accepted_submissions: list[str], research_goal: str)
                 "Use 5-8 sections in this order: Introduction, Background, Mechanism, "
                 "Proposed Experiment, Predicted Results, Failure Modes, Translational "
                 "Implications, Conclusion.\n\n"
+                f"{prior}"
                 f"SUBMISSIONS:\n{joined}"
             ),
         },
@@ -107,9 +132,19 @@ def compiler_outline_prompt(accepted_submissions: list[str], research_goal: str)
 
 
 def compiler_section_prompt(
-    title: str, section: dict, prior_sections: list[dict], research_goal: str
+    title: str,
+    section: dict,
+    prior_sections: list[dict],
+    research_goal: str,
+    previous_block_context: str = "",
 ) -> list[dict]:
     prior = "\n".join(f"### {s['heading']}\n{s['content'][:600]}" for s in prior_sections)
+    prior_blocks = ""
+    if previous_block_context.strip():
+        prior_blocks = (
+            "\n\nPREVIOUS BLOCK CONTEXT FOR CITATION/CONTINUITY:\n"
+            f"{previous_block_context[:5000]}\n"
+        )
     return [
         {"role": "system", "content": DOMAIN_FRAME},
         {
@@ -122,7 +157,10 @@ def compiler_section_prompt(
                 "Write 400-900 words of dense, mechanism-level prose. No bullet "
                 "lists; flowing paragraphs. Tie this section to the rest of the "
                 "paper but do NOT restate prior sections.\n\n"
+                "If prior CancerHawk blocks are scientifically relevant, cite them "
+                "in prose as `CancerHawk Block N`; otherwise ignore them.\n\n"
                 f"PRIOR SECTIONS (for continuity):\n{prior or '(none yet)'}"
+                f"{prior_blocks}"
             ),
         },
     ]

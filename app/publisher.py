@@ -24,6 +24,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 RESULTS_DIR = REPO_ROOT / "results"
 BLOCK_DIR_RE = re.compile(r"^block-(\d+)$")
+PUBLIC_BASE_URL = "https://asimog.github.io/cancerhawk"
 
 
 def next_block_number() -> int:
@@ -101,28 +102,60 @@ def publish_block(
     return {"block": block_n, "path": str(block_dir.relative_to(REPO_ROOT)), "meta": block_meta}
 
 
-def _rewrite_index() -> None:
-    blocks = []
-    for entry in RESULTS_DIR.iterdir():
-        m = BLOCK_DIR_RE.match(entry.name)
-        if not m:
-            continue
-        meta_path = entry / "block.json"
-        analysis_path = entry / "analysis.json"
-        if not meta_path.is_file() or not analysis_path.is_file():
-            continue
-        meta = json.loads(meta_path.read_text(encoding="utf-8"))
-        analysis = json.loads(analysis_path.read_text(encoding="utf-8"))
-        paper_md = (entry / "paper.md").read_text(encoding="utf-8")
-        blocks.append((int(m.group(1)), meta, analysis, paper_md))
+def load_previous_block_context(limit: int = 3) -> str:
+    """Return concise prior-block context for Block N+1 generation."""
+    blocks = _load_blocks()
+    if not blocks:
+        return ""
+    context_blocks = blocks[:limit]
+    chunks = []
+    for n, meta, analysis, paper_md in context_blocks:
+        abstract = _paper_excerpt(paper_md, max_chars=1800)
+        topics = analysis.get("derived_topics", [])[:3]
+        topic_lines = "\n".join(
+            f"  - {t.get('title', '')}: {t.get('rationale', '')}" for t in topics
+        )
+        chunks.append(
+            f"[CancerHawk Block {n}] {meta.get('title', 'Untitled')}\n"
+            f"URL: {PUBLIC_BASE_URL}/block-{n}/paper.html\n"
+            f"Research goal: {meta.get('research_goal', '')}\n"
+            f"Market confidence: {int(float(meta.get('market_price', 0)) * 100)}%\n"
+            f"Useful prior findings:\n{abstract}\n"
+            f"Next-topic seeds:\n{topic_lines or '  - None recorded.'}"
+        )
+    return "\n\n".join(chunks)
 
-    blocks.sort(key=lambda x: x[0], reverse=True)
+
+def _rewrite_index() -> None:
+    blocks = _load_blocks()
     if blocks:
         latest = blocks[0]
         index_html = _render_index(latest, blocks)
     else:
         index_html = _empty_index()
     (RESULTS_DIR / "index.html").write_text(index_html, encoding="utf-8")
+    (RESULTS_DIR / "blocks.html").write_text(_render_archive(blocks), encoding="utf-8")
+
+
+def _load_blocks() -> list[tuple[int, dict, dict, str]]:
+    blocks = []
+    if not RESULTS_DIR.is_dir():
+        return blocks
+    for entry in RESULTS_DIR.iterdir():
+        m = BLOCK_DIR_RE.match(entry.name)
+        if not m:
+            continue
+        meta_path = entry / "block.json"
+        analysis_path = entry / "analysis.json"
+        paper_path = entry / "paper.md"
+        if not meta_path.is_file() or not analysis_path.is_file() or not paper_path.is_file():
+            continue
+        meta = json.loads(meta_path.read_text(encoding="utf-8"))
+        analysis = json.loads(analysis_path.read_text(encoding="utf-8"))
+        paper_md = paper_path.read_text(encoding="utf-8")
+        blocks.append((int(m.group(1)), meta, analysis, paper_md))
+    blocks.sort(key=lambda x: x[0], reverse=True)
+    return blocks
 
 
 # ===== HTML rendering =====
@@ -279,6 +312,7 @@ def _render_block_page(paper, analysis_payload: dict, meta: dict) -> str:
         consensus_json=html.escape(json.dumps(analysis_payload["consensus_dim"])),
         score_matrix_json=html.escape(json.dumps(analysis_payload["score_matrix"])),
         block_history_html="",
+        nav_html=_nav_html(meta["block"], in_block_page=True),
     )
 
 
@@ -311,6 +345,7 @@ def _render_index(latest, all_blocks) -> str:
         consensus_json=html.escape(json.dumps(analysis_payload["consensus_dim"])),
         score_matrix_json=html.escape(json.dumps(analysis_payload["score_matrix"])),
         block_history_html=history_html,
+        nav_html=_nav_html(meta["block"], in_block_page=False),
     )
 
 
@@ -325,6 +360,59 @@ def _empty_index() -> str:
 <p>No blocks published yet. Start the local engine: <code>python app/main.py</code>, open <a href="http://localhost:8765">localhost:8765</a>, paste your OpenRouter key and run.</p>
 </body></html>
 """
+
+
+def _render_archive(blocks) -> str:
+    cards = []
+    for n, meta, analysis, paper_md in blocks:
+        excerpt = html.escape(_paper_excerpt(paper_md, max_chars=420))
+        title = html.escape(str(meta.get("title", "Untitled")))
+        goal = html.escape(str(meta.get("research_goal", "")))
+        timestamp = html.escape(str(meta.get("timestamp", ""))[:19])
+        market_pct = int(float(analysis.get("market_price", meta.get("market_price", 0)) or 0) * 100)
+        cards.append(
+            f'<article class="archive-card">'
+            f'<div class="archive-kicker">Block {n} · {timestamp} · {market_pct}%</div>'
+            f'<h2><a href="block-{n}/paper.html">{title}</a></h2>'
+            f'<p><strong>Research goal:</strong> {goal}</p>'
+            f'<p>{excerpt}</p>'
+            f'<p class="archive-links"><a href="block-{n}/paper.html">Open paper</a> '
+            f'<a href="block-{n}/analysis.json">Analysis JSON</a> '
+            f'<a href="block-{n}/paper.md">Markdown</a></p>'
+            f'</article>'
+        )
+    body = "".join(cards) if cards else '<p class="muted">No blocks published yet.</p>'
+    return f"""<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>CancerHawk Blocks</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+body{{font:16px/1.6 -apple-system, Segoe UI, Helvetica, Arial, sans-serif;max-width:1040px;margin:0 auto;padding:24px;background:#050a06;color:#c8e6c9}}
+a{{color:#6fdb6f}} h1,h2{{color:#6fdb6f}} header{{border-bottom:1px solid #1a3a1a;margin-bottom:22px;padding-bottom:16px}}
+.archive-card{{background:#0a1f0a;border:1px solid #1a3a1a;border-radius:16px;padding:18px;margin:16px 0}}
+.archive-kicker{{color:#8fbf8f;font-size:13px;text-transform:uppercase;letter-spacing:.06em}}
+.archive-links{{display:flex;gap:14px;flex-wrap:wrap}} .muted{{color:#6a8a6a}}
+</style></head><body>
+<header>
+  <h1>CancerHawk Block Archive</h1>
+  <p>All published research blocks. Future blocks can cite and extend these papers when appropriate.</p>
+  <p><a href="./">Latest block</a></p>
+</header>
+{body}
+</body></html>
+"""
+
+
+def _nav_html(block: int, *, in_block_page: bool) -> str:
+    latest_href = "../" if in_block_page else "./"
+    archive_href = "../blocks.html" if in_block_page else "blocks.html"
+    permanent_href = "paper.html" if in_block_page else f"block-{block}/paper.html"
+    return (
+        '<nav class="site-nav">'
+        f'<a href="{latest_href}">Latest block</a><a href="{archive_href}">All blocks</a>'
+        f'<a href="{permanent_href}">Permanent link</a>'
+        '</nav>'
+    )
 
 
 def _archetype_table(archetypes: list[dict]) -> str:
@@ -404,8 +492,6 @@ def _simulation_script(scene_payloads: list[dict]) -> str:
     if (canvas.width !== Math.floor(width * ratio) || canvas.height !== Math.floor(height * ratio)) {
       canvas.width = Math.floor(width * ratio);
       canvas.height = Math.floor(height * ratio);
-      canvas.style.width = width + 'px';
-      canvas.style.height = height + 'px';
     }
     const ctx = canvas.getContext('2d');
     ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
@@ -512,6 +598,10 @@ def _simulation_script(scene_payloads: list[dict]) -> str:
     if (!canvas) return;
     const rand = seededRandom(spec.seed);
     function frame(ms) {
+      if (!canvas.offsetParent) {
+        requestAnimationFrame(frame);
+        return;
+      }
       const time = ms / 1000;
       const fitted = fitCanvas(canvas);
       clear(fitted.ctx, fitted.width, fitted.height);
@@ -587,6 +677,20 @@ def _md_inline_to_html(text: str) -> str:
     return "\n".join(f"<p>{html.escape(p)}</p>" for p in paras)
 
 
+def _paper_excerpt(md: str, max_chars: int = 1200) -> str:
+    lines = []
+    for line in md.splitlines():
+        if line.startswith("#"):
+            continue
+        clean = line.strip()
+        if clean:
+            lines.append(clean)
+        if len(" ".join(lines)) >= max_chars:
+            break
+    excerpt = " ".join(lines)
+    return (excerpt[: max_chars - 1].rstrip() + "…") if len(excerpt) > max_chars else excerpt
+
+
 def _md_to_sections_html(md: str) -> str:
     lines = md.splitlines()
     sections = []
@@ -636,6 +740,8 @@ _PAGE_SHELL = """<!doctype html>
 * {{ box-sizing: border-box; }}
 body {{ font: 16px/1.6 -apple-system, Segoe UI, Helvetica, Arial, sans-serif; max-width: 1100px; margin: 0 auto; padding: 24px; background: #050a06; color: #c8e6c9; }}
 header {{ border-bottom: 1px solid #1a3a1a; padding-bottom: 16px; margin-bottom: 24px; }}
+.site-nav {{ display: flex; flex-wrap: wrap; gap: 10px; margin: 14px 0 0; }}
+.site-nav a {{ color: #071407; background: #6fdb6f; border-radius: 999px; padding: 6px 11px; text-decoration: none; font-size: 13px; font-weight: 700; }}
 h1 {{ color: #6fdb6f; margin: 0 0 8px 0; line-height: 1.2; }}
 h2 {{ color: #6fdb6f; border-bottom: 1px solid #1a3a1a; padding-bottom: 6px; margin-top: 32px; }}
 h3 {{ color: #6fdb6f; font-size: 15px; margin-top: 20px; }}
@@ -690,18 +796,19 @@ pre {{ white-space: pre-wrap; word-wrap: break-word; background: #0a1f0a; paddin
 .simulation-type {{ font-size: 11px; color: #42c6ff; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }}
 .simulation-copy h3 {{ margin: 6px 0 10px; font-size: 20px; color: #d7ffd7; }}
 .simulation-copy h4 {{ margin-bottom: 4px; }}
-.simulation-stage {{ position: relative; min-height: 320px; border-radius: 14px; overflow: hidden; background: radial-gradient(circle at 50% 40%, rgba(111,219,111,0.18), rgba(5,10,6,0.96) 62%); border: 1px solid rgba(111,219,111,0.24); }}
+.simulation-stage {{ position: relative; height: 320px; border-radius: 14px; overflow: hidden; background: radial-gradient(circle at 50% 40%, rgba(111,219,111,0.18), rgba(5,10,6,0.96) 62%); border: 1px solid rgba(111,219,111,0.24); overflow-anchor: none; }}
 .simulation-stage canvas {{ width: 100%; height: 100%; display: block; }}
 .simulation-overlay {{ position: absolute; left: 14px; right: 14px; bottom: 12px; display: flex; justify-content: space-between; gap: 10px; align-items: center; color: #d7ffd7; font-size: 12px; text-shadow: 0 1px 8px #000; pointer-events: none; }}
 .simulation-overlay span {{ color: #42c6ff; text-transform: uppercase; letter-spacing: 0.08em; }}
 .simulation-overlay strong {{ text-align: right; max-width: 60%; }}
-@media (max-width: 860px) {{ .simulation-card {{ grid-template-columns: 1fr; }} .simulation-stage {{ min-height: 280px; }} }}
+@media (max-width: 860px) {{ .simulation-card {{ grid-template-columns: 1fr; }} .simulation-stage {{ height: 280px; }} }}
 </style>
 </head><body>
 <header>
   <h1>{title}</h1>
   <p class="meta">CancerHawk · Block {block} · {timestamp}</p>
   <p class="meta"><strong>Research goal:</strong> {research_goal}</p>
+  {nav_html}
 </header>
 
 <aside class="disclaimer">

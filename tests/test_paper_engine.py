@@ -184,6 +184,21 @@ class TestSubmitterPromptAggregation:
         assert "KRAS" in content
         assert "CAF-targeted" in content
 
+    def test_previous_block_context_is_available_for_citation(self):
+        msgs = submitter_prompt(
+            "extend cell cinema",
+            [],
+            previous_block_context=(
+                "[CancerHawk Block 1] Cell Cinema\n"
+                "URL: https://asimog.github.io/cancerhawk/block-1/paper.html\n"
+                "Useful prior findings: latent trajectories"
+            ),
+        )
+        content = msgs[1]["content"]
+        assert "PREVIOUS CANCERHAWK BLOCKS" in content
+        assert "CancerHawk Block 1" in content
+        assert "cite" in content.lower()
+
     def test_prior_rejections_appear(self):
         msgs = submitter_prompt(
             "cure cancer",

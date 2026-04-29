@@ -8,6 +8,8 @@
 * { box-sizing: border-box; }
 body { font: 16px/1.6 -apple-system, Segoe UI, Helvetica, Arial, sans-serif; max-width: 1100px; margin: 0 auto; padding: 24px; background: #050a06; color: #c8e6c9; }
 header { border-bottom: 1px solid #1a3a1a; padding-bottom: 16px; margin-bottom: 24px; }
+.site-nav { display: flex; flex-wrap: wrap; gap: 10px; margin: 14px 0 0; }
+.site-nav a { color: #071407; background: #6fdb6f; border-radius: 999px; padding: 6px 11px; text-decoration: none; font-size: 13px; font-weight: 700; }
 h1 { color: #6fdb6f; margin: 0 0 8px 0; line-height: 1.2; }
 h2 { color: #6fdb6f; border-bottom: 1px solid #1a3a1a; padding-bottom: 6px; margin-top: 32px; }
 h3 { color: #6fdb6f; font-size: 15px; margin-top: 20px; }
@@ -62,18 +64,19 @@ pre { white-space: pre-wrap; word-wrap: break-word; background: #0a1f0a; padding
 .simulation-type { font-size: 11px; color: #42c6ff; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
 .simulation-copy h3 { margin: 6px 0 10px; font-size: 20px; color: #d7ffd7; }
 .simulation-copy h4 { margin-bottom: 4px; }
-.simulation-stage { position: relative; min-height: 320px; border-radius: 14px; overflow: hidden; background: radial-gradient(circle at 50% 40%, rgba(111,219,111,0.18), rgba(5,10,6,0.96) 62%); border: 1px solid rgba(111,219,111,0.24); }
+.simulation-stage { position: relative; height: 320px; border-radius: 14px; overflow: hidden; background: radial-gradient(circle at 50% 40%, rgba(111,219,111,0.18), rgba(5,10,6,0.96) 62%); border: 1px solid rgba(111,219,111,0.24); overflow-anchor: none; }
 .simulation-stage canvas { width: 100%; height: 100%; display: block; }
 .simulation-overlay { position: absolute; left: 14px; right: 14px; bottom: 12px; display: flex; justify-content: space-between; gap: 10px; align-items: center; color: #d7ffd7; font-size: 12px; text-shadow: 0 1px 8px #000; pointer-events: none; }
 .simulation-overlay span { color: #42c6ff; text-transform: uppercase; letter-spacing: 0.08em; }
 .simulation-overlay strong { text-align: right; max-width: 60%; }
-@media (max-width: 860px) { .simulation-card { grid-template-columns: 1fr; } .simulation-stage { min-height: 280px; } }
+@media (max-width: 860px) { .simulation-card { grid-template-columns: 1fr; } .simulation-stage { height: 280px; } }
 </style>
 </head><body>
 <header>
   <h1>Cell Cinema for Oncology: Video-Generative Priors Across Scales as a Unifying Framework for Mechanism Discovery and Therapeutic Design</h1>
   <p class="meta">CancerHawk · Block 1 · 2026-04-28T19:24:14.664493+00:00</p>
   <p class="meta"><strong>Research goal:</strong> generating cell cinema using video gen models for novel cures</p>
+  <nav class="site-nav"><a href="../">Latest block</a><a href="../blocks.html">All blocks</a><a href="paper.html">Permanent link</a></nav>
 </header>
 
 <aside class="disclaimer">
@@ -211,8 +214,6 @@ pre { white-space: pre-wrap; word-wrap: break-word; background: #0a1f0a; padding
     if (canvas.width !== Math.floor(width * ratio) || canvas.height !== Math.floor(height * ratio)) {
       canvas.width = Math.floor(width * ratio);
       canvas.height = Math.floor(height * ratio);
-      canvas.style.width = width + 'px';
-      canvas.style.height = height + 'px';
     }
     const ctx = canvas.getContext('2d');
     ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
@@ -319,6 +320,10 @@ pre { white-space: pre-wrap; word-wrap: break-word; background: #0a1f0a; padding
     if (!canvas) return;
     const rand = seededRandom(spec.seed);
     function frame(ms) {
+      if (!canvas.offsetParent) {
+        requestAnimationFrame(frame);
+        return;
+      }
       const time = ms / 1000;
       const fitted = fitCanvas(canvas);
       clear(fitted.ctx, fitted.width, fitted.height);

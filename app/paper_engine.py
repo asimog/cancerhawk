@@ -132,6 +132,7 @@ async def run_paper_engine(
     emit: EmitFn,
     tracker: TokenTracker,
     on_call: CallEmitFn,
+    previous_block_context: str = "",
 ) -> Paper:
     accepted: list[str] = []
     rejection_reasons: list[str] = []
@@ -183,6 +184,7 @@ async def run_paper_engine(
                         research_goal,
                         rejection_reasons,
                         prior_accepted=accepted,
+                        previous_block_context=previous_block_context,
                     ),
                     temperature=0.85,
                     role="submitter",
@@ -290,7 +292,7 @@ async def run_paper_engine(
     outline = await chat_json(
         api_key,
         models["compiler"],
-        compiler_outline_prompt(accepted, research_goal),
+        compiler_outline_prompt(accepted, research_goal, previous_block_context),
         temperature=0.4,
         max_tokens=4000,
         role="compiler_outline",
@@ -319,7 +321,7 @@ async def run_paper_engine(
         content = await chat(
             api_key,
             models["compiler"],
-            compiler_section_prompt(title, spec, written, research_goal),
+            compiler_section_prompt(title, spec, written, research_goal, previous_block_context),
             temperature=0.55,
             max_tokens=2200,
             role="compiler_section",

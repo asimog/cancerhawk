@@ -40,7 +40,7 @@ from .analysis_engine import run_analysis_engine  # noqa: E402
 from .openrouter import chat_json, close as close_openrouter  # noqa: E402
 from .paper_engine import run_paper_engine  # noqa: E402
 from .prompts import topic_deriver_prompt  # noqa: E402
-from .publisher import publish_block, try_git_publish  # noqa: E402
+from .publisher import load_previous_block_context, publish_block, try_git_publish  # noqa: E402
 from .simulation_engine import generate_html5_simulations  # noqa: E402
 from .token_tracker import APICall, TokenTracker  # noqa: E402
 from .peer_review_engine import (  # noqa: E402
@@ -164,6 +164,14 @@ async def ws_run(ws: WebSocket) -> None:
 
     # Main pipeline wrapped in try/except/finally
     try:
+        previous_block_context = load_previous_block_context()
+        if previous_block_context:
+            await emit(
+                "prior_blocks",
+                "Loaded prior CancerHawk blocks for optional citation/extension",
+                {"chars": len(previous_block_context)},
+            )
+
         # 1. Paper engine
         logger.info("stage_start", extra={"stage": "paper_engine"})
         paper = await run_paper_engine(
@@ -174,6 +182,7 @@ async def ws_run(ws: WebSocket) -> None:
             emit=emit,
             tracker=tracker,
             on_call=on_call,
+            previous_block_context=previous_block_context,
         )
         logger.info("stage_end", extra={"stage": "paper_engine"})
         paper_text = paper.full_text()
