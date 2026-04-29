@@ -1011,23 +1011,21 @@ pre {{ white-space: pre-wrap; word-wrap: break-word; background: #0a1f0a; paddin
 <div class="page-tabs">
   <button class="page-tab active" data-tab="paper">Paper</button>
   <button class="page-tab" data-tab="peer-reviews">Peer Reviews</button>
-  <button class="page-tab" data-tab="simulations">Simulations</button>
   <button class="page-tab" data-tab="analysis">Market Analysis</button>
 </div>
 
 <!-- Paper Content -->
 <div id="paper-tab" class="page-content active">
 {sections_html}
+<section>
+  <h2>Research Simulations</h2>
+{simulations_html}
+</section>
 </div>
 
 <!-- Peer Reviews Tab -->
 <div id="peer-reviews-tab" class="page-content">
 {peer_reviews_html}
-</div>
-
-<!-- Simulations Tab -->
-<div id="simulations-tab" class="page-content">
-{simulations_html}
 </div>
 
 <!-- Market Analysis Tab -->

@@ -20,8 +20,17 @@ locally, provide their OpenRouter API key there, and generate a new block.
 
 ## Publish
 
-Pushes to `master` deploy the `results/` directory to GitHub Pages. That means
-the public site root serves the latest generated CancerHawk block instead of the
-developer control panel or old repository dashboard.
+The repo now contains a Vercel-ready Next app in `src/app`. The frontend reads
+the generated `results/block-N/` files at build time and exposes four routes:
+
+- `/current-block`
+- `/previous-blocks`
+- `/run-research`
+- `/music`
+
+Deploy the Python backend to Railway and set `NEXT_PUBLIC_BACKEND_URL` in Vercel
+to the Railway service URL. The backend still writes completed blocks to
+`results/block-N/`; commit those generated result files when you want the Vercel
+frontend to publish the latest research.
 
 Code and results are published to https://github.com/asimog/cancerhawk

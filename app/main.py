@@ -16,6 +16,7 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+import os
 import sys
 import time
 import traceback
@@ -50,7 +51,7 @@ from .peer_review_engine import (  # noqa: E402
     consolidated_to_dict,
 )
 
-PORT = 8765
+PORT = int(os.environ.get("PORT", "8765"))
 
 app = FastAPI(title="CancerHawk")
 app.add_middleware(
