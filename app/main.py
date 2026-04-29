@@ -41,6 +41,7 @@ from .openrouter import chat_json, close as close_openrouter  # noqa: E402
 from .paper_engine import run_paper_engine  # noqa: E402
 from .prompts import topic_deriver_prompt  # noqa: E402
 from .publisher import publish_block, try_git_publish  # noqa: E402
+from .simulation_engine import generate_threejs_simulations  # noqa: E402
 from .token_tracker import APICall, TokenTracker  # noqa: E402
 from .peer_review_engine import (  # noqa: E402
     run_peer_review_engine,
@@ -239,7 +240,26 @@ async def ws_run(ws: WebSocket) -> None:
         )
         logger.info("stage_end", extra={"stage": "peer_review"})
 
-        # 4. Topic derivation
+        # 4. Native Three.js/HTML5 simulations generated from the reviewed paper.
+        logger.info("stage_start", extra={"stage": "simulation_generation"})
+        await emit("simulate", "Generating native Three.js/HTML5 simulations from peer review", None)
+        simulations = generate_threejs_simulations(
+            paper_text=paper_text,
+            analysis_result=analysis,
+            peer_reviews=peer_reviews_dict,
+            recommended_simulations=simulations_dict.get("recommended_simulations", []),
+        )
+        await emit(
+            "simulate_done",
+            f"Generated {len(simulations)} runnable Three.js simulations",
+            {"simulation_count": len(simulations)},
+        )
+        logger.info(
+            "stage_end",
+            extra={"stage": "simulation_generation", "simulation_count": len(simulations)},
+        )
+
+        # 5. Topic derivation
         logger.info("stage_start", extra={"stage": "topic_derivation"})
         await emit("derive", "Deriving next-block topics", None)
         analysis_text_for_derive = json.dumps(
@@ -264,7 +284,7 @@ async def ws_run(ws: WebSocket) -> None:
             derived_topics = []
         logger.info("stage_end", extra={"stage": "topic_derivation"})
 
-        # 4. Publish
+        # 6. Publish
         if auto_publish:
             logger.info("stage_start", extra={"stage": "publish"})
             await emit("publish", "Writing block to results/", None)
@@ -276,7 +296,7 @@ async def ws_run(ws: WebSocket) -> None:
                 research_goal=research_goal,
                 models=models_cfg,
                 peer_reviews=peer_reviews_dict,
-                simulations=simulations_dict.get("recommended_simulations", []),
+                simulations=simulations,
             )
             logger.info(
                 "publish_done",

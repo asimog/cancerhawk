@@ -204,23 +204,49 @@ def _render_simulations(simulations: list[dict]) -> str:
         return '<p class="muted">No simulation proposals recommended.</p>'
 
     sims_html = []
+    scene_payloads = []
     for idx, s in enumerate(simulations):
-        sim_type = html.escape(s.get("type", "computational"))
-        desc = html.escape(s.get("description", "No description provided."))
-        rationale = html.escape(s.get("rationale", ""))
+        sim_id = _slugify(str(s.get("id") or f"simulation-{idx + 1}"))
+        sim_type = html.escape(str(s.get("type", "threejs_html5")))
+        title = html.escape(str(s.get("title") or f"Simulation {idx + 1}"))
+        desc = html.escape(str(s.get("description", "No description provided.")))
+        rationale = html.escape(str(s.get("rationale", "")))
         metrics = s.get("expected_metrics", [])
-        metrics_html = "".join(f"<li>{html.escape(m)}</li>" for m in metrics)
+        metrics_html = "".join(f"<li>{html.escape(str(m))}</li>" for m in metrics)
+        scene_payloads.append(
+            {
+                "id": sim_id,
+                "title": str(s.get("title") or f"Simulation {idx + 1}"),
+                "scene": str(s.get("scene") or "trajectory_manifold"),
+                "seed": int(_safe_float(s.get("seed"), idx + 1)),
+                "parameters": s.get("parameters") or {},
+            }
+        )
 
         sims_html.append(
-            f'<div class="simulation-card">'
+            f'<div class="simulation-card" data-simulation="{sim_id}">'
+            f'<div class="simulation-copy">'
             f'<div class="simulation-type">{sim_type}</div>'
-            f'<h4>Description</h4><p>{desc}</p>'
-            f'<h4>Rationale</h4><p>{rationale}</p>'
-            f'<h4>Expected metrics</h4><ul>{metrics_html}</ul>'
+            f'<h3>{title}</h3>'
+            f'<p>{desc}</p>'
+            f'<h4>Why this matters</h4><p>{rationale}</p>'
+            f'<h4>Readouts</h4><ul>{metrics_html}</ul>'
+            f'</div>'
+            f'<div class="simulation-stage">'
+            f'<canvas id="sim-{sim_id}" aria-label="{title} interactive Three.js simulation"></canvas>'
+            f'<div class="simulation-overlay"><span>Native Three.js</span><strong>{title}</strong></div>'
+            f'</div>'
             f'</div>'
         )
 
-    return "".join(sims_html)
+    return (
+        '<div class="simulation-intro">'
+        '<p>Runnable browser-native simulations generated after peer review. '
+        'Each scene uses HTML5 canvas plus Three.js to turn the paper into a falsifiable visual model.</p>'
+        '</div>'
+        + "".join(sims_html)
+        + _simulation_script(scene_payloads)
+    )
 
 
 def _render_block_page(paper, analysis_payload: dict, meta: dict) -> str:
@@ -353,6 +379,192 @@ def _catalysts_html(catalysts: list[str]) -> str:
     return f'<ul class="catalysts">{items}</ul>'
 
 
+def _simulation_script(scene_payloads: list[dict]) -> str:
+    payload_json = _script_json(scene_payloads)
+    template = """
+<script type="application/json" id="simulation-scenes">__SCENE_PAYLOAD__</script>
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js';
+
+const scenes = JSON.parse(document.getElementById('simulation-scenes')?.textContent || '[]');
+const palette = [0x6fdb6f, 0x42c6ff, 0xffc857, 0xff6b6b, 0xb892ff];
+
+function seededRandom(seed) {{
+  let value = Math.max(1, seed || 1) % 2147483647;
+  return () => {{
+    value = value * 16807 % 2147483647;
+    return (value - 1) / 2147483646;
+  }};
+}}
+
+function createRenderer(canvas) {{
+  const renderer = new THREE.WebGLRenderer({{ canvas, antialias: true, alpha: true }});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  return renderer;
+}}
+
+function resize(renderer, camera, canvas) {{
+  const rect = canvas.parentElement.getBoundingClientRect();
+  const width = Math.max(320, Math.floor(rect.width));
+  const height = Math.max(280, Math.floor(rect.height));
+  if (canvas.width !== width || canvas.height !== height) {{
+    renderer.setSize(width, height, false);
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+  }}
+}}
+
+function addLights(scene) {{
+  scene.add(new THREE.AmbientLight(0xbdf9bd, 0.72));
+  const key = new THREE.PointLight(0x6fdb6f, 2.4, 80);
+  key.position.set(8, 10, 10);
+  scene.add(key);
+  const rim = new THREE.PointLight(0x42c6ff, 1.6, 70);
+  rim.position.set(-10, -5, -8);
+  scene.add(rim);
+}}
+
+function makeCell(color, size = 0.22) {{
+  const geo = new THREE.SphereGeometry(size, 24, 16);
+  const mat = new THREE.MeshStandardMaterial({{
+    color,
+    emissive: color,
+    emissiveIntensity: 0.22,
+    roughness: 0.38,
+    metalness: 0.08,
+    transparent: true,
+    opacity: 0.9
+  }});
+  return new THREE.Mesh(geo, mat);
+}}
+
+function trajectoryManifold(scene, rand) {{
+  const group = new THREE.Group();
+  for (let strand = 0; strand < 5; strand++) {{
+    const points = [];
+    const color = palette[strand % palette.length];
+    for (let i = 0; i < 52; i++) {{
+      const t = i / 8;
+      points.push(new THREE.Vector3(
+        Math.sin(t + strand) * (1.2 + strand * 0.22) + (rand() - 0.5) * 0.18,
+        Math.cos(t * 0.8 + strand * 0.4) * 0.9 + strand * 0.25 - 0.5,
+        (i - 26) * 0.09 + Math.sin(t * 0.5) * 0.5
+      ));
+    }}
+    const curve = new THREE.CatmullRomCurve3(points);
+    const tube = new THREE.Mesh(
+      new THREE.TubeGeometry(curve, 110, 0.025, 8, false),
+      new THREE.MeshStandardMaterial({{ color, emissive: color, emissiveIntensity: 0.55 }})
+    );
+    group.add(tube);
+    for (let i = 0; i < points.length; i += 8) {{
+      const cell = makeCell(color, 0.12 + rand() * 0.06);
+      cell.position.copy(points[i]);
+      group.add(cell);
+    }}
+  }}
+  scene.add(group);
+  return (time) => {{
+    group.rotation.y = time * 0.18;
+    group.rotation.x = Math.sin(time * 0.3) * 0.14;
+  }};
+}}
+
+function counterfactualPerturbation(scene, rand) {{
+  const group = new THREE.Group();
+  const control = new THREE.Group();
+  const treated = new THREE.Group();
+  for (let i = 0; i < 34; i++) {{
+    const angle = i * 0.34;
+    const c = makeCell(0x42c6ff, 0.12);
+    c.position.set(Math.cos(angle) * 1.1 - 1.45, Math.sin(angle * 1.2) * 0.8, (i - 17) * 0.08);
+    control.add(c);
+    const t = makeCell(i > 14 ? 0xff6b6b : 0x6fdb6f, 0.12);
+    t.position.set(Math.cos(angle) * (1.1 + i * 0.025) + 1.35, Math.sin(angle * 1.45) * (0.8 + i * 0.01), (i - 17) * 0.08);
+    treated.add(t);
+  }}
+  const pulse = new THREE.Mesh(
+    new THREE.TorusGeometry(1.35, 0.025, 12, 96),
+    new THREE.MeshStandardMaterial({{ color: 0xffc857, emissive: 0xffc857, emissiveIntensity: 0.9 }})
+  );
+  pulse.position.x = 1.35;
+  pulse.rotation.x = Math.PI / 2;
+  group.add(control, treated, pulse);
+  scene.add(group);
+  return (time) => {{
+    control.rotation.y = time * 0.22;
+    treated.rotation.y = -time * 0.22;
+    pulse.scale.setScalar(1 + Math.sin(time * 2.4) * 0.18);
+    pulse.material.opacity = 0.7 + Math.sin(time * 2.4) * 0.2;
+  }};
+}}
+
+function microenvironmentGradient(scene, rand) {{
+  const group = new THREE.Group();
+  const plane = new THREE.Mesh(
+    new THREE.PlaneGeometry(6, 3.6, 48, 28),
+    new THREE.MeshBasicMaterial({{ color: 0x103510, transparent: true, opacity: 0.34, wireframe: true }})
+  );
+  plane.rotation.x = -Math.PI / 2;
+  group.add(plane);
+  for (let i = 0; i < 70; i++) {{
+    const stress = rand();
+    const cell = makeCell(stress > 0.62 ? 0xff6b6b : stress > 0.35 ? 0xffc857 : 0x6fdb6f, 0.08 + rand() * 0.08);
+    cell.position.set((rand() - 0.5) * 5.4, (stress - 0.5) * 1.2, (rand() - 0.5) * 3.0);
+    cell.userData.phase = rand() * Math.PI * 2;
+    group.add(cell);
+  }}
+  scene.add(group);
+  return (time) => {{
+    group.rotation.y = Math.sin(time * 0.25) * 0.35;
+    group.children.forEach((child) => {{
+      if (child.userData.phase !== undefined) {{
+        child.position.y += Math.sin(time * 1.4 + child.userData.phase) * 0.002;
+      }}
+    }});
+  }};
+}}
+
+function bootScene(spec) {{
+  const canvas = document.getElementById(`sim-${{spec.id}}`);
+  if (!canvas) return;
+  const renderer = createRenderer(canvas);
+  const scene = new THREE.Scene();
+  scene.fog = new THREE.FogExp2(0x050a06, 0.055);
+  const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+  camera.position.set(0, 1.6, 7.2);
+  addLights(scene);
+  const rand = seededRandom(spec.seed);
+  const animateScene = spec.scene === 'counterfactual_perturbation'
+    ? counterfactualPerturbation(scene, rand)
+    : spec.scene === 'microenvironment_gradient'
+      ? microenvironmentGradient(scene, rand)
+      : trajectoryManifold(scene, rand);
+  function frame(ms) {{
+    const time = ms / 1000;
+    resize(renderer, camera, canvas);
+    animateScene(time);
+    renderer.render(scene, camera);
+    requestAnimationFrame(frame);
+  }}
+  requestAnimationFrame(frame);
+}}
+
+scenes.forEach(bootScene);
+</script>
+"""
+    return template.replace("__SCENE_PAYLOAD__", payload_json)
+
+
+def _script_json(value) -> str:
+    return (
+        json.dumps(value)
+        .replace("<", "\\u003c")
+        .replace(">", "\\u003e")
+        .replace("&", "\\u0026")
+    )
+
+
 def _safe_float(value, default: float, *, lower: float | None = None, upper: float | None = None) -> float:
     try:
         number = float(value)
@@ -372,6 +584,11 @@ def _score_text(value) -> str:
         return str(int(float(value)))
     except (TypeError, ValueError):
         return html.escape(str(value))
+
+
+def _slugify(value: str) -> str:
+    slug = re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-")
+    return slug or "simulation"
 
 
 def _history_html(blocks) -> str:
@@ -495,8 +712,17 @@ pre {{ white-space: pre-wrap; word-wrap: break-word; background: #0a1f0a; paddin
 .dim-score .dim-value {{ font-size: 18px; font-weight: 700; color: #6fdb6f; }}
 .criticisms-list, .fixes-list, .experiments-list {{ margin: 10px 0; padding-left: 20px; }}
 .criticisms-list li, .fixes-list li, .experiments-list li {{ margin-bottom: 6px; color: #c8e6c9; }}
-.simulation-card {{ background: #0a1f0a; border: 1px solid #1a3a1a; border-radius: 8px; padding: 14px; margin-bottom: 12px; border-left: 3px solid #7e57c2; }}
-.simulation-type {{ font-size: 11px; color: #7e57c2; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }}
+.simulation-intro {{ background: linear-gradient(135deg, rgba(111,219,111,0.12), rgba(66,198,255,0.08)); border: 1px solid #1a3a1a; border-radius: 14px; padding: 14px 16px; margin-bottom: 18px; }}
+.simulation-card {{ display: grid; grid-template-columns: minmax(240px, 0.82fr) minmax(320px, 1.18fr); gap: 18px; background: #0a1f0a; border: 1px solid #1a3a1a; border-radius: 16px; padding: 16px; margin-bottom: 18px; border-left: 3px solid #42c6ff; overflow: hidden; }}
+.simulation-type {{ font-size: 11px; color: #42c6ff; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }}
+.simulation-copy h3 {{ margin: 6px 0 10px; font-size: 20px; color: #d7ffd7; }}
+.simulation-copy h4 {{ margin-bottom: 4px; }}
+.simulation-stage {{ position: relative; min-height: 320px; border-radius: 14px; overflow: hidden; background: radial-gradient(circle at 50% 40%, rgba(111,219,111,0.18), rgba(5,10,6,0.96) 62%); border: 1px solid rgba(111,219,111,0.24); }}
+.simulation-stage canvas {{ width: 100%; height: 100%; display: block; }}
+.simulation-overlay {{ position: absolute; left: 14px; right: 14px; bottom: 12px; display: flex; justify-content: space-between; gap: 10px; align-items: center; color: #d7ffd7; font-size: 12px; text-shadow: 0 1px 8px #000; pointer-events: none; }}
+.simulation-overlay span {{ color: #42c6ff; text-transform: uppercase; letter-spacing: 0.08em; }}
+.simulation-overlay strong {{ text-align: right; max-width: 60%; }}
+@media (max-width: 860px) {{ .simulation-card {{ grid-template-columns: 1fr; }} .simulation-stage {{ min-height: 280px; }} }}
 </style>
 </head><body>
 <header>

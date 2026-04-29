@@ -124,14 +124,11 @@ def mock_engines():
         return cons
 
     def fake_publish_block(*args, **kwargs):
-        assert kwargs["simulations"] == [
-            {
-                "type": "statistical",
-                "description": "Run a bootstrap survival analysis.",
-                "rationale": "Check robustness of the claimed effect.",
-                "expected_metrics": ["hazard_ratio", "confidence_interval"],
-            }
-        ]
+        simulations = kwargs["simulations"]
+        assert len(simulations) == 3
+        assert all(sim["type"] == "threejs_html5" for sim in simulations)
+        assert simulations[0]["description"] == "Run a bootstrap survival analysis."
+        assert all(sim.get("scene") for sim in simulations)
         return {"block": 1, "path": "results/block-1/paper.html"}
 
     def fake_try_git_publish(*args, **kwargs):
@@ -185,6 +182,8 @@ def test_websocket_run_success(mock_engines):
         stages = [json.loads(m)["stage"] for m in messages]
         assert "start" in stages
         assert "paper_done" in stages
+        assert "simulate" in stages
+        assert "simulate_done" in stages
         assert "publish_done" in stages
         assert "done" in stages
 

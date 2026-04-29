@@ -451,6 +451,8 @@ async function run() {
       paper_done: "paper_compile",
       analyze: "analysis",
       derive: "topic_derive",
+      simulate: "peer_review",
+      simulate_done: "peer_review",
       publish: "publish",
       publish_done: "publish",
       review: "peer_review",

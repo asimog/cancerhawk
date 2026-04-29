@@ -98,16 +98,41 @@ def test_render_simulations_empty():
 def test_render_simulations_with_entry():
     sims = [
         {
-            "type": "statistical",
+            "id": "bootstrap-response",
+            "title": "Bootstrap Response",
+            "type": "threejs_html5",
             "description": "Bootstrap resampling of the dataset.",
             "rationale": "Assess robustness to sample variance.",
             "expected_metrics": ["p_value", "confidence_interval"],
+            "scene": "counterfactual_perturbation",
+            "seed": 123,
         }
     ]
     html_out = _render_simulations(sims)
-    assert "statistical" in html_out
+    assert "threejs_html5" in html_out
+    assert "Bootstrap Response" in html_out
     assert "Bootstrap resampling" in html_out
     assert "p_value" in html_out
+    assert 'id="sim-bootstrap-response"' in html_out
+    assert "three.module.js" in html_out
+    assert "counterfactual_perturbation" in html_out
+
+
+def test_render_simulations_escapes_script_payload():
+    sims = [
+        {
+            "id": "bad",
+            "title": "</script><script>alert(1)</script>",
+            "description": "<img src=x onerror=alert(1)>",
+            "rationale": "safe",
+            "expected_metrics": [],
+            "scene": "trajectory_manifold",
+        }
+    ]
+    html_out = _render_simulations(sims)
+    assert "</script><script>" not in html_out
+    assert "<img" not in html_out
+    assert "\\u003c/script" in html_out
 
 
 def test_archetype_table_renders():
