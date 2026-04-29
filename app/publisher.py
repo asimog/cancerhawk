@@ -207,7 +207,7 @@ def _render_simulations(simulations: list[dict]) -> str:
     scene_payloads = []
     for idx, s in enumerate(simulations):
         sim_id = _slugify(str(s.get("id") or f"simulation-{idx + 1}"))
-        sim_type = html.escape(str(s.get("type", "threejs_html5")))
+        sim_type = html.escape(str(s.get("type", "html5_canvas")))
         title = html.escape(str(s.get("title") or f"Simulation {idx + 1}"))
         desc = html.escape(str(s.get("description", "No description provided.")))
         rationale = html.escape(str(s.get("rationale", "")))
@@ -233,8 +233,8 @@ def _render_simulations(simulations: list[dict]) -> str:
             f'<h4>Readouts</h4><ul>{metrics_html}</ul>'
             f'</div>'
             f'<div class="simulation-stage">'
-            f'<canvas id="sim-{sim_id}" aria-label="{title} interactive Three.js simulation"></canvas>'
-            f'<div class="simulation-overlay"><span>Native Three.js</span><strong>{title}</strong></div>'
+            f'<canvas id="sim-{sim_id}" aria-label="{title} interactive HTML5 canvas simulation"></canvas>'
+            f'<div class="simulation-overlay"><span>Native HTML5 canvas</span><strong>{title}</strong></div>'
             f'</div>'
             f'</div>'
         )
@@ -242,7 +242,7 @@ def _render_simulations(simulations: list[dict]) -> str:
     return (
         '<div class="simulation-intro">'
         '<p>Runnable browser-native simulations generated after peer review. '
-        'Each scene uses HTML5 canvas plus Three.js to turn the paper into a falsifiable visual model.</p>'
+        'Each scene uses only inline HTML5 Canvas 2D to turn the paper into a falsifiable visual model.</p>'
         '</div>'
         + "".join(sims_html)
         + _simulation_script(scene_payloads)
@@ -383,178 +383,151 @@ def _simulation_script(scene_payloads: list[dict]) -> str:
     payload_json = _script_json(scene_payloads)
     template = """
 <script type="application/json" id="simulation-scenes">__SCENE_PAYLOAD__</script>
-<script type="module">
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js';
+<script>
+(function () {
+  const scenes = JSON.parse(document.getElementById('simulation-scenes')?.textContent || '[]');
+  const palette = ['#6fdb6f', '#42c6ff', '#ffc857', '#ff6b6b', '#b892ff'];
 
-const scenes = JSON.parse(document.getElementById('simulation-scenes')?.textContent || '[]');
-const palette = [0x6fdb6f, 0x42c6ff, 0xffc857, 0xff6b6b, 0xb892ff];
+  function seededRandom(seed) {
+    let value = Math.max(1, seed || 1) % 2147483647;
+    return function () {
+      value = value * 16807 % 2147483647;
+      return (value - 1) / 2147483646;
+    };
+  }
 
-function seededRandom(seed) {{
-  let value = Math.max(1, seed || 1) % 2147483647;
-  return () => {{
-    value = value * 16807 % 2147483647;
-    return (value - 1) / 2147483646;
-  }};
-}}
+  function fitCanvas(canvas) {
+    const box = canvas.parentElement.getBoundingClientRect();
+    const ratio = Math.min(window.devicePixelRatio || 1, 2);
+    const width = Math.max(320, Math.floor(box.width));
+    const height = Math.max(280, Math.floor(box.height));
+    if (canvas.width !== Math.floor(width * ratio) || canvas.height !== Math.floor(height * ratio)) {
+      canvas.width = Math.floor(width * ratio);
+      canvas.height = Math.floor(height * ratio);
+      canvas.style.width = width + 'px';
+      canvas.style.height = height + 'px';
+    }
+    const ctx = canvas.getContext('2d');
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    return { ctx, width, height };
+  }
 
-function createRenderer(canvas) {{
-  const renderer = new THREE.WebGLRenderer({{ canvas, antialias: true, alpha: true }});
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-  return renderer;
-}}
+  function clear(ctx, width, height) {
+    const gradient = ctx.createRadialGradient(width * 0.5, height * 0.42, 8, width * 0.5, height * 0.42, width * 0.72);
+    gradient.addColorStop(0, 'rgba(111,219,111,0.16)');
+    gradient.addColorStop(0.5, 'rgba(8,36,20,0.96)');
+    gradient.addColorStop(1, 'rgba(5,10,6,1)');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, width, height);
+    ctx.strokeStyle = 'rgba(111,219,111,0.08)';
+    ctx.lineWidth = 1;
+    for (let x = 0; x < width; x += 34) {
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke();
+    }
+    for (let y = 0; y < height; y += 34) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke();
+    }
+  }
 
-function resize(renderer, camera, canvas) {{
-  const rect = canvas.parentElement.getBoundingClientRect();
-  const width = Math.max(320, Math.floor(rect.width));
-  const height = Math.max(280, Math.floor(rect.height));
-  if (canvas.width !== width || canvas.height !== height) {{
-    renderer.setSize(width, height, false);
-    camera.aspect = width / height;
-    camera.updateProjectionMatrix();
-  }}
-}}
+  function dot(ctx, x, y, r, color, glow) {
+    ctx.save();
+    ctx.shadowBlur = glow || 16;
+    ctx.shadowColor = color;
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
 
-function addLights(scene) {{
-  scene.add(new THREE.AmbientLight(0xbdf9bd, 0.72));
-  const key = new THREE.PointLight(0x6fdb6f, 2.4, 80);
-  key.position.set(8, 10, 10);
-  scene.add(key);
-  const rim = new THREE.PointLight(0x42c6ff, 1.6, 70);
-  rim.position.set(-10, -5, -8);
-  scene.add(rim);
-}}
+  function drawTrajectory(ctx, width, height, rand, time) {
+    for (let strand = 0; strand < 5; strand++) {
+      const color = palette[strand % palette.length];
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.shadowBlur = 12;
+      ctx.shadowColor = color;
+      ctx.beginPath();
+      for (let i = 0; i < 86; i++) {
+        const t = i / 10 + time * 0.22;
+        const radius = 42 + strand * 17;
+        const x = width * 0.5 + Math.sin(t + strand) * radius + Math.cos(t * 0.37) * 36;
+        const y = height * 0.5 + Math.cos(t * 0.8 + strand) * (38 + strand * 9) + (strand - 2) * 18;
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        if (i % 17 === 0) dot(ctx, x, y, 4 + rand() * 3, color, 18);
+      }
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+    }
+  }
 
-function makeCell(color, size = 0.22) {{
-  const geo = new THREE.SphereGeometry(size, 24, 16);
-  const mat = new THREE.MeshStandardMaterial({{
-    color,
-    emissive: color,
-    emissiveIntensity: 0.22,
-    roughness: 0.38,
-    metalness: 0.08,
-    transparent: true,
-    opacity: 0.9
-  }});
-  return new THREE.Mesh(geo, mat);
-}}
+  function drawCounterfactual(ctx, width, height, rand, time) {
+    const mid = width * 0.5;
+    ctx.strokeStyle = 'rgba(255,200,87,0.72)';
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(mid, 32); ctx.lineTo(mid, height - 32); ctx.stroke();
+    ctx.fillStyle = 'rgba(255,200,87,0.12)';
+    ctx.fillRect(mid - 28 - Math.sin(time * 2) * 8, 28, 56 + Math.sin(time * 2) * 16, height - 56);
+    for (let i = 0; i < 42; i++) {
+      const a = i * 0.48 + time * 0.55;
+      dot(ctx, mid - 105 + Math.cos(a) * 62, height * 0.5 + Math.sin(a * 1.3) * 76, 5, '#42c6ff', 14);
+      const spread = Math.max(12, i * 2.2 + Math.sin(time * 1.4) * 10);
+      const color = i > 18 ? '#ff6b6b' : '#6fdb6f';
+      dot(ctx, mid + 92 + Math.cos(a) * spread, height * 0.5 + Math.sin(a * 1.45) * spread * 0.8, 5, color, 15);
+    }
+    ctx.fillStyle = '#c8e6c9';
+    ctx.font = '12px ui-monospace, monospace';
+    ctx.fillText('control', mid - 145, 28);
+    ctx.fillText('treated perturbation', mid + 42, 28);
+  }
 
-function trajectoryManifold(scene, rand) {{
-  const group = new THREE.Group();
-  for (let strand = 0; strand < 5; strand++) {{
-    const points = [];
-    const color = palette[strand % palette.length];
-    for (let i = 0; i < 52; i++) {{
-      const t = i / 8;
-      points.push(new THREE.Vector3(
-        Math.sin(t + strand) * (1.2 + strand * 0.22) + (rand() - 0.5) * 0.18,
-        Math.cos(t * 0.8 + strand * 0.4) * 0.9 + strand * 0.25 - 0.5,
-        (i - 26) * 0.09 + Math.sin(t * 0.5) * 0.5
-      ));
-    }}
-    const curve = new THREE.CatmullRomCurve3(points);
-    const tube = new THREE.Mesh(
-      new THREE.TubeGeometry(curve, 110, 0.025, 8, false),
-      new THREE.MeshStandardMaterial({{ color, emissive: color, emissiveIntensity: 0.55 }})
-    );
-    group.add(tube);
-    for (let i = 0; i < points.length; i += 8) {{
-      const cell = makeCell(color, 0.12 + rand() * 0.06);
-      cell.position.copy(points[i]);
-      group.add(cell);
-    }}
-  }}
-  scene.add(group);
-  return (time) => {{
-    group.rotation.y = time * 0.18;
-    group.rotation.x = Math.sin(time * 0.3) * 0.14;
-  }};
-}}
+  function drawGradient(ctx, width, height, rand, time) {
+    const gradient = ctx.createLinearGradient(0, 0, width, height);
+    gradient.addColorStop(0, 'rgba(66,198,255,0.16)');
+    gradient.addColorStop(0.5, 'rgba(111,219,111,0.12)');
+    gradient.addColorStop(1, 'rgba(255,107,107,0.2)');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, width, height);
+    for (let i = 0; i < 90; i++) {
+      const base = i * 997 + (scenes.length || 1);
+      const x = ((base * 37) % width) + Math.sin(time + i) * 16;
+      const y = ((base * 61) % height) + Math.cos(time * 0.8 + i) * 12;
+      const stress = (x + y) / (width + height);
+      const color = stress > 0.62 ? '#ff6b6b' : stress > 0.38 ? '#ffc857' : '#6fdb6f';
+      dot(ctx, x, y, 3 + stress * 5, color, 12);
+    }
+    ctx.strokeStyle = 'rgba(200,230,201,0.24)';
+    ctx.lineWidth = 1;
+    for (let i = 0; i < 7; i++) {
+      ctx.beginPath();
+      const y = height * (i + 1) / 8 + Math.sin(time + i) * 8;
+      ctx.moveTo(18, y);
+      ctx.bezierCurveTo(width * 0.25, y - 42, width * 0.72, y + 42, width - 18, y);
+      ctx.stroke();
+    }
+  }
 
-function counterfactualPerturbation(scene, rand) {{
-  const group = new THREE.Group();
-  const control = new THREE.Group();
-  const treated = new THREE.Group();
-  for (let i = 0; i < 34; i++) {{
-    const angle = i * 0.34;
-    const c = makeCell(0x42c6ff, 0.12);
-    c.position.set(Math.cos(angle) * 1.1 - 1.45, Math.sin(angle * 1.2) * 0.8, (i - 17) * 0.08);
-    control.add(c);
-    const t = makeCell(i > 14 ? 0xff6b6b : 0x6fdb6f, 0.12);
-    t.position.set(Math.cos(angle) * (1.1 + i * 0.025) + 1.35, Math.sin(angle * 1.45) * (0.8 + i * 0.01), (i - 17) * 0.08);
-    treated.add(t);
-  }}
-  const pulse = new THREE.Mesh(
-    new THREE.TorusGeometry(1.35, 0.025, 12, 96),
-    new THREE.MeshStandardMaterial({{ color: 0xffc857, emissive: 0xffc857, emissiveIntensity: 0.9 }})
-  );
-  pulse.position.x = 1.35;
-  pulse.rotation.x = Math.PI / 2;
-  group.add(control, treated, pulse);
-  scene.add(group);
-  return (time) => {{
-    control.rotation.y = time * 0.22;
-    treated.rotation.y = -time * 0.22;
-    pulse.scale.setScalar(1 + Math.sin(time * 2.4) * 0.18);
-    pulse.material.opacity = 0.7 + Math.sin(time * 2.4) * 0.2;
-  }};
-}}
-
-function microenvironmentGradient(scene, rand) {{
-  const group = new THREE.Group();
-  const plane = new THREE.Mesh(
-    new THREE.PlaneGeometry(6, 3.6, 48, 28),
-    new THREE.MeshBasicMaterial({{ color: 0x103510, transparent: true, opacity: 0.34, wireframe: true }})
-  );
-  plane.rotation.x = -Math.PI / 2;
-  group.add(plane);
-  for (let i = 0; i < 70; i++) {{
-    const stress = rand();
-    const cell = makeCell(stress > 0.62 ? 0xff6b6b : stress > 0.35 ? 0xffc857 : 0x6fdb6f, 0.08 + rand() * 0.08);
-    cell.position.set((rand() - 0.5) * 5.4, (stress - 0.5) * 1.2, (rand() - 0.5) * 3.0);
-    cell.userData.phase = rand() * Math.PI * 2;
-    group.add(cell);
-  }}
-  scene.add(group);
-  return (time) => {{
-    group.rotation.y = Math.sin(time * 0.25) * 0.35;
-    group.children.forEach((child) => {{
-      if (child.userData.phase !== undefined) {{
-        child.position.y += Math.sin(time * 1.4 + child.userData.phase) * 0.002;
-      }}
-    }});
-  }};
-}}
-
-function bootScene(spec) {{
-  const canvas = document.getElementById(`sim-${{spec.id}}`);
-  if (!canvas) return;
-  const renderer = createRenderer(canvas);
-  const scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x050a06, 0.055);
-  const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
-  camera.position.set(0, 1.6, 7.2);
-  addLights(scene);
-  const rand = seededRandom(spec.seed);
-  const animateScene = spec.scene === 'counterfactual_perturbation'
-    ? counterfactualPerturbation(scene, rand)
-    : spec.scene === 'microenvironment_gradient'
-      ? microenvironmentGradient(scene, rand)
-      : trajectoryManifold(scene, rand);
-  function frame(ms) {{
-    const time = ms / 1000;
-    resize(renderer, camera, canvas);
-    animateScene(time);
-    renderer.render(scene, camera);
+  function boot(spec) {
+    const canvas = document.getElementById('sim-' + spec.id);
+    if (!canvas) return;
+    const rand = seededRandom(spec.seed);
+    function frame(ms) {
+      const time = ms / 1000;
+      const fitted = fitCanvas(canvas);
+      clear(fitted.ctx, fitted.width, fitted.height);
+      if (spec.scene === 'counterfactual_perturbation') drawCounterfactual(fitted.ctx, fitted.width, fitted.height, rand, time);
+      else if (spec.scene === 'microenvironment_gradient') drawGradient(fitted.ctx, fitted.width, fitted.height, rand, time);
+      else drawTrajectory(fitted.ctx, fitted.width, fitted.height, rand, time);
+      requestAnimationFrame(frame);
+    }
     requestAnimationFrame(frame);
-  }}
-  requestAnimationFrame(frame);
-}}
+  }
 
-scenes.forEach(bootScene);
+  scenes.forEach(boot);
+})();
 </script>
 """
     return template.replace("__SCENE_PAYLOAD__", payload_json)
-
 
 def _script_json(value) -> str:
     return (

@@ -188,176 +188,150 @@ pre { white-space: pre-wrap; word-wrap: break-word; background: #0a1f0a; padding
 
 <!-- Simulations Tab -->
 <div id="simulations-tab" class="page-content">
-<div class="simulation-intro"><p>Runnable browser-native simulations generated after peer review. Each scene uses HTML5 canvas plus Three.js to turn the paper into a falsifiable visual model.</p></div><div class="simulation-card" data-simulation="trajectory-manifold"><div class="simulation-copy"><div class="simulation-type">threejs_html5</div><h3>Cell Trajectory Manifold</h3><p>Animates live-cell state trajectories as glowing paths through a latent morphology manifold, mirroring the paper&#x27;s cell-cinema thesis.</p><h4>Why this matters</h4><p>Tests whether the claimed video-derived state space produces separable trajectory fingerprints rather than a visually plausible but mixed cloud.</p><h4>Readouts</h4><ul><li>trajectory separation</li><li>state-transition smoothness</li><li>phenotype-cluster stability</li></ul></div><div class="simulation-stage"><canvas id="sim-trajectory-manifold" aria-label="Cell Trajectory Manifold interactive Three.js simulation"></canvas><div class="simulation-overlay"><span>Native Three.js</span><strong>Cell Trajectory Manifold</strong></div></div></div><div class="simulation-card" data-simulation="counterfactual-perturbation"><div class="simulation-copy"><div class="simulation-type">threejs_html5</div><h3>Counterfactual Drug Perturbation</h3><p>Shows paired control and treated organoid trajectories diverging under a simulated perturbation pulse.</p><h4>Why this matters</h4><p>Makes the central falsifier visible: a useful simulator must predict post-treatment divergence before it is observed experimentally.</p><h4>Readouts</h4><ul><li>predicted-vs-observed divergence</li><li>response latency</li><li>escape-trajectory frequency</li></ul></div><div class="simulation-stage"><canvas id="sim-counterfactual-perturbation" aria-label="Counterfactual Drug Perturbation interactive Three.js simulation"></canvas><div class="simulation-overlay"><span>Native Three.js</span><strong>Counterfactual Drug Perturbation</strong></div></div></div><div class="simulation-card" data-simulation="microenvironment-gradient"><div class="simulation-copy"><div class="simulation-type">threejs_html5</div><h3>Tumor Microenvironment Gradient</h3><p>Maps tumor cells moving through oxygen, immune, and stromal gradients to expose where video-only predictions may lose clinical context.</p><h4>Why this matters</h4><p>Addresses the strongest peer-review concern: patient response depends on microenvironment and immune context, not only single-cell video.</p><h4>Readouts</h4><ul><li>gradient sensitivity</li><li>immune-contact escape</li><li>context-dependent phenotype switch rate</li></ul></div><div class="simulation-stage"><canvas id="sim-microenvironment-gradient" aria-label="Tumor Microenvironment Gradient interactive Three.js simulation"></canvas><div class="simulation-overlay"><span>Native Three.js</span><strong>Tumor Microenvironment Gradient</strong></div></div></div>
+<div class="simulation-intro"><p>Runnable browser-native simulations generated after peer review. Each scene uses only inline HTML5 Canvas 2D to turn the paper into a falsifiable visual model.</p></div><div class="simulation-card" data-simulation="trajectory-manifold"><div class="simulation-copy"><div class="simulation-type">html5_canvas</div><h3>Cell Trajectory Manifold</h3><p>Animates live-cell state trajectories as glowing paths through a latent morphology manifold, mirroring the paper&#x27;s cell-cinema thesis.</p><h4>Why this matters</h4><p>Tests whether the claimed video-derived state space produces separable trajectory fingerprints rather than a visually plausible but mixed cloud.</p><h4>Readouts</h4><ul><li>trajectory separation</li><li>state-transition smoothness</li><li>phenotype-cluster stability</li></ul></div><div class="simulation-stage"><canvas id="sim-trajectory-manifold" aria-label="Cell Trajectory Manifold interactive HTML5 canvas simulation"></canvas><div class="simulation-overlay"><span>Native HTML5 canvas</span><strong>Cell Trajectory Manifold</strong></div></div></div><div class="simulation-card" data-simulation="counterfactual-perturbation"><div class="simulation-copy"><div class="simulation-type">html5_canvas</div><h3>Counterfactual Drug Perturbation</h3><p>Shows paired control and treated organoid trajectories diverging under a simulated perturbation pulse.</p><h4>Why this matters</h4><p>Makes the central falsifier visible: a useful simulator must predict post-treatment divergence before it is observed experimentally.</p><h4>Readouts</h4><ul><li>predicted-vs-observed divergence</li><li>response latency</li><li>escape-trajectory frequency</li></ul></div><div class="simulation-stage"><canvas id="sim-counterfactual-perturbation" aria-label="Counterfactual Drug Perturbation interactive HTML5 canvas simulation"></canvas><div class="simulation-overlay"><span>Native HTML5 canvas</span><strong>Counterfactual Drug Perturbation</strong></div></div></div><div class="simulation-card" data-simulation="microenvironment-gradient"><div class="simulation-copy"><div class="simulation-type">html5_canvas</div><h3>Tumor Microenvironment Gradient</h3><p>Maps tumor cells moving through oxygen, immune, and stromal gradients to expose where video-only predictions may lose clinical context.</p><h4>Why this matters</h4><p>Addresses the strongest peer-review concern: patient response depends on microenvironment and immune context, not only single-cell video.</p><h4>Readouts</h4><ul><li>gradient sensitivity</li><li>immune-contact escape</li><li>context-dependent phenotype switch rate</li></ul></div><div class="simulation-stage"><canvas id="sim-microenvironment-gradient" aria-label="Tumor Microenvironment Gradient interactive HTML5 canvas simulation"></canvas><div class="simulation-overlay"><span>Native HTML5 canvas</span><strong>Tumor Microenvironment Gradient</strong></div></div></div>
 <script type="application/json" id="simulation-scenes">[{"id": "trajectory-manifold", "title": "Cell Trajectory Manifold", "scene": "trajectory_manifold", "seed": 3899, "parameters": {"title": "Cell Cinema for Oncology: Video-Generative Priors Across Scales as a Unifying Framework for Mechanism Discovery and Therapeutic Design", "confidence": 0.4131250000000001, "critique": "**No proof-of-concept experiment.** The paper proposes a framework but presents zero data: no trained model, no generated trajectories, no latent-space interrogation, no comparison of model predictions to held-out imagin", "catalyst": "[Practicing Oncologist] Demonstration that a cell-cinema model trained on one cell line's live-cell trajectories predicts drug response in an independent patient-derived organoid better than baseline (IC50 prediction, AUC \u003e0.75) would move price up sharply; failure to outperform transcriptional classifiers on the same task would move it down."}}, {"id": "counterfactual-perturbation", "title": "Counterfactual Drug Perturbation", "scene": "counterfactual_perturbation", "seed": 3916, "parameters": {"title": "Cell Cinema for Oncology: Video-Generative Priors Across Scales as a Unifying Framework for Mechanism Discovery and Therapeutic Design", "confidence": 0.4131250000000001, "critique": "**No proof-of-concept experiment.** The paper proposes a framework but presents zero data: no trained model, no generated trajectories, no latent-space interrogation, no comparison of model predictions to held-out imagin", "catalyst": "[Biostatistician] Demonstration of a prospective prediction task\u2014training a video model on 80% of a JUMP-CP or LINCS dataset and predicting held-out drug-response trajectories with AUC \u003e0.75 for binary outcomes (death/survival at 72h) across \u22655 independent cell lines\u2014would raise the price; failure to outperform a logistic regression on frame-0 morphology + dose would lower it sharply."}}, {"id": "microenvironment-gradient", "title": "Tumor Microenvironment Gradient", "scene": "microenvironment_gradient", "seed": 3930, "parameters": {"title": "Cell Cinema for Oncology: Video-Generative Priors Across Scales as a Unifying Framework for Mechanism Discovery and Therapeutic Design", "confidence": 0.4131250000000001, "critique": "**No proof-of-concept experiment.** The paper proposes a framework but presents zero data: no trained model, no generated trajectories, no latent-space interrogation, no comparison of model predictions to held-out imagin", "catalyst": "[FDA Regulator] Prospective validation showing that model-nominated latent coordinates predict CRISPR-knockout phenotypes better than random (\u003e70% accuracy on held-out cell lines) would move price up; failure to recover known oncogenic drivers (TP53, KRAS, MYC) as separable latent modes would move price down sharply."}}]</script>
-<script type="module">
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js';
+<script>
+(function () {
+  const scenes = JSON.parse(document.getElementById('simulation-scenes')?.textContent || '[]');
+  const palette = ['#6fdb6f', '#42c6ff', '#ffc857', '#ff6b6b', '#b892ff'];
 
-const scenes = JSON.parse(document.getElementById('simulation-scenes')?.textContent || '[]');
-const palette = [0x6fdb6f, 0x42c6ff, 0xffc857, 0xff6b6b, 0xb892ff];
+  function seededRandom(seed) {
+    let value = Math.max(1, seed || 1) % 2147483647;
+    return function () {
+      value = value * 16807 % 2147483647;
+      return (value - 1) / 2147483646;
+    };
+  }
 
-function seededRandom(seed) {{
-  let value = Math.max(1, seed || 1) % 2147483647;
-  return () => {{
-    value = value * 16807 % 2147483647;
-    return (value - 1) / 2147483646;
-  }};
-}}
+  function fitCanvas(canvas) {
+    const box = canvas.parentElement.getBoundingClientRect();
+    const ratio = Math.min(window.devicePixelRatio || 1, 2);
+    const width = Math.max(320, Math.floor(box.width));
+    const height = Math.max(280, Math.floor(box.height));
+    if (canvas.width !== Math.floor(width * ratio) || canvas.height !== Math.floor(height * ratio)) {
+      canvas.width = Math.floor(width * ratio);
+      canvas.height = Math.floor(height * ratio);
+      canvas.style.width = width + 'px';
+      canvas.style.height = height + 'px';
+    }
+    const ctx = canvas.getContext('2d');
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    return { ctx, width, height };
+  }
 
-function createRenderer(canvas) {{
-  const renderer = new THREE.WebGLRenderer({{ canvas, antialias: true, alpha: true }});
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-  return renderer;
-}}
+  function clear(ctx, width, height) {
+    const gradient = ctx.createRadialGradient(width * 0.5, height * 0.42, 8, width * 0.5, height * 0.42, width * 0.72);
+    gradient.addColorStop(0, 'rgba(111,219,111,0.16)');
+    gradient.addColorStop(0.5, 'rgba(8,36,20,0.96)');
+    gradient.addColorStop(1, 'rgba(5,10,6,1)');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, width, height);
+    ctx.strokeStyle = 'rgba(111,219,111,0.08)';
+    ctx.lineWidth = 1;
+    for (let x = 0; x < width; x += 34) {
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke();
+    }
+    for (let y = 0; y < height; y += 34) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke();
+    }
+  }
 
-function resize(renderer, camera, canvas) {{
-  const rect = canvas.parentElement.getBoundingClientRect();
-  const width = Math.max(320, Math.floor(rect.width));
-  const height = Math.max(280, Math.floor(rect.height));
-  if (canvas.width !== width || canvas.height !== height) {{
-    renderer.setSize(width, height, false);
-    camera.aspect = width / height;
-    camera.updateProjectionMatrix();
-  }}
-}}
+  function dot(ctx, x, y, r, color, glow) {
+    ctx.save();
+    ctx.shadowBlur = glow || 16;
+    ctx.shadowColor = color;
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
 
-function addLights(scene) {{
-  scene.add(new THREE.AmbientLight(0xbdf9bd, 0.72));
-  const key = new THREE.PointLight(0x6fdb6f, 2.4, 80);
-  key.position.set(8, 10, 10);
-  scene.add(key);
-  const rim = new THREE.PointLight(0x42c6ff, 1.6, 70);
-  rim.position.set(-10, -5, -8);
-  scene.add(rim);
-}}
+  function drawTrajectory(ctx, width, height, rand, time) {
+    for (let strand = 0; strand < 5; strand++) {
+      const color = palette[strand % palette.length];
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.shadowBlur = 12;
+      ctx.shadowColor = color;
+      ctx.beginPath();
+      for (let i = 0; i < 86; i++) {
+        const t = i / 10 + time * 0.22;
+        const radius = 42 + strand * 17;
+        const x = width * 0.5 + Math.sin(t + strand) * radius + Math.cos(t * 0.37) * 36;
+        const y = height * 0.5 + Math.cos(t * 0.8 + strand) * (38 + strand * 9) + (strand - 2) * 18;
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        if (i % 17 === 0) dot(ctx, x, y, 4 + rand() * 3, color, 18);
+      }
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+    }
+  }
 
-function makeCell(color, size = 0.22) {{
-  const geo = new THREE.SphereGeometry(size, 24, 16);
-  const mat = new THREE.MeshStandardMaterial({{
-    color,
-    emissive: color,
-    emissiveIntensity: 0.22,
-    roughness: 0.38,
-    metalness: 0.08,
-    transparent: true,
-    opacity: 0.9
-  }});
-  return new THREE.Mesh(geo, mat);
-}}
+  function drawCounterfactual(ctx, width, height, rand, time) {
+    const mid = width * 0.5;
+    ctx.strokeStyle = 'rgba(255,200,87,0.72)';
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(mid, 32); ctx.lineTo(mid, height - 32); ctx.stroke();
+    ctx.fillStyle = 'rgba(255,200,87,0.12)';
+    ctx.fillRect(mid - 28 - Math.sin(time * 2) * 8, 28, 56 + Math.sin(time * 2) * 16, height - 56);
+    for (let i = 0; i < 42; i++) {
+      const a = i * 0.48 + time * 0.55;
+      dot(ctx, mid - 105 + Math.cos(a) * 62, height * 0.5 + Math.sin(a * 1.3) * 76, 5, '#42c6ff', 14);
+      const spread = Math.max(12, i * 2.2 + Math.sin(time * 1.4) * 10);
+      const color = i > 18 ? '#ff6b6b' : '#6fdb6f';
+      dot(ctx, mid + 92 + Math.cos(a) * spread, height * 0.5 + Math.sin(a * 1.45) * spread * 0.8, 5, color, 15);
+    }
+    ctx.fillStyle = '#c8e6c9';
+    ctx.font = '12px ui-monospace, monospace';
+    ctx.fillText('control', mid - 145, 28);
+    ctx.fillText('treated perturbation', mid + 42, 28);
+  }
 
-function trajectoryManifold(scene, rand) {{
-  const group = new THREE.Group();
-  for (let strand = 0; strand < 5; strand++) {{
-    const points = [];
-    const color = palette[strand % palette.length];
-    for (let i = 0; i < 52; i++) {{
-      const t = i / 8;
-      points.push(new THREE.Vector3(
-        Math.sin(t + strand) * (1.2 + strand * 0.22) + (rand() - 0.5) * 0.18,
-        Math.cos(t * 0.8 + strand * 0.4) * 0.9 + strand * 0.25 - 0.5,
-        (i - 26) * 0.09 + Math.sin(t * 0.5) * 0.5
-      ));
-    }}
-    const curve = new THREE.CatmullRomCurve3(points);
-    const tube = new THREE.Mesh(
-      new THREE.TubeGeometry(curve, 110, 0.025, 8, false),
-      new THREE.MeshStandardMaterial({{ color, emissive: color, emissiveIntensity: 0.55 }})
-    );
-    group.add(tube);
-    for (let i = 0; i < points.length; i += 8) {{
-      const cell = makeCell(color, 0.12 + rand() * 0.06);
-      cell.position.copy(points[i]);
-      group.add(cell);
-    }}
-  }}
-  scene.add(group);
-  return (time) => {{
-    group.rotation.y = time * 0.18;
-    group.rotation.x = Math.sin(time * 0.3) * 0.14;
-  }};
-}}
+  function drawGradient(ctx, width, height, rand, time) {
+    const gradient = ctx.createLinearGradient(0, 0, width, height);
+    gradient.addColorStop(0, 'rgba(66,198,255,0.16)');
+    gradient.addColorStop(0.5, 'rgba(111,219,111,0.12)');
+    gradient.addColorStop(1, 'rgba(255,107,107,0.2)');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, width, height);
+    for (let i = 0; i < 90; i++) {
+      const base = i * 997 + (scenes.length || 1);
+      const x = ((base * 37) % width) + Math.sin(time + i) * 16;
+      const y = ((base * 61) % height) + Math.cos(time * 0.8 + i) * 12;
+      const stress = (x + y) / (width + height);
+      const color = stress > 0.62 ? '#ff6b6b' : stress > 0.38 ? '#ffc857' : '#6fdb6f';
+      dot(ctx, x, y, 3 + stress * 5, color, 12);
+    }
+    ctx.strokeStyle = 'rgba(200,230,201,0.24)';
+    ctx.lineWidth = 1;
+    for (let i = 0; i < 7; i++) {
+      ctx.beginPath();
+      const y = height * (i + 1) / 8 + Math.sin(time + i) * 8;
+      ctx.moveTo(18, y);
+      ctx.bezierCurveTo(width * 0.25, y - 42, width * 0.72, y + 42, width - 18, y);
+      ctx.stroke();
+    }
+  }
 
-function counterfactualPerturbation(scene, rand) {{
-  const group = new THREE.Group();
-  const control = new THREE.Group();
-  const treated = new THREE.Group();
-  for (let i = 0; i < 34; i++) {{
-    const angle = i * 0.34;
-    const c = makeCell(0x42c6ff, 0.12);
-    c.position.set(Math.cos(angle) * 1.1 - 1.45, Math.sin(angle * 1.2) * 0.8, (i - 17) * 0.08);
-    control.add(c);
-    const t = makeCell(i > 14 ? 0xff6b6b : 0x6fdb6f, 0.12);
-    t.position.set(Math.cos(angle) * (1.1 + i * 0.025) + 1.35, Math.sin(angle * 1.45) * (0.8 + i * 0.01), (i - 17) * 0.08);
-    treated.add(t);
-  }}
-  const pulse = new THREE.Mesh(
-    new THREE.TorusGeometry(1.35, 0.025, 12, 96),
-    new THREE.MeshStandardMaterial({{ color: 0xffc857, emissive: 0xffc857, emissiveIntensity: 0.9 }})
-  );
-  pulse.position.x = 1.35;
-  pulse.rotation.x = Math.PI / 2;
-  group.add(control, treated, pulse);
-  scene.add(group);
-  return (time) => {{
-    control.rotation.y = time * 0.22;
-    treated.rotation.y = -time * 0.22;
-    pulse.scale.setScalar(1 + Math.sin(time * 2.4) * 0.18);
-    pulse.material.opacity = 0.7 + Math.sin(time * 2.4) * 0.2;
-  }};
-}}
-
-function microenvironmentGradient(scene, rand) {{
-  const group = new THREE.Group();
-  const plane = new THREE.Mesh(
-    new THREE.PlaneGeometry(6, 3.6, 48, 28),
-    new THREE.MeshBasicMaterial({{ color: 0x103510, transparent: true, opacity: 0.34, wireframe: true }})
-  );
-  plane.rotation.x = -Math.PI / 2;
-  group.add(plane);
-  for (let i = 0; i < 70; i++) {{
-    const stress = rand();
-    const cell = makeCell(stress > 0.62 ? 0xff6b6b : stress > 0.35 ? 0xffc857 : 0x6fdb6f, 0.08 + rand() * 0.08);
-    cell.position.set((rand() - 0.5) * 5.4, (stress - 0.5) * 1.2, (rand() - 0.5) * 3.0);
-    cell.userData.phase = rand() * Math.PI * 2;
-    group.add(cell);
-  }}
-  scene.add(group);
-  return (time) => {{
-    group.rotation.y = Math.sin(time * 0.25) * 0.35;
-    group.children.forEach((child) => {{
-      if (child.userData.phase !== undefined) {{
-        child.position.y += Math.sin(time * 1.4 + child.userData.phase) * 0.002;
-      }}
-    }});
-  }};
-}}
-
-function bootScene(spec) {{
-  const canvas = document.getElementById(`sim-${{spec.id}}`);
-  if (!canvas) return;
-  const renderer = createRenderer(canvas);
-  const scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x050a06, 0.055);
-  const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
-  camera.position.set(0, 1.6, 7.2);
-  addLights(scene);
-  const rand = seededRandom(spec.seed);
-  const animateScene = spec.scene === 'counterfactual_perturbation'
-    ? counterfactualPerturbation(scene, rand)
-    : spec.scene === 'microenvironment_gradient'
-      ? microenvironmentGradient(scene, rand)
-      : trajectoryManifold(scene, rand);
-  function frame(ms) {{
-    const time = ms / 1000;
-    resize(renderer, camera, canvas);
-    animateScene(time);
-    renderer.render(scene, camera);
+  function boot(spec) {
+    const canvas = document.getElementById('sim-' + spec.id);
+    if (!canvas) return;
+    const rand = seededRandom(spec.seed);
+    function frame(ms) {
+      const time = ms / 1000;
+      const fitted = fitCanvas(canvas);
+      clear(fitted.ctx, fitted.width, fitted.height);
+      if (spec.scene === 'counterfactual_perturbation') drawCounterfactual(fitted.ctx, fitted.width, fitted.height, rand, time);
+      else if (spec.scene === 'microenvironment_gradient') drawGradient(fitted.ctx, fitted.width, fitted.height, rand, time);
+      else drawTrajectory(fitted.ctx, fitted.width, fitted.height, rand, time);
+      requestAnimationFrame(frame);
+    }
     requestAnimationFrame(frame);
-  }}
-  requestAnimationFrame(frame);
-}}
+  }
 
-scenes.forEach(bootScene);
+  scenes.forEach(boot);
+})();
 </script>
 
 </div>
@@ -854,7 +828,7 @@ scenes.forEach(bootScene);
     {
       &quot;id&quot;: &quot;trajectory-manifold&quot;,
       &quot;title&quot;: &quot;Cell Trajectory Manifold&quot;,
-      &quot;type&quot;: &quot;threejs_html5&quot;,
+      &quot;type&quot;: &quot;html5_canvas&quot;,
       &quot;description&quot;: &quot;Animates live-cell state trajectories as glowing paths through a latent morphology manifold, mirroring the paper&#x27;s cell-cinema thesis.&quot;,
       &quot;rationale&quot;: &quot;Tests whether the claimed video-derived state space produces separable trajectory fingerprints rather than a visually plausible but mixed cloud.&quot;,
       &quot;expected_metrics&quot;: [
@@ -874,7 +848,7 @@ scenes.forEach(bootScene);
     {
       &quot;id&quot;: &quot;counterfactual-perturbation&quot;,
       &quot;title&quot;: &quot;Counterfactual Drug Perturbation&quot;,
-      &quot;type&quot;: &quot;threejs_html5&quot;,
+      &quot;type&quot;: &quot;html5_canvas&quot;,
       &quot;description&quot;: &quot;Shows paired control and treated organoid trajectories diverging under a simulated perturbation pulse.&quot;,
       &quot;rationale&quot;: &quot;Makes the central falsifier visible: a useful simulator must predict post-treatment divergence before it is observed experimentally.&quot;,
       &quot;expected_metrics&quot;: [
@@ -894,7 +868,7 @@ scenes.forEach(bootScene);
     {
       &quot;id&quot;: &quot;microenvironment-gradient&quot;,
       &quot;title&quot;: &quot;Tumor Microenvironment Gradient&quot;,
-      &quot;type&quot;: &quot;threejs_html5&quot;,
+      &quot;type&quot;: &quot;html5_canvas&quot;,
       &quot;description&quot;: &quot;Maps tumor cells moving through oxygen, immune, and stromal gradients to expose where video-only predictions may lose clinical context.&quot;,
       &quot;rationale&quot;: &quot;Addresses the strongest peer-review concern: patient response depends on microenvironment and immune context, not only single-cell video.&quot;,
       &quot;expected_metrics&quot;: [

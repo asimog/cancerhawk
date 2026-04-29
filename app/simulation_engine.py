@@ -1,4 +1,4 @@
-"""Native Three.js/HTML simulation generation for CancerHawk blocks.
+"""Native HTML5 canvas simulation generation for CancerHawk blocks.
 
 The peer-review engine may return prose simulation proposals. This module turns
 the completed paper and review context into runnable browser-native scenes that
@@ -12,14 +12,14 @@ import re
 from typing import Any
 
 
-def generate_threejs_simulations(
+def generate_html5_simulations(
     *,
     paper_text: str,
     analysis_result: Any,
     peer_reviews: list[dict],
     recommended_simulations: list[dict] | None = None,
 ) -> list[dict]:
-    """Return runnable Three.js/HTML5 simulation specs for the published page.
+    """Return runnable HTML5 canvas simulation specs for the published page.
 
     Peer reviews are still the source of truth for scientific pressure-testing,
     but they are often conservative and may not emit a full runnable proposal.
@@ -38,7 +38,7 @@ def generate_threejs_simulations(
         {
             "id": "trajectory-manifold",
             "title": "Cell Trajectory Manifold",
-            "type": "threejs_html5",
+            "type": "html5_canvas",
             "description": (
                 "Animates live-cell state trajectories as glowing paths through a "
                 "latent morphology manifold, mirroring the paper's cell-cinema thesis."
@@ -64,7 +64,7 @@ def generate_threejs_simulations(
         {
             "id": "counterfactual-perturbation",
             "title": "Counterfactual Drug Perturbation",
-            "type": "threejs_html5",
+            "type": "html5_canvas",
             "description": (
                 "Shows paired control and treated organoid trajectories diverging under "
                 "a simulated perturbation pulse."
@@ -90,7 +90,7 @@ def generate_threejs_simulations(
         {
             "id": "microenvironment-gradient",
             "title": "Tumor Microenvironment Gradient",
-            "type": "threejs_html5",
+            "type": "html5_canvas",
             "description": (
                 "Maps tumor cells moving through oxygen, immune, and stromal gradients "
                 "to expose where video-only predictions may lose clinical context."
@@ -132,7 +132,7 @@ def _normalise_peer_review_simulations(simulations: list[dict]) -> list[dict]:
             {
                 "id": sim_id,
                 "title": str(sim.get("title") or sim.get("type") or f"Peer Review Simulation {idx}"),
-                "type": "threejs_html5",
+                "type": "html5_canvas",
                 "description": description,
                 "rationale": str(sim.get("rationale") or "Recommended by the peer-review panel."),
                 "expected_metrics": [

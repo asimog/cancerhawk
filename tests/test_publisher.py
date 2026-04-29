@@ -100,7 +100,7 @@ def test_render_simulations_with_entry():
         {
             "id": "bootstrap-response",
             "title": "Bootstrap Response",
-            "type": "threejs_html5",
+            "type": "html5_canvas",
             "description": "Bootstrap resampling of the dataset.",
             "rationale": "Assess robustness to sample variance.",
             "expected_metrics": ["p_value", "confidence_interval"],
@@ -109,12 +109,12 @@ def test_render_simulations_with_entry():
         }
     ]
     html_out = _render_simulations(sims)
-    assert "threejs_html5" in html_out
+    assert "html5_canvas" in html_out
     assert "Bootstrap Response" in html_out
     assert "Bootstrap resampling" in html_out
     assert "p_value" in html_out
     assert 'id="sim-bootstrap-response"' in html_out
-    assert "three.module.js" in html_out
+    assert "simulation-scenes" in html_out
     assert "counterfactual_perturbation" in html_out
 
 

@@ -126,7 +126,7 @@ def mock_engines():
     def fake_publish_block(*args, **kwargs):
         simulations = kwargs["simulations"]
         assert len(simulations) == 3
-        assert all(sim["type"] == "threejs_html5" for sim in simulations)
+        assert all(sim["type"] == "html5_canvas" for sim in simulations)
         assert simulations[0]["description"] == "Run a bootstrap survival analysis."
         assert all(sim.get("scene") for sim in simulations)
         return {"block": 1, "path": "results/block-1/paper.html"}

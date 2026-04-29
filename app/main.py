@@ -41,7 +41,7 @@ from .openrouter import chat_json, close as close_openrouter  # noqa: E402
 from .paper_engine import run_paper_engine  # noqa: E402
 from .prompts import topic_deriver_prompt  # noqa: E402
 from .publisher import publish_block, try_git_publish  # noqa: E402
-from .simulation_engine import generate_threejs_simulations  # noqa: E402
+from .simulation_engine import generate_html5_simulations  # noqa: E402
 from .token_tracker import APICall, TokenTracker  # noqa: E402
 from .peer_review_engine import (  # noqa: E402
     run_peer_review_engine,
@@ -240,10 +240,10 @@ async def ws_run(ws: WebSocket) -> None:
         )
         logger.info("stage_end", extra={"stage": "peer_review"})
 
-        # 4. Native Three.js/HTML5 simulations generated from the reviewed paper.
+        # 4. Native HTML5 canvas simulations generated from the reviewed paper.
         logger.info("stage_start", extra={"stage": "simulation_generation"})
-        await emit("simulate", "Generating native Three.js/HTML5 simulations from peer review", None)
-        simulations = generate_threejs_simulations(
+        await emit("simulate", "Generating native HTML5 canvas simulations from peer review", None)
+        simulations = generate_html5_simulations(
             paper_text=paper_text,
             analysis_result=analysis,
             peer_reviews=peer_reviews_dict,
@@ -251,7 +251,7 @@ async def ws_run(ws: WebSocket) -> None:
         )
         await emit(
             "simulate_done",
-            f"Generated {len(simulations)} runnable Three.js simulations",
+            f"Generated {len(simulations)} runnable HTML5 canvas simulations",
             {"simulation_count": len(simulations)},
         )
         logger.info(
