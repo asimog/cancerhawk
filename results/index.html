@@ -18,6 +18,11 @@ h3 { color: #6fdb6f; font-size: 15px; margin-top: 20px; }
 .disclaimer { background: #1a0a0a; border-left: 3px solid #c44; padding: 10px 14px; font-size: 13px; margin: 16px 0; color: #f8b8b8; }
 section { margin: 28px 0; }
 .prose p { margin: 0 0 14px 0; }
+.page-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 22px; border-bottom: 1px solid #1a3a1a; padding-bottom: 10px; }
+.page-tab { background: #071407; border: 1px solid #1a3a1a; color: #a4c4a4; padding: 8px 14px; border-radius: 999px; cursor: pointer; }
+.page-tab.active { background: #6fdb6f; border-color: #6fdb6f; color: #061006; font-weight: 700; }
+.page-content { display: none; }
+.page-content.active { display: block; }
 .charts { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 16px 0; }
 .chart-box { background: #0a1f0a; border: 1px solid #1a3a1a; border-radius: 8px; padding: 16px; }
 .chart-box h3 { margin: 0 0 12px 0; color: #6fdb6f; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
