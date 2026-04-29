@@ -134,6 +134,16 @@
     <h2>3 · Result</h2>
     <p id="result_summary"></p>
     <p><a id="result_link" target="_blank">→ Open published block page</a></p>
+    <div class="local-preview" id="local_preview" hidden>
+      <div class="result-tabs" role="tablist" aria-label="Published research bundle">
+        <button class="result-tab active" type="button" data-result-tab="paper">Paper</button>
+        <button class="result-tab" type="button" data-result-tab="peer">Peer Review</button>
+        <button class="result-tab" type="button" data-result-tab="simulations">Simulations</button>
+      </div>
+      <div class="result-pane active" id="preview_paper"></div>
+      <div class="result-pane" id="preview_peer"></div>
+      <div class="result-pane" id="preview_simulations"></div>
+    </div>
   </section>
 
    <footer>

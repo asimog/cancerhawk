@@ -16,6 +16,10 @@ const logEl = document.getElementById("log");
 const resultSection = document.getElementById("result_section");
 const resultSummary = document.getElementById("result_summary");
 const resultLink = document.getElementById("result_link");
+const localPreview = document.getElementById("local_preview");
+const previewPaper = document.getElementById("preview_paper");
+const previewPeer = document.getElementById("preview_peer");
+const previewSimulations = document.getElementById("preview_simulations");
 
 // Stats dashboard elements
 const statCalls = document.getElementById("stat_calls");
@@ -281,7 +285,7 @@ function toggleRow(tr) {
 
 function escapeHtml(str) {
   if (!str) return "";
-  return str.replace(/[&<>"']/g, c => ({
+  return String(str).replace(/[&<>"']/g, c => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
   }[c]));
 }
@@ -298,13 +302,6 @@ async function copyToClipboard(text, btn) {
   } catch (err) {
     btn.textContent = "Failed";
   }
-}
-
-function escapeHtml(str) {
-  if (!str) return "";
-  return String(str).replace(/[&<>"']/g, c => ({
-    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-  }[c]));
 }
 
 function addCallRow(call) {
@@ -387,6 +384,10 @@ function resetUI() {
   summaryCost.textContent = "$0.0000";
   modeBadge.textContent = "Idle";
   researchTimer.textContent = "00:00:00";
+  localPreview.hidden = true;
+  previewPaper.innerHTML = "";
+  previewPeer.innerHTML = "";
+  previewSimulations.innerHTML = "";
   stopTimer();
 
   // Reset filters
@@ -488,6 +489,11 @@ async function run() {
         resultLink.hidden = true;
       }
       resultSection.hidden = false;
+      if (evt.data?.block) {
+        loadBlockPreview(evt.data.block).catch(err => {
+          appendLog("error", `local preview failed: ${err.message || err}`);
+        });
+      }
     }
   };
 
@@ -508,6 +514,15 @@ tabBtns.forEach(btn => {
     btn.classList.add("active");
     const tabId = btn.getAttribute("data-tab");
     document.getElementById(tabId).classList.add("active");
+  });
+});
+
+document.querySelectorAll(".result-tab").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".result-tab").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".result-pane").forEach(p => p.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById(`preview_${btn.dataset.resultTab}`).classList.add("active");
   });
 });
 
@@ -568,4 +583,158 @@ function setupFilters() {
   roleSelect.addEventListener("change", applyFilters);
   statusSelect.addEventListener("change", applyFilters);
   applyFilters(); // initial
+}
+
+async function loadBlockPreview(blockNumber) {
+  localPreview.hidden = false;
+  previewPaper.innerHTML = `<div class="preview-loading">Loading generated paper…</div>`;
+  previewPeer.innerHTML = `<div class="preview-loading">Loading peer review…</div>`;
+  previewSimulations.innerHTML = `<div class="preview-loading">Loading simulations…</div>`;
+
+  const response = await fetch(`/api/blocks/${blockNumber}`);
+  if (!response.ok) {
+    throw new Error(`Block ${blockNumber} bundle returned ${response.status}`);
+  }
+  const bundle = await response.json();
+  renderPaperPreview(bundle.paper_md || "");
+  renderPeerReviewPreview(bundle.peer_reviews || []);
+  renderSimulationPreview(bundle.simulations || []);
+}
+
+function renderPaperPreview(markdown) {
+  if (!markdown.trim()) {
+    previewPaper.innerHTML = `<p class="muted">No generated paper was found for this block.</p>`;
+    return;
+  }
+  const lines = markdown.split(/\r?\n/);
+  const html = [];
+  let paragraph = [];
+
+  function flushParagraph() {
+    if (!paragraph.length) return;
+    html.push(`<p>${escapeHtml(paragraph.join(" "))}</p>`);
+    paragraph = [];
+  }
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed) {
+      flushParagraph();
+      continue;
+    }
+    const heading = trimmed.match(/^(#{1,4})\s+(.+)$/);
+    if (heading) {
+      flushParagraph();
+      const level = Math.min(heading[1].length + 2, 5);
+      html.push(`<h${level}>${escapeHtml(heading[2])}</h${level}>`);
+      continue;
+    }
+    paragraph.push(trimmed.replace(/\*\*/g, ""));
+  }
+  flushParagraph();
+  previewPaper.innerHTML = `<article class="paper-preview">${html.join("")}</article>`;
+}
+
+function renderPeerReviewPreview(reviews) {
+  if (!reviews.length) {
+    previewPeer.innerHTML = `<p class="muted">No peer-review records were found for this block.</p>`;
+    return;
+  }
+  previewPeer.innerHTML = reviews.map(review => {
+    const concerns = Array.isArray(review.criticisms) ? review.criticisms : [];
+    const fixes = Array.isArray(review.actionable_fixes) ? review.actionable_fixes : [];
+    const experiments = Array.isArray(review.suggested_experiments) ? review.suggested_experiments : [];
+    return `
+      <article class="review-card">
+        <div class="review-card__top">
+          <strong>${escapeHtml(review.archetype || "Peer Reviewer")}</strong>
+          <span>${escapeHtml(review.recommendation || "reviewed")}</span>
+        </div>
+        <p>${escapeHtml(review.summary || "No summary provided.")}</p>
+        ${renderMiniList("Key concerns", concerns)}
+        ${renderMiniList("Fixes requested", fixes)}
+        ${renderMiniList("Suggested experiments", experiments)}
+      </article>
+    `;
+  }).join("");
+}
+
+function renderMiniList(title, items) {
+  if (!items.length) return "";
+  return `
+    <div class="mini-list">
+      <h4>${escapeHtml(title)}</h4>
+      <ul>${items.slice(0, 4).map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
+    </div>
+  `;
+}
+
+function renderSimulationPreview(simulations) {
+  if (!simulations.length) {
+    previewSimulations.innerHTML = `<p class="muted">No generated simulations were found for this block.</p>`;
+    return;
+  }
+  previewSimulations.innerHTML = simulations.map((sim, index) => `
+    <article class="simulation-card">
+      <div class="simulation-card__copy">
+        <span class="sim-chip">${escapeHtml(sim.type || "html5_canvas")}</span>
+        <h3>${escapeHtml(sim.title || `Simulation ${index + 1}`)}</h3>
+        <p>${escapeHtml(sim.description || sim.rationale || "Generated from the peer-reviewed paper.")}</p>
+      </div>
+      <canvas class="local-sim-canvas" width="720" height="320" data-sim-index="${index}" aria-label="${escapeHtml(sim.title || "CancerHawk simulation")}"></canvas>
+    </article>
+  `).join("");
+  bootLocalSimulationCanvases();
+}
+
+function bootLocalSimulationCanvases() {
+  const canvases = previewSimulations.querySelectorAll(".local-sim-canvas");
+  canvases.forEach(canvas => {
+    const ctx = canvas.getContext("2d");
+    const index = Number(canvas.dataset.simIndex || 0);
+    const cells = Array.from({ length: 34 + index * 5 }, (_, i) => ({
+      x: (i * 53 + index * 37) % canvas.width,
+      y: (i * 31 + index * 59) % canvas.height,
+      r: 4 + ((i + index) % 7),
+      vx: 0.25 + ((i + index) % 5) * 0.06,
+      vy: 0.16 + ((i * 3 + index) % 5) * 0.05,
+      phase: i * 0.31,
+    }));
+
+    function draw(time) {
+      if (!canvas.isConnected) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const gradient = ctx.createRadialGradient(120, 40, 20, canvas.width / 2, canvas.height / 2, canvas.width);
+      gradient.addColorStop(0, "#14351e");
+      gradient.addColorStop(1, "#050a06");
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      for (const cell of cells) {
+        cell.x = (cell.x + cell.vx) % canvas.width;
+        cell.y = (cell.y + cell.vy) % canvas.height;
+        const pulse = Math.sin(time * 0.002 + cell.phase) * 1.8;
+        ctx.beginPath();
+        ctx.arc(cell.x, cell.y, Math.max(2, cell.r + pulse), 0, Math.PI * 2);
+        ctx.fillStyle = index % 2 ? "rgba(111, 219, 111, 0.68)" : "rgba(79, 195, 247, 0.58)";
+        ctx.fill();
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.18)";
+        ctx.stroke();
+      }
+
+      ctx.strokeStyle = "rgba(201, 162, 39, 0.32)";
+      ctx.lineWidth = 1;
+      for (let i = 0; i < cells.length - 1; i += 3) {
+        const a = cells[i];
+        const b = cells[(i + 7 + index) % cells.length];
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+        ctx.stroke();
+      }
+
+      requestAnimationFrame(draw);
+    }
+    requestAnimationFrame(draw);
+  });
 }

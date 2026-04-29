@@ -22,7 +22,7 @@ import traceback
 from pathlib import Path
 
 import uvicorn
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -76,6 +76,43 @@ async def healthcheck() -> JSONResponse:
 @app.get("/api/health")
 async def health() -> JSONResponse:
     return JSONResponse({"status": "ok", "service": "cancerhawk"})
+
+
+@app.get("/api/blocks/{block_number}")
+async def block_bundle(block_number: int) -> JSONResponse:
+    """Return the locally published paper, peer review, and simulations bundle."""
+    if block_number < 1:
+        raise HTTPException(status_code=404, detail="block not found")
+
+    block_dir = RESULTS_DIR / f"block-{block_number}"
+    meta_path = block_dir / "block.json"
+    analysis_path = block_dir / "analysis.json"
+    paper_path = block_dir / "paper.md"
+
+    if not meta_path.exists() or not analysis_path.exists() or not paper_path.exists():
+        raise HTTPException(status_code=404, detail="block not found")
+
+    try:
+        meta = json.loads(meta_path.read_text(encoding="utf-8"))
+        analysis = json.loads(analysis_path.read_text(encoding="utf-8"))
+        paper_md = paper_path.read_text(encoding="utf-8")
+    except (OSError, json.JSONDecodeError) as exc:
+        logger.warning("block_bundle_read_failed", extra={"block": block_number, "error": str(exc)})
+        raise HTTPException(status_code=500, detail="block bundle could not be loaded") from exc
+
+    return JSONResponse({
+        "block": block_number,
+        "meta": meta,
+        "paper_md": paper_md,
+        "peer_reviews": analysis.get("peer_reviews", []),
+        "simulations": analysis.get("simulations", []),
+        "analysis": {
+            "market_price": analysis.get("market_price"),
+            "consensus_dim": analysis.get("consensus_dim"),
+            "headline_catalysts": analysis.get("headline_catalysts", []),
+            "topics": analysis.get("topics", []),
+        },
+    })
 
 
 @app.websocket("/ws/run")

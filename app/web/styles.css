@@ -255,6 +255,128 @@ code { background: #0a1f0a; padding: 1px 5px; border-radius: 3px; font-size: 12p
 /* Result link */
 .result a { color: #6fdb6f; }
 
+.local-preview {
+  margin-top: 18px;
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+}
+
+.result-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.result-tab {
+  background: #0a1f0a;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 12px;
+  padding: 7px 13px;
+}
+
+.result-tab.active {
+  background: rgba(111, 219, 111, 0.16);
+  border-color: var(--accent-green);
+  color: var(--accent-green);
+}
+
+.result-pane {
+  display: none;
+  max-height: 68vh;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.result-pane.active {
+  display: block;
+}
+
+.preview-loading,
+.muted {
+  color: var(--text-secondary);
+}
+
+.paper-preview {
+  background: rgba(5, 10, 6, 0.68);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+}
+
+.paper-preview h3,
+.paper-preview h4,
+.paper-preview h5 {
+  color: var(--accent-green);
+  margin: 20px 0 8px;
+}
+
+.paper-preview p {
+  color: var(--text-primary);
+  margin: 0 0 12px;
+}
+
+.review-card,
+.simulation-card {
+  background: rgba(5, 10, 6, 0.68);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  margin: 0 0 14px;
+  padding: 16px;
+}
+
+.review-card__top {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.review-card__top strong,
+.simulation-card h3 {
+  color: var(--accent-green);
+}
+
+.review-card__top span,
+.sim-chip {
+  background: rgba(201, 162, 39, 0.14);
+  border: 1px solid rgba(201, 162, 39, 0.35);
+  border-radius: 999px;
+  color: var(--accent-gold);
+  font-size: 11px;
+  padding: 3px 8px;
+  text-transform: uppercase;
+}
+
+.mini-list h4 {
+  color: var(--text-secondary);
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  margin: 12px 0 5px;
+  text-transform: uppercase;
+}
+
+.mini-list ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.local-sim-canvas {
+  background: #050a06;
+  border: 1px solid rgba(111, 219, 111, 0.24);
+  border-radius: 12px;
+  display: block;
+  height: 260px;
+  margin-top: 12px;
+  max-width: 100%;
+  overflow-anchor: none;
+  width: 100%;
+}
+
 /* ================================
    MOTO-Style Dark Theme (CancerHawk adaptation)
    ================================ */
