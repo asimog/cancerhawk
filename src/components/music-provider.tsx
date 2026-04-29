@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import type { MutableRefObject } from 'react';
 
 export type AudioFeatures = {
   bass: number;
@@ -17,9 +18,58 @@ type Track = {
   url: string;
 };
 
+type YouTubeEntry = {
+  id: string;
+  title: string;
+  videoId: string;
+};
+
+type YouTubeResolved = {
+  kind: 'video' | 'playlist';
+  title: string;
+  videoId: string | null;
+  playlistId: string | null;
+  entries: YouTubeEntry[];
+  warning: string | null;
+};
+
+type YouTubePlayer = {
+  loadPlaylist: (playlist: string[] | string, index?: number) => void;
+  loadVideoById: (videoId: string) => void;
+  playVideo: () => void;
+  pauseVideo: () => void;
+  nextVideo: () => void;
+  previousVideo: () => void;
+  getPlayerState: () => number;
+  getCurrentTime: () => number;
+  getDuration: () => number;
+  destroy: () => void;
+};
+
+type YouTubeNamespace = {
+  Player: new (
+    element: Element,
+    options: {
+      width?: string;
+      height?: string;
+      videoId?: string;
+      playerVars?: Record<string, string | number>;
+      events?: {
+        onReady?: () => void;
+        onStateChange?: (event: { data: number }) => void;
+      };
+    },
+  ) => YouTubePlayer;
+};
+
 type MusicContextValue = {
   tracks: Track[];
   selectedTrack: Track;
+  sourceKind: 'mp3' | 'youtube';
+  youtubeUrl: string;
+  youtubeTitle: string;
+  youtubeEntries: YouTubeEntry[];
+  youtubeLoading: boolean;
   isPlaying: boolean;
   status: string;
   features: AudioFeatures;
@@ -27,6 +77,8 @@ type MusicContextValue = {
   next: () => Promise<void>;
   previous: () => Promise<void>;
   select: (id: string) => Promise<void>;
+  setYoutubeUrl: (url: string) => void;
+  loadYoutube: () => Promise<void>;
 };
 
 const defaultTrack: Track = {
@@ -45,6 +97,15 @@ const emptyFeatures: AudioFeatures = {
 };
 
 const MusicContext = createContext<MusicContextValue | null>(null);
+const YOUTUBE_PLAYING = 1;
+
+declare global {
+  interface Window {
+    YT?: YouTubeNamespace;
+    onYouTubeIframeAPIReady?: () => void;
+    __cancerHawkYoutubeApiPromise?: Promise<YouTubeNamespace>;
+  }
+}
 
 function resolveTrackUrl(value: string) {
   if (/^https?:\/\//i.test(value) || value.startsWith('blob:')) return value;
@@ -53,6 +114,39 @@ function resolveTrackUrl(value: string) {
 
 function labelFromFile(value: string) {
   return value.split('/').pop()?.replace(/\.[^/.]+$/, '').replace(/[-_]+/g, ' ') || value;
+}
+
+function loadYouTubeIframeApi(): Promise<YouTubeNamespace> {
+  if (window.YT?.Player) return Promise.resolve(window.YT);
+  if (window.__cancerHawkYoutubeApiPromise) return window.__cancerHawkYoutubeApiPromise;
+
+  window.__cancerHawkYoutubeApiPromise = new Promise((resolve, reject) => {
+    window.onYouTubeIframeAPIReady = () => {
+      if (window.YT?.Player) resolve(window.YT);
+      else reject(new Error('YouTube player API loaded without a player.'));
+    };
+    const existing = document.querySelector<HTMLScriptElement>('script[src="https://www.youtube.com/iframe_api"]');
+    if (existing) return;
+    const script = document.createElement('script');
+    script.src = 'https://www.youtube.com/iframe_api';
+    script.async = true;
+    script.onerror = () => reject(new Error('YouTube player API could not load.'));
+    document.head.appendChild(script);
+  });
+
+  return window.__cancerHawkYoutubeApiPromise;
+}
+
+function synthYoutubeFeatures(time: number, duration: number, salt: number, beatRef: MutableRefObject<number>): AudioFeatures {
+  const progress = duration > 0 ? time / duration : 0;
+  const bass = Math.max(0, Math.min(1, 0.34 + Math.sin(time * 2.1 + salt) ** 2 * 0.44));
+  const mid = Math.max(0, Math.min(1, 0.22 + Math.sin(time * 1.34 + salt * 2) ** 2 * 0.42));
+  const high = Math.max(0, Math.min(1, 0.16 + Math.sin(time * 3.8 + progress * 8 + salt) ** 2 * 0.38));
+  const volume = Math.max(0, Math.min(1, 0.22 + bass * 0.34 + mid * 0.22 + high * 0.16));
+  const bucket = Math.floor(time * (2.1 + salt * 0.05));
+  const beat = bucket !== beatRef.current;
+  if (beat) beatRef.current = bucket;
+  return { bass, mid, high, volume, beat, isPlaying: true };
 }
 
 export function MusicProvider({ children }: { children: React.ReactNode }) {
@@ -64,9 +158,18 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
   const beatRef = useRef(0);
   const [tracks, setTracks] = useState<Track[]>([defaultTrack]);
   const [selectedId, setSelectedId] = useState(defaultTrack.id);
+  const [sourceKind, setSourceKind] = useState<'mp3' | 'youtube'>('mp3');
+  const [youtubeUrl, setYoutubeUrl] = useState('');
+  const [youtubeTitle, setYoutubeTitle] = useState('');
+  const [youtubeEntries, setYoutubeEntries] = useState<YouTubeEntry[]>([]);
+  const [youtubeLoading, setYoutubeLoading] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [status, setStatus] = useState('Ready.');
   const [features, setFeatures] = useState<AudioFeatures>(emptyFeatures);
+  const youtubeHostRef = useRef<HTMLDivElement | null>(null);
+  const youtubePlayerRef = useRef<YouTubePlayer | null>(null);
+  const youtubePollRef = useRef(0);
+  const youtubeBeatRef = useRef(0);
 
   const selectedTrack = useMemo(
     () => tracks.find((track) => track.id === selectedId) || tracks[0],
@@ -122,7 +225,7 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
       const bucket = Math.floor(performance.now() / 280);
       const beat = bass > 0.48 && bucket !== beatRef.current;
       if (beat) beatRef.current = bucket;
-      setFeatures({ bass, mid, high, volume, beat, isPlaying: Boolean(audioRef.current && !audioRef.current.paused) });
+      if (sourceKind === 'mp3') setFeatures({ bass, mid, high, volume, beat, isPlaying: Boolean(audioRef.current && !audioRef.current.paused) });
       rafRef.current = requestAnimationFrame(tick);
     };
     cancelAnimationFrame(rafRef.current);
@@ -154,6 +257,9 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
 
   const play = useCallback(async (track: Track) => {
     const audio = await ensureAudio();
+    youtubePlayerRef.current?.pauseVideo();
+    window.clearInterval(youtubePollRef.current);
+    setSourceKind('mp3');
     if (audio.src !== new URL(track.url, window.location.href).href) audio.src = track.url;
     await audio.play();
     setStatus(`Playing ${track.label}`);
@@ -166,6 +272,18 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
   }, [play, tracks]);
 
   const toggle = useCallback(async () => {
+    if (sourceKind === 'youtube' && youtubePlayerRef.current) {
+      if (isPlaying) {
+        youtubePlayerRef.current.pauseVideo();
+        setIsPlaying(false);
+        setStatus('Paused YouTube.');
+      } else {
+        youtubePlayerRef.current.playVideo();
+        setIsPlaying(true);
+        setStatus(`Playing ${youtubeTitle || 'YouTube'}`);
+      }
+      return;
+    }
     const audio = await ensureAudio();
     if (!audio.paused) {
       audio.pause();
@@ -176,25 +294,114 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
   }, [ensureAudio, play, selectedTrack]);
 
   const next = useCallback(async () => {
+    if (sourceKind === 'youtube' && youtubePlayerRef.current) {
+      youtubePlayerRef.current.nextVideo();
+      setIsPlaying(true);
+      return;
+    }
     const index = tracks.findIndex((track) => track.id === selectedTrack.id);
     await select(tracks[(index + 1) % tracks.length].id);
-  }, [select, selectedTrack.id, tracks]);
+  }, [select, selectedTrack.id, sourceKind, tracks]);
 
   const previous = useCallback(async () => {
+    if (sourceKind === 'youtube' && youtubePlayerRef.current) {
+      youtubePlayerRef.current.previousVideo();
+      setIsPlaying(true);
+      return;
+    }
     const index = tracks.findIndex((track) => track.id === selectedTrack.id);
     await select(tracks[(index - 1 + tracks.length) % tracks.length].id);
-  }, [select, selectedTrack.id, tracks]);
+  }, [select, selectedTrack.id, sourceKind, tracks]);
+
+  const startYoutubeFeaturePoll = useCallback((salt: number) => {
+    window.clearInterval(youtubePollRef.current);
+    youtubePollRef.current = window.setInterval(() => {
+      const player = youtubePlayerRef.current;
+      if (!player || player.getPlayerState() !== YOUTUBE_PLAYING) {
+        setFeatures((current) => ({ ...current, isPlaying: false, beat: false }));
+        setIsPlaying(false);
+        return;
+      }
+      setSourceKind('youtube');
+      setIsPlaying(true);
+      setFeatures(synthYoutubeFeatures(player.getCurrentTime() || 0, player.getDuration() || 1, salt, youtubeBeatRef));
+    }, 120);
+  }, []);
+
+  const ensureYoutubePlayer = useCallback(async () => {
+    if (youtubePlayerRef.current) return youtubePlayerRef.current;
+    if (!youtubeHostRef.current) throw new Error('YouTube player is not mounted yet.');
+    const api = await loadYouTubeIframeApi();
+    const player = await new Promise<YouTubePlayer>((resolve) => {
+      const created = new api.Player(youtubeHostRef.current!, {
+        width: '1',
+        height: '1',
+        playerVars: {
+          autoplay: 1,
+          controls: 0,
+          disablekb: 1,
+          fs: 0,
+          modestbranding: 1,
+          playsinline: 1,
+          rel: 0,
+        },
+        events: {
+          onReady: () => resolve(created),
+          onStateChange: (event) => {
+            setIsPlaying(event.data === YOUTUBE_PLAYING);
+          },
+        },
+      });
+    });
+    youtubePlayerRef.current = player;
+    return player;
+  }, []);
+
+  const loadYoutube = useCallback(async () => {
+    const url = youtubeUrl.trim();
+    if (!url) return;
+    setYoutubeLoading(true);
+    setStatus('Loading YouTube...');
+    try {
+      const response = await fetch('/api/youtube/resolve', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ url }),
+      });
+      const media = (await response.json()) as YouTubeResolved & { error?: string };
+      if (!response.ok) throw new Error(media.error || 'YouTube could not be loaded.');
+      const player = await ensureYoutubePlayer();
+      audioRef.current?.pause();
+      setSourceKind('youtube');
+      setYoutubeTitle(media.title || 'YouTube audio');
+      setYoutubeEntries(media.entries || []);
+      if (media.entries?.length) player.loadPlaylist(media.entries.map((entry) => entry.videoId), 0);
+      else if (media.videoId) player.loadVideoById(media.videoId);
+      else if (media.playlistId) player.loadPlaylist(media.playlistId);
+      player.playVideo();
+      startYoutubeFeaturePoll(Math.max(1, (media.entries || []).length));
+      setIsPlaying(true);
+      setStatus(media.warning || `Playing ${media.title || 'YouTube audio'}`);
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : 'YouTube could not be loaded.');
+    } finally {
+      setYoutubeLoading(false);
+    }
+  }, [ensureYoutubePlayer, startYoutubeFeaturePoll, youtubeUrl]);
 
   useEffect(() => {
     return () => {
       cancelAnimationFrame(rafRef.current);
+      window.clearInterval(youtubePollRef.current);
+      youtubePlayerRef.current?.destroy();
       void contextRef.current?.close();
     };
   }, []);
 
   return (
-    <MusicContext.Provider value={{ tracks, selectedTrack, isPlaying, status, features, toggle, next, previous, select }}>
+    <MusicContext.Provider value={{ tracks, selectedTrack, sourceKind, youtubeUrl, youtubeTitle, youtubeEntries, youtubeLoading, isPlaying, status, features, toggle, next, previous, select, setYoutubeUrl, loadYoutube }}>
       {children}
+      <div style={{ height: 1, left: -9999, opacity: 0, overflow: 'hidden', position: 'fixed', top: -9999, width: 1 }} ref={youtubeHostRef} />
     </MusicContext.Provider>
   );
 }

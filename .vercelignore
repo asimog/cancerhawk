@@ -9,5 +9,7 @@ G0DM0D3
 MiroShark
 pretext
 .pytest_cache
+.env
+.env.*
 __pycache__
 *.pyc
