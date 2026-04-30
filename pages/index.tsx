@@ -17,7 +17,6 @@ export default function HomePage({ current }: { current: BlockBundle | null }) {
   return (
     <div className="home-outer">
       <header className="home-brand">
-        <img alt="CancerHawk" className="home-logo" src="/logo.png" />
         <h1 className="home-display-title">CancerHawk<span className="home-blink-x">X</span></h1>
         <p className="page-kicker">{current ? `Block ${current.number} live` : 'Research engine'}</p>
       </header>

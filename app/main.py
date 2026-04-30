@@ -306,31 +306,50 @@ async def shutdown() -> None:
     await close_openrouter()
 
 
-# Curated OpenRouter model list. Add/remove freely — frontend just reads
-# this list and shows it in dropdowns.
+# Free OpenRouter model list. The run UI reads this list from the Railway
+# worker and offers every role the same selectable free options.
 MODELS = [
-    "anthropic/claude-opus-4.7",
-    "anthropic/claude-sonnet-4.6",
-    "anthropic/claude-haiku-4.5",
-    "openai/gpt-4o",
-    "openai/gpt-4o-mini",
-    "openai/gpt-oss-120b",
-    "openai/gpt-oss-20b",
-    "google/gemini-2.0-flash-001",
-    "google/gemini-2.0-flash-lite-001",
-    "meta-llama/llama-3.1-70b-instruct",
-    "mistralai/mistral-large",
-    "deepseek/deepseek-r1",
-    "deepseek/deepseek-chat",
-    "x-ai/grok-2-1212",
+    "openrouter/free",
+    "openrouter/owl-alpha",
+    "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+    "poolside/laguna-xs.2:free",
+    "poolside/laguna-m.1:free",
+    "inclusionai/ling-2.6-1t:free",
+    "tencent/hy3-preview:free",
+    "baidu/qianfan-ocr-fast:free",
+    "google/gemma-4-26b-a4b-it:free",
+    "google/gemma-4-31b-it:free",
+    "google/lyria-3-pro-preview",
+    "google/lyria-3-clip-preview",
+    "nvidia/nemotron-3-super-120b-a12b:free",
+    "minimax/minimax-m2.5:free",
+    "liquid/lfm-2.5-1.2b-thinking:free",
+    "liquid/lfm-2.5-1.2b-instruct:free",
+    "nvidia/nemotron-3-nano-30b-a3b:free",
+    "nvidia/nemotron-nano-12b-v2-vl:free",
+    "qwen/qwen3-next-80b-a3b-instruct:free",
+    "nvidia/nemotron-nano-9b-v2:free",
+    "openai/gpt-oss-120b:free",
+    "openai/gpt-oss-20b:free",
+    "z-ai/glm-4.5-air:free",
+    "qwen/qwen3-coder:free",
+    "cognitivecomputations/dolphin-mistral-24b-venice-edition:free",
+    "google/gemma-3n-e2b-it:free",
+    "google/gemma-3n-e4b-it:free",
+    "google/gemma-3-4b-it:free",
+    "google/gemma-3-12b-it:free",
+    "google/gemma-3-27b-it:free",
+    "meta-llama/llama-3.3-70b-instruct:free",
+    "meta-llama/llama-3.2-3b-instruct:free",
+    "nousresearch/hermes-3-llama-3.1-405b:free",
 ]
 
 DEFAULT_MODELS = {
-    "submitter": "openai/gpt-4o-mini",
-    "validator": "anthropic/claude-haiku-4.5",
-    "compiler": "anthropic/claude-sonnet-4.6",
-    "archetype": "anthropic/claude-haiku-4.5",
-    "topic_deriver": "anthropic/claude-haiku-4.5",
+    "submitter": "openrouter/free",
+    "validator": "openrouter/free",
+    "compiler": "openrouter/free",
+    "archetype": "openrouter/free",
+    "topic_deriver": "openrouter/free",
 }
 
 

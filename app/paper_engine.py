@@ -124,6 +124,30 @@ def _check_convergence(
     return False, ""
 
 
+def _normalize_section_specs(raw_sections: object) -> list[dict[str, str]]:
+    """Coerce compiler outline sections into the shape section prompts need."""
+    if not isinstance(raw_sections, list):
+        return []
+
+    normalized: list[dict[str, str]] = []
+    for index, item in enumerate(raw_sections, start=1):
+        if isinstance(item, dict):
+            heading = str(item.get("heading") or item.get("title") or f"Section {index}").strip()
+            summary = str(item.get("summary") or item.get("intent") or item.get("description") or "").strip()
+        elif isinstance(item, str):
+            heading = item.strip() or f"Section {index}"
+            summary = heading
+        else:
+            continue
+
+        normalized.append({
+            "heading": heading or f"Section {index}",
+            "summary": summary or "Develop this section from the accepted research aggregate.",
+        })
+
+    return normalized
+
+
 async def run_paper_engine(
     api_key: str,
     research_goal: str,
@@ -300,7 +324,7 @@ async def run_paper_engine(
         on_call=on_call,
     )
     title = outline.get("title", "Untitled CancerHawk Paper")
-    section_specs = outline.get("sections", [])
+    section_specs = _normalize_section_specs(outline.get("sections"))
     if not section_specs:
         raise RuntimeError("Compiler returned no sections")
 
