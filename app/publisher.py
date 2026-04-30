@@ -18,6 +18,8 @@ import json
 import os
 import re
 import subprocess
+import urllib.error
+import urllib.request
 from dataclasses import asdict
 from datetime import datetime, timezone
 from pathlib import Path
@@ -982,11 +984,12 @@ def try_git_publish(block_n: int) -> str:
     """Commit ``results/`` and push.
 
     Two modes:
-      - **Worker mode** (Railway): if ``GITHUB_TOKEN`` and ``GITHUB_REPO`` are
+      - **Hermes worker mode** (Railway): if ``GITHUB_TOKEN`` and ``GITHUB_REPO`` are
         in the environment, use a token-authenticated remote URL
         (``https://x-access-token:<TOKEN>@github.com/<REPO>.git``) and
-        non-interactive committer identity. This is how the deployed worker
-        publishes back to the GitHub repo so Vercel + Pages rebuild.
+        non-interactive Hermes committer identity. This is how the deployed
+        worker publishes every completed run back to the GitHub repo so Vercel
+        rebuilds the website from the saved result bundle.
       - **Local mode** (laptop): if no token is set, fall back to the ambient
         ``git push`` which uses the user's configured remote and credentials.
     """
@@ -994,8 +997,8 @@ def try_git_publish(block_n: int) -> str:
     token = os.environ.get("GITHUB_TOKEN", "").strip()
     repo = os.environ.get("GITHUB_REPO", "").strip()
     branch = os.environ.get("GITHUB_BRANCH", "master").strip() or "master"
-    committer_name = os.environ.get("GIT_COMMITTER_NAME", "cancerhawk-worker")
-    committer_email = os.environ.get("GIT_COMMITTER_EMAIL", "worker@cancerhawk.local")
+    committer_name = os.environ.get("GIT_COMMITTER_NAME", "hermes-agent")
+    committer_email = os.environ.get("GIT_COMMITTER_EMAIL", "hermes@cancerhawk.local")
 
     env = os.environ.copy()
     env["GIT_TERMINAL_PROMPT"] = "0"  # never prompt for credentials
@@ -1026,7 +1029,8 @@ def try_git_publish(block_n: int) -> str:
         else:
             _run(["git", "push"])
 
-        return f"pushed block {block_n}"
+        deploy_status = trigger_website_update(block_n)
+        return f"hermes pushed block {block_n}; {deploy_status}"
     except subprocess.CalledProcessError as exc:
         stderr = (exc.stderr or b"").decode(errors="replace")
         # Strip the token from any error message before returning it.
@@ -1035,6 +1039,33 @@ def try_git_publish(block_n: int) -> str:
         return f"git failed: {stderr[:200] if stderr else exc}"
     except FileNotFoundError:
         return "git not available"
+
+
+def trigger_website_update(block_n: int) -> str:
+    """Trigger an optional Vercel deploy hook after GitHub is updated.
+
+    GitHub integration already rebuilds the site on push. Set
+    ``VERCEL_DEPLOY_HOOK_URL`` on Railway if you want Hermes to explicitly poke
+    Vercel as a second signal after saving a run.
+    """
+    hook_url = os.environ.get("VERCEL_DEPLOY_HOOK_URL", "").strip()
+    if not hook_url:
+        return "website update queued by GitHub push"
+
+    payload = json.dumps({"source": "hermes-agent", "block": block_n}).encode("utf-8")
+    request = urllib.request.Request(
+        hook_url,
+        data=payload,
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=15) as response:
+            if 200 <= response.status < 300:
+                return "vercel deploy hook triggered"
+            return f"vercel deploy hook returned {response.status}"
+    except (urllib.error.URLError, TimeoutError) as exc:
+        return f"vercel deploy hook failed: {exc}"
 
 
 def _render_run_page() -> str:

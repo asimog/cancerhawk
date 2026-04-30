@@ -97,7 +97,7 @@ function loadPrefs() {
     if (prefs.research_goal) goalEl.value = prefs.research_goal;
     if (prefs.n_submitters) nSubEl.value = prefs.n_submitters;
     if (typeof prefs.auto_publish === "boolean") autoPubEl.checked = prefs.auto_publish;
-    if (typeof prefs.git_push === "boolean") gitPushEl.checked = prefs.git_push;
+    gitPushEl.checked = typeof prefs.git_push === "boolean" ? prefs.git_push : true;
     return prefs;
   } catch {
     return {};

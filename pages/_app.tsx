@@ -9,6 +9,10 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <MusicProvider>
       <Head>
+        <title>CancerHawk</title>
+        <meta name="description" content="Autonomous oncology research blocks from CancerHawk." />
+        <link rel="icon" href="/icon.png" />
+        <link rel="apple-touch-icon" href="/icon.png" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link

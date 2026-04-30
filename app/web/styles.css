@@ -18,6 +18,13 @@ header h1 {
   color: #6fdb6f;
   letter-spacing: 0.5px;
 }
+.brand-logo {
+  display: block;
+  width: min(132px, 34vw);
+  height: auto;
+  margin: 0 auto 12px;
+  filter: drop-shadow(0 0 18px rgba(111, 219, 111, 0.28));
+}
 .tagline { color: #6a8a6a; margin: 6px 0 0; font-size: 14px; }
 main {
   max-width: 960px;

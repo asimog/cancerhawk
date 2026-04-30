@@ -4,11 +4,13 @@
   <meta charset="utf-8" />
   <title>CancerHawk · Autonomous Oncology Research Engine</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="icon" href="/icon.png" />
   <link rel="stylesheet" href="/static/styles.css" />
 </head>
 <body>
 <header>
-  <h1>🦅 CancerHawk</h1>
+  <img alt="CancerHawk" class="brand-logo" src="/logo.png" />
+  <h1>CancerHawk</h1>
   <p class="tagline">Autonomous oncology research · paper engine + multi-archetype analysis · runs on OpenRouter</p>
 </header>
 
@@ -45,7 +47,7 @@
 
     <div class="row inline-row">
       <label class="inline"><input type="checkbox" id="auto_publish" checked /> auto-publish to <code>results/block-N/</code></label>
-      <label class="inline"><input type="checkbox" id="git_push" /> also <code>git add/commit/push</code> (live to GitHub Pages)</label>
+      <label class="inline"><input type="checkbox" id="git_push" checked /> Hermes saves to GitHub and updates the website</label>
     </div>
 
     <button id="run_btn" class="primary">▶ Run a fresh CancerHawk block</button>

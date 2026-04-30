@@ -158,7 +158,7 @@ async def ws_run(ws: WebSocket) -> None:
     research_goal = (cfg.get("research_goal") or "").strip()
     n_submitters = max(1, min(8, int(cfg.get("n_submitters") or 3)))
     auto_publish = bool(cfg.get("auto_publish", True))
-    git_push = bool(cfg.get("git_push", False))
+    git_push = bool(cfg.get("git_push", True))
     models_cfg = {
         "submitter": cfg.get("submitter") or DEFAULT_MODELS["submitter"],
         "validator": cfg.get("validator") or DEFAULT_MODELS["validator"],
