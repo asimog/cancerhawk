@@ -51,6 +51,7 @@ from .peer_review_engine import (  # noqa: E402
     consolidated_to_dict,
 )
 
+HOST = os.environ.get("HOST", "0.0.0.0")
 PORT = int(os.environ.get("PORT", "8765"))
 
 app = FastAPI(title="CancerHawk")
@@ -468,4 +469,4 @@ DEFAULT_MODELS = {
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=PORT, log_level="info")
+    uvicorn.run(app, host=HOST, port=PORT, log_level="info")
