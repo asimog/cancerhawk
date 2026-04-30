@@ -12,6 +12,8 @@ Autonomous oncology research blocks. Each "block" is a peer-reviewed paper plus
 - **Simulation engine** — emits two visualization tracks per block: HTML5
   Canvas (2D) scenes for fast falsifier views and Three.js (WebGL) 3D scenes
   for volumetric tumor / mitotic / perturbation views.
+- **Hermes supervisor** — Railway-side run owner that hydrates the repo state
+  from GitHub, oversees MOTO, peer review, simulations, and repository publish.
 - **Publisher** — writes `results/block-N/{paper.md,paper.html,analysis.json,
   block.json}` and rewrites `results/index.html` so the public site always
   shows the latest block.
@@ -25,13 +27,15 @@ Autonomous oncology research blocks. Each "block" is a peer-reviewed paper plus
 │  - serves results/* statically    │
 │  - run UI at /run.html            │
 └────┬──────────────────────────────┘
-     │ wss:// (WebSocket /ws/run)
+     │ wss:// (WebSocket /ws/hermes/run)
      ▼
 ┌───────────────────────────────────┐
-│  Railway worker                   │
+│  Railway Hermes worker            │
 │  Project aaf250a7-...             │
 │  - app/main.py FastAPI            │
+│  - Hermes supervisor              │
 │  - MOTO + peer review + sims      │
+│  - clones GitHub with token       │
 └────┬──────────────────────────────┘
      │ git push (GITHUB_TOKEN)
      ▼
@@ -44,9 +48,11 @@ Autonomous oncology research blocks. Each "block" is a peer-reviewed paper plus
 ```
 
 Per-block flow: user opens the Vercel site → pastes OpenRouter key → clicks
-Run → Vercel UI opens a WebSocket to the Railway worker → worker runs the
-pipeline, streams progress → on completion the worker commits
-`results/block-N/` to GitHub → Vercel rebuilds → new block appears publicly.
+Run → Vercel UI opens a WebSocket to the Railway Hermes worker → Hermes
+hydrates `results/` from GitHub, runs the pipeline, streams progress → on
+completion Hermes clones `asimog/cancerhawk` with `GITHUB_TOKEN`, commits the
+configured paths, pushes to GitHub → Vercel rebuilds → new block appears
+publicly.
 
 ## Local development
 
@@ -77,11 +83,13 @@ The full engine internals are documented in [app/README.md](app/README.md).
 | `CANCERHAWK_CORS_ORIGINS` | GH Pages + localhost | Comma-separated allow-list of origins permitted to call the worker. |
 | `CANCERHAWK_PUBLIC_BASE_URL` | `https://asimog.github.io/cancerhawk` | Public URL embedded in generated HTML for absolute links. |
 | `CANCERHAWK_BACKEND_URL` | `http://localhost:8765` | Backend URL embedded in `results/run.html` so the static run page knows where to connect. Set this to the Railway public domain. |
-| `GITHUB_TOKEN` | _(unset)_ | GitHub PAT with `repo` scope. When set, the worker pushes new blocks back to GitHub using a token-authenticated remote. |
-| `GITHUB_REPO` | _(unset)_ | `owner/repo` form, e.g. `asimog/cancerhawk`. Required alongside `GITHUB_TOKEN` for worker-mode push. |
+| `GITHUB_TOKEN` | _(unset)_ | GitHub PAT with repo contents write access. Hermes uses it to clone, commit, and push generated run artifacts back to GitHub. |
+| `GITHUB_REPO` | _(unset)_ | `owner/repo` form, e.g. `asimog/cancerhawk`. Required alongside `GITHUB_TOKEN` for Hermes worker-mode push. |
 | `GITHUB_BRANCH` | `master` | Branch to push to. |
-| `GIT_COMMITTER_NAME` | `cancerhawk-worker` | Committer identity for worker-mode pushes. |
-| `GIT_COMMITTER_EMAIL` | `worker@cancerhawk.local` | Committer email. |
+| `GIT_COMMITTER_NAME` | `hermes-agent` | Committer identity for worker-mode pushes. |
+| `GIT_COMMITTER_EMAIL` | `hermes@cancerhawk.local` | Committer email. |
+| `HERMES_COMMIT_PATHS` | `results` | Comma-separated repo paths Hermes is allowed to copy into the checkout and commit. Use `results` for generated blocks; broaden deliberately if you want autonomous source edits committed too. |
+| `VERCEL_DEPLOY_HOOK_URL` | _(unset)_ | Optional Vercel deploy hook Hermes calls after pushing. GitHub-connected Vercel projects rebuild on push without this. |
 
 ### Adaptive convergence (full MOTO)
 
@@ -103,11 +111,12 @@ See `railway.json` + `nixpacks.toml` + `Procfile` for Railway, and
 with:
 
 ```bash
-# Railway worker
+# Railway Hermes worker
 npm i -g @railway/cli
 railway login
 railway link aaf250a7-c2e0-452c-8546-c1e4b51a8ac4
 railway variables set GITHUB_TOKEN=... GITHUB_REPO=asimog/cancerhawk \
+  GITHUB_BRANCH=master HERMES_COMMIT_PATHS=results \
   CANCERHAWK_PUBLIC_BASE_URL=https://cancerhawk.vercel.app \
   CANCERHAWK_BACKEND_URL=https://<railway-domain>
 railway up

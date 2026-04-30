@@ -17,7 +17,9 @@ import html
 import json
 import os
 import re
+import shutil
 import subprocess
+import tempfile
 import urllib.error
 import urllib.request
 from dataclasses import asdict
@@ -980,6 +982,109 @@ def _md_to_sections_html(md: str, skip_headings: set[str] | None = None) -> str:
     )
 
 
+def _commit_paths() -> list[str]:
+    raw = os.environ.get("HERMES_COMMIT_PATHS", "results").strip()
+    paths = [p.strip().strip("/") for p in raw.split(",") if p.strip()]
+    return paths or ["results"]
+
+
+def _run_git(args: list[str], cwd: Path, env: dict[str, str]) -> subprocess.CompletedProcess:
+    return subprocess.run(args, cwd=cwd, check=True, capture_output=True, env=env)
+
+
+def _copy_commit_paths(source_root: Path, target_root: Path, paths: list[str]) -> None:
+    for rel in paths:
+        source = source_root / rel
+        target = target_root / rel
+        if not source.exists():
+            continue
+        if target.exists():
+            if target.is_dir():
+                shutil.rmtree(target)
+            else:
+                target.unlink()
+        target.parent.mkdir(parents=True, exist_ok=True)
+        if source.is_dir():
+            shutil.copytree(source, target)
+        else:
+            shutil.copy2(source, target)
+
+
+def _try_git_publish_via_clone(
+    *,
+    block_n: int,
+    token: str,
+    repo: str,
+    branch: str,
+    env: dict[str, str],
+    paths: list[str],
+) -> str:
+    """Clone the GitHub repo in Railway, copy generated edits, commit, push."""
+    if not token or not repo:
+        return "git failed: GITHUB_TOKEN and GITHUB_REPO are required on Railway"
+
+    with tempfile.TemporaryDirectory(prefix="cancerhawk-hermes-") as tmp:
+        clone_root = Path(tmp) / "repo"
+        clone_url = f"https://x-access-token:{token}@github.com/{repo}.git"
+        try:
+            _run_git(["git", "clone", "--branch", branch, "--single-branch", clone_url, str(clone_root)], Path(tmp), env)
+        except subprocess.CalledProcessError:
+            _run_git(["git", "clone", clone_url, str(clone_root)], Path(tmp), env)
+            _run_git(["git", "checkout", "-B", branch], clone_root, env)
+
+        _copy_commit_paths(REPO_ROOT, clone_root, paths)
+        _run_git(["git", "add", "-f", *paths], clone_root, env)
+        try:
+            _run_git(["git", "commit", "-m", f"publish: block {block_n}"], clone_root, env)
+        except subprocess.CalledProcessError as exc:
+            stderr = (exc.stderr or b"").decode(errors="replace").replace(token, "***")
+            stdout = (exc.stdout or b"").decode(errors="replace").replace(token, "***")
+            if "nothing to commit" in stderr or "nothing to commit" in stdout:
+                return f"no changes for block {block_n}"
+            raise
+        _run_git(["git", "push", clone_url, f"HEAD:{branch}"], clone_root, env)
+        deploy_status = trigger_website_update(block_n)
+        return f"hermes cloned {repo}, committed {', '.join(paths)}, pushed block {block_n}; {deploy_status}"
+
+
+def hydrate_results_from_github() -> str:
+    """Refresh local ``results/`` from GitHub before a Railway run.
+
+    Railway deploys can omit generated results for a leaner image, and a long
+    running worker may be older than the latest GitHub commit. Hermes hydrates
+    the result tree before choosing the next block number so new runs append
+    instead of overwriting an older block.
+    """
+    token = os.environ.get("GITHUB_TOKEN", "").strip()
+    repo = os.environ.get("GITHUB_REPO", "").strip()
+    branch = os.environ.get("GITHUB_BRANCH", "master").strip() or "master"
+    if not token or not repo:
+        return "github hydration skipped: GITHUB_TOKEN/GITHUB_REPO not set"
+
+    env = os.environ.copy()
+    env["GIT_TERMINAL_PROMPT"] = "0"
+    clone_url = f"https://x-access-token:{token}@github.com/{repo}.git"
+    try:
+        with tempfile.TemporaryDirectory(prefix="cancerhawk-hydrate-") as tmp:
+            clone_root = Path(tmp) / "repo"
+            try:
+                _run_git(["git", "clone", "--depth", "1", "--branch", branch, "--single-branch", clone_url, str(clone_root)], Path(tmp), env)
+            except subprocess.CalledProcessError:
+                _run_git(["git", "clone", "--depth", "1", clone_url, str(clone_root)], Path(tmp), env)
+            source = clone_root / "results"
+            if not source.exists():
+                return "github hydration skipped: repo has no results/"
+            if RESULTS_DIR.exists():
+                shutil.rmtree(RESULTS_DIR)
+            shutil.copytree(source, RESULTS_DIR)
+            return f"github hydration complete: copied results/ from {repo}@{branch}"
+    except subprocess.CalledProcessError as exc:
+        stderr = (exc.stderr or b"").decode(errors="replace").replace(token, "***")
+        return f"github hydration failed: {stderr[:200] if stderr else exc}"
+    except FileNotFoundError:
+        return "github hydration failed: git not available"
+
+
 def try_git_publish(block_n: int) -> str:
     """Commit ``results/`` and push.
 
@@ -999,6 +1104,7 @@ def try_git_publish(block_n: int) -> str:
     branch = os.environ.get("GITHUB_BRANCH", "master").strip() or "master"
     committer_name = os.environ.get("GIT_COMMITTER_NAME", "hermes-agent")
     committer_email = os.environ.get("GIT_COMMITTER_EMAIL", "hermes@cancerhawk.local")
+    paths = _commit_paths()
 
     env = os.environ.copy()
     env["GIT_TERMINAL_PROMPT"] = "0"  # never prompt for credentials
@@ -1007,16 +1113,23 @@ def try_git_publish(block_n: int) -> str:
     env.setdefault("GIT_COMMITTER_NAME", committer_name)
     env.setdefault("GIT_COMMITTER_EMAIL", committer_email)
 
-    def _run(args: list[str]) -> subprocess.CompletedProcess:
-        return subprocess.run(args, cwd=REPO_ROOT, check=True, capture_output=True, env=env)
-
     try:
-        _run(["git", "add", "-f", "results"])
+        if not (REPO_ROOT / ".git").exists():
+            return _try_git_publish_via_clone(
+                block_n=block_n,
+                token=token,
+                repo=repo,
+                branch=branch,
+                env=env,
+                paths=paths,
+            )
+
+        _run_git(["git", "add", "-f", *paths], REPO_ROOT, env)
         # Allow empty commit when the only change is rewriting index.html — but
         # `git commit` will still error "nothing to commit" if all paths match
         # HEAD. Use `--allow-empty=False` and tolerate the no-op exit.
         try:
-            _run(["git", "commit", "-m", msg])
+            _run_git(["git", "commit", "-m", msg], REPO_ROOT, env)
         except subprocess.CalledProcessError as exc:
             stderr = (exc.stderr or b"").decode(errors="replace")
             if "nothing to commit" in stderr or "no changes added" in stderr:
@@ -1025,9 +1138,9 @@ def try_git_publish(block_n: int) -> str:
 
         if token and repo:
             push_url = f"https://x-access-token:{token}@github.com/{repo}.git"
-            _run(["git", "push", push_url, f"HEAD:{branch}"])
+            _run_git(["git", "push", push_url, f"HEAD:{branch}"], REPO_ROOT, env)
         else:
-            _run(["git", "push"])
+            _run_git(["git", "push"], REPO_ROOT, env)
 
         deploy_status = trigger_website_update(block_n)
         return f"hermes pushed block {block_n}; {deploy_status}"
@@ -1098,7 +1211,7 @@ pre{{background:#071407;border:1px solid #1a3a1a;border-radius:10px;padding:14px
 </style></head><body>
 <header>
   <h1>Run a CancerHawk Block</h1>
-  <p>Generate the next research block from your own OpenRouter API key using the deployed Railway worker.</p>
+  <p>Generate the next research block from your own OpenRouter API key using the deployed Railway Hermes worker.</p>
   <nav class="site-nav"><a href="./">Latest block</a><a href="blocks.html">All blocks</a></nav>
 </header>
 <main>
@@ -1110,9 +1223,9 @@ pre{{background:#071407;border:1px solid #1a3a1a;border-radius:10px;padding:14px
   <iframe class="backend-frame" id="backend" title="CancerHawk backend" src="about:blank"></iframe>
   <section class="notes">
     <h2>Backend</h2>
-    <p>The static site (Vercel/Pages) cannot run Python; it talks to a deployed FastAPI worker over WebSocket. The worker URL is <code>{backend_html}</code>.</p>
+    <p>The static site (Vercel/Pages) cannot run Python; it talks to the deployed FastAPI Hermes worker over WebSocket. The worker URL is <code>{backend_html}</code>.</p>
     <pre>python -m app.main   # local dev (port 8765 by default)</pre>
-    <p>Once the backend is reachable, paste your OpenRouter API key, choose models, and run. Completed blocks publish into <code>results/block-N/</code>. If <code>GITHUB_TOKEN</code> is set in the worker environment, blocks are auto-pushed to GitHub and Vercel auto-rebuilds the public site.</p>
+    <p>Once the backend is reachable, paste your OpenRouter API key, choose models, and run. Hermes publishes completed blocks into <code>results/block-N/</code>, clones the GitHub repo with <code>GITHUB_TOKEN</code>, pushes as <code>hermes-agent</code>, and Vercel auto-rebuilds the public site.</p>
   </section>
 </main>
 <script>

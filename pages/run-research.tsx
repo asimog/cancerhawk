@@ -22,7 +22,7 @@ export const getStaticProps: GetStaticProps<{ backendUrl: string }> = async () =
 function wsUrlFromHttp(url: string) {
   const parsed = new URL(url);
   parsed.protocol = parsed.protocol === 'https:' ? 'wss:' : 'ws:';
-  parsed.pathname = '/ws/run';
+  parsed.pathname = '/ws/hermes/run';
   parsed.search = '';
   parsed.hash = '';
   return parsed.toString();
@@ -34,7 +34,7 @@ export default function RunResearchPage({ backendUrl }: { backendUrl: string }) 
   const [submitterCount, setSubmitterCount] = useState(3);
   const [models, setModels] = useState<string[]>([]);
   const [selectedModels, setSelectedModels] = useState<Record<string, string>>({});
-  const [status, setStatus] = useState('Checking Railway worker...');
+  const [status, setStatus] = useState('Checking Hermes worker...');
   const [workerReady, setWorkerReady] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
   const [events, setEvents] = useState<RunEvent[]>([]);
@@ -47,7 +47,7 @@ export default function RunResearchPage({ backendUrl }: { backendUrl: string }) 
     async function boot() {
       setWorkerReady(false);
       if (!workerUrl) {
-        setStatus('Railway worker URL is not configured.');
+        setStatus('Hermes worker URL is not configured.');
         return;
       }
       try {
@@ -60,11 +60,11 @@ export default function RunResearchPage({ backendUrl }: { backendUrl: string }) 
         setModels(payload.models || []);
         setSelectedModels(payload.defaults || {});
         setWorkerReady(true);
-        setStatus('Railway worker ready.');
+        setStatus('Hermes worker ready.');
       } catch {
         if (!cancelled) {
           setWorkerReady(false);
-          setStatus('Railway worker is not reachable yet. Check the Railway deployment URL in Vercel env.');
+          setStatus('Hermes worker is not reachable yet. Check the Railway deployment URL in Vercel env.');
         }
       }
     }
@@ -85,7 +85,7 @@ export default function RunResearchPage({ backendUrl }: { backendUrl: string }) 
     setEvents([]);
     setResultUrl('');
     setIsRunning(true);
-    setStatus('Starting CancerHawk run on Railway...');
+    setStatus('Starting Hermes-supervised CancerHawk run...');
 
     const ws = new WebSocket(wsUrlFromHttp(workerUrl));
     socketRef.current = ws;
@@ -119,7 +119,7 @@ export default function RunResearchPage({ backendUrl }: { backendUrl: string }) 
       }
     };
     ws.onerror = () => {
-      setStatus('WebSocket connection to Railway failed.');
+      setStatus('WebSocket connection to Hermes failed.');
       setIsRunning(false);
     };
     ws.onclose = () => {
@@ -130,7 +130,7 @@ export default function RunResearchPage({ backendUrl }: { backendUrl: string }) 
   return (
     <div className="page">
       <Nav />
-      <p className="page-kicker">Railway worker</p>
+      <p className="page-kicker">Hermes worker</p>
       <h1 className="page-title">Run Research</h1>
 
       <div className="run-grid">

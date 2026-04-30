@@ -431,7 +431,7 @@ async function run() {
   }, 3000);
 
   const proto = location.protocol === "https:" ? "wss:" : "ws:";
-  ws = new WebSocket(`${proto}//${location.host}/ws/run`);
+  ws = new WebSocket(`${proto}//${location.host}/ws/hermes/run`);
   
   ws.onopen = () => {
     ws.send(JSON.stringify(cfg));

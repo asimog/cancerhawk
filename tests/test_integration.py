@@ -141,11 +141,11 @@ def mock_engines():
         return "ok"
 
     patches = [
-        patch("app.main.run_paper_engine", new=fake_paper_engine),
-        patch("app.main.run_analysis_engine", new=fake_analysis_engine),
-        patch("app.main.run_peer_review_engine", new=fake_peer_review_engine),
-        patch("app.main.publish_block", new=fake_publish_block),
-        patch("app.main.try_git_publish", new=fake_try_git_publish),
+        patch("app.hermes_supervisor.run_paper_engine", new=fake_paper_engine),
+        patch("app.hermes_supervisor.run_analysis_engine", new=fake_analysis_engine),
+        patch("app.hermes_supervisor.run_peer_review_engine", new=fake_peer_review_engine),
+        patch("app.hermes_supervisor.publish_block", new=fake_publish_block),
+        patch("app.hermes_supervisor.try_git_publish", new=fake_try_git_publish),
     ]
     for p in patches:
         p.start()
