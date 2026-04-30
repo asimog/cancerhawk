@@ -6,13 +6,15 @@
 # the worker — they're vendored for reference and stay out of the build.
 
 [phases.setup]
-nixPkgs = ["python312", "gcc", "git"]
+nixPkgs = ["python312", "python312Packages.pip", "gcc", "git"]
 
 [phases.install]
 cmds = [
-  "python -m pip install --upgrade pip",
-  "python -m pip install --no-cache-dir -r app/requirements.txt"
+  "pip install --break-system-packages --no-cache-dir -r app/requirements.txt"
 ]
+
+[phases.build]
+cmds = ["python -m compileall app"]
 
 [start]
 cmd = "python -m app.main"

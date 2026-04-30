@@ -1,0 +1,12 @@
+.git
+.next
+.pytest_cache
+.venv
+node_modules
+hermes-agent
+G0DM0D3
+MiroShark
+pretext
+results
+*.pyc
+__pycache__
