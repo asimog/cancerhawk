@@ -5,7 +5,7 @@ import type { BlockBundle } from '@/lib/blocks';
 const boxes = [
   { href: '/current-block', title: 'Current Block', desc: 'Open the newest paper with simulations embedded inside the paper.' },
   { href: '/previous-blocks', title: 'Previous Blocks', desc: 'Browse generated oncology research blocks and review artifacts.' },
-  { href: '/run-research', title: 'Run Research', desc: 'Connect to the Railway backend and generate the next block.' },
+  { href: '/run-research', title: 'Run Research', desc: 'Generate the next block on the Railway worker.' },
   { href: '/music', title: 'Music', desc: 'Keep the global audio-reactive orb alive across the whole app.' },
 ] as const;
 

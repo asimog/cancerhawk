@@ -35,6 +35,7 @@ export default function RunResearchPage({ backendUrl }: { backendUrl: string }) 
   const [models, setModels] = useState<string[]>([]);
   const [selectedModels, setSelectedModels] = useState<Record<string, string>>({});
   const [status, setStatus] = useState('Checking Railway worker...');
+  const [workerReady, setWorkerReady] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
   const [events, setEvents] = useState<RunEvent[]>([]);
   const [resultUrl, setResultUrl] = useState('');
@@ -44,6 +45,11 @@ export default function RunResearchPage({ backendUrl }: { backendUrl: string }) 
   useEffect(() => {
     let cancelled = false;
     async function boot() {
+      setWorkerReady(false);
+      if (!workerUrl) {
+        setStatus('Railway worker URL is not configured.');
+        return;
+      }
       try {
         const health = await fetch(`${workerUrl}/api/health`, { cache: 'no-store' });
         if (!health.ok) throw new Error(`health ${health.status}`);
@@ -53,9 +59,13 @@ export default function RunResearchPage({ backendUrl }: { backendUrl: string }) 
         if (cancelled) return;
         setModels(payload.models || []);
         setSelectedModels(payload.defaults || {});
+        setWorkerReady(true);
         setStatus('Railway worker ready.');
       } catch {
-        if (!cancelled) setStatus('Railway worker is not reachable yet. Check the Railway deployment URL in Vercel env.');
+        if (!cancelled) {
+          setWorkerReady(false);
+          setStatus('Railway worker is not reachable yet. Check the Railway deployment URL in Vercel env.');
+        }
       }
     }
     void boot();
@@ -70,7 +80,7 @@ export default function RunResearchPage({ backendUrl }: { backendUrl: string }) 
   }
 
   function startRun() {
-    if (!apiKey.trim() || !goal.trim() || isRunning) return;
+    if (!workerReady || !apiKey.trim() || !goal.trim() || isRunning) return;
     socketRef.current?.close();
     setEvents([]);
     setResultUrl('');
@@ -149,7 +159,7 @@ export default function RunResearchPage({ backendUrl }: { backendUrl: string }) 
             <input max={8} min={1} onChange={(event) => setSubmitterCount(Number(event.target.value) || 3)} type="number" value={submitterCount} />
           </label>
           <div className="run-actions">
-            <button className="button" disabled={!apiKey.trim() || !goal.trim() || isRunning} onClick={startRun} type="button">
+            <button className="button" disabled={!workerReady || !apiKey.trim() || !goal.trim() || isRunning} onClick={startRun} type="button">
               {isRunning ? 'Running...' : 'Run CancerHawk'}
             </button>
             {resultUrl && <a className="button" href={resultUrl}>Open block</a>}

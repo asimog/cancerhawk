@@ -73,8 +73,8 @@ export function getBackendUrl() {
   return (
     process.env.NEXT_PUBLIC_BACKEND_URL ||
     process.env.CANCERHAWK_BACKEND_URL ||
-    'https://cancerhawk-production.up.railway.app'
-  ).replace(/\/+$/, '');
+    ''
+  ).trim().replace(/\/+$/, '');
 }
 
 export function excerpt(markdown: string, maxLength = 280) {
