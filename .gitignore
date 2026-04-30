@@ -14,8 +14,8 @@ public/results/
 #
 # GitHub Pages deploys this directory as the public site root. Keep it
 # trackable so each completed block can be committed and displayed.
-!results/
-!results/**
+!/results/
+!/results/**
 
 # Editor / OS
 .DS_Store
