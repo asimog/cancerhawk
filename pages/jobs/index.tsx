@@ -2,6 +2,8 @@ import Link from 'next/link';
 import { GetStaticProps } from 'next';
 import { getBackendUrl } from '@/lib/blocks';
 
+import { useState, useEffect } from 'react';
+
 type Job = {
   job_id: string;
   created_at: string;

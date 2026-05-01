@@ -3,6 +3,8 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { getBackendUrl } from '@/lib/blocks';
 
+import { useState } from 'react';
+
 type Job = {
   job_id: string;
   created_at: string;
