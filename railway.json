@@ -1,6 +1,6 @@
 {
   "build": {
-    "builder": "NIXPACK",
+    "builder": "RAILPACK",
     "buildCommand": "pip install -r requirements.txt && python -m gunicorn app.main:app --workers 2 --worker-class uvicorn.workers.BaseWorker --bind 0.0.0.0:$PORT"
   },
   "deploy": {
