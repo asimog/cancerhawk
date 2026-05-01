@@ -27,3 +27,6 @@ Thumbs.db
 .env.*
 !.env.example
 .vercel
+
+# Runtime-generated files
+jobs.json
