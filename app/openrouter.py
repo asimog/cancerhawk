@@ -155,6 +155,16 @@ async def chat_json(
     return _extract_json(text)
 
 
+def _parse_and_unwrap(json_str: str) -> dict:
+    """Parse JSON string and unwrap arrays containing a single dict."""
+    parsed = json.loads(json_str)
+    if isinstance(parsed, list) and len(parsed) == 1 and isinstance(parsed[0], dict):
+        return parsed[0]
+    if isinstance(parsed, dict):
+        return parsed
+    raise OpenRouterError(f"expected JSON object, got {type(parsed).__name__}: {json_str[:200]!r}")
+
+
 def _extract_json(text: str) -> dict:
     """Extract a JSON object from an LLM response.
 
@@ -164,6 +174,7 @@ def _extract_json(text: str) -> dict:
       - Truncated JSON (response cut off by max_tokens) — repaired by
         closing the open string (if any), then trimming back to the last
         complete element and closing all unclosed containers.
+      - Arrays wrapping a single object: [{...}] is unwrapped to {...}.
     """
     text = text.strip()
 
@@ -178,9 +189,11 @@ def _extract_json(text: str) -> dict:
 
     # Fast path: whole text valid JSON.
     try:
-        return json.loads(text)
+        return _parse_and_unwrap(text)
     except json.JSONDecodeError:
         pass
+    except OpenRouterError:
+        raise
 
     start = text.find("{")
     if start == -1:
@@ -231,7 +244,7 @@ def _extract_json(text: str) -> dict:
     if balanced_end is not None:
         candidate = body[:balanced_end]
         try:
-            return json.loads(candidate)
+            return _parse_and_unwrap(candidate)
         except json.JSONDecodeError:
             pass
 
@@ -246,14 +259,14 @@ def _extract_json(text: str) -> dict:
         # (truncated) element entirely.
         repaired = repaired[:last_safe_trim].rstrip().rstrip(",:")
     else:
-        repaired = repaired.rstrip().rstrip(",:")
+        repaired = repaired.rstrip().rstrip(",:=")
 
     # Close remaining open containers in reverse order.
     closers = {"{": "}", "[": "]"}
     repaired += "".join(closers[c] for c in reversed(stack))
 
     try:
-        return json.loads(repaired)
+        return _parse_and_unwrap(repaired)
     except json.JSONDecodeError as exc:
         raise OpenRouterError(
             f"could not repair truncated JSON ({exc}): {text[:200]!r}"

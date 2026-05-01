@@ -127,6 +127,11 @@ async def _evaluate(
         tracker=tracker,
         on_call=on_call,
     )
+    # LLMs sometimes wrap responses in arrays
+    if isinstance(verdict, list) and verdict:
+        verdict = verdict[0]
+    if not isinstance(verdict, dict):
+        raise RuntimeError(f"Analysis engine got unexpected type: {type(verdict).__name__}")
     verdict["archetype_id"] = archetype["id"]
     verdict["archetype_name"] = archetype["name"]
     avg = _avg_scores(verdict.get("scores", {}))

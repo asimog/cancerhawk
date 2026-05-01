@@ -170,6 +170,9 @@ async def _ws_hermes_run(ws: WebSocket) -> None:
         return
 
     api_key = (cfg.get("api_key") or "").strip()
+    # Fallback: Railway/Hermes may set the key via environment variable
+    if not api_key:
+        api_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
     research_goal = (cfg.get("research_goal") or "").strip()
     n_submitters = max(1, min(8, int(cfg.get("n_submitters") or 3)))
     auto_publish = bool(cfg.get("auto_publish", True))
