@@ -245,7 +245,7 @@ async def _run_job_background(
 
     async def emit(stage: str, message: str, data: dict | None = None) -> None:
         append_job_event(job_id, stage=stage, message=message, data=data)
-        logger.info("pipeline_event", extra={"job_id": job_id, "stage": stage, "message": message[:200], "data": data})
+        logger.info("pipeline_event", extra={"job_id": job_id, "stage": stage, "event_message": message[:200], "data": data})
 
     async def on_call(call: APICall) -> None:
         message = (
@@ -389,7 +389,7 @@ async def _ws_hermes_run(ws: WebSocket) -> None:
             payload = {"stage": stage, "message": message, "data": data}
             append_job_event(job_id, stage=stage, message=message, data=data)
             await ws.send_text(json.dumps(payload))
-            logger.info("pipeline_event", extra={"stage": stage, "message": message[:200], "data": data})
+            logger.info("pipeline_event", extra={"stage": stage, "event_message": message[:200], "data": data})
         except Exception as exc:
             logger.warning("emit_failed", extra={"error": str(exc)})
 
