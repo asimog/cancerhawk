@@ -213,3 +213,35 @@ async def test_chat_json_retry_on_non_json_response():
 
     assert result == {"parsed": True}
     assert call_count == 2
+
+
+@pytest.mark.asyncio
+async def test_chat_json_retries_when_content_is_not_json():
+    call_count = 0
+
+    async def post_side_effect(*args, **kwargs):
+        nonlocal call_count
+        call_count += 1
+        mock = MagicMock()
+        mock.status_code = 200
+        mock.json.return_value = {
+            "choices": [{
+                "message": {
+                    "content": "I can help with that, but here is prose instead."
+                    if call_count == 1
+                    else "{\"parsed\": true}"
+                }
+            }],
+            "usage": {"prompt_tokens": 1, "completion_tokens": 1},
+        }
+        return mock
+
+    with patch("app.openrouter._get_client") as get_client:
+        client = AsyncMock()
+        client.post.side_effect = post_side_effect
+        get_client.return_value = client
+
+        result = await chat_json("key", "m", [{"role": "user", "content": "x"}])
+
+    assert result == {"parsed": True}
+    assert call_count == 2

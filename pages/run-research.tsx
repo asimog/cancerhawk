@@ -1,16 +1,11 @@
 import type { GetStaticProps } from 'next';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useRouter } from 'next/router';
+import { useEffect, useMemo, useState } from 'react';
 import { Nav } from '@/components/nav';
 
 type ModelsPayload = {
   models: string[];
   defaults: Record<string, string>;
-};
-
-type RunEvent = {
-  stage?: string;
-  message?: string;
-  data?: Record<string, any>;
 };
 
 const roles = ['submitter', 'validator', 'compiler', 'archetype', 'topic_deriver'] as const;
@@ -19,16 +14,8 @@ export const getStaticProps: GetStaticProps<{ backendUrl: string }> = async () =
   props: { backendUrl: (await import('@/lib/blocks')).getBackendUrl() },
 });
 
-function wsUrlFromHttp(url: string) {
-  const parsed = new URL(url);
-  parsed.protocol = parsed.protocol === 'https:' ? 'wss:' : 'ws:';
-  parsed.pathname = '/ws/hermes/run';
-  parsed.search = '';
-  parsed.hash = '';
-  return parsed.toString();
-}
-
 export default function RunResearchPage({ backendUrl }: { backendUrl: string }) {
+  const router = useRouter();
   const [apiKey, setApiKey] = useState('');
   const [goal, setGoal] = useState('');
   const [submitterCount, setSubmitterCount] = useState(3);
@@ -37,9 +24,7 @@ export default function RunResearchPage({ backendUrl }: { backendUrl: string }) 
   const [status, setStatus] = useState('Checking Hermes worker...');
   const [workerReady, setWorkerReady] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
-  const [events, setEvents] = useState<RunEvent[]>([]);
-  const [resultUrl, setResultUrl] = useState('');
-  const socketRef = useRef<WebSocket | null>(null);
+  const [createdJobId, setCreatedJobId] = useState('');
   const workerUrl = useMemo(() => backendUrl.replace(/\/+$/, ''), [backendUrl]);
 
   useEffect(() => {
@@ -71,7 +56,6 @@ export default function RunResearchPage({ backendUrl }: { backendUrl: string }) 
     void boot();
     return () => {
       cancelled = true;
-      socketRef.current?.close();
     };
   }, [workerUrl]);
 
@@ -79,52 +63,42 @@ export default function RunResearchPage({ backendUrl }: { backendUrl: string }) 
     setSelectedModels((current) => ({ ...current, [role]: value }));
   }
 
-  function startRun() {
-    if (!workerReady || !apiKey.trim() || !goal.trim() || isRunning) return;
-    socketRef.current?.close();
-    setEvents([]);
-    setResultUrl('');
+  async function startRun() {
+    if (!workerReady || !goal.trim() || isRunning) return;
     setIsRunning(true);
-    setStatus('Starting Hermes-supervised CancerHawk run...');
+    setCreatedJobId('');
+    setStatus('Creating job page...');
 
-    const ws = new WebSocket(wsUrlFromHttp(workerUrl));
-    socketRef.current = ws;
-    ws.onopen = () => {
-      ws.send(JSON.stringify({
-        api_key: apiKey.trim(),
-        research_goal: goal.trim(),
-        n_submitters: submitterCount,
-        auto_publish: true,
-        git_push: true,
-        ...selectedModels,
-      }));
-    };
-    ws.onmessage = (message) => {
-      let event: RunEvent;
-      try {
-        event = JSON.parse(message.data) as RunEvent;
-      } catch {
-        event = { stage: 'log', message: String(message.data) };
+    try {
+      const response = await fetch(`${workerUrl}/api/jobs/start`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          api_key: apiKey.trim(),
+          research_goal: goal.trim(),
+          n_submitters: submitterCount,
+          auto_publish: true,
+          git_push: true,
+          ...selectedModels,
+        }),
+      });
+      const payload = await response.json().catch(() => ({})) as {
+        detail?: string;
+        job_id?: string;
+        job?: { job_id?: string };
+      };
+      if (!response.ok) {
+        throw new Error(payload.detail || `Backend returned ${response.status}`);
       }
-      setEvents((current) => [...current.slice(-180), event]);
-      if (event.stage === 'done') {
-        const url = String(event.data?.result_url || '');
-        setResultUrl(url.startsWith('http') ? url : `/${url.replace(/^\/+/, '')}`);
-        setStatus('Research block complete.');
-        setIsRunning(false);
-      }
-      if (event.stage === 'error') {
-        setStatus(event.message || 'Run failed.');
-        setIsRunning(false);
-      }
-    };
-    ws.onerror = () => {
-      setStatus('WebSocket connection to Hermes failed.');
+      const jobId = String(payload.job_id || payload.job?.job_id || '');
+      if (!jobId) throw new Error('Backend did not return a job id');
+      setCreatedJobId(jobId);
+      setStatus('Job page created. Opening live job card...');
+      await router.push(`/jobs/${jobId}`);
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : 'Run failed to start.');
       setIsRunning(false);
-    };
-    ws.onclose = () => {
-      setIsRunning(false);
-    };
+    }
   }
 
   return (
@@ -160,22 +134,20 @@ export default function RunResearchPage({ backendUrl }: { backendUrl: string }) 
           </label>
           <div className="run-actions">
             <button className="button" disabled={!workerReady || !apiKey.trim() || !goal.trim() || isRunning} onClick={startRun} type="button">
-              {isRunning ? 'Running...' : 'Run CancerHawk'}
+              {isRunning ? 'Creating job...' : 'Run CancerHawk'}
             </button>
-            {resultUrl && <a className="button" href={resultUrl}>Open block</a>}
+            {createdJobId && <a className="button" href={`/jobs/${createdJobId}`}>Open job</a>}
           </div>
         </section>
 
         <section className="panel">
-          <div className="run-log" aria-live="polite">
-            {events.length === 0 ? (
-              <div className="run-log-row"><span className="run-log-stage">ready</span><span>Waiting for a run.</span></div>
-            ) : events.map((event, index) => (
-              <div className="run-log-row" key={`${event.stage || 'event'}-${index}`}>
-                <span className="run-log-stage">{event.stage || 'event'}</span>
-                <span>{event.message || ''}</span>
-              </div>
-            ))}
+          <div className="run-job-preview">
+            <span className="badge badge-pending">job card</span>
+            <h2>Runs open in their own live job page.</h2>
+            <p className="muted">
+              Start a research block here. CancerHawk creates the job card first, then the full paper, peer review,
+              simulations, token stats, and publish log stream into that page.
+            </p>
           </div>
         </section>
       </div>

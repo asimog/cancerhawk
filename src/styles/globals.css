@@ -71,6 +71,8 @@ th { color: var(--teal); text-transform: uppercase; letter-spacing: 0.08em; font
 .run-log-row { display: grid; grid-template-columns: 108px minmax(0, 1fr); gap: 0.75rem; padding: 0.45rem 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
 .run-log-stage { color: var(--teal); text-transform: uppercase; }
 .run-result { display: flex; flex-wrap: wrap; gap: 0.65rem; align-items: center; margin-top: 0.8rem; }
+.run-job-preview h2 { margin: 0.75rem 0 0.55rem; color: var(--ink); font-size: 1.45rem; line-height: 1.1; }
+.muted { color: var(--soft); }
 .music-controls { display: flex; flex-wrap: wrap; gap: 0.65rem; align-items: center; }
 .youtube-form { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.65rem; margin-top: 1rem; }
 .youtube-form input { min-width: 0; border: 1px solid var(--border); border-radius: 999px; background: rgba(0,0,0,0.42); color: var(--ink); padding: 0.7rem 0.95rem; }
@@ -106,6 +108,7 @@ th { color: var(--teal); text-transform: uppercase; letter-spacing: 0.08em; font
 .job-section { border: 1px solid var(--border); border-radius: 12px; background: var(--panel); padding: 1.1rem; margin: 1rem 0; }
 .job-section h2 { margin: 0 0 0.8rem; color: var(--teal); font-size: 1.3rem; }
 .job-json { background: rgba(0,0,0,0.42); border-radius: 8px; padding: 1rem; font-size: 0.82rem; overflow-x: auto; }
+.job-live-log { min-height: 320px; max-height: 58vh; }
 .job-error-section { border-color: rgba(255,107,107,0.32); }
 .job-error { color: #ff6b6b; }
 

@@ -26,6 +26,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from app.jobs import (
     _BASE32,
     _ulid,
+    append_job_event,
     create_job,
     get_job,
     list_jobs,
@@ -88,6 +89,15 @@ class TestJobStorage:
         # Verify persistence
         retrieved = get_job(job["job_id"])
         assert retrieved["status"] == "running"
+        assert retrieved["updated_at"]
+
+    def test_append_job_event(self):
+        job = create_job(research_goal="test", config={})
+        append_job_event(job["job_id"], stage="paper", message="paper started", data={"x": 1})
+        retrieved = get_job(job["job_id"])
+        assert retrieved["events"][0]["stage"] == "paper"
+        assert retrieved["events"][0]["message"] == "paper started"
+        assert retrieved["events"][0]["data"] == {"x": 1}
 
     def test_update_job_result(self):
         job = create_job(research_goal="test", config={})

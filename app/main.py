@@ -21,9 +21,10 @@ import sys
 import time
 import traceback
 from pathlib import Path
+from typing import Any
 
 import uvicorn
-from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi import BackgroundTasks, FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -41,7 +42,7 @@ APP_DIR = Path(__file__).resolve().parent
 from .token_tracker import APICall, TokenTracker  # noqa: E402
 from .hermes_supervisor import HermesRunConfig, HermesSupervisor  # noqa: E402
 from .openrouter import close as close_openrouter  # noqa: E402
-from .jobs import create_job, update_job_status, get_job, list_jobs  # noqa: E402
+from .jobs import append_job_event, create_job, get_job, list_jobs, update_job_status  # noqa: E402
 
 HOST = os.environ.get("HOST", "0.0.0.0")
 PORT = int(os.environ.get("PORT", "8765"))
@@ -126,6 +127,45 @@ async def get_job_details(job_id: str) -> JSONResponse:
     return JSONResponse(job)
 
 
+@app.post("/api/jobs/start")
+async def start_job(payload: dict[str, Any], background_tasks: BackgroundTasks) -> JSONResponse:
+    """Create a job card immediately, then run CancerHawk in the background."""
+    api_key, research_goal, n_submitters, auto_publish, git_push, models_cfg = _parse_run_payload(payload)
+    if not api_key:
+        raise HTTPException(status_code=400, detail="OpenRouter API key required")
+    if not research_goal:
+        raise HTTPException(status_code=400, detail="Research goal required")
+
+    job_config = {
+        "models": models_cfg,
+        "n_submitters": n_submitters,
+        "auto_publish": auto_publish,
+        "git_push": git_push,
+    }
+    job = create_job(research_goal=research_goal, config=job_config)
+    job_id = job["job_id"]
+    update_job_status(job_id, "running")
+    append_job_event(
+        job_id,
+        stage="start",
+        message=f"Starting block · goal: {research_goal[:120]}",
+        data={"models": models_cfg, "job_id": job_id},
+    )
+    background_tasks.add_task(
+        _run_job_background,
+        job_id,
+        api_key,
+        research_goal,
+        n_submitters,
+        auto_publish,
+        git_push,
+        models_cfg,
+    )
+    job = get_job(job_id) or job
+    logger.info("job_created", extra={"job_id": job_id, "goal": research_goal[:120]})
+    return JSONResponse({"job": job, "job_id": job_id})
+
+
 @app.get("/api/blocks/{block_number}")
 async def block_bundle(block_number: int) -> JSONResponse:
     """Return the locally published paper, peer review, and simulations bundle."""
@@ -173,21 +213,8 @@ async def ws_hermes_run(ws: WebSocket) -> None:
     await _ws_hermes_run(ws)
 
 
-async def _ws_hermes_run(ws: WebSocket) -> None:
-    await ws.accept()
-    run_start = time.time()
-
-    try:
-        cfg_text = await ws.receive_text()
-        cfg = json.loads(cfg_text)
-    except Exception as exc:
-        logger.error("bad_config", extra={"error": str(exc)})
-        await ws.send_text(json.dumps({"stage": "error", "message": f"bad config: {exc}"}))
-        await ws.close()
-        return
-
+def _parse_run_payload(cfg: dict[str, Any]) -> tuple[str, str, int, bool, bool, dict[str, str]]:
     api_key = (cfg.get("api_key") or "").strip()
-    # Fallback: Railway/Hermes may set the key via environment variable
     if not api_key:
         api_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
     research_goal = (cfg.get("research_goal") or "").strip()
@@ -201,6 +228,123 @@ async def _ws_hermes_run(ws: WebSocket) -> None:
         "archetype": cfg.get("archetype") or DEFAULT_MODELS["archetype"],
         "topic_deriver": cfg.get("topic_deriver") or DEFAULT_MODELS["topic_deriver"],
     }
+    return api_key, research_goal, n_submitters, auto_publish, git_push, models_cfg
+
+
+async def _run_job_background(
+    job_id: str,
+    api_key: str,
+    research_goal: str,
+    n_submitters: int,
+    auto_publish: bool,
+    git_push: bool,
+    models_cfg: dict[str, str],
+) -> None:
+    tracker = TokenTracker()
+    run_start = time.time()
+
+    async def emit(stage: str, message: str, data: dict | None = None) -> None:
+        append_job_event(job_id, stage=stage, message=message, data=data)
+        logger.info("pipeline_event", extra={"job_id": job_id, "stage": stage, "message": message[:200], "data": data})
+
+    async def on_call(call: APICall) -> None:
+        message = (
+            f"#{call.seq} {call.role} · {call.model} · "
+            f"in={call.prompt_tokens} out={call.completion_tokens} "
+            f"({call.latency_ms}ms, ${call.cost_usd:.4f})"
+            + ("" if call.ok else f" · ERR {call.error[:80] if call.error else ''}")
+        )
+        append_job_event(
+            job_id,
+            stage="api_call",
+            message=message,
+            data={"call": call.to_dict(), "totals": tracker.stats()},
+        )
+        logger.info(
+            "api_call #%s role=%s model=%s in=%s out=%s latency=%sms cost=$%.4f",
+            call.seq,
+            call.role,
+            call.model,
+            call.prompt_tokens,
+            call.completion_tokens,
+            call.latency_ms,
+            call.cost_usd,
+        )
+
+    try:
+        await emit(
+            "hermes",
+            "Hermes supervisor started: job card is now live",
+            {"models": models_cfg, "job_id": job_id},
+        )
+        supervisor = HermesSupervisor(emit=emit, on_call=on_call, tracker=tracker)
+        result = await supervisor.run(
+            HermesRunConfig(
+                api_key=api_key,
+                research_goal=research_goal,
+                models=models_cfg,
+                n_submitters=n_submitters,
+                auto_publish=auto_publish,
+                git_push=git_push,
+            )
+        )
+        update_job_status(job_id, "completed", result={
+            "title": result.title,
+            "market_price": result.market_price,
+            "block": result.block,
+            "result_url": result.result_url,
+            "stats": result.stats,
+            "calls": [c for c in result.calls],
+            "git_status": result.git_status,
+        })
+        stats = result.stats
+        await emit(
+            "done",
+            (
+                f"✓ Hermes complete · market price = {result.market_price:.2f} · "
+                f"{stats['total_calls']} API calls · "
+                f"{stats['total_tokens']:,} tokens · "
+                f"${stats['total_cost_usd']:.4f} · "
+                f"{stats['elapsed_seconds']:.0f}s"
+            ),
+            {
+                "title": result.title,
+                "market_price": result.market_price,
+                "block": result.block,
+                "result_url": result.result_url,
+                "stats": stats,
+                "calls": result.calls,
+                "git_status": result.git_status,
+            },
+        )
+    except Exception as exc:
+        tb = traceback.format_exc()
+        logger.error("job_run_failed", extra={"job_id": job_id, "error_type": type(exc).__name__, "error": str(exc)})
+        append_job_event(job_id, stage="error", message=f"{type(exc).__name__}: {exc}", data={"traceback": tb})
+        update_job_status(job_id, "failed", error=f"{type(exc).__name__}: {str(exc)[:500]}")
+    finally:
+        logger.info("job_run_ended", extra={"job_id": job_id, "run_elapsed_seconds": round(time.time() - run_start, 2)})
+
+
+async def _ws_hermes_run(ws: WebSocket) -> None:
+    await ws.accept()
+    run_start = time.time()
+
+    try:
+        cfg_text = await ws.receive_text()
+        cfg = json.loads(cfg_text)
+    except Exception as exc:
+        logger.error("bad_config", extra={"error": str(exc)})
+        await ws.send_text(json.dumps({"stage": "error", "message": f"bad config: {exc}"}))
+        await ws.close()
+        return
+
+    try:
+        api_key, research_goal, n_submitters, auto_publish, git_push, models_cfg = _parse_run_payload(cfg)
+    except Exception as exc:
+        await ws.send_text(json.dumps({"stage": "error", "message": f"bad config: {exc}"}))
+        await ws.close()
+        return
 
     if not api_key:
         logger.warning("missing_api_key")
@@ -217,6 +361,7 @@ async def _ws_hermes_run(ws: WebSocket) -> None:
     job_config = {"models": models_cfg, "n_submitters": n_submitters, "auto_publish": auto_publish, "git_push": git_push}
     job = create_job(research_goal=research_goal, config=job_config)
     job_id = job["job_id"]
+    update_job_status(job_id, "running")
     logger.info("job_created", extra={"job_id": job_id, "goal": research_goal[:120]})
 
     logger.info(
@@ -229,6 +374,12 @@ async def _ws_hermes_run(ws: WebSocket) -> None:
             "git_push": git_push,
         },
     )
+    append_job_event(
+        job_id,
+        stage="start",
+        message=f"Starting block · goal: {research_goal[:120]}",
+        data={"models": models_cfg, "job_id": job_id},
+    )
     await ws.send_text(json.dumps({"stage": "start", "message": f"Starting block · goal: {research_goal[:120]}", "data": {"models": models_cfg, "job_id": job_id}}))
 
     tracker = TokenTracker()
@@ -236,6 +387,7 @@ async def _ws_hermes_run(ws: WebSocket) -> None:
     async def emit(stage: str, message: str, data: dict | None = None) -> None:
         try:
             payload = {"stage": stage, "message": message, "data": data}
+            append_job_event(job_id, stage=stage, message=message, data=data)
             await ws.send_text(json.dumps(payload))
             logger.info("pipeline_event", extra={"stage": stage, "message": message[:200], "data": data})
         except Exception as exc:
@@ -253,6 +405,17 @@ async def _ws_hermes_run(ws: WebSocket) -> None:
                 ),
                 "data": {"call": call.to_dict(), "totals": tracker.stats()},
             }))
+            append_job_event(
+                job_id,
+                stage="api_call",
+                message=(
+                    f"#{call.seq} {call.role} · {call.model} · "
+                    f"in={call.prompt_tokens} out={call.completion_tokens} "
+                    f"({call.latency_ms}ms, ${call.cost_usd:.4f})"
+                    + ("" if call.ok else f" · ERR {call.error[:80] if call.error else ''}")
+                ),
+                data={"call": call.to_dict(), "totals": tracker.stats()},
+            )
             # Also log to server console with an informative single-line message
             log_msg = (
                 f"api_call #{call.seq} role={call.role} model={call.model} "
@@ -285,7 +448,7 @@ async def _ws_hermes_run(ws: WebSocket) -> None:
             "block": result.block,
             "result_url": result.result_url,
             "stats": result.stats,
-            "calls": [c.to_dict() for c in result.calls],
+            "calls": result.calls,
             "git_status": result.git_status,
         })
         stats = result.stats
@@ -321,6 +484,12 @@ async def _ws_hermes_run(ws: WebSocket) -> None:
                 "git_status": result.git_status,
             },
         }))
+        append_job_event(
+            job_id,
+            stage="done",
+            message=f"✓ Hermes complete · market price = {result.market_price:.2f}",
+            data={"block": result.block, "result_url": result.result_url, "stats": stats},
+        )
     except WebSocketDisconnect:
         logger.warning("client_disconnected")
         update_job_status(job_id, "failed", error="client disconnected")

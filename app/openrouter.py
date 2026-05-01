@@ -129,6 +129,8 @@ async def chat_json(
     tracker: TokenTracker | None = None,
     on_call: CallEmitFn | None = None,
 ) -> dict:
+    first_error: OpenRouterError | None = None
+
     try:
         text = await chat(
             api_key,
@@ -141,18 +143,41 @@ async def chat_json(
             tracker=tracker,
             on_call=on_call,
         )
-    except OpenRouterError:
-        text = await chat(
+        try:
+            return _extract_json(text)
+        except OpenRouterError as exc:
+            first_error = exc
+    except OpenRouterError as exc:
+        first_error = exc
+
+    retry_messages = [
+        *messages,
+        {
+            "role": "user",
+            "content": (
+                "Your previous answer could not be parsed as a JSON object. "
+                "Return only one valid JSON object. Do not include markdown, "
+                "commentary, arrays, or code fences."
+            ),
+        },
+    ]
+    try:
+        retry_text = await chat(
             api_key,
             model,
-            messages,
+            retry_messages,
             temperature=temperature,
             max_tokens=max_tokens,
             role=role,
             tracker=tracker,
             on_call=on_call,
         )
-    return _extract_json(text)
+        return _extract_json(retry_text)
+    except OpenRouterError as exc:
+        detail = f"retry failed: {exc}"
+        if first_error is not None:
+            detail = f"initial JSON response failed: {first_error}; {detail}"
+        raise OpenRouterError(detail) from exc
 
 
 def _parse_and_unwrap(json_str: str) -> dict:
