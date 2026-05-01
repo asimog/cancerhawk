@@ -112,6 +112,11 @@ export default function JobDetailPage({ job, backendUrl }: { job: Job | null; ba
           <pre className="job-error">{job.error}</pre>
         </section>
       )}
+
+      <footer className="page-footer">
+        <Link href="/jobs" className="footer-link">← Back to Feed</Link>
+        <Link href="/" className="footer-link">← Back to Home</Link>
+      </footer>
     </div>
   );
 }

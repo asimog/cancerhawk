@@ -129,16 +129,13 @@ async def _evaluate(
     )
     # LLMs sometimes wrap responses in arrays
     if isinstance(verdict, list) and verdict:
-        verdict = verdict[0]
-    # Defensive: ensure dict
+        verdict = verdict[0] if verdict and isinstance(verdict[0], dict) else {}
+    # Defensive: use getattr() as final safety net
     if not isinstance(verdict, dict):
-        if isinstance(verdict, list) and verdict and isinstance(verdict[0], dict):
-            verdict = verdict[0]
-        else:
-            raise RuntimeError(f"Analysis engine got unexpected type: {type(verdict).__name__}")
+        raise RuntimeError(f"Analysis engine got unexpected type: {type(verdict).__name__}")
     verdict["archetype_id"] = archetype["id"]
     verdict["archetype_name"] = archetype["name"]
-    avg = _avg_scores(verdict.get("scores", {}))
+    avg = _avg_scores(getattr(verdict, 'get', lambda k, d={}: d)("scores", {}))
     await emit(
         "analyze",
         f"✓ {archetype['name']} (avg {avg:.1f})",

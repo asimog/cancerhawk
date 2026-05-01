@@ -15,24 +15,24 @@ type Job = {
 };
 
 export const getStaticProps: GetStaticProps<{ backendUrl: string }> = async () => ({
-  props: { backendUrl: await getBackendUrl() },
+  props: { backendUrl: (await import('@/lib/blocks')).getBackendUrl() },
 });
 
 export default function JobsPage({ backendUrl }: { backendUrl: string }) {
   // Client-side fetch — the job list changes frequently
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function load() {
       try {
         const res = await fetch(`${backendUrl}/api/jobs`, { cache: 'no-store' });
-        if (res.ok) {
-          const data = await res.json();
-          setJobs(data.jobs || []);
-        }
-      } catch {
-        // backend may be offline
+        if (!res.ok) throw new Error(`Backend returned ${res.status}`);
+        const data = await res.json();
+        setJobs(data.jobs || []);
+      } catch (e) {
+        setError(e.message);
       } finally {
         setLoading(false);
       }
@@ -55,35 +55,47 @@ export default function JobsPage({ backendUrl }: { backendUrl: string }) {
       </header>
 
       {loading && <p className="muted">Loading jobs…</p>}
-      {!loading && jobs.length === 0 && (
+      {!loading && error && (
+        <div className="backend-offline">
+          <p className="muted">Backend is offline: {error}</p>
+          <p className="muted">Job cards will appear here when the Hermes worker is running.</p>
+        </div>
+      )}
+      {!loading && !error && jobs.length === 0 && (
         <p className="muted">No jobs yet. Run a research block to create one.</p>
       )}
 
-      <div className="job-feed">
-        {jobs.map((job) => (
-          <Link
-            key={job.job_id}
-            href={`/jobs/${job.job_id}`}
-            className="job-card"
-          >
-            <div className="job-card-top">
-              <span className={`badge ${statusBadge[job.status] || 'badge-pending'}`}>
-                {job.status}
-              </span>
-              <span className="job-date">
-                {new Date(job.created_at).toLocaleString()}
-              </span>
-            </div>
-            <h2 className="job-goal">{job.research_goal}</h2>
-            {job.result?.title && (
-              <p className="job-result-title">{job.result.title}</p>
-            )}
-            {job.error && (
-              <p className="job-error">{job.error.slice(0, 120)}</p>
-            )}
-          </Link>
-        ))}
-      </div>
+      {!loading && !error && jobs.length > 0 && (
+        <div className="job-feed">
+          {jobs.map((job) => (
+            <Link
+              key={job.job_id}
+              href={`/jobs/${job.job_id}`}
+              className="job-card"
+            >
+              <div className="job-card-top">
+                <span className={`badge ${statusBadge[job.status] || 'badge-pending'}`}>
+                  {job.status}
+                </span>
+                <span className="job-date">
+                  {new Date(job.created_at).toLocaleString()}
+                </span>
+              </div>
+              <h2 className="job-goal">{job.research_goal}</h2>
+              {job.result?.title && (
+                <p className="job-result-title">{job.result.title}</p>
+              )}
+              {job.error && (
+                <p className="job-error">{job.error.slice(0, 120)}</p>
+              )}
+            </Link>
+          ))}
+        </div>
+      )}
+
+      <footer className="page-footer">
+        <Link href="/" className="footer-link">← Back to Home</Link>
+      </footer>
     </div>
   );
 }

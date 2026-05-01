@@ -238,16 +238,12 @@ async def run_paper_engine(
             )
             # LLMs sometimes wrap the response in a list: [{...}] instead of {...}
             if isinstance(verdict, list) and verdict:
-                verdict = verdict[0]
-            # Defensive: ensure we have a dict no matter what
+                verdict = verdict[0] if verdict and isinstance(verdict[0], dict) else {}
+            # Defensive: use getattr() as final safety net
             if not isinstance(verdict, dict):
-                # Try to extract dict from any nested structure
-                if isinstance(verdict, list) and verdict and isinstance(verdict[0], dict):
-                    verdict = verdict[0]
-                else:
-                    await emit("validate", f"✗ validator returned unexpected type: {type(verdict).__name__}", {"verdict": str(verdict)[:200]})
-                    continue
-            scores = verdict.get("scores") or {}
+                await emit("validate", f"✗ validator returned unexpected type: {type(verdict).__name__}", {"verdict": str(verdict)[:200]})
+                continue
+            scores = getattr(verdict, 'get', lambda k, d={}: d)("scores") or {}
             nov = scores.get("novelty")
             if isinstance(nov, (int, float)):
                 round_novelty_scores.append(float(nov))

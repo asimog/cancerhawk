@@ -19,7 +19,7 @@ export default function HomePage({ current }: { current: BlockBundle | null }) {
   return (
     <div className="home-outer">
       <header className="home-brand">
-        <h1 className="home-display-title">CancerHawk<span className="home-blink-x">X</span></h1>
+        <h1 className="home-display-title">CancerHawk<span className="home-x">X</span></h1>
         <p className="page-kicker">{current ? `Block ${current.number} live` : 'Research engine'}</p>
       </header>
       <nav aria-label="Primary routes" className="home-grid-wrap">
