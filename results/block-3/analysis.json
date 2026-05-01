@@ -1,0 +1,579 @@
+{
+  "archetypes": [
+    {
+      "scores": {
+        "clinical_viability": 6,
+        "regulatory_risk": 8,
+        "market_potential": 7,
+        "patient_impact": 8,
+        "novelty": 9,
+        "falsifiability": 9
+      },
+      "verdict": "The paper proposes a novel temporal alignment of CRISPR editing with cell cinema models to target metastatic cancer's dynamic commitment windows. While mechanistically intriguing and falsifiable through measurable endpoints like durable remission, clinical viability is tempered by integration complexity between Cell Cinema and CRISPR-Cure-7. Regulatory risk is high due to unproven temporal precision in human trials. Patient impact hinges on successful synchronization reducing treatment burden, which remains speculative. The hypothesis is bold but requires validation of its core timing mechanism.",
+      "would_move_price": "A positive phase II trial demonstrating durable remission in metastatic patients would sharply increase prediction-market prices, while safety data on off-target edits could drive them down.",
+      "archetype_id": "oncologist",
+      "archetype_name": "Practicing Oncologist"
+    },
+    {
+      "scores": {
+        "clinical_viability": 2,
+        "regulatory_risk": 9,
+        "market_potential": 3,
+        "patient_impact": 2,
+        "novelty": 8,
+        "falsifiability": 4
+      },
+      "verdict": "Mechanistically seductive but statistically brittle. The paper proposes aligning multiplex CRISPR-Cure-7 editing to model-predicted DTP commitment windows, yet offers no prospective trial schema, power calculation, or endpoint hierarchy. Latent flow fields from video-diffusion are high-variance surrogates; without prespecified, quantitative thresholds for GPX4/BAX/mitotic-slippage timing, randomization will be unblinded by post-hoc window cherry-picking. Sample-size feasibility is implausible: metastatic heterogeneity implies large N for clonal-suppression endpoints, but the paper assumes perfect delivery synchrony and ignores off-target drift across cycles. Confounding is uncontrolled: microenvironmental noise, circadian drug exposure, and prior therapy lineages will swamp the purported temporal signal. Regulatory risk is severe\u2014FDA will demand validated pharmacodynamic biomarkers tied to irreversible commitment, not cinema-predicted coordinates. Novelty is high (temporal alignment of editing to latent dynamics), but falsifiability is low because the central hypothesis is protected by latent-space flexibility rather than hard, time-to-event endpoints.",
+      "would_move_price": "A preregistered phase I/II protocol with a time-to-clonal-regrowth endpoint and blinded adjudication of DTP-window adherence would sharply raise the prediction-market price; any signal of off-target editing or inability to meet target enrollment within 18 months would crash it.",
+      "archetype_id": "biostatistician",
+      "archetype_name": "Biostatistician"
+    },
+    {
+      "scores": {
+        "clinical_viability": 1,
+        "regulatory_risk": 10,
+        "market_potential": 2,
+        "patient_impact": 3,
+        "novelty": 6,
+        "falsifiability": 2
+      },
+      "verdict": "This submission presents a speculative framework without a single piece of experimental data, no IND-enabling studies, no safety pharmacology, no toxicology, no GMP manufacturing pathway, and no identified biomarkers to predict commitment windows. The paper references two prior hypothetical constructs (Cell Cinema and CRISPR-Cure-7) and proposes their integration\u2014yet provides no evidence that either component exists or functions as described. From an FDA regulatory standpoint, this is a concept document at Technology Readiness Level 0. The multi-pathway CRISPR approach targeting seven genes raises substantial off-target and combinatorial toxicity concerns with no mitigation strategy. There is no defined patient population, no dosing framework, no pharmacodynamic readout, and no regulatory approval pathway. Accelerated approval eligibility is not applicable\u2014there is no surrogate endpoint because there is no study. This would require years of IND-enabling work before any regulatory submission could be entertained. Verdict: Not ready for regulatory review.",
+      "would_move_price": "A published IND-enabling package demonstrating in vivo efficacy, defined delivery methodology, off-target risk mitigation, and GMP-compatibility would shift the price dramatically upward; without such data, this remains a purely speculative concept with no near-term regulatory trajectory.",
+      "archetype_id": "fda",
+      "archetype_name": "FDA Regulator"
+    },
+    {
+      "scores": {
+        "clinical_viability": 3,
+        "regulatory_risk": 8,
+        "market_potential": 4,
+        "patient_impact": 5,
+        "novelty": 9,
+        "falsifiability": 7
+      },
+      "verdict": "The manuscript proposes a highly speculative fusion of a video\u2011generative dynamics model (Cell Cinema) with a multi\u2011gene CRISPR editing platform (CRISPR\u2011Cure\u20117) to time interventions to transient cancer cell commitment windows. While the conceptual novelty is high, the clinical viability is low: no in\u2011vitro or in\u2011vivo proof of concept demonstrates that temporally aligned editing can actually collapse drug\u2011tolerant persister states or prevent resistant clone emergence. Regulatory risk is severe because the approach involves simultaneous multiplex genome editing, a technology still in early preclinical stages, and the added complexity of time\u2011dependent delivery further complicates safety assessment. Market potential is modest; even if the hypothesis were proven, the therapeutic would likely be a niche, high\u2011cost gene\u2011therapy product with limited reimbursement pathways. The patient impact could be substantial if successful, but the path to proof is long and uncertain. Overall, the paper is a bold mechanistic proposal that would need rigorous falsifiable experiments\u2014e.g., time\u2011resolved CRISPR delivery in a metastatic mouse model with single\u2011cell trajectory readouts\u2014to move beyond theoretical speculation.",
+      "would_move_price": "A successful demonstration that temporally synchronized CRISPR editing reduces DTP emergence in a metastatic animal model would push the price up; conversely, a failure to show any advantage over untimed editing would push it down.",
+      "archetype_id": "investor",
+      "archetype_name": "Biotech Investor"
+    },
+    {
+      "scores": {
+        "clinical_viability": 6,
+        "regulatory_risk": 5,
+        "market_potential": 7,
+        "patient_impact": 8,
+        "novelty": 9,
+        "falsifiability": 8
+      },
+      "verdict": "As a Patient Advocate, this paper\u2019s core innovation\u2014synchronizing CRISPR edits with dynamical commitment windows\u2014is compelling from a mechanistic standpoint. However, from a lived experience lens, its clinical viability hinges on overcoming immense practical barriers. CRISPR-Cure-7\u2019s multi-pathway edits carry unpredictable side-effect burdens, and real-world treatment journeys often involve fragmented care. While Cell Cinema\u2019s temporal mapping is novel, translating this to patient-reported outcomes (e.g., reduced treatment duration, fewer relapses) requires robust real-world validation. Regulatory risks are high due to CRISPR\u2019s complex safety profile, and market potential depends on reimbursement models that rarely prioritize experimental therapies. Patient impact could be high *if* the approach reduces suffering, but current evidence lacks direct patient-centric metrics. The hypothesis is falsifiable but requires granular, patient-reported endpoints to prove durability beyond lab settings.",
+      "archetype_id": "patient",
+      "archetype_name": "Patient Advocate"
+    },
+    {
+      "scores": {
+        "clinical_viability": 3,
+        "regulatory_risk": 8,
+        "market_potential": 4,
+        "patient_impact": 7,
+        "novelty": 6,
+        "falsifiability": 4
+      },
+      "archetype_id": "short_seller",
+      "archetype_name": "Adversarial Short-Seller"
+    }
+  ],
+  "market_price": 0.43500000000000005,
+  "score_matrix": {
+    "oncologist": {
+      "clinical_viability": 6,
+      "regulatory_risk": 8,
+      "market_potential": 7,
+      "patient_impact": 8,
+      "novelty": 9,
+      "falsifiability": 9
+    },
+    "biostatistician": {
+      "clinical_viability": 2,
+      "regulatory_risk": 9,
+      "market_potential": 3,
+      "patient_impact": 2,
+      "novelty": 8,
+      "falsifiability": 4
+    },
+    "fda": {
+      "clinical_viability": 1,
+      "regulatory_risk": 10,
+      "market_potential": 2,
+      "patient_impact": 3,
+      "novelty": 6,
+      "falsifiability": 2
+    },
+    "investor": {
+      "clinical_viability": 3,
+      "regulatory_risk": 8,
+      "market_potential": 4,
+      "patient_impact": 5,
+      "novelty": 9,
+      "falsifiability": 7
+    },
+    "patient": {
+      "clinical_viability": 6,
+      "regulatory_risk": 5,
+      "market_potential": 7,
+      "patient_impact": 8,
+      "novelty": 9,
+      "falsifiability": 8
+    },
+    "short_seller": {
+      "clinical_viability": 3,
+      "regulatory_risk": 8,
+      "market_potential": 4,
+      "patient_impact": 7,
+      "novelty": 6,
+      "falsifiability": 4
+    }
+  },
+  "consensus_dim": {
+    "clinical_viability": 3.5,
+    "regulatory_risk": 8.0,
+    "market_potential": 4.5,
+    "patient_impact": 5.5,
+    "novelty": 7.833333333333333,
+    "falsifiability": 5.666666666666667
+  },
+  "headline_catalysts": [
+    "[Practicing Oncologist] A positive phase II trial demonstrating durable remission in metastatic patients would sharply increase prediction-market prices, while safety data on off-target edits could drive them down.",
+    "[Biostatistician] A preregistered phase I/II protocol with a time-to-clonal-regrowth endpoint and blinded adjudication of DTP-window adherence would sharply raise the prediction-market price; any signal of off-target editing or inability to meet target enrollment within 18 months would crash it.",
+    "[FDA Regulator] A published IND-enabling package demonstrating in vivo efficacy, defined delivery methodology, off-target risk mitigation, and GMP-compatibility would shift the price dramatically upward; without such data, this remains a purely speculative concept with no near-term regulatory trajectory.",
+    "[Biotech Investor] A successful demonstration that temporally synchronized CRISPR editing reduces DTP emergence in a metastatic animal model would push the price up; conversely, a failure to show any advantage over untimed editing would push it down."
+  ],
+  "derived_topics": [
+    {
+      "id": 1,
+      "title": "Molecular Grounding Protocol for Cell Cinema Latent Coordinates",
+      "probability": 0.45,
+      "impact": 9,
+      "token_cost": 1800000,
+      "rationale": "Extends Block 1's acknowledged limitation: develop multiplexed live-cell imaging with fluorescent reporters (GPX4 activity, BAX translocation, cyclin B1 degradation) to validate that latent space trajectories correspond to measurable commitment markers. Failure mode: latent coordinates map to transcriptional states without temporal precision."
+    },
+    {
+      "id": 2,
+      "title": "Single-Cell Temporal Vulnerability Atlas for CRISPR-Cure-7 Targets",
+      "probability": 0.35,
+      "impact": 8,
+      "token_cost": 2200000,
+      "rationale": "Extends temporal synchronization insight: use longitudinal single-cell RNA/ATAC sequencing across DTP induction to map the precise kinetic window for each of the 7 CRISPR-Cure-7 targets (e.g., when GPX4 rewiring becomes BCL2-dependent). Hypothesis: editing during the narrow vulnerability window reduces DTP emergence by >50%."
+    },
+    {
+      "id": 3,
+      "title": "In Vivo Validation of Commitment Window Predictions in Metastatic Murine Model",
+      "probability": 0.55,
+      "impact": 10,
+      "token_cost": 3000000,
+      "rationale": "Extends the biostatistician catalyst: transplant metastatic breast cancer cells engineered with fluorescent commitment reporters into mice, treat with CRISPR-Cure-7 at predicted windows vs. time-agnostic dosing, measure clonal suppression via lineage tracing. Failure mode: temporal synchronization shows no advantage over standard dosing."
+    },
+    {
+      "id": 4,
+      "title": "Multi-Omic Integration of Video-Diffusion Predictions with Proteomic Commitment Signatures",
+      "probability": 0.4,
+      "impact": 7,
+      "token_cost": 1500000,
+      "rationale": "Extends the static omics limitation: develop computational framework correlating Cell Cinema latent flows with time-resolved proteomics and phosphoproteomics to identify actionable protein-level commitment biomarkers. Hypothesis: specific phospho-events precede visible morphological transitions by 2-4 hours."
+    },
+    {
+      "id": 5,
+      "title": "Clinical Protocol for Real-Time Commitment Window Detection via Circulating Tumor DNA",
+      "probability": 0.25,
+      "impact": 9,
+      "token_cost": 2500000,
+      "rationale": "Extends regulatory catalyst: develop ctDNA-based assay detecting emerging DTP clones (via methylation signatures and copy number evolution) to guide CRISPR-Cure-7 timing in clinical settings. Hypothesis: ctDNA dynamics predict commitment window entry 7-14 days before measurable tumor growth."
+    }
+  ],
+  "peer_reviews": [
+    {
+      "archetype_id": "oncologist",
+      "archetype_name": "Practicing Oncologist",
+      "recommendation": "minor_revision",
+      "confidence": 0.85,
+      "summary": "The paper presents a compelling hypothesis for synchronizing CRISPR-Cure-7 editing with Cell Cinema-predicted commitment windows to target metastatic cancer. While the mechanistic rationale is innovative and addresses key gaps in temporal specificity, the lack of experimental validation for the Cell Cinema model's predictions and insufficient clinical integration details weaken the proposal's robustness. Minor revisions to strengthen experimental design and address practical implementation are needed.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 8,
+        "experimental_design": 6,
+        "evidence_support": 7,
+        "statistical_rigor": 5,
+        "clarity_of_writing": 7
+      },
+      "criticisms": [
+        "The Cell Cinema model's predictions of commitment windows lack independent validation with orthogonal datasets (e.g., time-lapse imaging or orthogonal omics).",
+        "No experimental data demonstrates synchronization of CRISPR-Cure-7 editing with predicted windows in vitro or in vivo.",
+        "Clinical workflow integration (e.g., patient burden, off-label use of CRISPR-Cure-7) is cursorily addressed without concrete strategies.",
+        "Statistical analysis is absent; claims about fitness peak collapse rely on qualitative descriptions rather than quantified metrics.",
+        "The term 'Temporal Fragility Mapping' is ambiguously defined, risking misinterpretation of the methodology."
+      ],
+      "required_fixes": [
+        "Add experimental validation of Cell Cinema model predictions using time-resolved imaging or kinetic assays.",
+        "Include preliminary in vitro or in vivo data showing synchronization of CRISPR-Cure-7 with commitment windows.",
+        "Clarify clinical implementation details (e.g., dosing schedules, delivery method feasibility in patients).",
+        "Quantify fitness peak collapse with statistical metrics (e.g., survival curves, clone elimination rates).",
+        "Define 'Temporal Fragility Mapping' operationally with clear protocols."
+      ],
+      "suggested_experiments": [],
+      "simulation_proposal": null
+    },
+    {
+      "archetype_id": "biostatistician",
+      "archetype_name": "Biostatistician",
+      "recommendation": "major_revision",
+      "confidence": 0.7,
+      "summary": "The paper presents an innovative conceptual framework for synchronizing CRISPR-Cure-7 editing with Cell Cinema-predicted commitment windows to target drug-tolerant persister (DTP) states in metastatic cancer. However, the proposal lacks critical experimental and statistical validation required to establish mechanistic plausibility and feasibility. Key gaps include undefined synchronization protocols, absence of power calculations, and insufficient evidence linking Cell Cinema-derived windows to measurable endpoints.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 7,
+        "experimental_design": 5,
+        "evidence_support": 4,
+        "statistical_rigor": 3,
+        "clarity_of_writing": 6
+      },
+      "criticisms": [
+        "The synchronization mechanism between Cell Cinema models and CRISPR-Cure-7 delivery is not operationally defined. How will temporal alignment be achieved in practice (e.g., real-time monitoring, predictive triggers)?",
+        "No statistical power analysis or sample size justification is provided, making it impossible to assess feasibility of clinical translation.",
+        "Endpoint selection is vague. The paper mentions 'collapsing fitness peaks' but does not define measurable outcomes (e.g., DTP collapse rates, survival metrics).",
+        "Confounding risks are unaddressed. How will microenvironmental heterogeneity or tumor evolution during treatment affect synchronization efficacy?",
+        "The paper conflates mechanistic hypothesis with therapeutic potential without experimental validation in relevant models (e.g., patient-derived organoids, xenografts)."
+      ],
+      "required_fixes": [
+        "Develop a concrete synchronization protocol (e.g., real-time imaging or biomarker triggers) to align CRISPR-Cure-7 delivery with Cell Cinema-predicted windows.",
+        "Include statistical power calculations for key endpoints (e.g., DTP collapse rate) with assumptions about effect size and variability.",
+        "Define specific, measurable endpoints (e.g., GPX4 lipidome changes, BAX translocation kinetics) to validate the hypothesis.",
+        "Address confounding variables (e.g., tumor heterogeneity, treatment resistance evolution) in the experimental design.",
+        "Provide preliminary experimental data (in vitro or preclinical) demonstrating synchronization feasibility."
+      ],
+      "suggested_experiments": [
+        "Conduct in vitro experiments using patient-derived organoids to validate Cell Cinema-predicted commitment windows and test synchronization with CRISPR-Cure-7 editing.",
+        "Perform time-course experiments to measure DTP collapse rates under synchronized vs. asynchronous editing."
+      ],
+      "simulation_proposal": null
+    },
+    {
+      "archetype_id": "fda",
+      "archetype_name": "FDA Regulator",
+      "recommendation": "reject",
+      "confidence": 0.95,
+      "summary": "The paper proposes a novel mechanistic strategy for metastatic cancer therapy but lacks critical experimental validation, fails to address key safety and manufacturing concerns, and contains speculative claims without evidence.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 6,
+        "experimental_design": 2,
+        "evidence_support": 1,
+        "statistical_rigor": 3,
+        "clarity_of_writing": 8
+      },
+      "criticisms": [
+        "No experimental data to support the hypothesis that synchronizing CRISPR-Cure-7 to Cell Cinema-predicted commitment windows collapses fitness peaks; claims rely on untested computational models.",
+        "No IND-enabling studies (toxicity, pharmacokinetics, manufacturing) for CRISPR-Cure-7; lacks safety signals for multi-pathway editing.",
+        "No evidence of scalable manufacturing or reimbursement model; fails to address durability gate identified in prior work.",
+        "No statistical analysis to validate temporal fragility mapping or CRISPR-Cure-7 efficacy; claims are purely mechanistic without empirical testing."
+      ],
+      "required_fixes": [
+        "Provide experimental data (e.g., in vitro/in vivo models) testing CRISPR-Cure-7 timing relative to commitment windows.",
+        "Include IND-enabling studies (toxicity, PK/PD, manufacturing) for CRISPR-Cure-7.",
+        "Address durability gate with evidence of scalable manufacturing and reimbursement model.",
+        "Include statistical analysis to validate temporal fragility mapping claims."
+      ],
+      "suggested_experiments": [
+        "In vitro CRISPR-Cure-7 timing experiments using Cell Cinema-predicted commitment windows to test fitness peak collapse.",
+        "IND-enabling studies for CRISPR-Cure-7 (toxicity, PK/PD, manufacturing)."
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Simulate CRISPR-Cure-7 delivery timing relative to Cell Cinema-predicted commitment windows in a multi-pathway cancer model to test fitness peak collapse.",
+        "expected_metrics": [
+          "Fitness peak stability post-editing",
+          "Survival of resistant clones post-treatment"
+        ],
+        "rationale": "Tests the core hypothesis that timing CRISPR-Cure-7 to commitment windows collapses fitness peaks; critical for validating mechanistic claims."
+      }
+    },
+    {
+      "archetype_id": "investor",
+      "archetype_name": "Biotech Investor",
+      "recommendation": "major_revision",
+      "confidence": 0.7,
+      "summary": "The paper presents a compelling conceptual framework that aligns CRISPR\u2011Cure\u20117 multiplex editing with Cell Cinema\u2011predicted DTP commitment windows, but it lacks falsifiable hypotheses, concrete experimental validation, measurable endpoints, and a clear failure mode, making the claim currently unverifiable and in need of substantial methodological strengthening.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 6,
+        "experimental_design": 4,
+        "evidence_support": 3,
+        "statistical_rigor": 3,
+        "clarity_of_writing": 6
+      },
+      "criticisms": [
+        "The paper lacks a clearly falsifiable hypothesis with defined measurable endpoints and a failure mode, making validation impossible.",
+        "Temporal commitment windows are inferred from Cell Cinema simulations without independent experimental validation of their existence in target cells."
+      ],
+      "required_fixes": [],
+      "suggested_experiments": [],
+      "simulation_proposal": null
+    },
+    {
+      "archetype_id": "kol",
+      "archetype_name": "Academic KOL",
+      "recommendation": "reject",
+      "confidence": 0.9,
+      "summary": "The paper proposes a novel hypothesis linking temporal commitment windows to CRISPR editing efficacy but lacks empirical validation, mechanistic specificity, and experimental design details, making it untestable and scientifically unsubstantiated.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 5,
+        "experimental_design": 1,
+        "evidence_support": 1,
+        "statistical_rigor": 1,
+        "clarity_of_writing": 8
+      },
+      "criticisms": [
+        "No experimental data or simulation results to support the hypothesis that synchronizing CRISPR-Cure-7 to Cell Cinema-predicted windows collapses fitness peaks",
+        "Mechanistic claims (e.g., 'exploits transient hysteresis' in DTP windows) lack molecular specificity and validation",
+        "No description of how CRISPR-Cure-7 delivery timing is controlled or validated in vivo",
+        "Missing statistical analysis of predicted outcomes; claims are purely theoretical"
+      ],
+      "required_fixes": [
+        "Provide experimental data (e.g., in vivo/in vitro models) testing CRISPR delivery timing relative to Cell Cinema-predicted windows",
+        "Detail molecular markers or assays to validate temporal windows (e.g., lipid droplet imaging, BAX translocation kinetics)",
+        "Include statistical modeling of predicted outcomes (e.g., remission rates, toxicity thresholds) based on simulations"
+      ],
+      "suggested_experiments": [
+        "In vivo model of metastatic cancer with CRISPR-Cure-7 delivery timed to Cell Cinema-predicted windows vs. asynchronous delivery",
+        "Single-cell lipidomics and BAX translocation assays to validate temporal windows in patient-derived xenografts",
+        "Toxicity profiling to quantify off-target/on-target effects of synchronized vs. asynchronous editing"
+      ],
+      "simulation_proposal": {
+        "type": "in_silico",
+        "description": "Develop a computational model integrating Cell Cinema's flow fields with CRISPR-Cure-7 kinetics to simulate tumor cell fate under synchronized vs. asynchronous editing, incorporating lipid droplet dynamics and BAX translocation thresholds",
+        "expected_metrics": [
+          "Remission duration",
+          "Resistant clone emergence rate",
+          "Toxicity profile"
+        ],
+        "rationale": "This simulation would test the core hypothesis by quantifying the impact of timing on therapeutic efficacy, providing a bridge between theoretical claims and empirical validation"
+      }
+    },
+    {
+      "archetype_id": "patient",
+      "archetype_name": "Patient Advocate",
+      "recommendation": "reject",
+      "confidence": 0.92,
+      "summary": "The paper proposes a temporally synchronized CRISPR-Cure-7 editing strategy guided by Cell Cinema video-diffusion models to collapse DTP fitness peaks in metastatic cancer. While conceptually ambitious, it fails as a testable research plan: no pre-specified patient cohort, dosing schedule, or measurable patient-reported outcome is provided; the mechanistic claims about GPX4/BCL2/ABC transporter edits during \u201ccommitment windows\u201d lack falsifiable thresholds; and the manuscript ignores real-world burdens of multiplex CRISPR delivery, cumulative toxicity, and access barriers that determine whether durable remission is survivable or merely theoretical.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 6,
+        "experimental_design": 3,
+        "evidence_support": 4,
+        "statistical_rigor": 2,
+        "clarity_of_writing": 7
+      },
+      "criticisms": [
+        "No operational definition of a \u201cDTP commitment window\u201d that can be measured in patients (Section 3). Without a biomarker or imaging read-out tied to GPX4 lipid droplet dynamics or BAX translocation kinetics in vivo, the temporal alignment claim is unfalsifiable.",
+        "CRISPR-Cure-7 multiplex editing (seven sgRNAs via iRGD-LNPs) is presented as a time-agnostic intervention in prior work, yet this paper asserts synchronization without specifying: (a) the allowable delivery window (hours vs days), (b) how patient-to-patient circadian or treatment-timing variability will be handled, or (c) how cumulative on-target/off-target toxicity will be monitored across editing cycles.",
+        "No patient-centered endpoints or patient-reported outcomes (PROs) are pre-specified. Durable remission is framed as a clonal-suppression metric, but the lived experience of treatment (fatigue, neurotoxicity, cytokine release, procedural burden of repeated LNPs, fertility concerns, financial toxicity) is absent. This omission undermines external validity.",
+        "Access and real-world treatment journey are ignored. No discussion of manufacturing scalability of multi-sgRNA LNPs, cold-chain requirements, or site-level expertise needed for image-guided timing of edits\u2014factors that determine whether eligible patients can actually receive the intervention.",
+        "Statistical plan is missing. There is no power calculation, multiplicity correction for seven concurrent edits, or stopping rules for toxicity. Without these, claims about collapsing fitness peaks cannot be evaluated.",
+        "Safety monitoring is underspecified. Multiplex CRISPR editing raises risks of chromosomal translocations, large deletions, and immune responses to Cas9 or vector; the manuscript does not outline a monitoring schema (e.g., GUIDE-seq, long-read sequencing, or serial immune profiling) nor thresholds for halting treatment.",
+        "The background (Section 2) recycles prior CancerHawk blocks without new empirical data, and the mechanism section (Section 3) ends mid-sentence, suggesting incomplete drafting."
+      ],
+      "required_fixes": [
+        "Define a measurable DTP-commitment biomarker (e.g., GPX4-dependent lipid droplet dynamics by intravital Raman or flow cytometry of ferroptosis reporters) and specify the permissible temporal window for CRISPR-Cure-7 delivery in patients.",
+        "Pre-specify patient cohort, inclusion/exclusion criteria, and a patient-centered endpoint package including validated PROs (e.g., EORTC QLQ-C30/FAACT), treatment burden scales, and financial toxicity metrics.",
+        "Add a detailed safety monitoring plan for multiplex CRISPR editing (on-target/off-target assays, immune surveillance, chromosomal integrity) with pre-defined stopping rules.",
+        "Provide a statistical analysis plan with power calculations, multiplicity control, and time-to-event endpoints that account for inter-patient variability in DTP-commitment timing.",
+        "Address access and real-world feasibility: manufacturing scale-up, cold-chain logistics, site qualification, and equity considerations for patients who cannot tolerate repeated LNP infusions or imaging procedures."
+      ],
+      "suggested_experiments": [
+        "Serial intravital lipidomics imaging in patient-derived organoids or explants to quantify GPX4-dependent lipid droplet remodeling kinetics and define the DTP-commitment window duration and variance across genotypes.",
+        "A first-in-patient, time-staggered dose-escalation cohort design where CRISPR-Cure-7 delivery is timed to imaging-defined DTP windows, with paired single-cell multi-omics and long-read sequencing to detect on-target edits and chromosomal rearrangements.",
+        "A patient-reported outcome and treatment-burden substudy embedded in the above, capturing fatigue, pain, neurotoxicity, and financial toxicity weekly during the first 12 weeks, with predefined thresholds for unacceptable burden."
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Build a discrete-time patient-level simulator that couples Cell Cinema\u2013predicted DTP-commitment trajectories with CRISPR-Cure-7 editing efficacy and toxicity. Parameterize variability in GPX4/BCL2/ABC transporter dynamics, LNP pharmacokinetics, and off-target edit rates. Simulate cohorts under synchronized vs asynchronous editing schedules.",
+        "expected_metrics": [
+          "Probability of clonal suppression (no resistant clone >10^6 cells) at 12 months",
+          "Cumulative toxicity burden score (weighted sum of severe adverse events per patient)",
+          "Time to unacceptable patient-reported burden (threshold on validated PRO scale)",
+          "Variance in DTP-commitment window timing across patients"
+        ],
+        "rationale": "This simulation quantifies whether temporal alignment meaningfully improves durable remission probability after accounting for real-world noise in timing, toxicity, and patient heterogeneity, and identifies the minimal synchronization precision required to justify the added complexity of image-guided editing."
+      }
+    },
+    {
+      "archetype_id": "payer",
+      "archetype_name": "Insurance Payer",
+      "recommendation": "reject",
+      "confidence": 0.92,
+      "summary": "The manuscript proposes a temporally synchronized CRISPR-Cure-7 editing strategy guided by Cell Cinema video-diffusion models to collapse DTP fitness peaks in metastatic cancer. While conceptually ambitious, the paper is not actionable for coverage because it lacks a defined delivery modality, manufacturability plan, comparator, cost structure, or ICER derivation. Prior-auth complexity would be extreme (real-time imaging-guided dosing, seven simultaneous edits, bespoke LNPs), and budget impact is unbounded without prevalence or uptake assumptions. Mechanistically interesting but economically and operationally ungrounded.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 7,
+        "experimental_design": 3,
+        "evidence_support": 2,
+        "statistical_rigor": 2,
+        "clarity_of_riting": 6,
+        "clarity_of_writing": 5
+      },
+      "criticisms": [
+        "No defined comparator (standard-of-care lines, sequencing strategies, or combination regimens) against which to compute ICER or incremental QALYs.",
+        "No COGS model, manufacturing scale-up assumptions, or per-patient cost drivers (sgRNA synthesis, iRGD-LNP formulation, Cell Cinema compute and read-out logistics).",
+        "Prior-auth complexity is extreme and undefined: real-time phenotyping to identify DTP commitment windows, synchronization of multi-edit delivery, and off-target surveillance would require novel coverage policies and clinical pathways not yet codified.",
+        "No budget-impact framing (eligible population size, uptake curve, duration of remission affecting downstream costs).",
+        "No measurable economic endpoints (PFS, OS, QALYs, hospitalizations, EoL costs) or willingness-to-pay thresholds to judge cost-effectiveness.",
+        "No failure-mode analysis for economic futility (e.g., editing outside windows, clonal escape, LNP biodistribution failure) that would trigger non-coverage or step-therapy requirements."
+      ],
+      "required_fixes": [
+        "Specify a care-pathway comparator (e.g., standard multi-line therapy with NGS-guided targeted therapy/immunotherapy) and derive incremental costs and outcomes.",
+        "Provide a bottom-up COGS model for CRISPR-Cure-7 (sgRNA, Cas variants, iRGD-LNP, fill-finish, QC, cold-chain) and a budget-impact model with prevalence, uptake, and remission-duration assumptions.",
+        "Define a coverage policy framework: prior-auth criteria (imaging/Cell Cinema eligibility, line-of-therapy restrictions), step-therapy logic, and outcomes-based contracting triggers.",
+        "State explicit ICER threshold acceptability (e.g., $150k/QALY) and estimate expected ICER with ranges; if > threshold, specify risk-share or non-coverage."
+      ],
+      "suggested_experiments": [
+        "Develop a discrete-event simulation of metastatic cancer care under two strategies: (1) standard sequencing (SOC) vs (2) Cell Cinema-guided CRISPR-Cure-7 with time-synchronized delivery; include costs (drug, administration, imaging, AE management), utilities, and transition probabilities derived from early-phase durable remission rates.",
+        "Conduct a budget-impact analysis across US commercial and Medicare populations (10,000\u201350,000 eligible patients) with varying uptake (5\u201330%) and remission durations (median 9\u201324 months) to estimate PMPM and annual budget delta.",
+        "Design a pragmatic prior-auth algorithm with measurable gates (Cell Cinema commitment-window confidence score \u2265 threshold, target lesion burden, prior lines failed) and estimate administrative cost and turnaround time."
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Build a Markov cohort model comparing SOC multi-line systemic therapy to Cell Cinema-guided CRISPR-Cure-7. States: pre-treatment, response (remission), DTP/progression, post-progression, death. Include costs per cycle (drug, infusion, imaging, AE management), disutilities during progression/AEs, and transition probabilities informed by early-phase durable remission and PFS data (with uncertainty ranges). Compute ICERs, net monetary benefit, and budget impact under alternative uptake and price scenarios.",
+        "expected_metrics": [
+          "ICER ($/QALY)",
+          "incremental cost per responder",
+          "budget impact ($M/year)",
+          "break-even price at $150k/QALY",
+          "prior-auth denial rate under proposed criteria"
+        ],
+        "rationale": "Payers require explicit cost-effectiveness and budget-impact evidence to evaluate coverage and formulary placement. This simulation quantifies whether the hypothesized durability gain justifies the high upfront complexity and cost, and identifies price or outcome thresholds that would support coverage with manageable prior-auth burden."
+      }
+    },
+    {
+      "archetype_id": "short_seller",
+      "archetype_name": "Adversarial Short-Seller",
+      "recommendation": "reject",
+      "confidence": 0.95,
+      "summary": "This paper presents a highly speculative framework with no experimental validation, significant biological feasibility concerns, and unrealistic expectations for clinical translation in metastatic cancer treatment.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 3,
+        "experimental_design": 1,
+        "evidence_support": 2,
+        "statistical_rigor": 1,
+        "clarity_of_writing": 6
+      },
+      "criticisms": [
+        "The paper presents no experimental data to support the core hypothesis of Temporal Fragility Mapping",
+        "The Cell Cinema framework remains unvalidated and its predictions have not been tested against real biological systems",
+        "Multiplex CRISPR editing of seven pathways simultaneously raises significant feasibility concerns including delivery efficiency, off-target effects, and cellular toxicity",
+        "The approach assumes precise temporal control that is currently impossible in clinical settings"
+      ],
+      "required_fixes": [],
+      "suggested_experiments": [],
+      "simulation_proposal": null
+    }
+  ],
+  "simulations": [
+    {
+      "id": "computational-model",
+      "title": "computational_model",
+      "type": "html5_canvas",
+      "description": "Simulate CRISPR-Cure-7 delivery timing relative to Cell Cinema-predicted commitment windows in a multi-pathway cancer model to test fitness peak collapse.",
+      "rationale": "Tests the core hypothesis that timing CRISPR-Cure-7 to commitment windows collapses fitness peaks; critical for validating mechanistic claims.",
+      "expected_metrics": [
+        "Fitness peak stability post-editing",
+        "Survival of resistant clones post-treatment"
+      ],
+      "scene": "trajectory_manifold",
+      "seed": 101,
+      "parameters": {}
+    },
+    {
+      "id": "in-silico",
+      "title": "in_silico",
+      "type": "html5_canvas",
+      "description": "Develop a computational model integrating Cell Cinema's flow fields with CRISPR-Cure-7 kinetics to simulate tumor cell fate under synchronized vs. asynchronous editing, incorporating lipid droplet dynamics and BAX translocation thresholds",
+      "rationale": "This simulation would test the core hypothesis by quantifying the impact of timing on therapeutic efficacy, providing a bridge between theoretical claims and empirical validation",
+      "expected_metrics": [
+        "Remission duration",
+        "Resistant clone emergence rate",
+        "Toxicity profile"
+      ],
+      "scene": "trajectory_manifold",
+      "seed": 202,
+      "parameters": {}
+    },
+    {
+      "id": "computational-model",
+      "title": "computational_model",
+      "type": "html5_canvas",
+      "description": "Build a discrete-time patient-level simulator that couples Cell Cinema\u2013predicted DTP-commitment trajectories with CRISPR-Cure-7 editing efficacy and toxicity. Parameterize variability in GPX4/BCL2/ABC transporter dynamics, LNP pharmacokinetics, and off-target edit rates. Simulate cohorts under synchronized vs asynchronous editing schedules.",
+      "rationale": "This simulation quantifies whether temporal alignment meaningfully improves durable remission probability after accounting for real-world noise in timing, toxicity, and patient heterogeneity, and identifies the minimal synchronization precision required to justify the added complexity of image-guided editing.",
+      "expected_metrics": [
+        "Probability of clonal suppression (no resistant clone >10^6 cells) at 12 months",
+        "Cumulative toxicity burden score (weighted sum of severe adverse events per patient)",
+        "Time to unacceptable patient-reported burden (threshold on validated PRO scale)",
+        "Variance in DTP-commitment window timing across patients"
+      ],
+      "scene": "trajectory_manifold",
+      "seed": 303,
+      "parameters": {}
+    },
+    {
+      "id": "tumor-volume-3d",
+      "title": "Tumor Volume (3D)",
+      "type": "threejs",
+      "description": "Volumetric point-cloud tumor with phenotype-coloured clusters that grow, divide, and apoptose over time. Rotates the mass to expose where the model places phenotype boundaries.",
+      "rationale": "The 2D manifold view collapses depth \u2014 a 3D volumetric rendering tests whether claimed phenotype clusters survive when seen from arbitrary angles.",
+      "expected_metrics": [
+        "phenotype-cluster volumetric stability",
+        "intra-cluster density",
+        "boundary sharpness under rotation"
+      ],
+      "three_scene": "tumor_volume_3d",
+      "seed": 7404,
+      "parameters": {
+        "title": "Temporal Fragility Mapping: Aligning CRISPR-Cure-7 Editing to Cell Cinema-Predicted DTP Commitment Windows in Metastatic Cancer",
+        "confidence": 0.43500000000000005,
+        "critique": "The Cell Cinema model's predictions of commitment windows lack independent validation with orthogonal datasets (e.g., time-lapse imaging or orthogonal omics).",
+        "catalyst": "[Practicing Oncologist] A positive phase II trial demonstrating durable remission in metastatic patients would sharply increase prediction-market prices, while safety data on off-target edits could drive them down."
+      }
+    },
+    {
+      "id": "mitotic-lattice-3d",
+      "title": "Mitotic Lattice (3D)",
+      "type": "threejs",
+      "description": "Rotating 3D lattice of cells with division events sampled from the validator-emitted novelty distribution. Daughter cells inherit colour from parent phenotype, exposing lineage drift.",
+      "rationale": "Hooks the falsifier visually: if the paper's mechanism predicts a specific division geometry, this scene makes deviations from it immediately visible.",
+      "expected_metrics": [
+        "division-rate per phenotype",
+        "lineage-drift entropy",
+        "spatial clustering of mitotic events"
+      ],
+      "three_scene": "mitotic_lattice_3d",
+      "seed": 7422,
+      "parameters": {
+        "title": "Temporal Fragility Mapping: Aligning CRISPR-Cure-7 Editing to Cell Cinema-Predicted DTP Commitment Windows in Metastatic Cancer",
+        "confidence": 0.43500000000000005,
+        "critique": "The Cell Cinema model's predictions of commitment windows lack independent validation with orthogonal datasets (e.g., time-lapse imaging or orthogonal omics).",
+        "catalyst": "[Biostatistician] A preregistered phase I/II protocol with a time-to-clonal-regrowth endpoint and blinded adjudication of DTP-window adherence would sharply raise the prediction-market price; any signal of off-target editing or inability to meet target enrollment within 18 months would crash it."
+      }
+    },
+    {
+      "id": "perturbation-cone-3d",
+      "title": "Perturbation Cone (3D)",
+      "type": "threejs",
+      "description": "3D analog of the counterfactual scene: treated trajectories spread out from a baseline manifold along a confidence-weighted cone. Cone width tracks acceptance probability.",
+      "rationale": "Forces the prediction-vs-observation gap into a single visual. A narrow, well-aimed cone implies confident divergence; a fat cone signals high predictive uncertainty.",
+      "expected_metrics": [
+        "cone aperture",
+        "trajectory bundle coherence",
+        "off-axis trajectory frequency"
+      ],
+      "three_scene": "perturbation_cone_3d",
+      "seed": 7440,
+      "parameters": {
+        "title": "Temporal Fragility Mapping: Aligning CRISPR-Cure-7 Editing to Cell Cinema-Predicted DTP Commitment Windows in Metastatic Cancer",
+        "confidence": 0.43500000000000005,
+        "critique": "The Cell Cinema model's predictions of commitment windows lack independent validation with orthogonal datasets (e.g., time-lapse imaging or orthogonal omics).",
+        "catalyst": "[FDA Regulator] A published IND-enabling package demonstrating in vivo efficacy, defined delivery methodology, off-target risk mitigation, and GMP-compatibility would shift the price dramatically upward; without such data, this remains a purely speculative concept with no near-term regulatory trajectory."
+      }
+    }
+  ]
+}

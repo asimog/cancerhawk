@@ -24,36 +24,37 @@ pre{background:#071407;border:1px solid #1a3a1a;border-radius:10px;padding:14px;
 </style></head><body>
 <header>
   <h1>Run a CancerHawk Block</h1>
-  <p>Generate the next research block from your own OpenRouter API key using the local backend.</p>
+  <p>Generate the next research block from your own OpenRouter API key using the deployed Railway Hermes worker.</p>
   <nav class="site-nav"><a href="./">Latest block</a><a href="blocks.html">All blocks</a></nav>
 </header>
 <main>
-  <section class="status" id="status"><strong>Checking local backend...</strong></section>
+  <section class="status" id="status"><strong>Checking backend...</strong></section>
   <div class="actions">
-    <a class="button" href="http://localhost:8765" target="_blank" rel="noreferrer">Open local backend</a>
+    <a class="button" href="https://cancerhawk-production.up.railway.app" target="_blank" rel="noreferrer">Open backend</a>
     <button class="button secondary" type="button" id="retry">Check again</button>
   </div>
-  <iframe class="backend-frame" id="backend" title="CancerHawk local backend" src="about:blank"></iframe>
+  <iframe class="backend-frame" id="backend" title="CancerHawk backend" src="about:blank"></iframe>
   <section class="notes">
-    <h2>Start the backend</h2>
-    <p>GitHub Pages is static, so it cannot run Python by itself. Start CancerHawk locally, then this page will display the backend here.</p>
-    <pre>uv run --with-requirements app/requirements.txt --with-requirements app/requirements-dev.txt python -m app.main</pre>
-    <p>Once the backend is running, paste your OpenRouter API key, choose models, and run a fresh block. Completed blocks publish into <code>results/block-N/</code>. If you enable git publishing locally, the backend can commit and push the generated block to GitHub Pages.</p>
+    <h2>Backend</h2>
+    <p>The static site (Vercel/Pages) cannot run Python; it talks to the deployed FastAPI Hermes worker over WebSocket. The worker URL is <code>https://cancerhawk-production.up.railway.app</code>.</p>
+    <pre>python -m app.main   # local dev (port 8765 by default)</pre>
+    <p>Once the backend is reachable, paste your OpenRouter API key, choose models, and run. Hermes publishes completed blocks into <code>results/block-N/</code>, clones the GitHub repo with <code>GITHUB_TOKEN</code>, pushes as <code>hermes-agent</code>, and Vercel auto-rebuilds the public site.</p>
   </section>
 </main>
 <script>
+const BACKEND_URL = "https://cancerhawk-production.up.railway.app";
 const statusEl = document.getElementById('status');
 const frame = document.getElementById('backend');
 async function checkBackend(){
-  statusEl.innerHTML = '<strong>Checking local backend...</strong>';
+  statusEl.innerHTML = '<strong>Checking backend...</strong>';
   try {
-    const res = await fetch('http://localhost:8765/api/health', {cache:'no-store'});
+    const res = await fetch(BACKEND_URL + '/api/health', {cache:'no-store'});
     if (!res.ok) throw new Error('health check failed');
-    statusEl.innerHTML = '<strong>Backend detected.</strong> The local CancerHawk control panel is embedded below.';
-    frame.src = 'http://localhost:8765';
+    statusEl.innerHTML = '<strong>Backend detected.</strong> The CancerHawk control panel is embedded below.';
+    frame.src = BACKEND_URL;
     frame.style.display = 'block';
   } catch (err) {
-    statusEl.innerHTML = '<strong>Backend not running.</strong> Start it locally, then check again.';
+    statusEl.innerHTML = '<strong>Backend not reachable.</strong> Confirm the worker is deployed at ' + BACKEND_URL + ' and check again.';
     frame.style.display = 'none';
   }
 }
