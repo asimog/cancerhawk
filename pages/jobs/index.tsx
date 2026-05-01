@@ -31,8 +31,8 @@ export default function JobsPage({ backendUrl }: { backendUrl: string }) {
         if (!res.ok) throw new Error(`Backend returned ${res.status}`);
         const data = await res.json();
         setJobs(data.jobs || []);
-      } catch (e: any) {
-        setError(e.message);
+      } catch (e: unknown) {
+        setError(e instanceof Error ? e.message : String(e));
       } finally {
         setLoading(false);
       }
