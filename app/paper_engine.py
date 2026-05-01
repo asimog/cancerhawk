@@ -317,9 +317,9 @@ async def run_paper_engine(
     if not accepted:
         raise RuntimeError("No submissions were accepted across the adaptive run")
 
-     # Compile outline.
-     await emit("compile", "Compiling paper outline from full research aggregate", None)
-     outline = await chat_json(
+    # Compile outline.
+    await emit("compile", "Compiling paper outline from full research aggregate", None)
+    outline = await chat_json(
          api_key,
          models["compiler"],
          compiler_outline_prompt(accepted, research_goal, previous_block_context),
@@ -329,12 +329,12 @@ async def run_paper_engine(
          tracker=tracker,
          on_call=on_call,
      )
-     # LLMs sometimes wrap responses in arrays
-     if isinstance(outline, list) and outline:
-         outline = outline[0]
-     if not isinstance(outline, dict):
-         raise RuntimeError(f"Compiler returned unexpected type: {type(outline).__name__}")
-     title = outline.get("title", "Untitled CancerHawk Paper")
+    # LLMs sometimes wrap responses in arrays
+    if isinstance(outline, list) and outline:
+        outline = outline[0]
+    if not isinstance(outline, dict):
+        raise RuntimeError(f"Compiler returned unexpected type: {type(outline).__name__}")
+    title = outline.get("title", "Untitled CancerHawk Paper")
     section_specs = _normalize_section_specs(outline.get("sections"))
     if not section_specs:
         raise RuntimeError("Compiler returned no sections")
