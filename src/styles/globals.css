@@ -42,7 +42,7 @@ code, pre { font-family: "Fragment Mono", ui-monospace, SFMono-Regular, Menlo, m
 .home-box-title { margin: 0; color: var(--ink); font-size: clamp(1.9rem, 3vw, 2.45rem); font-weight: 400; line-height: 0.95; }
 .home-box-desc { margin: 0.7rem 0 0; color: var(--soft); font-size: 1.25rem; line-height: 1.25; }
 .page { width: min(1100px, calc(100% - 2rem)); margin: 0 auto; padding: 1.5rem 0 6rem; }
-.site-nav { display: flex; flex-wrap: wrap; gap: 0.55rem; padding: 1rem 0 1.2rem; }
+.site-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.55rem; padding: 1rem 0 1.2rem; }
 .site-nav a { border: 1px solid var(--border); border-radius: 999px; background: rgba(8,20,26,0.52); color: var(--ink); padding: 0.45rem 0.75rem; }
 .page-title { margin: 0 0 1rem; color: var(--ink); font-size: clamp(2.25rem, 5vw, 4.8rem); font-weight: 800; line-height: 0.95; }
 .page-kicker { margin: 0 0 0.45rem; color: var(--teal); text-transform: uppercase; letter-spacing: 0.12em; font-size: 0.8rem; font-weight: 700; }
