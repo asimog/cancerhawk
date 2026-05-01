@@ -41,6 +41,7 @@ APP_DIR = Path(__file__).resolve().parent
 from .token_tracker import APICall, TokenTracker  # noqa: E402
 from .hermes_supervisor import HermesRunConfig, HermesSupervisor  # noqa: E402
 from .openrouter import close as close_openrouter  # noqa: E402
+from .jobs import create_job, update_job_status, get_job, list_jobs  # noqa: E402
 
 HOST = os.environ.get("HOST", "0.0.0.0")
 PORT = int(os.environ.get("PORT", "8765"))
@@ -107,6 +108,22 @@ async def hermes_status() -> JSONResponse:
         "commit_paths": [p.strip() for p in os.environ.get("HERMES_COMMIT_PATHS", "results").split(",") if p.strip()],
         "vercel_deploy_hook": bool(os.environ.get("VERCEL_DEPLOY_HOOK_URL", "").strip()),
     })
+
+
+@app.get("/api/jobs")
+async def get_jobs(limit: int = 50, status: str = None) -> JSONResponse:
+    """List jobs, newest first."""
+    jobs = list_jobs(limit=limit, status=status)
+    return JSONResponse({"jobs": jobs})
+
+
+@app.get("/api/jobs/{job_id}")
+async def get_job_details(job_id: str) -> JSONResponse:
+    """Return a single job by its ID."""
+    job = get_job(job_id)
+    if not job:
+        raise HTTPException(status_code=404, detail="job not found")
+    return JSONResponse(job)
 
 
 @app.get("/api/blocks/{block_number}")
@@ -196,6 +213,12 @@ async def _ws_hermes_run(ws: WebSocket) -> None:
         await ws.close()
         return
 
+    # Create a job record for this run
+    job_config = {"models": models_cfg, "n_submitters": n_submitters, "auto_publish": auto_publish, "git_push": git_push}
+    job = create_job(research_goal=research_goal, config=job_config)
+    job_id = job["job_id"]
+    logger.info("job_created", extra={"job_id": job_id, "goal": research_goal[:120]})
+
     logger.info(
         "run_start",
         extra={
@@ -206,7 +229,7 @@ async def _ws_hermes_run(ws: WebSocket) -> None:
             "git_push": git_push,
         },
     )
-    await ws.send_text(json.dumps({"stage": "start", "message": f"Starting block · goal: {research_goal[:120]}", "data": {"models": models_cfg}}))
+    await ws.send_text(json.dumps({"stage": "start", "message": f"Starting block · goal: {research_goal[:120]}", "data": {"models": models_cfg, "job_id": job_id}}))
 
     tracker = TokenTracker()
 
@@ -255,6 +278,16 @@ async def _ws_hermes_run(ws: WebSocket) -> None:
                 git_push=git_push,
             )
         )
+        # Update job with result
+        update_job_status(job_id, "completed", result={
+            "title": result.title,
+            "market_price": result.market_price,
+            "block": result.block,
+            "result_url": result.result_url,
+            "stats": result.stats,
+            "calls": [c.to_dict() for c in result.calls],
+            "git_status": result.git_status,
+        })
         stats = result.stats
         logger.info(
             "run_complete",
@@ -290,11 +323,13 @@ async def _ws_hermes_run(ws: WebSocket) -> None:
         }))
     except WebSocketDisconnect:
         logger.warning("client_disconnected")
+        update_job_status(job_id, "failed", error="client disconnected")
         return
     except Exception as exc:
         tb = traceback.format_exc()
         logger.error("run_failed", extra={"error_type": type(exc).__name__, "error": str(exc)})
         await emit("error", f"{type(exc).__name__}: {exc}", {"traceback": tb})
+        update_job_status(job_id, "failed", error=f"{type(exc).__name__}: {str(exc)[:500]}")
     finally:
         run_elapsed = time.time() - run_start
         logger.info("run_ended", extra={"run_elapsed_seconds": round(run_elapsed, 2)})

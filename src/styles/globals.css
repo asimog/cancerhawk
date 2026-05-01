@@ -79,3 +79,38 @@ th { color: var(--teal); text-transform: uppercase; letter-spacing: 0.08em; font
 .global-play-pause-btn.is-playing { background: rgba(39,121,167,0.28); box-shadow: 0 0 20px rgba(39,121,167,0.42); }
 @media (max-width: 860px) { .run-grid { grid-template-columns: 1fr; } .run-models { grid-template-columns: 1fr; } }
 @media (max-width: 720px) { .home-grid { grid-template-columns: 1fr; } .home-box { min-height: 128px; } .youtube-form { grid-template-columns: 1fr; } }
+
+/* ===== Job Feed Page ===== */
+.job-feed { display: grid; gap: 1rem; margin-top: 1.2rem; }
+.job-card { display: block; border: 1px solid var(--border); border-radius: 16px; background: radial-gradient(circle at top, rgba(73,197,182,0.09), transparent 48%), var(--panel); backdrop-filter: blur(16px); padding: 1.1rem; color: var(--soft); transition: transform 160ms ease, border-color 160ms ease; }
+.job-card:hover { transform: translateY(-2px); border-color: rgba(124,228,210,0.48); }
+.job-card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+.job-date { font-size: 0.82rem; color: rgba(255,255,255,0.38); }
+.job-goal { margin: 0.3rem 0; color: var(--ink); font-size: 1.45rem; font-weight: 400; line-height: 1.15; }
+.job-result-title { margin: 0.4rem 0 0; color: var(--teal); font-size: 1.1rem; }
+.job-error { margin: 0.4rem 0 0; color: #ff6b6b; font-size: 0.92rem; }
+
+/* ===== Job Detail Page ===== */
+.job-detail { max-width: 960px; }
+.job-header { margin-bottom: 1.5rem; }
+.job-header-row { display: flex; gap: 1rem; align-items: center; margin: 0.5rem 0; }
+.back-link { display: inline-block; color: var(--teal); margin-bottom: 0.5rem; font-size: 0.92rem; }
+.job-id { color: rgba(255,255,255,0.38); font-size: 0.82rem; font-family: "Fragment Mono", ui-monospace, monospace; }
+.job-section { border: 1px solid var(--border); border-radius: 12px; background: var(--panel); padding: 1.1rem; margin: 1rem 0; }
+.job-section h2 { margin: 0 0 0.8rem; color: var(--teal); font-size: 1.3rem; }
+.job-json { background: rgba(0,0,0,0.42); border-radius: 8px; padding: 1rem; font-size: 0.82rem; overflow-x: auto; }
+.job-error-section { border-color: rgba(255,107,107,0.32); }
+.job-error { color: #ff6b6b; }
+
+/* ===== Status Badges ===== */
+.badge { display: inline-block; padding: 0.25rem 0.65rem; border-radius: 999px; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+.badge-pending { background: rgba(255,200,87,0.18); color: #ffc857; border: 1px solid rgba(255,200,87,0.32); }
+.badge-running { background: rgba(73,197,182,0.18); color: var(--teal); border: 1px solid rgba(73,197,182,0.32); }
+.badge-completed { background: rgba(111,219,111,0.18); color: #6fdb6f; border: 1px solid rgba(111,219,111,0.32); }
+.badge-failed { background: rgba(255,107,107,0.18); color: #ff6b6b; border: 1px solid rgba(255,107,107,0.32); }
+
+/* ===== Stats Cards (reused from home) ===== */
+.job-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.85rem; margin-top: 1rem; }
+.stat-card { border: 1px solid var(--border-soft); border-radius: 10px; padding: 0.85rem; text-align: center; }
+.stat-label { font-size: 0.78rem; color: var(--soft); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.35rem; }
+.stat-value { font-size: 1.45rem; color: var(--ink); font-weight: 700; }
