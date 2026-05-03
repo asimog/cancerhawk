@@ -276,17 +276,32 @@ async def run_moto_engine(
     await emit("compile", "MOTO compiler: generating paper from aggregate", None)
 
     # Use MOTO compiler prompts (these are the upstream v1.0.7 prompts)
-    from backend.compiler.prompts.outline_prompts import build_outline_prompt
-    from backend.compiler.prompts.construction_prompts import get_body_construction_system_prompt, build_construction_prompt
-    from backend.compiler.prompts.construction_prompts import get_conclusion_construction_system_prompt, build_conclusion_prompt
-    from backend.compiler.prompts.final_answer_prompts import INTRO_OUTLINE_PROMPT, build_intro_prompt, build_abstract_prompt
+    from backend.compiler.prompts.outline_prompts import build_outline_create_prompt, get_outline_create_system_prompt, get_outline_json_schema
+    from backend.compiler.prompts.construction_prompts import (
+        get_body_construction_system_prompt,
+        get_conclusion_construction_system_prompt,
+        get_introduction_construction_system_prompt,
+        get_abstract_construction_system_prompt,
+        build_body_construction_prompt,
+        build_conclusion_construction_prompt,
+        build_introduction_construction_prompt,
+        build_abstract_construction_prompt,
+    )
+
+    # Build rag_evidence from accepted submissions + previous block context
+    rag_evidence_parts = []
+    if accepted_submissions:
+        rag_evidence_parts.append("=== ACCEPTED SUBMISSIONS ===\n" + "\n---\n".join(accepted_submissions[:8]))
+    if previous_block_context.strip():
+        rag_evidence_parts.append("=== PREVIOUS BLOCK CONTEXT ===\n" + previous_block_context[:6000])
+    rag_evidence = "\n\n".join(rag_evidence_parts) if rag_evidence_parts else ""
 
     # Step A: Create outline
-    outline_prompt = build_outline_prompt(accepted_submissions, research_goal, previous_block_context)
+    outline_prompt = await build_outline_create_prompt(research_goal, rag_evidence)
     outline_resp = await chat(
         api_key,
         models["compiler"],
-        [{"role": "system", "content": get_body_construction_system_prompt()}, {"role": "user", "content": outline_prompt}],
+        [{"role": "system", "content": get_outline_create_system_prompt()}, {"role": "user", "content": outline_prompt}],
         temperature=0.4,
         max_tokens=4000,
         role="compiler_outline",
@@ -294,16 +309,18 @@ async def run_moto_engine(
         on_call=on_call,
     )
 
-    # Parse outline (MOTO uses stricter format - extract JSON)
+    # Parse outline (MOTO returns JSON per schema)
     import json
     try:
         outline_data = json.loads(outline_resp)
         title = outline_data.get("title", "Untitled CancerHawk Paper")
+        outline_text = json.dumps(outline_data, indent=2)
         sections_spec = outline_data.get("sections", [])
     except json.JSONDecodeError:
-        # Fallback: treat as plain text and extract title/sections heuristically
+        # Fallback: treat snippet as plain text, derive minimal outline
         title = "Untitled CancerHawk Paper"
-        sections_spec = [{"heading": "Introduction", "summary": "Standard introduction"}]
+        outline_text = outline_resp[:4000]
+        sections_spec = [{"heading": "Introduction"}, {"heading": "Analysis"}, {"heading": "Conclusion"}]
 
     await emit(
         "compile",
@@ -311,19 +328,20 @@ async def run_moto_engine(
         {"title": title, "section_count": len(sections_spec)},
     )
 
-    # Step B: Write body sections (construction mode)
-    written_sections = []
+    # Step B: Write body sections (one-by-one, feeding prior sections as current_paper)
+    written_sections: list[dict] = []
+    current_paper = ""
     for i, spec in enumerate(sections_spec):
         heading = spec.get("heading", f"Section {i + 1}")
         await emit("compile", f"Writing section {i + 1}/{len(sections_spec)}: {heading}", {"section_index": i, "heading": heading})
 
-        # Build construction prompt
-        prior_sections_text = "\n".join(f"### {s['heading']}\n{s['content'][:500]}" for s in written_sections)
-        construction_prompt = build_construction_prompt(
-            outline_spec=spec,
-            prior_sections=prior_sections_text,
-            research_goal=research_goal,
-            previous_block_context=previous_block_context,
+        construction_prompt = build_body_construction_prompt(
+            user_prompt=research_goal,
+            current_outline=outline_text,
+            current_paper=current_paper or "(this is the first section — no prior body text exists yet)",
+            rag_evidence=rag_evidence,
+            is_first_portion=(i == 0),
+            brainstorm_content=previous_block_context[:4000] if previous_block_context.strip() else None,
         )
 
         section_content = await chat(
@@ -337,13 +355,17 @@ async def run_moto_engine(
             on_call=on_call,
         )
         written_sections.append({"heading": heading, "content": section_content.strip()})
+        # Accumulate for next sections
+        current_paper += f"\n\n### {heading}\n{section_content.strip()}"
 
     # Step C: Write conclusion
     await emit("compile", "Writing conclusion section", None)
-    conclusion_prompt = build_conclusion_prompt(
-        paper_sections=written_sections,
-        research_goal=research_goal,
-        previous_block_context=previous_block_context,
+    conclusion_prompt = build_conclusion_construction_prompt(
+        user_prompt=research_goal,
+        current_outline=outline_text,
+        current_paper=current_paper,
+        rag_evidence=rag_evidence,
+        brainstorm_content=previous_block_context[:4000] if previous_block_context.strip() else None,
     )
     conclusion_content = await chat(
         api_key,
@@ -357,43 +379,53 @@ async def run_moto_engine(
     )
     written_sections.append({"heading": "Conclusion", "content": conclusion_content.strip()})
 
-    # Step D: Write introduction (after body+conclusion)
+    # Step D: Write introduction (after body+conclusion so it can reference the full paper)
     await emit("compile", "Writing introduction section", None)
-    intro_outline_prompt = INTRO_OUTLINE_PROMPT.format(research_goal=research_goal)
-    intro_prompt = build_intro_prompt(
-        paper_sections=written_sections,
-        intro_outline=intro_outline_prompt,
-        previous_block_context=previous_block_context,
+    intro_prompt = build_introduction_construction_prompt(
+        user_prompt=research_goal,
+        current_outline=outline_text,
+        current_paper=current_paper,
+        rag_evidence=rag_evidence,
+        brainstorm_content=previous_block_context[:4000] if previous_block_context.strip() else None,
     )
     intro_content = await chat(
         api_key,
         models["compiler"],
-        [{"role": "system", "content": get_body_construction_system_prompt()}, {"role": "user", "content": intro_prompt}],
+        [{"role": "system", "content": get_introduction_construction_system_prompt()}, {"role": "user", "content": intro_prompt}],
         temperature=0.5,
         max_tokens=1500,
         role="compiler_intro",
         tracker=tracker,
         on_call=on_call,
     )
-    # Insert introduction as second section (after title/abstract position)
-    final_sections = [{"heading": "Introduction", "content": intro_content.strip()}]
-    # Remove placeholder introduction if present and add real one
+
+    # Reorder sections: Introduction first, then body, then Conclusion last
+    final_sections: list[dict] = [{"heading": "Introduction", "content": intro_content.strip()}]
     for s in written_sections:
-        if s["heading"].lower() != "introduction" and s["heading"].lower() != "conclusion":
-            final_sections.append(s)
+        hdr = s["heading"].lower()
+        if hdr == "introduction" or hdr == "conclusion":
+            continue
+        final_sections.append(s)
     final_sections.append({"heading": "Conclusion", "content": conclusion_content.strip()})
+
+    # Update current_paper with the proper order for abstract generation
+    current_paper_ordered = ""
+    for s in final_sections:
+        current_paper_ordered += f"\n\n### {s['heading']}\n{s['content'].strip()}"
 
     # Step E: Write abstract
     await emit("compile", "Writing abstract", None)
-    abstract_prompt = build_abstract_prompt(
-        paper_sections=final_sections,
-        research_goal=research_goal,
-        previous_block_context=previous_block_context,
+    abstract_prompt = build_abstract_construction_prompt(
+        user_prompt=research_goal,
+        current_outline=outline_text,
+        current_paper=current_paper_ordered,
+        rag_evidence=rag_evidence,
+        brainstorm_content=previous_block_context[:4000] if previous_block_context.strip() else None,
     )
     abstract_content = await chat(
         api_key,
         models["compiler"],
-        [{"role": "system", "content": get_body_construction_system_prompt()}, {"role": "user", "content": abstract_prompt}],
+        [{"role": "system", "content": get_abstract_construction_system_prompt()}, {"role": "user", "content": abstract_prompt}],
         temperature=0.4,
         max_tokens=500,
         role="compiler_abstract",
