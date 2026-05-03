@@ -12,7 +12,7 @@ type ModelsPayload = {
 const roles = ['submitter', 'validator', 'compiler', 'archetype', 'topic_deriver'] as const;
 
 export const getStaticProps: GetStaticProps<{ backendUrl: string }> = async () => ({
-  props: { backendUrl: (await import('@/lib/blocks')).getBackendUrl() },
+  props: { backendUrl: (await import('@/lib/blocks.server')).getBackendUrl() },
 })
 
 export default function RunResearchPage({ backendUrl }: { backendUrl: string }) {

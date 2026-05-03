@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import type { GetStaticProps } from 'next';
 import { Nav } from '@/components/nav';
-import type { BlockBundle } from '@/lib/blocks';
+import type { BlockBundle } from '@/lib/blocks.types';
 
 type ArchiveBlock = {
   number: number;
@@ -21,7 +21,7 @@ function excerpt(markdown: string, maxLength = 280) {
 }
 
 export const getStaticProps: GetStaticProps<{ blocks: ArchiveBlock[] }> = async () => {
-  const { getBlocks } = await import('@/lib/blocks');
+  const { getBlocks } = await import('@/lib/blocks.server');
   return {
     props: {
       blocks: getBlocks().map((block: BlockBundle) => ({

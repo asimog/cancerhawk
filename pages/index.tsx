@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import type { GetStaticProps } from 'next';
-import type { BlockBundle } from '@/lib/blocks';
+import type { BlockBundle } from '@/lib/blocks.types';
 
 const boxes = [
   { href: '/current-block', title: 'Current Block', desc: 'Open the newest paper with simulations embedded inside the paper.' },
@@ -12,7 +12,7 @@ const boxes = [
 ] as const;
 
 export const getStaticProps: GetStaticProps<{ current: BlockBundle | null }> = async () => ({
-  props: { current: (await import('@/lib/blocks')).getCurrentBlock() },
+  props: { current: (await import('@/lib/blocks.server')).getCurrentBlock() },
 });
 
 export default function HomePage({ current }: { current: BlockBundle | null }) {
