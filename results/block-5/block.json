@@ -1,0 +1,19 @@
+{
+  "block": 5,
+  "title": "Optimal Stochastic Control of CRISPR-Cure-7 Editing via Cell Cinema-Predicted Commitment Windows Collapses Metastatic Fitness Landscapes",
+  "research_goal": "Generate the next CancerHawk block: identify a focused oncology research direction that builds on the prior CRISPR-Cure-7 and Cell Cinema blocks, then produce a publishable paper, peer review, simulations, and next-topic seeds.",
+  "models": {
+    "submitter": "openrouter/free",
+    "validator": "openrouter/free",
+    "compiler": "openrouter/free",
+    "archetype": "openrouter/free",
+    "topic_deriver": "openrouter/free"
+  },
+  "timestamp": "2026-05-03T00:41:45.650223+00:00",
+  "section_count": 9,
+  "accepted_submissions": 6,
+  "rejection_count": 0,
+  "market_price": 0.5278571428571429,
+  "has_peer_review": true,
+  "has_simulations": true
+}

@@ -32,7 +32,14 @@ export default function HomePage({ current }: { current: BlockBundle | null }) {
             const Wrapper = isExternal ? 'a' : Link;
             return (
               <Wrapper className="home-box" key={box.href} {...linkProps}>
-                <h2 className="home-box-title">{box.title}</h2>
+                <h2 className="home-box-title">
+                  {box.title}
+                  {isExternal && (
+                    <span aria-label="Opens in new tab" style={{ marginLeft: '0.35rem', opacity: 0.6, fontSize: '0.75em' }}>
+                      ↗
+                    </span>
+                  )}
+                </h2>
                 <p className="home-box-desc">{box.desc}</p>
               </Wrapper>
             );

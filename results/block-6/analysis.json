@@ -1,0 +1,637 @@
+{
+  "archetypes": [
+    {
+      "scores": {
+        "clinical_viability": 2,
+        "regulatory_risk": 8,
+        "market_potential": 6,
+        "patient_impact": 7,
+        "novelty": 9,
+        "falsifiability": 7
+      },
+      "verdict": "This is a beautifully constructed theoretical framework\u2014mechanistically audacious, mathematically rigorous, and conceptually elegant. But it\u2019s a *simulation in search of a delivery system*, not a near-term clinical intervention. The proposal hinges on real-time inference from live-cell imaging of DTCs in metastatic niches (in vivo), coupled with precisely timed RNP delivery\u2014none of which is feasible in current clinical workflows. Even if the mouse data pan out, translating this to humans would require a closed-loop imaging-editing platform with sub-hour temporal resolution in metastatic sites, which doesn\u2019t exist. Off-target effects and immune responses to repeated CRISPR-Cas9 dosing remain unaddressed. I respect the insight\u2014timing matters\u2014but this is a 10-year research program, not a trial-ready protocol. The real value here is in *conceptual framing*, not clinical readiness.",
+      "would_move_price": "A successful in vivo proof-of-concept in a syngeneic metastatic model showing \u226560% reduction in resistant outgrowth *with no increase in off-target mutations* (validated by WGS) would push price up; failure to replicate timing-dependent efficacy in a second model would crush it.",
+      "archetype_id": "oncologist",
+      "archetype_name": "Practicing Oncologist"
+    },
+    {
+      "scores": {
+        "clinical_viability": 4,
+        "regulatory_risk": 7,
+        "market_potential": 6,
+        "patient_impact": 8,
+        "novelty": 9,
+        "falsifiability": 8
+      },
+      "verdict": "The proposed CW-Crispr framework is a novel approach to synchronizing CRISPR edits with transient vulnerability windows in disseminated tumor cells. While the mathematical formulation is rigorous and the hypothesis is falsifiable, the clinical viability remains uncertain due to the complexity of real-time control and potential off-target effects. Regulatory risks are high given the nascent stage of development and the need for extensive safety validation. However, if successful, this strategy could have a profound impact on patient outcomes by reducing the emergence of resistant clones.",
+      "would_move_price": "The price would move significantly if in vivo studies demonstrate a statistically significant reduction in resistant clone frequency compared to untimed CRISPR delivery, without increased toxicity.",
+      "archetype_id": "biostatistician",
+      "archetype_name": "Biostatistician"
+    },
+    {
+      "scores": {
+        "": ""
+      },
+      "verdict": "",
+      "would_move_price": "",
+      "archetype_id": "fda",
+      "archetype_name": "FDA Regulator"
+    },
+    {
+      "scores": {
+        "": ""
+      },
+      "verdict": "",
+      "would_move_price": "",
+      "archetype_id": "investor",
+      "archetype_name": "Biotech Investor"
+    },
+    {
+      "scores": {
+        "clinical_viability": 7,
+        "regulatory_risk": 6,
+        "market_potential": 8,
+        "patient_impact": 9,
+        "novelty": 8,
+        "falsifiability": 8
+      },
+      "verdict": "This paper presents a compelling and novel approach to optimizing CRISPR-based therapies for metastatic cancer by synchronizing gene editing with the transient vulnerability windows of disseminated tumor cells (DTCs). The Commitment-Window CRISPR Scheduling (CW-Crispr) framework is a sophisticated stochastic control system that leverages the temporal dynamics of DTP commitment, as revealed by Cell Cinema video-generative models. The hypothesis that aligning multiplex CRISPR edits with these vulnerability peaks can reduce resistant clone burden by at least 50% is both ambitious and testable. The integration of mechanistic insights, such as the latency of CRISPR effects and the role of DNA repair states, adds depth to the model. However, the clinical viability score is tempered by the complexity of implementing such a precise timing mechanism in vivo. Regulatory risk is moderate, given the innovative nature of the approach and the need for extensive preclinical and clinical validation. The market potential is high, as this strategy could significantly improve the efficacy of CRISPR therapies for metastatic cancers. Patient impact could be substantial if successful, offering a more precise and effective treatment for a currently devastating disease. The novelty of the approach is undeniable, and the falsifiability is strong, with clear endpoints and failure modes defined. Overall, this work represents a significant advancement in the field of precision oncology and has the potential to transform the management of metastatic cancer if the theoretical benefits translate to clinical practice.",
+      "would_move_price": "Positive preclinical data from in vivo studies validating the CW-Crispr framework would significantly increase the prediction-market price for this paper.",
+      "archetype_id": "kol",
+      "archetype_name": "Academic KOL"
+    },
+    {
+      "scores": {
+        "clinical_viability": 3,
+        "regulatory_risk": 8,
+        "market_potential": 4,
+        "patient_impact": 2,
+        "novelty": 9,
+        "falsifiability": 7
+      },
+      "verdict": "This reads like a grad-school fever dream dressed up as a treatment plan: real-time Cell Cinema video streams steering microfluidic CRISPR pumps inside a metastatic mouse. As a patient, I\u2019m asked to believe that my disseminated cells will politely announce their \u201ccommitment window\u201d on camera so a nanoparticle can arrive in the nick of time. The lived-experience gaps are brutal: no mention of venous access fatigue, cumulative nanoparticle toxicity, immune reactions to Cas9, or what happens when the pump jams at 2 a.m. The schedule assumes I want maximal editing at the cost of maximal uncertainty; it never asks whether I\u2019d trade perfect timing for fewer needle sticks, less cytokine storm, and a predictable side-effect profile I can plan my life around. Real-world, this would balloon into a six-figure, inpatient, device-dependent ordeal with line infections, pump errors, and imaging artifacts that turn \u201cvulnerability peaks\u201d into false positives and off-target edits. Until it proves it works in a human body that breathes, bleeds, and forgets to eat on time, it\u2019s a mechanistic parlor trick, not care.",
+      "would_move_price": "The prediction-market price would drop hard if early in vivo data show that Cell Cinema latency or microfluidic lag shifts edits by even \u00b16 hours, because that would collapse the claimed 50% resistance reduction and expose timing as noise rather than signal.",
+      "archetype_id": "patient",
+      "archetype_name": "Patient Advocate"
+    },
+    {
+      "scores": {
+        "clinical_viability": 2,
+        "regulatory_risk": 9,
+        "market_potential": 4,
+        "patient_impact": 7,
+        "novelty": 9,
+        "falsifiability": 8
+      },
+      "verdict": "This is a theoretically elegant but clinically nonviable proposal. The paper conflates *in silico* stochastic control with *in vivo* deliverability: no current platform can deliver multiplex CRISPR edits with sub-hour precision to metastatic DTCs in humans, nor can we reliably infer \u03c4_v in patients via noninvasive imaging. The proposed POMDP solution assumes perfect latent-state observability\u2014impossible outside engineered mouse models. Regulatory risk is extreme: timed, adaptive gene editing would require FDA breakthrough designation *plus* novel biologic-device combination approval pathways. Budget impact is unquantifiable but likely prohibitive: real-time video analytics + closed-loop RNP delivery would cost >$250k/patient in early trials. Patient impact is theoretically high for metastatic resistance, but only if the core hypothesis survives in vivo validation\u2014which remains highly speculative. I would not cover this outside an NCI-designated PDX-driven exploratory trial with strict budget caps and pre-specified futility analysis.",
+      "would_move_price": "A positive Phase I safety readout from a first-in-human metastatic prostate cancer cohort (e.g., NCTXXXXXX) demonstrating \u226540% reduction in resistant clone emergence *with* measurable \u03c4_v tracking via liquid biopsy would push price up; failure to replicate timing-dependent efficacy in any PDX model would crush it.",
+      "archetype_id": "payer",
+      "archetype_name": "Insurance Payer"
+    },
+    {
+      "scores": {
+        "clinical_viability": 2,
+        "regulatory_risk": 9,
+        "market_potential": 3,
+        "patient_impact": 2,
+        "novelty": 7,
+        "falsifiability": 4
+      },
+      "verdict": "This is vaporware wrapped in stochastic optimal control cosplay. The fatal flaw is a category error: Cell Cinema latent trajectories are inferred from fixed, post\u2011mortem video frames, yet the authors demand real\u2011time, closed\u2011loop RNP infusion timed to \u03bc\u2011hour vulnerability windows in vivo. There is no hardware stack capable of streaming high\u2011content morphology from disseminated tumor cells in living tissue, nor any evidence that the latent \u201ccommitment coordinate\u201d is causally actionable rather than an epiphenomenon of fixation artifacts. Off\u2011target burden is hand\u2011waved as a Poisson process while ignoring that multiplex CRISPR RNPs in cycling DTCs will inevitably hit essential haploinsufficient genes and drive rapid clonal selection. The POMDP is unidentifiable: latent states are partially observed, transition hazards are non\u2011stationary under therapy, and the seven edit loci are treated as independent when they are co\u2011adapted in persister networks. Expect a hard failure at readout: either no signal in resistance burden (edits never hit the moving window) or excess toxicity (off\u2011target collapse) with no stopping rule. Regulatory pathways will reject a control system whose state estimator cannot be validated in GLP, and manufacturing of patient\u2011specific timed RNP lots is economically absurd. The only defensible experiment here is a negative one.",
+      "would_move_price": "A single pre\u2011registered in vivo lineage\u2011tracing experiment showing that untimed pooled CRISPR delivery produces identical resistance clone counts to their \u201coptimal\u201d schedule would collapse the price to zero.",
+      "archetype_id": "short_seller",
+      "archetype_name": "Adversarial Short-Seller"
+    }
+  ],
+  "market_price": 0.47250000000000003,
+  "score_matrix": {
+    "oncologist": {
+      "clinical_viability": 2,
+      "regulatory_risk": 8,
+      "market_potential": 6,
+      "patient_impact": 7,
+      "novelty": 9,
+      "falsifiability": 7
+    },
+    "biostatistician": {
+      "clinical_viability": 4,
+      "regulatory_risk": 7,
+      "market_potential": 6,
+      "patient_impact": 8,
+      "novelty": 9,
+      "falsifiability": 8
+    },
+    "fda": {
+      "": ""
+    },
+    "investor": {
+      "": ""
+    },
+    "kol": {
+      "clinical_viability": 7,
+      "regulatory_risk": 6,
+      "market_potential": 8,
+      "patient_impact": 9,
+      "novelty": 8,
+      "falsifiability": 8
+    },
+    "patient": {
+      "clinical_viability": 3,
+      "regulatory_risk": 8,
+      "market_potential": 4,
+      "patient_impact": 2,
+      "novelty": 9,
+      "falsifiability": 7
+    },
+    "payer": {
+      "clinical_viability": 2,
+      "regulatory_risk": 9,
+      "market_potential": 4,
+      "patient_impact": 7,
+      "novelty": 9,
+      "falsifiability": 8
+    },
+    "short_seller": {
+      "clinical_viability": 2,
+      "regulatory_risk": 9,
+      "market_potential": 3,
+      "patient_impact": 2,
+      "novelty": 7,
+      "falsifiability": 4
+    }
+  },
+  "consensus_dim": {
+    "clinical_viability": 3.3333333333333335,
+    "regulatory_risk": 7.833333333333333,
+    "market_potential": 5.166666666666667,
+    "patient_impact": 5.833333333333333,
+    "novelty": 8.5,
+    "falsifiability": 7.0
+  },
+  "headline_catalysts": [
+    "[Practicing Oncologist] A successful in vivo proof-of-concept in a syngeneic metastatic model showing \u226560% reduction in resistant outgrowth *with no increase in off-target mutations* (validated by WGS) would push price up; failure to replicate timing-dependent efficacy in a second model would crush it.",
+    "[Biostatistician] The price would move significantly if in vivo studies demonstrate a statistically significant reduction in resistant clone frequency compared to untimed CRISPR delivery, without increased toxicity.",
+    "[Academic KOL] Positive preclinical data from in vivo studies validating the CW-Crispr framework would significantly increase the prediction-market price for this paper.",
+    "[Patient Advocate] The prediction-market price would drop hard if early in vivo data show that Cell Cinema latency or microfluidic lag shifts edits by even \u00b16 hours, because that would collapse the claimed 50% resistance reduction and expose timing as noise rather than signal.",
+    "[Insurance Payer] A positive Phase I safety readout from a first-in-human metastatic prostate cancer cohort (e.g., NCTXXXXXX) demonstrating \u226540% reduction in resistant clone emergence *with* measurable \u03c4_v tracking via liquid biopsy would push price up; failure to replicate timing-dependent efficacy in any PDX model would crush it.",
+    "[Adversarial Short-Seller] A single pre\u2011registered in vivo lineage\u2011tracing experiment showing that untimed pooled CRISPR delivery produces identical resistance clone counts to their \u201coptimal\u201d schedule would collapse the price to zero."
+  ],
+  "derived_topics": [],
+  "peer_reviews": [
+    {
+      "archetype_id": "oncologist",
+      "archetype_name": "Practicing Oncologist",
+      "recommendation": "major_revision",
+      "confidence": 0.85,
+      "summary": "The paper proposes a temporally informed, multiplex CRISPR scheduling framework (CW-Crispr) that aligns editing with transient DTP vulnerability windows inferred from latent single-cell trajectories. While conceptually novel and mechanistically ambitious, the work is currently unactionable for clinical translation: it lacks a credible delivery modality, omits realistic pharmacokinetics/pharmacodynamics of Cas9 RNP in metastatic niches, and does not address off-target liabilities or patient burden in a way that can be de-risked preclinically. Core claims (\u226550% reduction in resistant clone burden) are not supported by experimental data or falsifiable simulations with defined failure modes.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 7,
+        "experimental_design": 4,
+        "evidence_support": 3,
+        "statistical_rigor": 5,
+        "clarity_of_writing": 6
+      },
+      "criticisms": [
+        "No empirical data or in vivo results are presented; all claims remain in silico or conceptual (Sections 1\u20133). The stated 50% reduction in resistant clone burden is asserted without simulation code, parameter ranges, or sensitivity analyses.",
+        "Delivery modality is undefined and clinically implausible as described: systemic CRISPR RNP to disseminated DTCs across multiple metastatic sites is not feasible with current lipid-nanoparticle or viral platforms due to biodistribution barriers, immune clearance, and dose-limiting hepatotoxicity (not discussed).",
+        "Off-target burden is modeled as a Poisson process \u03bb_off(t) but lacks locus-specific estimates, GUIDE-seq/CIRCLE-seq analogs, or a threshold for acceptable mutagenesis. No plan to monitor or mitigate oncogenic risk from chromosomal translocations or large deletions.",
+        "Patient burden and clinical workflow integration are omitted: no discussion of inpatient vs outpatient administration, monitoring schedule for CRS or hepatotoxicity, need for imaging to confirm metastatic niche access, or how real-time Cell Cinema inference would be implemented in a clinical GxP environment.",
+        "Comparison to standard-of-care is missing: no contrast with approved or investigational agents (e.g., PARP inhibitors, ATR inhibitors, anti-PD1, or dynamic chemotherapy scheduling) that also exploit replication stress or DTP vulnerabilities. Without this, the added complexity of CW-Crispr is not justified.",
+        "The control policy assumes perfect observability of latent commitment state z(t) via live-cell video in vivo, which is not feasible in human metastatic deposits. No error model for partial observability or latency between sampling and edit delivery is provided.",
+        "Failure modes are stated qualitatively but not quantified: no stopping rules for futility, no definition of acceptable off-target vs on-target ratios, and no contingency for on-target resistance alleles or compensatory pathway rewiring beyond a generic 'plasticity term'."
+      ],
+      "required_fixes": [
+        "Specify a realistic, translatable delivery platform (e.g., LNPs with tropism data, dosing limits, and PK/PD in mice) and define maximum tolerated editing cycles per cell in vivo; justify dosing interval relative to cell-cycle and DDR state.",
+        "Provide a complete stochastic simulation (with code and parameters) of the hybrid system, including sensitivity analyses on \u03c4_v duration, editing delay, and off-target rate \u03bb_off; pre-register a falsifiable criterion (e.g., posterior probability of \u226530% reduction in resistant clone frequency <0.05).",
+        "Integrate off-target risk management: include locus-specific off-target predictions, a monitoring plan (e.g., long-read sequencing of high-risk loci), and a toxicity ceiling that halts further editing.",
+        "Add a clinically grounded comparator arm (standard-of-care chemotherapy or targeted therapy) and define a combined strategy (e.g., CW-Crispr as consolidation after cytoreduction) with explicit decision rules for when to escalate or de-escalate.",
+        "Address workflow integration: map how real-time inference would be implemented (e.g., ex vivo surrogate organoids or circulating tumor cell proxies) and quantify patient burden (visits, biopsies, imaging, inpatient days)."
+      ],
+      "suggested_experiments": [
+        "In vivo metastatic model (e.g., breast or melanoma) with lineage-traced DTCs; compare timed multiplex RNP (guided by ex vivo Cell Cinema scoring of CTCs or organoids) vs untimed RNP vs vehicle, with endpoints: resistant clone frequency (barcoded lineage tracing), progression-free survival, and off-target burden (long-read sequencing).",
+        "PK/PD and biodistribution study of Cas9 RNP in LNPs across multiple metastatic sites (lung, liver, bone, brain) to define achievable editing fractions and half-life in tumor versus liver.",
+        "Single-cell DDR-state mapping (phospho-H2AX, RAD51 foci) across cell cycle to parameterize editing efficiency \u03b5(t) and define per-edit success probability as a function of cell cycle phase and prior DNA damage exposure.",
+        "Off-target surveillance experiment: GUIDE-seq/CIRCLE-seq analog in primary human TPs/DTCs after RNP exposure, with orthogonal long-read genotyping to quantify large deletions and translocations at predicted high-risk loci."
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Build a discrete-event, stochastic hybrid simulation of metastatic DTCs using the four-state SMDP (Sensitive/Committed-to-DTP/Resistant/Dead). Parameterize hazard of commitment H_C(t) as a mixture of Weibull hazards with peaks at \u03c4_v inferred from synthetic latent trajectories; model editing delay as log-normal and off-target events as Poisson with rate \u03bb_off per RNP dose. Run Monte Carlo replicates comparing (A) CW-Crispr (edit only when inferred P(DTP-commitment within \u0394t) > \u03b8), (B) untimed editing, and (C) no editing. Primary endpoint: resistant clone count at T=180 days; secondary: cumulative off-target load and extinction probability of sensitive clone.",
+        "expected_metrics": [
+          "Mean resistant clone count at T, 95% CI across replicates",
+          "Probability of zero resistant clones (cure)",
+          "Area under off-target load curve",
+          "Sensitivity of resistance reduction to \u03c4_v miss (\u00b16/12/24 h)",
+          "Extinction probability of sensitive population"
+        ],
+        "rationale": "This simulation would quantify whether the proposed timing benefit is robust to biological noise, editing delays, and off-target costs, and would define a clear, falsifiable threshold for proceeding to in vivo work."
+      }
+    },
+    {
+      "archetype_id": "biostatistician",
+      "archetype_name": "Biostatistician",
+      "recommendation": "major_revision",
+      "confidence": 0.92,
+      "summary": "This is a conceptually ambitious and mechanistically rich proposal that integrates latent-space modeling of DTP commitment with stochastic control theory to optimize CRISPR timing\u2014a novel and biologically plausible direction. However, the statistical and experimental design sections are severely underdeveloped: no formal power analysis, endpoint definitions lack operationalization, confound risks (e.g., cell-cycle as a confounder of both \u03c4_v and editing efficiency) are acknowledged but not modeled, and the proposed sample size feasibility is absent. The hypothesis is falsifiable in principle, but the current design cannot adjudicate it without substantial methodological revision.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 9,
+        "experimental_design": 4,
+        "evidence_support": 6,
+        "statistical_rigor": 3,
+        "clarity_of_writing": 8
+      },
+      "criticisms": [
+        "The paper asserts a 50% reduction in resistant clone burden as the primary effect size, but provides no justification for this magnitude\u2014no prior data, simulation, or pilot supports this claim (Section 1, 'primary hypothesis').",
+        "The primary endpoint\u2014'frequency of resistant clones detected by lineage tracing and functional assays'\u2014is not quantified in terms of assay sensitivity, dynamic range, or technical variability, making power calculation impossible (Section 1, 'measurable endpoint').",
+        "Confounding by cell cycle is explicitly noted in Section 3 ('probability of functional gene knockout is modulated by cell cycle phase') but is not included as a covariate or stratification factor in any proposed analysis, despite strong evidence that cell cycle phase predicts both DTP commitment kinetics and CRISPR editing efficiency (e.g., [citation needed] for Cas9 activity peaking in G2/M).",
+        "The stochastic hybrid system is defined but not parameterized: no baseline hazard rates (e.g., H_C(t), transition S\u2192C, C\u2192R), no estimates of \u03c4_v duration, inter-peak interval, or off-target rate \u03bb_off are provided\u2014rendering simulation-based power analysis infeasible.",
+        "The proposed POMDP formulation (Section 2) is mathematically elegant but lacks discretization strategy, state-space truncation, or computational tractability analysis\u2014critical for feasibility in vivo where real-time inference must occur within biologically relevant timescales (e.g., \u03c4_v \u2248 2\u20136 h).",
+        "No mention of immune consequences of repeated RNP delivery (e.g., anti-Cas9 antibodies, innate immune activation), which could alter DTP dynamics and introduce time-dependent confounding not captured in the model."
+      ],
+      "required_fixes": [
+        "Provide a formal power analysis using a conservative effect size (e.g., 30% reduction) grounded in prior CRISPR-Cure-7 data (Block 2) or simulation; specify \u03b1=0.05, \u03b2=0.2, and justify sample size per arm (e.g., n=15 mice/group for 80% power to detect 30% \u0394 in resistant clone fraction assuming \u03c3\u22480.15).",
+        "Operationalize the primary endpoint: define 'resistant clone frequency' as (a) number of lineage-traced clones surviving \u22657 days post-treatment in drug-challenge assay, (b) with minimum detection threshold (e.g., \u22655 cells/clone), and (c) report inter-assay CV from pilot data or literature.",
+        "Incorporate cell cycle phase as a measured confounder: add flow-sorted G1/S/G2-M subpopulations or FUCCI reporters, and specify hierarchical model (e.g., GLMM with random intercept per mouse, fixed effects for timing \u00d7 cell cycle, adjustment for baseline DTP fraction).",
+        "Provide parameter estimates for the stochastic hybrid system: baseline H_C(t) shape, \u03c4_v duration (e.g., 3.2\u00b10.8 h), edit decay constant k_edit, \u03bb_off per RNP dose, and inter-cellular synchronization strength\u2014citing or simulating from Block 3 latent trajectories.",
+        "Include a computational feasibility annex: discretize the POMDP (e.g., 1-h decision epochs), report solution time on target hardware (e.g., FPGA or embedded GPU), and bound approximation error (e.g., via belief-space sampling)."
+      ],
+      "suggested_experiments": [
+        "Pilot time-course experiment: treat 30 metastatic PDX-derived DTCs with CRISPR-Cure-7 at 0, 6, 12, 18, 24 h post-stress, and measure (a) editing efficiency (amplicon-seq), (b) DTP fraction (ALDH+ / GFP reporter), (c) off-targets (GUIDE-seq at 48 h); test whether \u03c4_v alignment correlates with \u0394DTP.",
+        "Cell-cycle synchronized competition assay: sort DTCs into G1 vs. G2/M, label with distinct barcodes, mix, treat with timed CRISPR, and track clonal output\u2014directly quantify cell-cycle confounding of timing efficacy.",
+        "In vivo validation in orthotopic MDA-MB-231-BrM2 model with inducible Cas9 and dox-inducible sgRNA array: compare untimed vs. \u03c4_v-aligned dosing (n=12/group), with longitudinal bioluminescent DTP tracking (e.g., GPX4-promoter::Luc) and endpoint resistant-nodule counting."
+      ],
+      "simulation_proposal": {
+        "type": "in_silico",
+        "description": "Build a Gillespie-based stochastic simulation of the S\u2192C\u2192R\u2192D hybrid system, parameterized with latent-space-derived hazard functions (H_C(t) from Cell Cinema trajectories), edit efficiency \u03b5(t) modeled as Gaussian kernel centered on \u03c4_v with width \u03c3_\u03c4, and cell-cycle-dependent editing probability p_edit \u2208 {0.4, 0.7, 0.6} for G1/S/G2/M. Simulate 10\u2074 cells per mouse, 20 mice per arm (untimed, \u03c4_v-aligned, random), and compare expected R(T) and variance.",
+        "expected_metrics": [
+          "\u0394E[R(T)] / E[R(T)]_untimed (primary effect size)",
+          "Power (\u03b1=0.05, \u03b2=0.2) as function of n (mice) and \u03c3_\u03c4 (\u03c4_v precision)",
+          "False-positive rate under null (no \u03c4_v effect) when using naive t-test vs. GLMM with cell-cycle covariate"
+        ],
+        "rationale": "This simulation would directly test whether a 50% reduction is plausible given realistic \u03c4_v widths (e.g., \u03c3_\u03c4 > 2 h may erase timing benefit), quantify required sample sizes, and expose sensitivity to confounding\u2014addressing the core statistical gaps."
+      }
+    },
+    {
+      "archetype_id": "fda",
+      "archetype_name": "FDA Regulator",
+      "recommendation": "major_revision",
+      "confidence": 0.85,
+      "summary": "The paper proposes a conceptually interesting stochastic control framework for timing multiplex CRISPR edits against metastatic DTCs using latent Cell Cinema trajectories. However, it is currently an in silico concept paper lacking empirical data, quantitative parameterization, and IND-enabling safety assessment; mechanistic claims about 50% resistance reduction are asserted without falsifiable in vivo validation, and the framework conflates therapeutic mechanism with regulatory deliverable (no IND path, dosing, or off-target safety package).",
+      "dimension_scores": {
+        "mechanistic_plausibility": 7,
+        "experimental_design": 4,
+        "evidence_support": 3,
+        "statistical_rigor": 5,
+        "clarity_of_writing": 6
+      },
+      "criticisms": [
+        "No primary data or wet-lab results are presented; claims of \u226550% reduction in resistant clone burden are simulated assertions without empirical endpoints (Sections 1, 2, 3).",
+        "Latent \u2018Cell Cinema\u2019 coordinates are treated as observable states for control, but the paper does not specify how measurement noise, frame rate, and inference error propagate into the POMDP policy; observability and robustness analyses are missing (Section 2).",
+        "Off-target burden is modeled as a Poisson process \u03bb_off(t), yet no guide-specific off-target catalog, Cas9 residence time, or cell-type-specific DNA repair context is provided; this undermines IND-enabling safety assessment (Sections 1\u20133).",
+        "The manuscript conflates a mechanistic hypothesis with a regulatory approval pathway; there is no IND-enabling package (GLP toxicology, biodistribution, immunogenicity, CMC, dose-exposure-response) or accelerated-approval eligibility criteria aligned to a measurable surrogate endpoint (all sections).",
+        "The hybrid SDE model introduces a control vector c(t) for seven Cas9-RNP cargos but does not specify delivery vector (LNP vs AAV), dosing limits, or saturation kinetics; without these, the control law is not implementable in vivo (Section 3).",
+        "No discussion of prior precedents (e.g., voretigene neparvovec, tisagenlecleucel) or how CW-Crispr would meet accelerated-approval standards (e.g., surrogate biomarker, unmet need, risk-benefit in metastatic disease) (Introduction/Background)."
+      ],
+      "required_fixes": [
+        "Specify a concrete IND-enabling preclinical plan: GLP toxicology (single and repeat dosing), biodistribution (including germline and CNS), immunogenicity (anti-Cas9), and tumor lysis/on-target safety pharmacology.",
+        "Define a measurable regulatory endpoint (e.g., validated ctDNA resistance allele frequency at 12 weeks) and justify whether it could support accelerated approval under Subpart H with a confirmatory post-approval trial.",
+        "Provide guide-specific in silico off-target maps and a cell-type-specific DNA repair context (e.g., cell cycle\u2013dependent NHEJ vs HR rates) to parameterize \u03bb_off(t) and estimate cumulative off-target burden per edit schedule.",
+        "Add robustness analysis of the POMDP to partial observability: quantify how Cell Cinema inference error and frame-rate aliasing degrade the expected resistant clone burden reduction; include a sensitivity analysis over latent dimensionality and noise."
+      ],
+      "suggested_experiments": [
+        "In vivo test in a metastatic reporter model (e.g., PyMT;LSL-tdTomato) with time-locked LNP-Cas9-RNP dosing triggered by ex vivo Cell Cinema inference: compare timed vs random schedules on resistant clone frequency (lineage barcoding) and DTP fraction (pDTP reporter) at a prespecified endpoint.",
+        "Single-cell multi-omics (scRNA-seq + scATAC-seq) before and after timed edits to quantify collapse of GPX4/BCL2 modules and compensatory pathway activation, with amplicon sequencing to measure on-target indel rates and on-target resistance alleles.",
+        "GLP repeat-dose toxicology in two species (rodent and non-rodent) with Cas9 biodistribution, vector shedding, and anti-drug antibody titers to bound cumulative off-target risk and establish an MTD for the control policy."
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Implement the POMDP with partial observability: simulate latent trajectories under Cell Cinema\u2013like observation noise (Gaussian on inferred x(t)), then compare optimal timed policy vs random/untimed dosing on E[R(T)] (resistant clone burden) and cumulative off-target load. Include stochastic delays in editing kinetics and cell cycle\u2013dependent repair.",
+        "expected_metrics": [
+          "Relative reduction in E[R(T)] (target \u226550%)",
+          "Off-target burden (expected number of indels per cell)",
+          "Policy robustness vs observation noise (regret vs perfect-state oracle)"
+        ],
+        "rationale": "This test quantifies whether the timing benefit survives realistic measurement error and editing stochasticity, and whether off-target penalties offset resistance gains\u2014key for IND risk-benefit assessment."
+      }
+    },
+    {
+      "archetype_id": "investor",
+      "archetype_name": "Biotech Investor",
+      "recommendation": "minor_revision",
+      "confidence": 0.82,
+      "summary": "The paper presents a novel stochastic control framework for timing CRISPR edits with DTC vulnerability peaks, offering mechanistic plausibility. However, critical gaps in experimental specificity, mathematical clarity, and statistical rigor require refinement before clinical relevance can be assessed.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 8,
+        "experimental_design": 7,
+        "evidence_support": 6,
+        "statistical_rigor": 5,
+        "clarity_of_writing": 6
+      },
+      "criticisms": [
+        "Abstract is missing, which undermines initial context for the hypothesis and methodology.",
+        "Mathematical formulation (e.g., Bellman equation) is presented without sufficient derivation or intuitive explanation, risking misinterpretation.",
+        "Experimental design lacks concrete details on how the closed-loop platform will be implemented in vivo (e.g., sensor specifications, RNP delivery kinetics).",
+        "Statistical analysis of the control problem is underdeveloped; no power analysis or sensitivity testing of key parameters (e.g., \u03b1, k_edit) is provided.",
+        "Clarity issues in Section 3.1: The stochastic hybrid system model is described abstractly without linking to specific biological mechanisms (e.g., how DDR inhibitors modulate DNA repair state)."
+      ],
+      "required_fixes": [
+        "Add a concise abstract summarizing the hypothesis, methodology, and key findings.",
+        "Clarify the mathematical model with step-by-step derivations or analogies to established control theory.",
+        "Specify technical parameters for the closed-loop platform (e.g., video sampling rate, threshold values for RNP delivery).",
+        "Include sensitivity analysis of the control policy to parameter variations (e.g., \u03c4_v width, plasticity term).",
+        "Add figures to visualize the latent state space and control policy in action."
+      ],
+      "suggested_experiments": [
+        "Validate \u03c4_v identification independently using orthogonal methods (e.g., time-course CRISPR screens without Cell Cinema).",
+        "Test the control law in a simplified 1D latent state model before full hybrid system implementation.",
+        "Conduct off-target mutation assays in patient-derived organoids to quantify \u03bb_off(t) under timed vs. untimed editing."
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Develop a stochastic simulation of the hybrid system with synthetic latent trajectories derived from Cell Cinema-like data, applying the CW-Crispr control policy versus random scheduling.",
+        "expected_metrics": [
+          "Resistant clone burden (R(T))",
+          "Off-target mutation load",
+          "Synchronization efficiency between edit timing and \u03c4_v"
+        ],
+        "rationale": "This would quantitatively validate the core hypothesis that timed editing reduces resistance without increasing toxicity, providing a computational basis for in vivo testing."
+      }
+    },
+    {
+      "archetype_id": "kol",
+      "archetype_name": "Academic KOL",
+      "recommendation": "major_revision",
+      "confidence": 0.88,
+      "summary": "This is a conceptually bold and mechanistically rich proposal that introduces a novel *temporal control layer* to multiplex CRISPR therapy by aligning edits with experimentally inferred DTP commitment windows. While the integration of latent-space modeling (Cell Cinema), stochastic hybrid systems, and CRISPR kinetics is sophisticated and potentially transformative, the manuscript currently lacks concrete parameterization of core mechanisms (e.g., \u03c4_v duration, \u03b5(t) shape, plasticity modulation), omits falsifiable predictions for *dose\u2013timing interactions*, and fails to define a minimal experimental validation path that isolates timing as the causal variable. With rigorous unpacking of assumptions and targeted pilot experiments, this could become a landmark framework paper.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 8,
+        "experimental_design": 5,
+        "evidence_support": 4,
+        "statistical_rigor": 6,
+        "clarity_of_writing": 9
+      },
+      "criticisms": [
+        "The paper assumes \u03c4_v is a *universal*, *measurable*, and *predictable* window across heterogeneous DTCs, but Block\u202f3\u2019s latent trajectories were derived in vitro and may not reflect in vivo metastatic niches (e.g., bone marrow, brain), where microenvironmental cues could shift \u03c4_v timing or eliminate oscillatory hazard patterns [citation needed].",
+        "The hazard function H_C(t) is posited to 'rise sharply' during \u03c4_v, yet no analytical form or empirical calibration is provided. Without a parametric or data-driven specification of H_C(t) (e.g., piecewise exponential, Gaussian process\u2013informed), the stochastic control law remains abstract and non-reproducible.",
+        "The claim that 'untimed delivery may accelerate resistance' is asserted but not modeled or simulated \u2014 the plasticity term is introduced only qualitatively (Section 2), and no comparison is made between timed vs. mistimed schedules in silico to demonstrate this *paradoxical acceleration*.",
+        "The POMDP formulation (Eq. 1) is stated but never solved or approximated; the Bellman equation is presented without discretization, state-space truncation, or policy representation (e.g., neural network vs. lookup table), making it impossible to assess computational feasibility or convergence.",
+        "The proposed closed-loop platform (Section 2) conflates *prediction* of \u03c4_v with *intervention* timing: Cell Cinema infers commitment *after* it has begun; if \u03c4_v is truly transient (e.g., 2\u20134 h), real-time inference latency may exceed the therapeutic window, rendering the control law infeasible without prescheduling or anticipatory control.",
+        "No discussion of immune consequences: CRISPR-Cure-7 delivery (especially viral vectors) may trigger cGAS-STING activation or interferon responses that themselves modulate DTP commitment kinetics \u2014 a confounder not included in the stochastic model.",
+        "The endpoint '50% reduction in resistant clone burden' is arbitrary and not grounded in prior CRISPR-Cure-7 efficacy data (Block\u202f2). Without a power calculation or baseline resistance rate, the failure mode is ill-defined."
+      ],
+      "required_fixes": [
+        "Provide a concrete, falsifiable specification of \u03c4_v: estimate its duration, inter-cell variability (CV), and sensitivity to stressors (e.g., TGF-\u03b2, hypoxia) using existing Block\u202f3 data or cite preliminary time-lapse validation (e.g., 'as shown in Extended Data Fig. 4a\u2013c' \u2014 but no such figures exist in this excerpt). If not yet measured, explicitly state this as a key knowledge gap and propose a minimal assay (e.g., single-cell time-lapse + inducible Cas9 pulse-chase).",
+        "Reformulate the control objective as a *comparative* hypothesis: specify *exactly* what 'untimed' means (e.g., fixed 24-h interval, random Poisson dosing, or continuous low-dose) and simulate at least three scheduling policies (optimal timing, fixed delay, adaptive delay) to demonstrate that timing\u2014not just editing\u2014is the causal factor.",
+        "Define the plasticity term mathematically: e.g., P(t) = \u03b2\u00b7[1 \u2212 \u03b5(t)]\u00b7\u2211_{i\u2260j} |\u2202g_i/\u2202g_j|, where \u03b2 is calibrated from CRISPR-Cure-7 off-target RNA-seq after mistimed edits.",
+        "Add a simulation module (Section 4) that explicitly tests the failure mode: show that when \u03c4_v is misestimated by >\u0394t (e.g., 3 h), resistance burden *exceeds* control, validating the claim that mistimed editing accelerates resistance.",
+        "Clarify whether \u03c4_v is *cell-autonomous* or *niche-synchronized* (Section 1 mentions paracrine coupling). If the latter, the control law must account for population-level phase transitions \u2014 not just single-cell latent states.",
+        "Include a power analysis for the primary endpoint: derive required n (mice, clones, or sequencing depth) to detect 50% reduction with 80% power, assuming baseline DTP fraction from Block\u202f2.",
+        "Address delivery constraints: lipid nanoparticles vs. viral vectors have vastly different pharmacokinetics (e.g., peak Cas9 activity at 6\u201312 h vs. 48\u201372 h). The model must specify how edit kinetics (k_edit) map to \u03c4_v windows \u2014 currently assumed compatible without justification."
+      ],
+      "suggested_experiments": [
+        "Perform a 'timing sweep' experiment: treat metastatic organoids (with DTP reporter, e.g., GPX4-mCherry) with a fixed total dose of CRISPR-Cure-7 RNPs delivered at 0, 6, 12, 18, 24 h post-stress, and quantify DTP emergence (flow cytometry), resistance (drug challenge), and off-targets (GUIDE-seq). This directly tests \u03b5(t)\u2019s peak and decay.",
+        "Use inducible Cas9 (e.g., 4OH-Tamoxifen\u2013controlled) to deliver a single RNP pulse at defined intervals after stress, then infer \u03c4_v via latent trajectory alignment (Cell Cinema) \u2014 this isolates timing from dose effects.",
+        "Co-culture DTCs with stromal cells (e.g., cancer-associated fibroblasts) to test if niche signals shift \u03c4_v, and whether the CW-Crispr scheduler must be niche-adaptive.",
+        "Validate the 'acceleration by mistiming' hypothesis by comparing resistance emergence in three arms: (1) timed edit, (2) mistimed edit (\u00b16 h), (3) no edit \u2014 with lineage tracing to rule out selection artifacts."
+      ],
+      "simulation_proposal": null
+    },
+    {
+      "archetype_id": "patient",
+      "archetype_name": "Patient Advocate",
+      "recommendation": "minor_revision",
+      "confidence": 0.75,
+      "summary": "The paper presents a mechanistically rigorous framework for timing CRISPR edits with DTC vulnerability peaks, which is scientifically compelling. However, as a Patient Advocate reviewer, it lacks critical elements addressing real-world patient impact, including side-effect burden, accessibility, and patient-reported outcomes. The work focuses heavily on technical and preclinical mechanisms but neglects clinical translation considerations essential for patient-centered evaluation.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 9,
+        "experimental_design": 8,
+        "evidence_support": 7,
+        "statistical_rigor": 8,
+        "clarity_of_writing": 6
+      },
+      "criticisms": [
+        "No discussion of side-effect burden from CRISPR delivery (e.g., off-target edits, toxicity risks in patients)",
+        "Zero mention of accessibility barriers (cost, infrastructure, or logistical challenges for real-world implementation)",
+        "No patient-reported outcome metrics (e.g., quality of life, treatment burden, or adherence challenges)",
+        "Real-world treatment journey aspects (e.g., timing of edits relative to patient cycles, symptom management) are absent",
+        "Lack of consideration for heterogeneous patient populations (e.g., comorbidities, socioeconomic factors affecting treatment)"
+      ],
+      "required_fixes": [
+        "Add a dedicated section on potential side effects and toxicity mitigation strategies for clinical use",
+        "Include a cost-effectiveness analysis or accessibility framework for global implementation",
+        "Incorporate patient-reported outcome measures (PROs) in the experimental design",
+        "Address how the therapy aligns with real-world treatment timelines (e.g., outpatient vs. inpatient delivery)"
+      ],
+      "suggested_experiments": [
+        "Conduct a Phase I clinical trial with metastatic cancer patients to quantify side-effect burden and PROs (e.g., fatigue, pain, treatment adherence)",
+        "Perform a health economics analysis to evaluate accessibility and cost barriers",
+        "Simulate real-world implementation with patient variability (e.g., delayed treatment initiation, non-adherence)"
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Develop a patient-level simulation model incorporating variability in treatment access, side-effect reporting, and PROs (e.g., using EHR data or patient surveys)",
+        "expected_metrics": [
+          "Time-to-treatment initiation",
+          "Side-effect incidence rates",
+          "Patient satisfaction scores",
+          "Treatment abandonment rates"
+        ],
+        "rationale": "This would test whether the mechanistic framework translates to meaningful patient outcomes in real-world settings, addressing the core gaps identified by a Patient Advocate lens."
+      }
+    },
+    {
+      "archetype_id": "payer",
+      "archetype_name": "Insurance Payer",
+      "recommendation": "reject",
+      "confidence": 0.85,
+      "summary": "The paper proposes a temporally controlled, multiplex CRISPR strategy synchronized to latent DTP commitment windows inferred from video-generative models. While conceptually ambitious, it fails as a testable therapeutic or coverage proposition because it lacks a credible cost-effectiveness pathway, relies on unvalidated latent-state inference at clinical scale, and does not quantify budget impact or prior-auth complexity against payer ICER thresholds. The mechanistic claims are not sufficiently grounded to justify the operational overhead and off-target risk implied by repeated, closed-loop RNP dosing in metastatic disease.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 5,
+        "experimental_design": 4,
+        "evidence_support": 3,
+        "statistical_rigor": 4,
+        "clarity_of_writing": 6
+      },
+      "criticisms": [
+        "No explicit ICER calculation or comparison to standard-of-care (e.g., sequential targeted therapy or SOC chemotherapy) despite framing implications for coverage policy; payer cannot adjudicate value without a denominator (per-patient lifetime cost) and outcome (QALYs or progression-free life-years) [Section 1, 2].",
+        "Latent commitment windows \u03c4_v derived from Cell Cinema are asserted as actionable scheduling signals but lack prospective validation in metastatic models; inference error rates, temporal resolution limits, and inter-mouse heterogeneity are not quantified, undermining the stochastic control premise [Section 2, 3].",
+        "Off-target burden \u03bb_off(t) is modeled as a Poisson process but not mapped to measurable safety endpoints (e.g., oncogenic transformation risk, p53 activation, chromosomal rearrangements) or associated costs (e.g., long-term safety monitoring, management of therapy-related malignancies) [Section 2].",
+        "Closed-loop microfluidic RNP delivery in vivo is proposed without addressing pharmacokinetic/pharmacodynamic (PK/PD) constraints, biodistribution to metastatic niches, or scalability beyond localized models; this inflates prior-auth complexity and operational cost relative to plausible benefit [Section 2, 3].",
+        "No budget-impact model or scenario analysis (e.g., eligible patient pool, screening/monitoring costs, retreatment rates) is provided; payers require per-member per-month (PMPM) estimates to assess affordability, especially for a therapy requiring real-time imaging and programmable delivery [all sections].",
+        "Failure mode definition (p > 0.05 in DTP fraction) is statistically under-powered and does not incorporate multiplicity across seven editing windows or account for false discovery from latent-state misclassification [Section 2, 3]."
+      ],
+      "required_fixes": [
+        "Integrate a formal cost-effectiveness analysis: estimate incremental costs (CRISPR RNP, imaging, infusion, monitoring) and QALY gains versus SOC; report ICER against payer thresholds and include sensitivity analyses for editing efficiency, latency misclassification, and off-target event costs.",
+        "Specify a coverage policy position and prior-auth criteria (e.g., required Cell Cinema-validated latent trajectory, minimum predicted \u03c4_v confidence, exclusion of sites with poor biodistribution), and quantify the administrative burden (e.g., prior-auth turnaround time, appeals rate).",
+        "Provide a budget-impact model with PMPM estimates over 3\u20135 years, including downstream costs of managing off-target events and resistant escape, and test scenarios for 10%, 30%, 50% eligible penetrance in the metastatic population.",
+        "Define a measurable, falsifiable primary endpoint that aligns with payer value (e.g., resistant-clone\u2013free survival or progression-free interval) with a pre-specified non-inferiority/superiority margin and multiplicity adjustment across editing windows.",
+        "Validate latent-state inference error and temporal misalignment risk in metastatic models; report misclassification rates and simulate how \u03c4_v uncertainty propagates to resistance outcomes and cost-effectiveness."
+      ],
+      "suggested_experiments": [
+        "Head-to-head comparison of CW-CRISPR scheduling vs. time-agnostic multiplex CRISPR-Cure-7 in a metastatic mouse model with longitudinal lineage tracing, reporting resistant clone frequency, editing efficiency, and off-target burden (amplicon sequencing plus whole-genome low-pass) at a prespecified endpoint.",
+        "PK/PD and biodistribution study of lipid-nanoparticle or viral RNP delivery to bone marrow, liver, and lung metastatic niches with temporal control feasibility; include markers of DDR activation and p53 response to quantify off-target liability.",
+        "Retrospective latent-trajectory inference on existing single-cell multi-omics atlases of metastatic DTCs to estimate \u03c4_v prevalence and variance across cancer types and prior therapies, informing eligibility and screening costs."
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Build a discrete-event simulation of metastatic DTC dynamics under CW-CRISPR scheduling versus untimed editing, incorporating latent-state misclassification, editing delay distributions, off-target mutation accumulation, and downstream resistance costs; map outputs to QALYs and lifetime costs to estimate ICER and budget impact.",
+        "expected_metrics": [
+          "ICER ($/QALY)",
+          "incremental resistant-clone\u2013free survival (months)",
+          "off-target event rate per 100 patient-years",
+          "PMPM budget impact at 10%/30%/50% eligibility",
+          "prior-auth denial rate under different \u03c4_v confidence thresholds"
+        ],
+        "rationale": "Payers require a systems-level quantification of value, affordability, and operational risk; this simulation would directly test whether temporal synchronization yields sufficient incremental benefit to justify the added cost, complexity, and safety monitoring relative to standard care."
+      }
+    },
+    {
+      "archetype_id": "short_seller",
+      "archetype_name": "Adversarial Short-Seller",
+      "recommendation": "major_revision",
+      "confidence": 0.75,
+      "summary": "The paper proposes a temporally informed CRISPR scheduling framework for metastatic cancer treatment but relies on unvalidated assumptions about vulnerability windows (\u03c4_v) and latent state mapping. The mechanistic foundation lacks experimental validation, and the control strategy's dependence on real-time inference introduces critical uncertainties.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 6,
+        "experimental_design": 5,
+        "evidence_support": 4,
+        "statistical_rigor": 3,
+        "clarity_of_writing": 7
+      },
+      "criticisms": [
+        "The mapping of Cell Cinema latent trajectories to \u03c4_v windows is not mechanistically validated. The paper assumes a temporal oscillation in hazard rates without experimental evidence (Section 1.1).",
+        "The plasticity term parameterized by pathway redundancy lacks quantitative justification. How is redundancy measured, and does it vary across cell types? (Section 1.3)",
+        "The closed-loop inference engine for real-time \u03c4_v detection is conceptually described but not validated. Errors in latent state estimation would directly compromise timing accuracy (Section 3.1).",
+        "The statistical framework (POMDP) is formulated but not validated. No simulations or empirical data demonstrate the control policy's robustness to noise or variability in \u03c4_v (Section 2.3).",
+        "The measurable endpoint (DTP fraction reduction) does not account for inter-individual variability in \u03c4_v across metastatic niches. A population-level failure mode is unaddressed."
+      ],
+      "required_fixes": [
+        "Provide experimental validation of \u03c4_v existence and dynamics in metastatic cells (e.g., time-resolved tracking of DTCs under drug pressure).",
+        "Quantify pathway redundancy using CRISPR knockout screens or multi-omics data to parameterize the plasticity term.",
+        "Include simulations demonstrating the control policy's performance under perturbed \u03c4_v estimates or inference errors.",
+        "Clarify statistical methods for comparing timed vs. untimed editing (e.g., power analysis, effect size calculations)."
+      ],
+      "suggested_experiments": [
+        "In vitro validation: Synchronize DTCs in vitro and expose them to cytotoxic stress to empirically define \u03c4_v. Test CRISPR editing efficacy during vs. outside \u03c4_v.",
+        "In silico simulation: Model the stochastic hybrid system with synthetic \u03c4_v peaks and CRISPR edit schedules. Measure resistant clone burden under varying inference accuracy.",
+        "In vivo pilot study: Use a limited set of \u03c4_v predictions from Cell Cinema to time edits in a mouse model. Compare outcomes to a randomized control schedule."
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Simulate the stochastic hybrid system with synthetic \u03c4_v peaks and CRISPR edit schedules. Incorporate noise in latent state estimation to test control policy robustness.",
+        "expected_metrics": [
+          "Resistant clone burden",
+          "Timing accuracy of edits",
+          "Off-target mutation load"
+        ]
+      }
+    }
+  ],
+  "simulations": [
+    {
+      "id": "computational-model",
+      "title": "computational_model",
+      "type": "html5_canvas",
+      "description": "Develop a stochastic simulation of the hybrid system with synthetic latent trajectories derived from Cell Cinema-like data, applying the CW-Crispr control policy versus random scheduling.",
+      "rationale": "This would quantitatively validate the core hypothesis that timed editing reduces resistance without increasing toxicity, providing a computational basis for in vivo testing.",
+      "expected_metrics": [
+        "Resistant clone burden (R(T))",
+        "Off-target mutation load",
+        "Synchronization efficiency between edit timing and \u03c4_v"
+      ],
+      "scene": "trajectory_manifold",
+      "seed": 101,
+      "parameters": {}
+    },
+    {
+      "id": "computational-model",
+      "title": "computational_model",
+      "type": "html5_canvas",
+      "description": "Develop a patient-level simulation model incorporating variability in treatment access, side-effect reporting, and PROs (e.g., using EHR data or patient surveys)",
+      "rationale": "This would test whether the mechanistic framework translates to meaningful patient outcomes in real-world settings, addressing the core gaps identified by a Patient Advocate lens.",
+      "expected_metrics": [
+        "Time-to-treatment initiation",
+        "Side-effect incidence rates",
+        "Patient satisfaction scores",
+        "Treatment abandonment rates"
+      ],
+      "scene": "trajectory_manifold",
+      "seed": 202,
+      "parameters": {}
+    },
+    {
+      "id": "in-silico",
+      "title": "in_silico",
+      "type": "html5_canvas",
+      "description": "Build a Gillespie-based stochastic simulation of the S\u2192C\u2192R\u2192D hybrid system, parameterized with latent-space-derived hazard functions (H_C(t) from Cell Cinema trajectories), edit efficiency \u03b5(t) modeled as Gaussian kernel centered on \u03c4_v with width \u03c3_\u03c4, and cell-cycle-dependent editing probability p_edit \u2208 {0.4, 0.7, 0.6} for G1/S/G2/M. Simulate 10\u2074 cells per mouse, 20 mice per arm (untimed, \u03c4_v-aligned, random), and compare expected R(T) and variance.",
+      "rationale": "This simulation would directly test whether a 50% reduction is plausible given realistic \u03c4_v widths (e.g., \u03c3_\u03c4 > 2 h may erase timing benefit), quantify required sample sizes, and expose sensitivity to confounding\u2014addressing the core statistical gaps.",
+      "expected_metrics": [
+        "\u0394E[R(T)] / E[R(T)]_untimed (primary effect size)",
+        "Power (\u03b1=0.05, \u03b2=0.2) as function of n (mice) and \u03c3_\u03c4 (\u03c4_v precision)",
+        "False-positive rate under null (no \u03c4_v effect) when using naive t-test vs. GLMM with cell-cycle covariate"
+      ],
+      "scene": "trajectory_manifold",
+      "seed": 303,
+      "parameters": {}
+    },
+    {
+      "id": "tumor-volume-3d",
+      "title": "Tumor Volume (3D)",
+      "type": "threejs",
+      "description": "Volumetric point-cloud tumor with phenotype-coloured clusters that grow, divide, and apoptose over time. Rotates the mass to expose where the model places phenotype boundaries.",
+      "rationale": "The 2D manifold view collapses depth \u2014 a 3D volumetric rendering tests whether claimed phenotype clusters survive when seen from arbitrary angles.",
+      "expected_metrics": [
+        "phenotype-cluster volumetric stability",
+        "intra-cluster density",
+        "boundary sharpness under rotation"
+      ],
+      "three_scene": "tumor_volume_3d",
+      "seed": 5616,
+      "parameters": {
+        "title": "Commitment-Window CRISPR Scheduling: A Stochastic Control Framework for Synchronizing Multiplex Editing with DTP Vulnerability Peaks",
+        "confidence": 0.47250000000000003,
+        "critique": "No empirical data or in vivo results are presented; all claims remain in silico or conceptual (Sections 1\u20133). The stated 50% reduction in resistant clone burden is asserted without simulation code, parameter ranges, or s",
+        "catalyst": "[Practicing Oncologist] A successful in vivo proof-of-concept in a syngeneic metastatic model showing \u226560% reduction in resistant outgrowth *with no increase in off-target mutations* (validated by WGS) would push price up; failure to replicate timing-dependent efficacy in a second model would crush it."
+      }
+    },
+    {
+      "id": "mitotic-lattice-3d",
+      "title": "Mitotic Lattice (3D)",
+      "type": "threejs",
+      "description": "Rotating 3D lattice of cells with division events sampled from the validator-emitted novelty distribution. Daughter cells inherit colour from parent phenotype, exposing lineage drift.",
+      "rationale": "Hooks the falsifier visually: if the paper's mechanism predicts a specific division geometry, this scene makes deviations from it immediately visible.",
+      "expected_metrics": [
+        "division-rate per phenotype",
+        "lineage-drift entropy",
+        "spatial clustering of mitotic events"
+      ],
+      "three_scene": "mitotic_lattice_3d",
+      "seed": 5634,
+      "parameters": {
+        "title": "Commitment-Window CRISPR Scheduling: A Stochastic Control Framework for Synchronizing Multiplex Editing with DTP Vulnerability Peaks",
+        "confidence": 0.47250000000000003,
+        "critique": "No empirical data or in vivo results are presented; all claims remain in silico or conceptual (Sections 1\u20133). The stated 50% reduction in resistant clone burden is asserted without simulation code, parameter ranges, or s",
+        "catalyst": "[Biostatistician] The price would move significantly if in vivo studies demonstrate a statistically significant reduction in resistant clone frequency compared to untimed CRISPR delivery, without increased toxicity."
+      }
+    },
+    {
+      "id": "perturbation-cone-3d",
+      "title": "Perturbation Cone (3D)",
+      "type": "threejs",
+      "description": "3D analog of the counterfactual scene: treated trajectories spread out from a baseline manifold along a confidence-weighted cone. Cone width tracks acceptance probability.",
+      "rationale": "Forces the prediction-vs-observation gap into a single visual. A narrow, well-aimed cone implies confident divergence; a fat cone signals high predictive uncertainty.",
+      "expected_metrics": [
+        "cone aperture",
+        "trajectory bundle coherence",
+        "off-axis trajectory frequency"
+      ],
+      "three_scene": "perturbation_cone_3d",
+      "seed": 5652,
+      "parameters": {
+        "title": "Commitment-Window CRISPR Scheduling: A Stochastic Control Framework for Synchronizing Multiplex Editing with DTP Vulnerability Peaks",
+        "confidence": 0.47250000000000003,
+        "critique": "No empirical data or in vivo results are presented; all claims remain in silico or conceptual (Sections 1\u20133). The stated 50% reduction in resistant clone burden is asserted without simulation code, parameter ranges, or s",
+        "catalyst": "[Academic KOL] Positive preclinical data from in vivo studies validating the CW-Crispr framework would significantly increase the prediction-market price for this paper."
+      }
+    }
+  ]
+}

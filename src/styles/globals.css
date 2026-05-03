@@ -82,6 +82,39 @@ th { color: var(--teal); text-transform: uppercase; letter-spacing: 0.08em; font
 @media (max-width: 860px) { .run-grid { grid-template-columns: 1fr; } .run-models { grid-template-columns: 1fr; } }
 @media (max-width: 720px) { .home-grid { grid-template-columns: 1fr; } .home-box { min-height: 128px; } .youtube-form { grid-template-columns: 1fr; } }
 
+/* ===== Music Page ===== */
+.music-page {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.drop-zone {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  pointer-events: none;
+  z-index: 5;
+}
+.drop-zone p {
+  margin: 0.5rem 0;
+  font-size: 1.125rem;
+  opacity: 0.8;
+}
+.drop-zone .hint {
+  font-size: 0.9rem;
+  opacity: 0.6;
+}
+
+.bg-canvas {
+  display: block;
+}
+
 /* ===== Job Feed Page ===== */
 .job-feed { display: grid; gap: 1rem; margin-top: 1.2rem; }
 .job-card { display: block; border: 1px solid var(--border); border-radius: 16px; background: radial-gradient(circle at top, rgba(73,197,182,0.09), transparent 48%), var(--panel); backdrop-filter: blur(16px); padding: 1.1rem; color: var(--soft); transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease; }

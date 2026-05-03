@@ -30,19 +30,19 @@ pre{background:#071407;border:1px solid #1a3a1a;border-radius:10px;padding:14px;
 <main>
   <section class="status" id="status"><strong>Checking backend...</strong></section>
   <div class="actions">
-    <a class="button" href="https://cancerhawk-production.up.railway.app" target="_blank" rel="noreferrer">Open backend</a>
+    <a class="button" href="http://localhost:8765" target="_blank" rel="noreferrer">Open backend</a>
     <button class="button secondary" type="button" id="retry">Check again</button>
   </div>
   <iframe class="backend-frame" id="backend" title="CancerHawk backend" src="about:blank"></iframe>
   <section class="notes">
     <h2>Backend</h2>
-    <p>The static site (Vercel/Pages) cannot run Python; it talks to the deployed FastAPI Hermes worker over WebSocket. The worker URL is <code>https://cancerhawk-production.up.railway.app</code>.</p>
+    <p>The static site (Vercel/Pages) cannot run Python; it talks to the deployed FastAPI Hermes worker over WebSocket. The worker URL is <code>http://localhost:8765</code>.</p>
     <pre>python -m app.main   # local dev (port 8765 by default)</pre>
     <p>Once the backend is reachable, paste your OpenRouter API key, choose models, and run. Hermes publishes completed blocks into <code>results/block-N/</code>, clones the GitHub repo with <code>GITHUB_TOKEN</code>, pushes as <code>hermes-agent</code>, and Vercel auto-rebuilds the public site.</p>
   </section>
 </main>
 <script>
-const BACKEND_URL = "https://cancerhawk-production.up.railway.app";
+const BACKEND_URL = "http://localhost:8765";
 const statusEl = document.getElementById('status');
 const frame = document.getElementById('backend');
 async function checkBackend(){

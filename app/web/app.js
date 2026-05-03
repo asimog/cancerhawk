@@ -407,6 +407,10 @@ async function run() {
     alert("Research goal required");
     return;
   }
+  if (cfg.research_goal.length > 1000) {
+    alert("Research goal must be at most 1000 characters");
+    return;
+  }
 
   const prefsToSave = { ...cfg };
   delete prefsToSave.api_key;

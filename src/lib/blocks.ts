@@ -77,6 +77,27 @@ export function getBackendUrl() {
   ).trim().replace(/\/+$/, '');
 }
 
+export function fetchWithTimeout(
+  url: string,
+  options: RequestInit & { timeout?: number } = {},
+): Promise<Response> {
+  const { timeout = 8000, ...rest } = options;
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeout);
+  return fetch(url, { ...rest, signal: controller.signal }).finally(() => clearTimeout(id));
+}
+
+const SOLANA_BASE58 = /^[A-HJ-NP-Za-km-z1-9]{32,44}$/;
+const EVM_ADDRESS = /^0x[a-fA-F0-9]{40}$/;
+
+export function validateWalletAddress(value: string): { valid: boolean; chain: 'solana' | 'base' | null; error?: string } {
+  const trimmed = value.trim();
+  if (!trimmed) return { valid: true, chain: null };
+  if (SOLANA_BASE58.test(trimmed)) return { valid: true, chain: 'solana' };
+  if (EVM_ADDRESS.test(trimmed)) return { valid: true, chain: 'base' };
+  return { valid: false, chain: null, error: 'Enter a valid Solana or Base (0x…) address.' };
+}
+
 export function excerpt(markdown: string, maxLength = 280) {
   const text = markdown
     .split('\n')

@@ -3,6 +3,7 @@ import Head from 'next/head';
 import { GlobalMusicButton } from '@/components/global-music-button';
 import { MusicProvider } from '@/components/music-provider';
 import { SiteBackground } from '@/components/site-background';
+import { ErrorBoundary } from '@/components/error-boundary';
 import '@/styles/globals.css';
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -22,7 +23,9 @@ export default function App({ Component, pageProps }: AppProps) {
       </Head>
       <SiteBackground />
       <main className="app-shell">
-        <Component {...pageProps} />
+        <ErrorBoundary>
+          <Component {...pageProps} />
+        </ErrorBoundary>
       </main>
       <GlobalMusicButton />
     </MusicProvider>

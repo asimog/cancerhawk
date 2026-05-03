@@ -170,6 +170,9 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
   const youtubePlayerRef = useRef<YouTubePlayer | null>(null);
   const youtubePollRef = useRef(0);
   const youtubeBeatRef = useRef(0);
+  const audioLockRef = useRef<Promise<HTMLAudioElement> | null>(null);
+  const youtubeLockRef = useRef<Promise<YouTubePlayer> | null>(null);
+  const youtubeLoadingRef = useRef(false);
 
   const selectedTrack = useMemo(
     () => tracks.find((track) => track.id === selectedId) || tracks[0],
@@ -230,29 +233,40 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
     };
     cancelAnimationFrame(rafRef.current);
     rafRef.current = requestAnimationFrame(tick);
-  }, []);
+  }, [sourceKind]);
 
   const ensureAudio = useCallback(async () => {
-    if (!audioRef.current) {
-      audioRef.current = new Audio();
-      audioRef.current.crossOrigin = 'anonymous';
-      audioRef.current.addEventListener('play', () => setIsPlaying(true));
-      audioRef.current.addEventListener('pause', () => setIsPlaying(false));
-      audioRef.current.addEventListener('ended', () => setIsPlaying(false));
+    if (audioLockRef.current) return audioLockRef.current;
+
+    const promise = (async () => {
+      if (!audioRef.current) {
+        audioRef.current = new Audio();
+        audioRef.current.crossOrigin = 'anonymous';
+        audioRef.current.addEventListener('play', () => setIsPlaying(true));
+        audioRef.current.addEventListener('pause', () => setIsPlaying(false));
+        audioRef.current.addEventListener('ended', () => setIsPlaying(false));
+      }
+      if (!contextRef.current) {
+        const context = new AudioContext();
+        const analyser = context.createAnalyser();
+        analyser.fftSize = 512;
+        sourceRef.current = context.createMediaElementSource(audioRef.current);
+        sourceRef.current.connect(analyser);
+        analyser.connect(context.destination);
+        contextRef.current = context;
+        analyserRef.current = analyser;
+        startAnalyser();
+      }
+      if (contextRef.current.state === 'suspended') await contextRef.current.resume();
+      return audioRef.current;
+    })();
+
+    audioLockRef.current = promise;
+    try {
+      return await promise;
+    } finally {
+      audioLockRef.current = null;
     }
-    if (!contextRef.current) {
-      const context = new AudioContext();
-      const analyser = context.createAnalyser();
-      analyser.fftSize = 512;
-      sourceRef.current = context.createMediaElementSource(audioRef.current);
-      sourceRef.current.connect(analyser);
-      analyser.connect(context.destination);
-      contextRef.current = context;
-      analyserRef.current = analyser;
-      startAnalyser();
-    }
-    if (contextRef.current.state === 'suspended') await contextRef.current.resume();
-    return audioRef.current;
   }, [startAnalyser]);
 
   const play = useCallback(async (track: Track) => {
@@ -291,7 +305,7 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
       return;
     }
     await play(selectedTrack);
-  }, [ensureAudio, play, selectedTrack]);
+  }, [ensureAudio, play, selectedTrack, sourceKind, isPlaying, youtubeTitle]);
 
   const next = useCallback(async () => {
     if (sourceKind === 'youtube' && youtubePlayerRef.current) {
@@ -330,36 +344,49 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
 
   const ensureYoutubePlayer = useCallback(async () => {
     if (youtubePlayerRef.current) return youtubePlayerRef.current;
-    if (!youtubeHostRef.current) throw new Error('YouTube player is not mounted yet.');
-    const api = await loadYouTubeIframeApi();
-    const player = await new Promise<YouTubePlayer>((resolve) => {
-      const created = new api.Player(youtubeHostRef.current!, {
-        width: '1',
-        height: '1',
-        playerVars: {
-          autoplay: 1,
-          controls: 0,
-          disablekb: 1,
-          fs: 0,
-          modestbranding: 1,
-          playsinline: 1,
-          rel: 0,
-        },
-        events: {
-          onReady: () => resolve(created),
-          onStateChange: (event) => {
-            setIsPlaying(event.data === YOUTUBE_PLAYING);
+    if (youtubeLockRef.current) return youtubeLockRef.current;
+
+    const promise = (async () => {
+      if (!youtubeHostRef.current) throw new Error('YouTube player is not mounted yet.');
+      const api = await loadYouTubeIframeApi();
+      const player = await new Promise<YouTubePlayer>((resolve) => {
+        const created = new api.Player(youtubeHostRef.current!, {
+          width: '1',
+          height: '1',
+          playerVars: {
+            autoplay: 1,
+            controls: 0,
+            disablekb: 1,
+            fs: 0,
+            modestbranding: 1,
+            playsinline: 1,
+            rel: 0,
           },
-        },
+          events: {
+            onReady: () => resolve(created),
+            onStateChange: (event) => {
+              setIsPlaying(event.data === YOUTUBE_PLAYING);
+            },
+          },
+        });
       });
-    });
-    youtubePlayerRef.current = player;
-    return player;
+      youtubePlayerRef.current = player;
+      return player;
+    })();
+
+    youtubeLockRef.current = promise;
+    try {
+      return await promise;
+    } finally {
+      youtubeLockRef.current = null;
+    }
   }, []);
 
   const loadYoutube = useCallback(async () => {
     const url = youtubeUrl.trim();
     if (!url) return;
+    if (youtubeLoadingRef.current) return;
+    youtubeLoadingRef.current = true;
     setYoutubeLoading(true);
     setStatus('Loading YouTube...');
     try {
@@ -385,6 +412,7 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
     } catch (error) {
       setStatus(error instanceof Error ? error.message : 'YouTube could not be loaded.');
     } finally {
+      youtubeLoadingRef.current = false;
       setYoutubeLoading(false);
     }
   }, [ensureYoutubePlayer, startYoutubeFeaturePoll, youtubeUrl]);

@@ -1,15 +1,15 @@
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { getBackendUrl } from '@/lib/blocks';
-import { useEffect, useMemo, useState } from 'react';
+import { getBackendUrl, fetchWithTimeout } from '@/lib/blocks';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Nav } from '@/components/nav';
 
 type JobEvent = {
   at?: string;
   stage?: string;
   message?: string;
-  data?: Record<string, any> | null;
+  data?: Record<string, unknown> | null;
 };
 
 type Job = {
@@ -17,11 +17,30 @@ type Job = {
   created_at: string;
   research_goal: string;
   status: 'pending' | 'running' | 'completed' | 'failed';
-  config?: Record<string, any>;
-  result?: Record<string, any>;
+  config?: Record<string, unknown>;
+  result?: {
+    title?: string;
+    market_price?: number;
+    block?: string | number;
+    stats?: {
+      total_calls?: number;
+      total_tokens?: number;
+      total_cost_usd?: number;
+      elapsed_seconds?: number;
+    };
+  };
   error?: string | null;
   events?: JobEvent[];
 };
+
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
 
 export const getStaticPaths: GetStaticPaths = async () => ({
   paths: [],
@@ -32,7 +51,7 @@ export const getStaticProps: GetStaticProps<{ job: Job | null; backendUrl: strin
   const backendUrl = await getBackendUrl();
   const jobId = context.params?.id as string;
   try {
-    const res = await fetch(`${backendUrl}/api/jobs/${jobId}`, { cache: 'no-store' });
+    const res = await fetchWithTimeout(`${backendUrl}/api/jobs/${jobId}`, { cache: 'no-store' });
     if (!res.ok) return { props: { job: null, backendUrl } };
     const job = await res.json();
     return { props: { job, backendUrl } };
@@ -47,39 +66,65 @@ export default function JobDetailPage({ job, backendUrl }: { job: Job | null; ba
   const [pollError, setPollError] = useState('');
   const workerUrl = useMemo(() => backendUrl.replace(/\/+$/, ''), [backendUrl]);
   const jobId = typeof router.query.id === 'string' ? router.query.id : job?.job_id || '';
+  const logRef = useRef<HTMLDivElement | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
+  const statusRef = useRef(liveJob?.status);
+  const timerRef = useRef<number>(0);
 
   useEffect(() => {
     setLiveJob(job);
   }, [job]);
 
   useEffect(() => {
-    if (!workerUrl || !jobId) return;
-    let cancelled = false;
+    statusRef.current = liveJob?.status;
+  }, [liveJob?.status]);
 
-    async function load() {
-      try {
-        const response = await fetch(`${workerUrl}/api/jobs/${jobId}`, { cache: 'no-store' });
-        if (!response.ok) throw new Error(`Backend returned ${response.status}`);
-        const payload = (await response.json()) as Job;
-        if (!cancelled) {
-          setLiveJob(payload);
-          setPollError('');
-        }
-      } catch (error) {
-        if (!cancelled) setPollError(error instanceof Error ? error.message : String(error));
-      }
+  const load = useCallback(async () => {
+    if (!workerUrl || !jobId) return;
+    if (abortRef.current) abortRef.current.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+    try {
+      const response = await fetchWithTimeout(`${workerUrl}/api/jobs/${jobId}`, {
+        cache: 'no-store',
+        signal: controller.signal,
+      });
+      if (!response.ok) throw new Error(`Backend returned ${response.status}`);
+      const payload = (await response.json()) as Job;
+      setLiveJob(payload);
+      setPollError('');
+    } catch (error) {
+      if (error instanceof Error && error.name === 'AbortError') return;
+      setPollError(error instanceof Error ? error.message : String(error));
+    }
+  }, [jobId, workerUrl]);
+
+  useEffect(() => {
+    if (!workerUrl || !jobId) return;
+
+    function schedule() {
+      const delay = statusRef.current === 'running' || statusRef.current === 'pending' ? 1800 : 6000;
+      timerRef.current = window.setTimeout(() => {
+        void load();
+        schedule();
+      }, delay);
     }
 
     void load();
-    const timer = window.setInterval(() => {
-      if (!cancelled) void load();
-    }, liveJob?.status === 'running' || liveJob?.status === 'pending' ? 1800 : 6000);
+    schedule();
 
     return () => {
-      cancelled = true;
-      window.clearInterval(timer);
+      window.clearTimeout(timerRef.current);
+      abortRef.current?.abort();
     };
-  }, [jobId, liveJob?.status, workerUrl]);
+  }, [jobId, workerUrl, load]);
+
+  // Auto-scroll log to bottom when events change
+  useEffect(() => {
+    const el = logRef.current;
+    if (!el) return;
+    el.scrollTop = el.scrollHeight;
+  }, [liveJob?.events?.length]);
 
   if (router.isFallback) {
     return <p className="muted">Loading job…</p>;
@@ -110,16 +155,31 @@ export default function JobDetailPage({ job, backendUrl }: { job: Job | null; ba
         </div>
         <h1 className="job-goal">{liveJob.research_goal}</h1>
         <p className="job-id">Job ID: {liveJob.job_id}</p>
-        {pollError && <p className="job-error">Live refresh paused: {pollError}</p>}
+        {pollError && (
+          <p className="job-error">
+            Live refresh paused: {pollError}
+            <button
+              className="button"
+              onClick={() => {
+                setPollError('');
+                void load();
+              }}
+              style={{ marginLeft: '0.5rem' }}
+              type="button"
+            >
+              Retry
+            </button>
+          </p>
+        )}
       </header>
 
       <section className="job-section">
         <h2>Run Log</h2>
-        <div className="run-log job-live-log" aria-live="polite">
+        <div className="run-log job-live-log" aria-live="polite" ref={logRef}>
           {events.length === 0 ? (
             <div className="run-log-row"><span className="run-log-stage">created</span><span>Waiting for the first event.</span></div>
           ) : events.map((event, index) => (
-            <div className="run-log-row" key={`${event.stage || 'event'}-${event.at || index}`}>
+            <div className="run-log-row" key={`${event.at || ''}-${event.stage || 'event'}-${index}`}>
               <span className="run-log-stage">{event.stage || 'event'}</span>
               <span>{event.message || ''}</span>
             </div>
@@ -137,13 +197,13 @@ export default function JobDetailPage({ job, backendUrl }: { job: Job | null; ba
       {liveJob.status === 'completed' && liveJob.result && (
         <section className="job-section">
           <h2>Result</h2>
-          {liveJob.result.title && <h3>{liveJob.result.title}</h3>}
-          {liveJob.result.market_price != null && (
+          {liveJob.result.title && <h3>{String(liveJob.result.title)}</h3>}
+          {typeof liveJob.result.market_price === 'number' && (
             <p>Market price: <strong>{(liveJob.result.market_price * 100).toFixed(0)}%</strong></p>
           )}
           {liveJob.result.block && (
             <p>
-              Block: <Link href={`/results/block-${liveJob.result.block}/paper.html`}>block-{liveJob.result.block}</Link>
+              Block: <Link href={`/results/block-${liveJob.result.block}/paper.html`}>block-{String(liveJob.result.block)}</Link>
             </p>
           )}
           {liveJob.result.stats && (
@@ -158,11 +218,11 @@ export default function JobDetailPage({ job, backendUrl }: { job: Job | null; ba
               </div>
               <div className="stat-card">
                 <div className="stat-label">Cost</div>
-                <div className="stat-value">${liveJob.result.stats.total_cost_usd?.toFixed(4) || '0.00'}</div>
+                <div className="stat-value">${typeof liveJob.result.stats.total_cost_usd === 'number' ? liveJob.result.stats.total_cost_usd.toFixed(4) : '0.00'}</div>
               </div>
               <div className="stat-card">
                 <div className="stat-label">Elapsed</div>
-                <div className="stat-value">{liveJob.result.stats.elapsed_seconds?.toFixed(0) || '—'}s</div>
+                <div className="stat-value">{typeof liveJob.result.stats.elapsed_seconds === 'number' ? liveJob.result.stats.elapsed_seconds.toFixed(0) : '—'}s</div>
               </div>
             </div>
           )}
@@ -172,7 +232,7 @@ export default function JobDetailPage({ job, backendUrl }: { job: Job | null; ba
       {liveJob.status === 'failed' && liveJob.error && (
         <section className="job-section job-error-section">
           <h2>Error</h2>
-          <pre className="job-error">{liveJob.error}</pre>
+          <pre className="job-error" dangerouslySetInnerHTML={{ __html: escapeHtml(liveJob.error) }} />
         </section>
       )}
 

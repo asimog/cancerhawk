@@ -1,16 +1,17 @@
 import Link from 'next/link';
 import { GetStaticProps } from 'next';
-import { getBackendUrl } from '@/lib/blocks';
-
-import { useState, useEffect } from 'react';
+import { getBackendUrl, fetchWithTimeout } from '@/lib/blocks';
+import { useState, useEffect, useRef } from 'react';
 
 type Job = {
   job_id: string;
   created_at: string;
   research_goal: string;
   status: 'pending' | 'running' | 'completed' | 'failed';
-  config?: Record<string, any>;
-  result?: Record<string, any>;
+  config?: Record<string, unknown>;
+  result?: {
+    title?: string;
+  };
   error?: string | null;
 };
 
@@ -19,25 +20,41 @@ export const getStaticProps: GetStaticProps<{ backendUrl: string }> = async () =
 });
 
 export default function JobsPage({ backendUrl }: { backendUrl: string }) {
-  // Client-side fetch — the job list changes frequently
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
+
+  async function load() {
+    if (!backendUrl) return;
+    if (abortRef.current) abortRef.current.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+    try {
+      setLoading(true);
+      const res = await fetchWithTimeout(`${backendUrl}/api/jobs`, {
+        cache: 'no-store',
+        signal: controller.signal,
+      });
+      if (!res.ok) throw new Error(`Backend returned ${res.status}`);
+      const data = await res.json();
+      setJobs(data.jobs || []);
+      setError(null);
+    } catch (e: unknown) {
+      if (e instanceof Error && e.name === 'AbortError') return;
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
-    async function load() {
-      try {
-        const res = await fetch(`${backendUrl}/api/jobs`, { cache: 'no-store' });
-        if (!res.ok) throw new Error(`Backend returned ${res.status}`);
-        const data = await res.json();
-        setJobs(data.jobs || []);
-      } catch (e: unknown) {
-        setError(e instanceof Error ? e.message : String(e));
-      } finally {
-        setLoading(false);
-      }
-    }
-    if (backendUrl) void load();
+    void load();
+    const interval = window.setInterval(() => void load(), 8000);
+    return () => {
+      window.clearInterval(interval);
+      abortRef.current?.abort();
+    };
   }, [backendUrl]);
 
   const statusBadge: Record<string, string> = {
@@ -59,6 +76,9 @@ export default function JobsPage({ backendUrl }: { backendUrl: string }) {
         <div className="backend-offline">
           <p className="muted">Backend is offline: {error}</p>
           <p className="muted">Job cards will appear here when the Hermes worker is running.</p>
+          <button className="button" onClick={() => void load()} type="button">
+            Retry
+          </button>
         </div>
       )}
       {!loading && !error && jobs.length === 0 && (
@@ -82,11 +102,11 @@ export default function JobsPage({ backendUrl }: { backendUrl: string }) {
                 </span>
               </div>
               <h2 className="job-goal">{job.research_goal}</h2>
-              {job.result?.title && (
+              {job.result?.title ? (
                 <p className="job-result-title">{job.result.title}</p>
-              )}
+              ) : null}
               {job.error && (
-                <p className="job-error">{job.error.slice(0, 120)}</p>
+                <p className="job-error">{String(job.error).slice(0, 120)}</p>
               )}
             </Link>
           ))}

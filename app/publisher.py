@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import html
 import json
+import logging
 import os
 import re
 import shutil
@@ -26,8 +27,11 @@ from dataclasses import asdict
 from datetime import datetime, timezone
 from pathlib import Path
 
+from .jobs import get_job, update_job_status  # noqa: E402
+
 REPO_ROOT = Path(__file__).resolve().parent.parent
 RESULTS_DIR = REPO_ROOT / "results"
+STAGING_DIR = RESULTS_DIR / "staging"
 BLOCK_DIR_RE = re.compile(r"^block-(\d+)$")
 
 # Public site URL (where Vercel/GH Pages serves the published blocks). Used in
@@ -1179,6 +1183,142 @@ def trigger_website_update(block_n: int) -> str:
             return f"vercel deploy hook returned {response.status}"
     except (urllib.error.URLError, TimeoutError) as exc:
         return f"vercel deploy hook failed: {exc}"
+
+
+def stage_block(paper, analysis, derived_topics, research_goal, models, peer_reviews, simulations, job_id, git_push) -> dict:
+    """Write block artifacts to staging area for later publication."""
+    staging_dir = STAGING_DIR / job_id
+    staging_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    # Write paper.md
+    (staging_dir / "paper.md").write_text(paper.full_text(), encoding="utf-8")
+
+    # Write paper.json
+    paper_data = {
+        "title": paper.title,
+        "sections": paper.sections,
+        "accepted_submissions": getattr(paper, "accepted_submissions", []),
+        "rejections": getattr(paper, "rejections", []),
+        "rounds_run": getattr(paper, "rounds_run", 0),
+        "convergence_reason": getattr(paper, "convergence_reason", ""),
+    }
+    (staging_dir / "paper.json").write_text(json.dumps(paper_data, indent=2, default=str), encoding="utf-8")
+
+    # Write analysis.json (include derived_topics, peer_reviews, simulations)
+    analysis_payload = {
+        "archetypes": analysis.archetypes,
+        "market_price": analysis.market_price,
+        "score_matrix": analysis.score_matrix,
+        "consensus_dim": analysis.consensus_dim,
+        "headline_catalysts": analysis.headline_catalysts,
+        "derived_topics": derived_topics,
+    }
+    if peer_reviews is not None:
+        analysis_payload["peer_reviews"] = peer_reviews
+    if simulations is not None:
+        analysis_payload["simulations"] = simulations
+    (staging_dir / "analysis.json").write_text(json.dumps(analysis_payload, indent=2), encoding="utf-8")
+
+    # Write meta.json
+    meta = {
+        "job_id": job_id,
+        "research_goal": research_goal,
+        "models": models,
+        "timestamp": timestamp,
+        "market_price": analysis.market_price,
+        "section_count": len(paper.sections),
+        "accepted_submissions": len(paper.accepted_submissions),
+        "rejection_count": len(paper.rejections),
+        "has_peer_review": peer_reviews is not None and len(peer_reviews) > 0,
+        "has_simulations": simulations is not None and len(simulations) > 0,
+        "git_push": git_push,
+    }
+    (staging_dir / "meta.json").write_text(json.dumps(meta, indent=2, default=str), encoding="utf-8")
+
+    return {"staged": True, "job_id": job_id, "path": str(staging_dir.relative_to(REPO_ROOT))}
+
+
+def publish_from_staging(job_id: str) -> int:
+    """Promote a staged job to an official block. Returns block number."""
+    from .paper_engine import Paper
+    from .analysis_engine import AnalysisResult
+
+    staging_dir = STAGING_DIR / job_id
+    if not staging_dir.exists():
+        raise FileNotFoundError(f"Staging directory {staging_dir} not found")
+
+    # Load paper.json
+    paper_path = staging_dir / "paper.json"
+    paper_data = json.loads(paper_path.read_text(encoding="utf-8"))
+    paper = Paper(
+        title=paper_data["title"],
+        sections=paper_data["sections"],
+        accepted_submissions=paper_data.get("accepted_submissions", []),
+        rejections=paper_data.get("rejections", []),
+        rounds_run=paper_data.get("rounds_run", 0),
+        convergence_reason=paper_data.get("convergence_reason", ""),
+    )
+
+    # Load analysis.json
+    analysis_path = staging_dir / "analysis.json"
+    analysis_data = json.loads(analysis_path.read_text(encoding="utf-8"))
+    core_keys = ["archetypes", "market_price", "score_matrix", "consensus_dim", "headline_catalysts"]
+    core = {k: analysis_data[k] for k in core_keys if k in analysis_data}
+    analysis = AnalysisResult(**core)
+
+    derived_topics = analysis_data.get("derived_topics", [])
+    peer_reviews = analysis_data.get("peer_reviews")
+    simulations = analysis_data.get("simulations")
+
+    # Load meta.json for research_goal, models, git_push
+    meta_path = staging_dir / "meta.json"
+    meta = json.loads(meta_path.read_text(encoding="utf-8"))
+    research_goal = meta["research_goal"]
+    models = meta["models"]
+    git_push = meta.get("git_push", False)
+
+    # Publish block using existing function
+    publish_meta = publish_block(
+        paper=paper,
+        analysis=analysis,
+        derived_topics=derived_topics,
+        research_goal=research_goal,
+        models=models,
+        peer_reviews=peer_reviews,
+        simulations=simulations,
+    )
+    block_n = publish_meta["block"]
+
+    # Git push if needed
+    if git_push:
+        try:
+            git_status = try_git_publish(block_n)
+            logger = logging.getLogger("cancerhawk.worker")
+            logger.info("git_publish_complete", extra={"status": git_status})
+        except Exception as e:
+            logger = logging.getLogger("cancerhawk.worker")
+            logger.error("git_publish_failed", extra={"block": block_n, "error": str(e)})
+
+    # Clean up staging directory
+    try:
+        shutil.rmtree(staging_dir)
+    except Exception as e:
+        logger = logging.getLogger("cancerhawk.worker")
+        logger.warning("failed_to_remove_staging", extra={"job_id": job_id, "error": str(e)})
+
+    # Update job record
+    job = get_job(job_id)
+    if job:
+        new_result = job.get("result") or {}
+        new_result["block"] = block_n
+        new_result["result_url"] = f"/results/block-{block_n}/paper.html"
+        update_job_status(job_id, "published", result=new_result)
+
+    logger = logging.getLogger("cancerhawk.worker")
+    logger.info("promoted_staged_block", extra={"job_id": job_id, "block": block_n})
+
+    return block_n
 
 
 def _render_run_page() -> str:

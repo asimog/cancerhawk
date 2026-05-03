@@ -22,7 +22,7 @@ from .peer_review_engine import (
     run_peer_review_engine,
 )
 from .prompts import topic_deriver_prompt
-from .publisher import hydrate_results_from_github, load_previous_block_context, publish_block, try_git_publish
+from .publisher import hydrate_results_from_github, load_previous_block_context, publish_block, try_git_publish, stage_block
 from .simulation_engine import generate_html5_simulations
 from .token_tracker import APICall, TokenTracker
 
@@ -40,6 +40,8 @@ class HermesRunConfig:
     auto_publish: bool
     git_push: bool
     models: dict[str, str]
+    job_id: str | None = None
+    stage: bool = False
 
 
 @dataclass
@@ -191,7 +193,28 @@ class HermesSupervisor:
             derived_topics = []
         logger.info("stage_end", extra={"stage": "topic_derivation", "supervisor": "hermes"})
 
-        if cfg.auto_publish:
+        publish_meta = None
+        if getattr(cfg, 'stage', False) and cfg.job_id:
+            logger.info("stage_start", extra={"stage": "stage", "supervisor": "hermes"})
+            await self.emit("stage", "Hermes staging block artifacts for later publication", {"job_id": cfg.job_id})
+            try:
+                publish_meta = stage_block(
+                    paper=paper,
+                    analysis=analysis,
+                    derived_topics=derived_topics,
+                    research_goal=cfg.research_goal,
+                    models=cfg.models,
+                    peer_reviews=peer_reviews_dict,
+                    simulations=simulations,
+                    job_id=cfg.job_id,
+                    git_push=cfg.git_push,
+                )
+            except Exception as exc:
+                logger.error("staging_failed", extra={"job_id": cfg.job_id, "error": str(exc)})
+                raise
+            await self.emit("stage_done", f"Hermes staged artifacts for job {cfg.job_id}", publish_meta)
+            logger.info("stage_end", extra={"stage": "stage", "supervisor": "hermes"})
+        elif cfg.auto_publish:
             logger.info("stage_start", extra={"stage": "publish", "supervisor": "hermes"})
             await self.emit("publish", "Hermes writing block bundle to results/", None)
             publish_meta = publish_block(
@@ -208,7 +231,6 @@ class HermesSupervisor:
                 f"Hermes wrote block {publish_meta['block']} -> {publish_meta['path']}",
                 publish_meta,
             )
-
             if cfg.git_push:
                 await self.emit("git", "Hermes checking out GitHub repo and preparing commit", None)
                 git_status = try_git_publish(publish_meta["block"])

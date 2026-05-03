@@ -43,6 +43,7 @@ from .token_tracker import APICall, TokenTracker  # noqa: E402
 from .hermes_supervisor import HermesRunConfig, HermesSupervisor  # noqa: E402
 from .openrouter import close as close_openrouter  # noqa: E402
 from .jobs import append_job_event, create_job, get_job, list_jobs, update_job_status  # noqa: E402
+from .publisher import publish_from_staging, STAGING_DIR  # noqa: E402
 
 HOST = os.environ.get("HOST", "0.0.0.0")
 PORT = int(os.environ.get("PORT", "8765"))
@@ -135,6 +136,8 @@ async def start_job(payload: dict[str, Any], background_tasks: BackgroundTasks) 
         raise HTTPException(status_code=400, detail="OpenRouter API key required")
     if not research_goal:
         raise HTTPException(status_code=400, detail="Research goal required")
+    if len(research_goal) > 1000:
+        raise HTTPException(status_code=400, detail="Research goal must be at most 1000 characters")
 
     job_config = {
         "models": models_cfg,
@@ -284,8 +287,10 @@ async def _run_job_background(
                 research_goal=research_goal,
                 models=models_cfg,
                 n_submitters=n_submitters,
-                auto_publish=auto_publish,
+                auto_publish=False,  # stage for later publication
                 git_push=git_push,
+                job_id=job_id,
+                stage=True,
             )
         )
         update_job_status(job_id, "completed", result={
@@ -354,6 +359,10 @@ async def _ws_hermes_run(ws: WebSocket) -> None:
     if not research_goal:
         logger.warning("missing_research_goal")
         await ws.send_text(json.dumps({"stage": "error", "message": "Research goal required"}))
+        await ws.close()
+        return
+    if len(research_goal) > 1000:
+        await ws.send_text(json.dumps({"stage": "error", "message": "Research goal must be at most 1000 characters"}))
         await ws.close()
         return
 
@@ -437,8 +446,10 @@ async def _ws_hermes_run(ws: WebSocket) -> None:
                 research_goal=research_goal,
                 models=models_cfg,
                 n_submitters=n_submitters,
-                auto_publish=auto_publish,
+                auto_publish=False,  # stage for later publication
                 git_push=git_push,
+                job_id=job_id,
+                stage=True,
             )
         )
         # Update job with result
@@ -506,6 +517,95 @@ async def _ws_hermes_run(ws: WebSocket) -> None:
             await ws.close()
         except Exception:
             pass
+
+
+# Background worker for periodic block publishing
+async def publish_cycle_worker() -> None:
+    while True:
+        try:
+            # Check for staged jobs
+            if STAGING_DIR.exists():
+                candidates = []
+                for job_dir in STAGING_DIR.iterdir():
+                    if not job_dir.is_dir():
+                        continue
+                    job_id_cand = job_dir.name
+                    meta_path = job_dir / "meta.json"
+                    if not meta_path.is_file():
+                        continue
+                    try:
+                        meta = json.loads(meta_path.read_text(encoding="utf-8"))
+                        market_price = meta.get("market_price", 0.0)
+                        timestamp = meta.get("timestamp", "")
+                        candidates.append({
+                            "job_id": job_id_cand,
+                            "market_price": market_price,
+                            "timestamp": timestamp,
+                        })
+                    except Exception as e:
+                        logger.warning("failed_to_read_staging_meta", extra={"job_id": job_id_cand, "error": str(e)})
+                        continue
+                if candidates:
+                    # Sort by market_price descending, then by timestamp ascending (older first)
+                    candidates.sort(key=lambda x: (-x["market_price"], x["timestamp"]))
+                    selected = candidates[0]
+                    try:
+                        block_n = await asyncio.to_thread(publish_from_staging, selected["job_id"])
+                        logger.info("published_block_from_staging", extra={"job_id": selected["job_id"], "block": block_n, "market_price": selected["market_price"]})
+                    except Exception as e:
+                        logger.error("failed_to_publish_staged", extra={"job_id": selected["job_id"], "error": str(e)})
+                    # Sleep and continue to next cycle
+                    await asyncio.sleep(600)
+                    continue
+            # No staged jobs: try auto-generation
+            await maybe_auto_generate()
+        except Exception as e:
+            logger.error("publish_cycle_error", exc_info=e)
+        await asyncio.sleep(600)
+
+async def maybe_auto_generate() -> None:
+    """Generate a block automatically if no user submissions."""
+    api_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
+    if not api_key:
+        logger.debug("auto_generation_skipped_no_api_key")
+        return
+
+    research_goal = os.environ.get("HERMES_AUTO_GOAL", "Autonomous research: identify a promising oncology research direction and generate a full publication with peer review and simulations.")
+    models = {
+        "submitter": os.environ.get("HERMES_MODEL_SUBMITTER", "openrouter/free"),
+        "validator": os.environ.get("HERMES_MODEL_VALIDATOR", "openrouter/free"),
+        "compiler": os.environ.get("HERMES_MODEL_COMPILER", "openrouter/free"),
+        "archetype": os.environ.get("HERMES_MODEL_ARCHETYPE", "openrouter/free"),
+        "topic_deriver": os.environ.get("HERMES_MODEL_TOPIC_DERIVER", "openrouter/free"),
+    }
+    n_submitters = int(os.environ.get("HERMES_N_SUBMITTERS", "3"))
+    git_push = bool(os.environ.get("GITHUB_TOKEN", "").strip() and os.environ.get("GITHUB_REPO", "").strip())
+
+    async def silent_emit(stage: str, message: str, data=None):
+        logger.info(f"auto_gen [{stage}]: {message}")
+
+    def silent_on_call(call):
+        logger.debug(f"auto_gen API call: {call.role} {call.model}")
+
+    supervisor = HermesSupervisor(emit=silent_emit, on_call=silent_on_call, tracker=TokenTracker())
+    try:
+        result = await supervisor.run(HermesRunConfig(
+            api_key=api_key,
+            research_goal=research_goal,
+            models=models,
+            n_submitters=n_submitters,
+            auto_publish=True,
+            git_push=git_push,
+            stage=False,
+            job_id=None,
+        ))
+        logger.info("auto_generation_complete", extra={"block": result.block, "market_price": result.market_price})
+    except Exception as e:
+        logger.error("auto_generation_failed", exc_info=e)
+
+@app.on_event("startup")
+async def startup_event() -> None:
+    asyncio.create_task(publish_cycle_worker())
 
 
 @app.on_event("shutdown")
