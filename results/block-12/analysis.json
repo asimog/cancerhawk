@@ -1,0 +1,629 @@
+{
+  "archetypes": [
+    {
+      "scores": {
+        "clinical_viability": 4,
+        "regulatory_risk": 8,
+        "market_potential": 6,
+        "patient_impact": 7,
+        "novelty": 9,
+        "falsifiability": 8
+      },
+      "verdict": "This paper presents a mechanistically ambitious framework for curvature-guided CRISPR timing, which is conceptually novel and falsifiable. However, its clinical viability is limited by the extreme technical complexity of real-time curvature estimation and pulse-width modulation in vivo. Integrating CPI sensors and Kalman-Bucy filters into clinical workflows would require significant infrastructure and validation, making near-term adoption unlikely. Regulatory risk is high due to off-label CRISPR use and unproven safety in human tissues. Patient impact could be transformative if successful, but the burden of real-time monitoring and potential off-target effects remain concerns. The novelty lies in its geometric precision, but practical implementation lags behind the theoretical promise.",
+      "would_move_price": "A successful preclinical trial demonstrating >1.5-fold eradication ratio in a metastatic model would sharply increase prediction-market confidence, while failed in vivo testing of curvature estimation would derail it.",
+      "archetype_id": "oncologist",
+      "archetype_name": "Practicing Oncologist"
+    },
+    {
+      "scores": {
+        "": ""
+      },
+      "verdict": "",
+      "would_move_price": "",
+      "archetype_id": "biostatistician",
+      "archetype_name": "Biostatistician"
+    },
+    {
+      "scores": {
+        "clinical_viability": 6,
+        "regulatory_risk": 8,
+        "market_potential": 7,
+        "patient_impact": 7,
+        "novelty": 10,
+        "falsifiability": 9
+      },
+      "archetype_id": "fda",
+      "archetype_name": "FDA Regulator"
+    },
+    {
+      "scores": {
+        "clinical_viability": 4,
+        "regulatory_risk": 7,
+        "market_potential": 6,
+        "patient_impact": 8,
+        "novelty": 9,
+        "falsifiability": 8
+      },
+      "verdict": "This mathematically elegant approach represents a paradigm shift in targeting metastatic disease by leveraging epigenetic manifold curvature to optimize CRISPR delivery timing. However, the extreme technical complexity\u2014requiring real-time curvature sensors, sophisticated analytics, and precise sub-second pulse modulation\u2014creates substantial translational hurdles. While the intellectual property is potentially strong and the scientific rationale compelling, the capital intensity and implementation challenges raise serious questions about near-term viability. The approach may ultimately be limited to specialized cancer centers with advanced computational capabilities, limiting broad commercial appeal despite addressing a critical unmet need.",
+      "would_move_price": "Positive results from multi-animal model studies demonstrating \u22651.5-fold improvement in DTC eradication over conventional CRISPR approaches would significantly shift the prediction-market price upward.",
+      "archetype_id": "investor",
+      "archetype_name": "Biotech Investor"
+    },
+    {
+      "scores": {
+        "clinical_viability": 3,
+        "regulatory_risk": 8,
+        "market_potential": 6,
+        "patient_impact": 4,
+        "novelty": 9,
+        "falsifiability": 7
+      },
+      "verdict": "A dazzling, mechanism-first tour de force that reframes metastatic persistence as a Riemannian control problem. The curvature-adaptive PWM concept is conference-circuit catnip: it slots neatly between single-cell trajectory geometry and CRISPR delivery engineering, giving systems biologists something to model and tool-builders something to miniaturize. Champions will be mathematical-oncology groups with strong geometry/control expertise; detractors will pounce on the in-vivo feasibility gap and the hand-wavy CPI sensor. Expect sharp questions at SABCS/ASCO on how you calibrate \u03ba(p) in patient DTCs without single-cell multi-omics on demand, and whether 5\u201315 ms Cas9 pulses are physically deliverable in vivo. The paper is publishable in a high-profile computational/engineering hybrid venue if you front-load the falsifiable corridor-compression metric and concede the translational ladder; it will be rejected from pure-clinical journals until you show ex vivo DTC kill curves with curvature-triggered gRNA RNPs.",
+      "would_move_price": "A negative catalyst would be an experimental demonstration that in vivo DTCs cannot be synchronized to high-\u03ba states with existing Cas RNP delivery windows, shifting price down; a positive catalyst would be a preprint showing FRET-based CPI sensors resolving sub-minute \u03ba(p) trajectories in patient-derived DTCs, shifting price up.",
+      "archetype_id": "kol",
+      "archetype_name": "Academic KOL"
+    },
+    {
+      "scores": {
+        "clinical_viability": 4,
+        "regulatory_risk": 7,
+        "market_potential": 5,
+        "patient_impact": 6,
+        "novelty": 9,
+        "falsifiability": 8
+      },
+      "verdict": "As a patient advocate, I see the promise of CA\u2011PWM in concept but worry about the chasm between elegant math and bedside reality. The idea of timing CRISPR edits to the fleeting, high\u2011curvature windows of DTCs is mechanistically intriguing, yet the technology demands real\u2011time epigenetic sensing, ultra\u2011short Cas9 pulses, and flawless delivery\u2014all of which are currently beyond clinical reach. Even if the science holds, patients face the specter of off\u2011target genotoxicity, immune responses to viral vectors, and the logistical nightmare of personalized, on\u2011demand editing. The side\u2011effect burden could outweigh benefits if normal tissues are inadvertently edited or if the therapy induces p53\u2011mediated toxicity. Moreover, the trial design would need to capture rare metastatic relapse events, making efficacy assessment slow and expensive. In short, while the concept scores high on novelty and falsifiability, its clinical viability and patient impact are modest until we can demonstrate safe, scalable, and reproducible delivery in humans.",
+      "would_move_price": "A successful Phase I/II trial showing a >30% reduction in metastatic relapse with acceptable toxicity would push the price up; a demonstration of significant off\u2011target effects or lack of efficacy would pull it down.",
+      "archetype_id": "patient",
+      "archetype_name": "Patient Advocate"
+    },
+    {
+      "scores": {
+        "": ""
+      },
+      "archetype_id": "payer",
+      "archetype_name": "Insurance Payer"
+    },
+    {
+      "scores": {
+        "clinical_viability": 3,
+        "regulatory_risk": 7,
+        "market_potential": 5,
+        "patient_impact": 4,
+        "novelty": 6,
+        "falsifiability": 4
+      },
+      "verdict": "The proposal is a textbook example of over\u2011engineered biology masquerading as breakthrough. It assumes perfect real\u2011time curvature estimation from noisy FRET signals, that the Weyl\u2011derived pulse\u2011width formula holds in vivo, and that a 5\u201115\u202fms Cas9 burst can reliably truncate a multi\u2011hour epigenetic transition. No concrete pre\u2011clinical data, no defined assay beyond a vague \u201ceradication ratio,\u201d and the failure mode\u2014no \u03c4_v shortening\u2014offers no clear quantitative threshold. The required hardware (Kalman\u2011Bucy filter, multi\u2011omics tensor pipeline) is far beyond current clinical workflows, making regulatory approval a remote possibility. Until a reproducible in\u2011vivo model shows \u22651.5\u2011fold DTC loss with <0.1\u202f% off\u2011target edits, this is a high\u2011risk, low\u2011return speculative gamble.",
+      "would_move_price": "A successful in\u2011vivo demonstration that reduces \u03c4_v by >30% in a mouse DTC model would push the price up; a failure to achieve measurable \u03c4_v shortening in the first animal study would drive it down.",
+      "archetype_id": "short_seller",
+      "archetype_name": "Adversarial Short-Seller"
+    }
+  ],
+  "market_price": 0.5166666666666667,
+  "score_matrix": {
+    "oncologist": {
+      "clinical_viability": 4,
+      "regulatory_risk": 8,
+      "market_potential": 6,
+      "patient_impact": 7,
+      "novelty": 9,
+      "falsifiability": 8
+    },
+    "biostatistician": {
+      "": ""
+    },
+    "fda": {
+      "clinical_viability": 6,
+      "regulatory_risk": 8,
+      "market_potential": 7,
+      "patient_impact": 7,
+      "novelty": 10,
+      "falsifiability": 9
+    },
+    "investor": {
+      "clinical_viability": 4,
+      "regulatory_risk": 7,
+      "market_potential": 6,
+      "patient_impact": 8,
+      "novelty": 9,
+      "falsifiability": 8
+    },
+    "kol": {
+      "clinical_viability": 3,
+      "regulatory_risk": 8,
+      "market_potential": 6,
+      "patient_impact": 4,
+      "novelty": 9,
+      "falsifiability": 7
+    },
+    "patient": {
+      "clinical_viability": 4,
+      "regulatory_risk": 7,
+      "market_potential": 5,
+      "patient_impact": 6,
+      "novelty": 9,
+      "falsifiability": 8
+    },
+    "payer": {
+      "": ""
+    },
+    "short_seller": {
+      "clinical_viability": 3,
+      "regulatory_risk": 7,
+      "market_potential": 5,
+      "patient_impact": 4,
+      "novelty": 6,
+      "falsifiability": 4
+    }
+  },
+  "consensus_dim": {
+    "clinical_viability": 4.0,
+    "regulatory_risk": 7.5,
+    "market_potential": 5.833333333333333,
+    "patient_impact": 6.0,
+    "novelty": 8.666666666666666,
+    "falsifiability": 7.333333333333333
+  },
+  "headline_catalysts": [
+    "[Practicing Oncologist] A successful preclinical trial demonstrating >1.5-fold eradication ratio in a metastatic model would sharply increase prediction-market confidence, while failed in vivo testing of curvature estimation would derail it.",
+    "[Biotech Investor] Positive results from multi-animal model studies demonstrating \u22651.5-fold improvement in DTC eradication over conventional CRISPR approaches would significantly shift the prediction-market price upward.",
+    "[Academic KOL] A negative catalyst would be an experimental demonstration that in vivo DTCs cannot be synchronized to high-\u03ba states with existing Cas RNP delivery windows, shifting price down; a positive catalyst would be a preprint showing FRET-based CPI sensors resolving sub-minute \u03ba(p) trajectories in patient-derived DTCs, shifting price up.",
+    "[Patient Advocate] A successful Phase I/II trial showing a >30% reduction in metastatic relapse with acceptable toxicity would push the price up; a demonstration of significant off\u2011target effects or lack of efficacy would pull it down.",
+    "[Adversarial Short-Seller] A successful in\u2011vivo demonstration that reduces \u03c4_v by >30% in a mouse DTC model would push the price up; a failure to achieve measurable \u03c4_v shortening in the first animal study would drive it down."
+  ],
+  "derived_topics": [
+    {
+      "id": 1,
+      "title": "Deep-learning curvature estimator for real-time CRISPR pulse-width scheduling in DTCs",
+      "probability": 0.75,
+      "impact": 9,
+      "token_cost": 2500,
+      "rationale": "Extends CA-PWM by replacing curvature estimation with a scalable neural network that predicts \u03ba(p) from single-cell multi-omics, enabling sub-second pulse adjustments and improving eradication ratio while reducing off-target risk."
+    },
+    {
+      "id": 2,
+      "title": "Weyl volume computation of tubular neighborhoods around \u0393_t using multi-omics tensors",
+      "probability": 0.68,
+      "impact": 8,
+      "token_cost": 3000,
+      "rationale": "Builds on Weyl tube theory to quantify corridor width directly from curvature integrals, providing a measurable metric to select pulse timing thresholds and validate geometric control hypotheses."
+    },
+    {
+      "id": 3,
+      "title": "Hamilton-Jacobi-Bellman optimal stopping controller with adaptive pulse-width modulation",
+      "probability": 0.62,
+      "impact": 9,
+      "token_cost": 2800,
+      "rationale": "Generalizes the stochastic optimal control framework by coupling curvature estimates to a dynamic programming policy that maximizes DTC kill probability while minimizing CRISPR exposure time."
+    },
+    {
+      "id": 4,
+      "title": "Cas9 nickase pair delivery to exploit curvature-triggered DSBs with reduced p53 arrest",
+      "probability": 0.55,
+      "impact": 7,
+      "token_cost": 2200,
+      "rationale": "Uses curvature-gated pulses with nickase to create staggered breaks only in high-\u03ba zones, preserving apoptosis induction while lowering genotoxic stress and off-target mutation accumulation."
+    },
+    {
+      "id": 5
+    }
+  ],
+  "peer_reviews": [
+    {
+      "archetype_id": "oncologist",
+      "archetype_name": "Practicing Oncologist",
+      "recommendation": "major_revision",
+      "confidence": 0.82,
+      "summary": "The paper proposes a geometrically informed CRISPR timing strategy that is conceptually intriguing but currently ungrounded in deliverable clinical workflows. The mechanism relies on abstract manifold curvature (\u03ba(p)) without operationalizable biomarkers, and the proposed CPI sensor and Kalman\u2013Bucy filter lack biochemical specificity and validation. Off-target risks from repeated DSBs are acknowledged but not quantified, and the comparison to standard-of-care (e.g., adjuvant capecitabine, CDK4/6i, or venetoclax combinations) is absent, making clinical equipoise impossible to judge.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 5,
+        "experimental_design": 3,
+        "evidence_support": 3,
+        "statistical_rigor": 4,
+        "clarity_of_writing": 6
+      },
+      "criticisms": [
+        "No operational definition of the Commitment-Potential Indicator (CPI) sensor; FRET readouts of H3K27ac/H3K9me3 and transcriptional bursting do not uniquely map to a Riemannian manifold coordinate, nor are they validated against ground-truth epigenetic state transitions.",
+        "The Kalman\u2013Bucy filter and Hamilton\u2013Jacobi\u2013Bellman policy assume continuous, noise-free observation of latent state p, which is infeasible in vivo where single-cell multi-omics are destructive and asynchronous.",
+        "Off-target DSB burden is not quantified; repeated 5\u201315 ms Cas9 pulses still generate DSBs, and p53 activation, chromothripsis, and senescence-associated secretory phenotype (SASP) selection are not modeled.",
+        "No comparison to standard-of-care DTC eradication strategies (e.g., extended adjuvant therapy, CDK4/6 inhibition, or immunotherapy), so the incremental benefit relative to current practice is unknown.",
+        "Patient burden is unaddressed: route of delivery (viral vs. nanoparticle), dosing frequency, and monitoring requirements (intravital imaging? serial biopsies?) are unspecified, making feasibility assessment impossible.",
+        "The Weyl tube formula and overdamped Langevin model are presented as theoretical justification but are not coupled to measurable biophysical parameters (e.g., diffusion coefficient D, potential U(p)) that could be estimated from clinical samples."
+      ],
+      "required_fixes": [
+        "Define a clinically translatable surrogate for \u03ba(p) (e.g., a composite epigenetic/transcriptional score from scATAC-seq + scRNA-seq) and validate its correlation with actual transition kinetics in patient-derived DTC models.",
+        "Replace the abstract CPI sensor with a feasible, minimally invasive readout (e.g., circulating tumor DNA methylation dynamics or a live-cell epigenetic reporter) and specify limits of detection required for closed-loop control.",
+        "Quantify cumulative off-target editing and p53 activation across the proposed pulse regimen using GUIDE-seq or DISCOVER-Seq in relevant cell types, and include a toxicity failure mode analysis.",
+        "Add a comparator arm reflecting contemporary standard-of-care DTC management (e.g., extended adjuvant therapy or CDK4/6 inhibition) and prespecify a non-inferiority margin for the eradication ratio endpoint."
+      ],
+      "suggested_experiments": [
+        "In a patient-derived xenograft or ex vivo DTC culture, measure scATAC-seq and scRNA-seq time courses after a standardized stress (e.g., 48 h endocrine withdrawal) to empirically estimate local transition kinetics and test whether high-curvature states (defined by rapid trajectory acceleration) are identifiable from static snapshots.",
+        "Benchmark CA-PWM against continuous Cas9 expression and a pulsed, non-curvature\u2013adapted schedule in barcoded DTC populations, with endpoints: (i) eradication ratio, (ii) off-target indel frequency (GUIDE-seq), (iii) p53 activation (phospho-Ser15) and senescence markers (p16, SA-\u03b2-gal), and (iv) outgrowth of resistant clones after drug rechallenge.",
+        "Conduct a biodistribution and toxicity study in immunocompetent mice to quantify delivery efficiency (viral vs. LNP), Cas9 persistence, and inflammatory cytokine induction (IL-6, IFN-\u03b3) after repeated ultra-short pulses."
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Fit an overdamped Langevin model to scRNA-seq time-course data from endocrine-treated breast cancer organoids to estimate local diffusion D and potential U(p), then simulate CA-PWM versus fixed-pulse strategies to quantify how often pulses land within the true high-\u03ba corridor and the resulting change in eradication ratio.",
+        "expected_metrics": [
+          "Fraction of simulated pulses delivered within \u00b110% of the true high-\u03ba window",
+          "Mean reduction in \u03c4_v for treated vs. control lineages",
+          "False-positive pulse rate (activation outside the tubular neighborhood)"
+        ],
+        "rationale": "This in silico test would validate whether curvature-adaptive timing meaningfully improves targeting of transient commitment windows given realistic noise and sampling constraints, before costly in vivo work."
+      }
+    },
+    {
+      "archetype_id": "biostatistician",
+      "archetype_name": "Biostatistician",
+      "recommendation": "major_revision",
+      "confidence": 0.75,
+      "summary": "The paper presents a novel curvature-adaptive CRISPR strategy with strong mechanistic foundations but lacks experimental validation, statistical rigor, and clarity in implementation. Key claims about curvature-driven corridor compression require empirical support, and the absence of power analysis or sample size justification undermines feasibility.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 9,
+        "experimental_design": 6,
+        "evidence_support": 5,
+        "statistical_rigor": 4,
+        "clarity_of_writing": 7
+      },
+      "criticisms": [
+        "No experimental validation of curvature estimation or pulse-width modulation in cell models",
+        "Statistical methods (e.g., power analysis, error margins) are not described",
+        "Implementation details for real-time curvature sensing and Kalman-Bucy filter integration are vague",
+        "Failure mode analysis is underdeveloped beyond a general statement",
+        "Manuscript density obscures key mechanistic steps for non-specialist readers"
+      ],
+      "required_fixes": [
+        "Include in vitro/in vivo validation of CPI sensor accuracy and curvature estimation",
+        "Add statistical power analysis with sample size justification",
+        "Clarify real-time curvature measurement pipeline and pulse-width control algorithm",
+        "Define failure mode metrics (e.g., off-target editing thresholds, \u03c4_v measurement precision)"
+      ],
+      "suggested_experiments": [
+        "In vitro DTC culture experiments to validate curvature estimation from epigenetic markers (H3K27ac/H3K9me3) and test pulse-width effects on \u03c4_v",
+        "Pilot study comparing CA-PWM vs. static CRISPR in a controlled DTC model with defined curvature profiles",
+        "Mathematical modeling of Weyl tube formulae with Langevin dynamics to quantify corridor compression under varying \u03ba(p)"
+      ],
+      "simulation_proposal": {
+        "type": "in_silico",
+        "description": "Simulate CA-PWM vs. static CRISPR in a synthetic DTC model with programmable curvature profiles, using Weyl tube formulae to compute corridor volumes and overdamped Langevin dynamics for \u03c4_v",
+        "expected_metrics": [
+          "eradication ratio",
+          "off-target editing rate",
+          "\u03c4_v duration"
+        ],
+        "rationale": "This would test whether curvature-adaptive pulse width truly compresses \u03c4_v as claimed, independent of biological noise, and quantify the geometric sensitivity of the strategy"
+      }
+    },
+    {
+      "archetype_id": "fda",
+      "archetype_name": "FDA Regulator",
+      "recommendation": "reject",
+      "confidence": 0.92,
+      "summary": "The manuscript proposes a geometrically guided CRISPR pulse-delivery strategy for disseminated tumor cells, but it is not an empirical study and contains no experimental data, IND-enabling toxicology, or in vivo validation. It relies on undefined constructs (CancerHawk Block 10/11), postulated equations without derivation or validation, and unverified claims about curvature\u2013kinetics relationships. As submitted, it fails basic evidentiary standards for an FDA IND-enabling or mechanistic publication.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 4,
+        "experimental_design": 2,
+        "evidence_support": 2,
+        "statistical_rigor": 3,
+        "clarity_of_writing": 6
+      },
+      "criticisms": [
+        "No primary data: the paper presents no wet-lab experiments, barcoding time-courses, DSB quantification, or in vivo DTC eradication results; endpoints such as \u2018eradication ratio\u2019 and \u2018false-positive rate\u2019 are asserted but not measured.",
+        "Undefined prior art: repeated references to CancerHawk Block 10 and Block 11 are treated as established literature but are not citable, peer-reviewed sources; this undermines reproducibility and regulatory traceability.",
+        "Unvalidated equations: the claimed formula \u03c4_v(p) \u2248 (\u03b5 e^{U(p)/D})/(\u221a(\u03c0D\u03bb_1\u03bb_2))\u00b7(1 + O(\u03ba(p)\u03b5^2)) is presented without derivation, asymptotic justification, or comparison to data; likewise, Vol(C_\u03b5(\u0393_t)) is invoked without specifying the embedding dimension, metric, or \u03b5 regime.",
+        "IND-enabling gaps: there is no GLP toxicology plan, biodistribution/PK/PD of Cas9 RNP pulses, immunogenicity assessment (anti-Cas9 or anti-DNA), genotoxicity (p53 activation, chromothripsis), or reproductive toxicity; off-target assessment is limited to a threshold assertion without GUIDE-seq/CIRCLE-seq or defined safety margins.",
+        "Delivery modality undefined: route (IV, IT, local), formulation (LNP, AAV, electroporation), and tissue-specific biodistribution are unspecified, making it impossible to estimate human dosing or safety signals.",
+        "Accelerated-approval pathway unjustified: no validated surrogate endpoint (e.g., CTC clearance, MRD negativity) linked to a clinical benefit; no precedent for CRISPR-based accelerated approval in metastatic solid tumors is established, and the manuscript does not address confirmatory post-approval trial requirements.",
+        "Kalman\u2013Bucy/HJB control claims are conceptual only: no implementation architecture, sensor latency, or in vivo feedback loop is demonstrated; real-time curvature estimation from multi-omics is asserted without error propagation or identifiability analysis.",
+        "Failure-mode analysis is incomplete: no power calculation for eradication ratio, no heterogeneity analysis of DTC clones, and no plan for resistance via target mutation or DNA-repair upregulation."
+      ],
+      "required_fixes": [
+        "Convert to an empirical study with preregistered endpoints and raw data deposition; at minimum, provide in vitro time-lapse barcoded DTC competition experiments comparing curvature-triggered vs fixed-pulse Cas9 RNP across multiple cell lines.",
+        "Replace non-citable Block 10/11 references with peer-reviewed citations or remove them; derive and validate all geometric/kinetic equations with simulations and experimental replicates.",
+        "Add IND-enabling modules: GLP repeat-dose toxicology in two species, immunogenicity panel, off-target genome-wide mapping, and biodistribution (including gonadal and CNS) with validated assays.",
+        "Define delivery modality and provide PK/PD bridging to human; include dose-range finding for DSB burden vs hematopoietic/epithelial toxicity.",
+        "Specify a regulatory strategy: pre-IND meeting outline, surrogate endpoint validation plan, and accelerated-approval confirmatory trial design consistent with FDA guidance (e.g., oncology drug development guidance for MRD as surrogate)."
+      ],
+      "suggested_experiments": [
+        "Time-resolved barcoded DTC competition: transduce barcoded DTCs with inducible Cas9, apply curvature-triggered vs fixed-duration pulses, and quantify lineage eradication and residual clone dynamics by deep sequencing; primary endpoint: hazard ratio of lineage loss.",
+        "In vivo DTC dormancy model: use immunocompetent orthotopic metastasis models (e.g., PyMT;MMTV-PyMT or patient-derived xenograft DTCs) with luciferase/barcode tracking; compare CA-PWM vs continuous expression on time to metastatic outgrowth and survival; include necropsy for off-target organ editing.",
+        "GLP toxicology pilot: repeat-dose IV Cas9 RNP in two species (e.g., NHP and rat) with cytokine storm, anti-drug antibody, and histopathology (including bone marrow, liver, spleen, gonads); define NOAEL and MABEL.",
+        "Off-target genome-wide: GUIDE-seq/CIRCLE-seq in primary human CD34+ and relevant somatic cells; integrate with chromatin accessibility to model editing probability vs curvature-triggered exposure."
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Simulate a population of DTCs as stochastic trajectories on a synthetic 2D commitment manifold with tunable Gaussian curvature; implement CA-PWM via a Kalman\u2013Bucy filter estimating \u03ba(p) from noisy epigenetic readouts, and compare eradication ratio and off-target burden vs fixed-pulse schedules.",
+        "expected_metrics": [
+          "Eradication ratio (fraction of lineages eliminated)",
+          "False-positive pulse rate (fraction of pulses outside tubular neighborhood \ud835\udca9_\u03b5(\u0393_t))",
+          "Mean \u03c4_v reduction vs curvature threshold",
+          "Cumulative DSB burden per cell"
+        ],
+        "rationale": "This in silico experiment tests the core geometric hypothesis\u2014that curvature-triggered pulses compress \u03c4_v and increase eradication\u2014before costly wet-lab work, and quantifies sensitivity to sensor noise and curvature estimation error, which is essential for IND risk assessment."
+      }
+    },
+    {
+      "archetype_id": "kol",
+      "archetype_name": "Academic KOL",
+      "recommendation": "major_revision",
+      "confidence": 0.75,
+      "summary": "The paper proposes a geometrically driven CRISPR timing strategy that is conceptually intriguing and aligns with emerging interest in curvature-aware control of cell fate. However, it is under-evidenced: key mechanistic claims (\u03ba(p) \u2192 \u03c4_v compression \u2192 CRISPR lethality) rely on asserted formulae without derivation, calibration, or validation; the CA-PWM implementation lacks a credible experimental pipeline; and off-target/false-positive endpoints are defined but not operationalized. With rigorous derivation of the curvature\u2013first-passage relationship, a feasible sensing/actuation stack, and falsifiable in silico benchmarks, this could slot as a high-risk/high-reward methods paper in systems/engineering oncology venues.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 6,
+        "experimental_design": 3,
+        "evidence_support": 3,
+        "statistical_rigor": 4,
+        "clarity_of_writing": 7
+      },
+      "criticisms": [
+        "Section 3 asserts \u03c4_v(p) \u2248 (\u03b5 e^{U(p)/D})/(\u221a(\u03c0D\u03bb_1\u03bb_2))\u00b7(1 + O(\u03ba(p)\u03b5^2)) without derivation or parameter definitions (D, U(p), \u03b5). The O(\u03ba\u03b5^2) term is presented as supportive yet no bound or regime of validity is given, making it impossible to falsify.",
+        "The Weyl tube formula is invoked to claim Vol(C_\u03b5(\u0393_t)) = 2\u03c0\u03b5\u00b7Area(\u0393_t) + (2\u03c0/3)\u03b5^3\u222b\u03ba dA + o(\u03b5^3), but this is dimensionally inconsistent for a 2D surface in \u211d^n (the \u03b5^3 term should involve mean curvature and scalar curvature, not Gaussian curvature alone). This undermines the geometric foundation for corridor compression.",
+        "No calibration of the curvature\u2013\u03c4_v relationship against single-cell trajectories (e.g., lineage barcoding with time-stamped state inference) is described, so the central premise that \u03ba(p) quantitatively sets \u03c4_v remains speculative.",
+        "CA-PWM implementation assumes a Commitment-Potential Indicator (CPI) sensor and Kalman\u2013Bucy filter that do not exist in the cited literature; no error model, latency budget, or identifiability analysis is provided for real-time \u03ba(p) estimation from FRET/RNA burst features.",
+        "The Cas9 pulse-width parameter (5\u201315 ms) is biophysically implausible: Cas9 cleavage kinetics and DSB repair outcomes operate on minutes to hours, not milliseconds; the manuscript does not reconcile this mismatch or define how a 15 ms pulse produces a DSB with deterministic timing.",
+        "Failure mode analysis is incomplete: no discussion of p53-independent apoptosis triggers, chromothripsis risk from clustered DSBs, or how off-target edits in normal tissues are distinguished from on-target edits in DTCs using the stated false-positive metric.",
+        "No power analysis or sample-size justification for the claimed \u22651.5-fold increase in DTC eradication; multiplicity correction for barcoded lineages is absent, inflating false-discovery risk.",
+        "The paper cites CancerHawk Block 10/11 as foundational, but these are not accessible sources; key equations and risk functions (r(x)=exp(\u2212\u03b1\u03ba(x))) are imported without proof, weakening reproducibility."
+      ],
+      "required_fixes": [
+        "Derive or rigorously cite the \u03c4_v(p) approximation, define all parameters (D, U(p), \u03b5, \u03bb_i), and state the domain of validity (e.g., weak noise, small \u03b5). Provide a sensitivity analysis showing how \u03c4_v varies with \u03ba over biophysically plausible ranges.",
+        "Correct the Weyl tube formula for the appropriate codimension and clarify whether \u0393_t is assumed to be 2D; if so, replace the scalar curvature term with the appropriate combination of mean and scalar curvature, or justify the simplification.",
+        "Specify an end-to-end experimental workflow for CA-PWM: (i) how CPI states are measured at sub-minute cadence, (ii) how \u03ba(p) is estimated from finite, noisy observations, (iii) how Cas9/gRNA delivery is gated with millisecond-scale precision, and (iv) how DSB timing is verified (e.g., \u03b3H2AX time-lapse).",
+        "Replace the 5\u201315 ms pulse claim with a biophysically grounded pulse-duration model (e.g., pulse = finite Cas9/gRNA exposure time) and couple it to a first-passage or repair\u2013kill competition model that predicts apoptotic probability as a function of DSB timing relative to \u03c4_v.",
+        "Define a decision-theoretic loss function that jointly optimizes eradication ratio and off-target burden, and derive an optimal stopping policy with explicit constraints on false-positive activations outside \ud835\udca9_\u03b5(\u0393_t).",
+        "Add a simulation-based power analysis for the barcoded DTC eradication endpoint, including multiple-testing correction across lineages and censoring due to barcode dropout."
+      ],
+      "suggested_experiments": [
+        "Single-cell live imaging of an inducible Cas9-ER system combined with FRET-based H3K27ac/H3K9me3 biosensors in 2D/3D breast cancer models; use scRNA-seq and scATAC-seq time courses to reconstruct \u0393_t and estimate \u03ba(p), then test whether curvature-predicted \u03c4_v correlates with empirically measured first-passage times to resistance.",
+        "A microfluidic pulse-delivery platform that applies defined Cas9/gRNA exposure windows (minutes, not milliseconds) to barcoded DTCs, with lineage tracking to quantify eradication ratio as a function of pulse timing relative to curvature-inferred state; include orthogonal apoptosis reporters (e.g., Annexin V, Caspase-3/7) to validate kill specificity.",
+        "Off-target mapping via GUIDE-seq or DISCOVER-Seq in the same system to quantify editing error rates as a function of total Cas9 exposure and pulse frequency, enabling a quantitative risk function r(x) that can be integrated into the control policy."
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Simulate overdamped Langevin diffusion on a synthetic 2D commitment manifold with tunable Gaussian curvature; compute exact first-passage distributions to an absorbing boundary (apoptosis) triggered by a pulse-width-modulated kill probability that depends on local \u03ba. Compare curvature-adaptive PWM against fixed-duration and continuous Cas9 exposure across replicates.",
+        "expected_metrics": [
+          "Eradication ratio (fraction of lineages eliminated)",
+          "False-positive rate (kills outside \ud835\udca9_\u03b5(\u0393_t))",
+          "Mean \u03c4_v reduction relative to control",
+          "Robustness to \u03ba-estimation noise (Kalman gain sweep)"
+        ]
+      }
+    },
+    {
+      "archetype_id": "patient",
+      "archetype_name": "Patient Advocate",
+      "recommendation": "minor_revision",
+      "confidence": 0.85,
+      "summary": "The paper presents an innovative curvature-adaptive CRISPR strategy targeting metastatic cancer cells by leveraging geometric properties of epigenetic-transcriptional manifolds. While the theoretical framework is compelling, critical gaps in experimental validation and mechanistic details require refinement before acceptance.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 8,
+        "experimental_design": 6,
+        "evidence_support": 7,
+        "statistical_rigor": 7,
+        "clarity_of_writing": 6
+      },
+      "criticisms": [
+        "Lack of experimental validation for the Kalman-Bucy filter implementation in real-time curvature estimation (Section 3.4)",
+        "Insufficient discussion of how curvature thresholds were determined for pulse-width modulation (Section 3.2)",
+        "No in vivo validation of simulated 1.5-fold eradication improvement (Section 4.1)",
+        "Ambiguous definition of 'transition corridor' geometry despite mathematical formalism (Section 2.1)",
+        "Potential overreliance on single-cell RNA-seq/ATAC-seq data without orthogonal validation (Section 3.1)"
+      ],
+      "required_fixes": [
+        "Add experimental validation of curvature estimation methodology using FRET-based CPI sensors",
+        "Clarify mathematical derivation of curvature threshold selection criteria",
+        "Include in vivo models to test therapeutic efficacy claims",
+        "Define corridor width \u03b5 in terms of measurable biological parameters",
+        "Expand statistical analysis to include uncertainty quantification"
+      ],
+      "suggested_experiments": [
+        "Test curvature estimator accuracy in breast cancer cell lines using time-lapse microscopy and CRISPR pulse-width modulation",
+        "Compare transition corridor widths in high- vs low-curvature regions using 3D epigenetic state mapping",
+        "Validate pulse-width optimization through serial CRISPR delivery with varying durations in metastatic models"
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Simulate stochastic Langevin dynamics of DTCs on synthetic commitment manifolds with varying curvature distributions to test pulse-width optimization algorithms",
+        "expected_metrics": [
+          "Mean first-passage time distributions across curvature regimes",
+          "Editing efficiency vs. off-target mutation rates",
+          "False-positive rate quantification using Weyl tube formulae"
+        ],
+        "rationale": "Would validate the geometric control framework's ability to compress transition corridors while maintaining specificity, addressing the paper's core hypothesis."
+      }
+    },
+    {
+      "archetype_id": "payer",
+      "archetype_name": "Insurance Payer",
+      "recommendation": "major_revision",
+      "confidence": 0.86,
+      "summary": "The paper presents a compelling geometric framework linking curvature to DTC transition kinetics and proposes a curvature\u2011adaptive CRISPR pulse\u2011width strategy, but it lacks quantitative validation, detailed experimental design, and clear demonstration that the derived pulse\u2011width formula reliably compresses transition corridors in vitro or in vivo; substantial revisions are needed to provide mechanistic proof, robust simulation support, and a concrete experimental plan.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 8,
+        "experimental_design": 4,
+        "evidence_support": 5,
+        "statistical_rigor": 6,
+        "clarity_of_writing": 7
+      },
+      "criticisms": [
+        "The derivation of the optimal pulse width \u0394t* relies on approximations of Weyl\u2019s tube formula and overdamped Langevin dynamics that are not experimentally verified; the paper does not quantify how curvature estimates from CPI sensors translate into pulse\u2011width adjustments in practice.",
+        "No concrete experimental data are presented to demonstrate that high\u2011\u03ba regions indeed exhibit shorter \u03c4_v or that curvature\u2011adaptive pulses reduce DTC survival compared with static pulses; the claimed \u22651.5\u2011fold increase in eradication ratio is unsupported.",
+        "The risk function r(x)=exp(\u2212\u03b1\u03ba(x)) is introduced without a clear rationale for the choice of \u03b1 or its impact on off\u2011target editing rates, and no sensitivity analysis is provided.",
+        "The description of the Kalman\u2011Bucy filter and Hamilton\u2013Jacobi\u2013Bellman optimal stopping policy is high\u2011level and lacks implementation details, making it unclear how real\u2011time curvature estimation would be performed in living cells.",
+        "The paper does not address potential off\u2011target effects of ultra\u2011short CRISPR pulses on normal tissue or the feasibility of delivering the required temporal precision in vivo."
+      ],
+      "required_fixes": [
+        "Add a detailed section (e.g., 3.3) that validates the curvature\u2011\u03c4_v relationship using synthetic single\u2011cell trajectory data and shows how \u0394t* is computed from \u03ba(p) with explicit formulas.",
+        "Provide quantitative in\u2011silico benchmark results comparing curvature\u2011adaptive pulses versus constant\u2011duration pulses on realistic epigenetic state atlases, including metrics of \u03c4_v reduction and eradication ratio.",
+        "Include a sensitivity analysis for the risk function parameters (\u03b1, \u03b2) and discuss off\u2011target mutation rates under both adaptive and control conditions.",
+        "Supply a clear implementation plan for the Kalman\u2011Bucy filter and HJB controller, including pseudocode or algorithmic steps that could be translated into a cellular monitoring system.",
+        "Design a minimal in\u2011vitro experiment (e.g., using barcoded DTC lines in a 3\u2011D spheroid) that tests curvature\u2011adaptive pulse timing versus control, specifying readouts, sample size, and statistical test."
+      ],
+      "suggested_experiments": [
+        "Generate a barcoded DTC lineage model in a breast cancer organoid system, expose cells to varying CRISPR pulse schedules (fixed 10\u202fms vs. curvature\u2011adaptive pulses derived from real\u2011time CPI imaging), and measure DTC survival using single\u2011cell RNA\u2011seq barcodes after 72\u202fh.",
+        "Perform live\u2011cell FRET imaging of H3K27ac/H3K9me3 marks to directly estimate \u03ba(p) in individual cells, then correlate these estimates with measured \u03c4_v by tracking cell fate transitions in response to drug exposure.",
+        "Validate the Kalman\u2011Bucy filter\u2019s curvature predictions against ground\u2011truth curvature computed from synthetic trajectory data, quantifying prediction error and its impact on pulse\u2011width selection."
+      ],
+      "simulation_proposal": {
+        "type": "in_silico",
+        "description": "Create an agent\u2011based simulation of DTCs moving on a discretized version of \u0393_t where curvature \u03ba(p) is computed at each step; implement both fixed\u2011duration CRISPR pulses and curvature\u2011adaptive pulses using the derived \u0394t* formula, and run 10,000 stochastic trajectories to estimate eradication ratio and false\u2011positive rate.",
+        "expected_metrics": [
+          "Eradication_ratio = proportion of lineages eliminated by adaptive vs. fixed pulses",
+          "False_positive_rate = fraction of pulses delivered outside the tubular neighborhood \ud835\udca9_\u03b5(\u0393_t)",
+          "Mean \u03c4_v reduction = average decrease in commitment window duration"
+        ],
+        "rationale": "This simulation directly tests the core hypothesis that curvature\u2011adaptive pulse timing compresses transition corridors and yields higher eradication, providing quantitative evidence to support the mathematical claims before committing to costly wet\u2011lab experiments."
+      }
+    },
+    {
+      "archetype_id": "short_seller",
+      "archetype_name": "Adversarial Short-Seller",
+      "recommendation": "major_revision",
+      "confidence": 0.78,
+      "summary": "The manuscript proposes an innovative curvature\u2011adaptive CRISPR pulse\u2011width modulation (CA\u2011PWM) strategy, but the mechanistic link between Gaussian curvature of the epigenetic manifold and the kinetics of cell\u2011state transitions is not experimentally validated, the mathematical derivations are under\u2011specified, and the proposed sensor and control loop have no empirical proof of feasibility. Without concrete data demonstrating that curvature can be measured in real time and that pulse\u2011width modulation alters \u03c4_v, the central claim remains speculative.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 3,
+        "experimental_design": 2,
+        "evidence_support": 2,
+        "statistical_rigor": 3,
+        "clarity_of_writing": 6
+      },
+      "criticisms": [
+        "The relationship between local Gaussian curvature \u03ba(p) and the duration of the commitment window \u03c4_v is derived from Weyl tube formulae and overdamped Langevin dynamics, but no experimental measurement of \u03ba(p) in living cells is provided (Section 2).",
+        "The Commitment\u2011Potential Indicator (CPI) sensor is described only in abstract terms; no construct design, validation of dynamic range, or demonstration that it can report curvature\u2011related epigenetic states is shown.",
+        "Pulse\u2011width modulation of Cas9 activity (5\u201315\u202fms pulses) is biologically implausible given current delivery systems; the manuscript lacks any data on how such ultra\u2011short pulses are generated, measured, or how Cas9 kinetics respond on that timescale.",
+        "In silico simulations are referenced but not detailed: parameters, model validation, and sensitivity analyses are missing, making the claimed 1.5\u2011fold improvement unverifiable.",
+        "Statistical analysis of eradication ratios and false\u2011positive rates is absent; no power calculations, replicates, or confidence intervals are reported."
+      ],
+      "required_fixes": [
+        "Provide experimental validation that \u03ba(p) can be estimated in real time from single\u2011cell multi\u2011omics data, e.g., by reconstructing a low\u2011dimensional manifold and computing curvature metrics.",
+        "Construct and characterize the CPI sensor, including FRET calibration curves, response time, and correlation with independent epigenetic readouts (ChIP\u2011seq, ATAC\u2011seq).",
+        "Demonstrate a feasible method for delivering sub\u2011second Cas9 pulses (e.g., optogenetic Cas9, microfluidic rapid exchange) and measure actual DSB induction kinetics.",
+        "Include a complete description of the computational model: equations, parameter values, and validation against experimental data; provide sensitivity analysis showing robustness of \u0394t* to curvature estimation errors.",
+        "Add statistical methods, replicate numbers, and appropriate controls for the eradication ratio experiments; report confidence intervals and p\u2011values."
+      ],
+      "suggested_experiments": [
+        "Use a live\u2011cell curvature reporter (e.g., a genetically encoded tension sensor linked to chromatin remodelers) to map \u03ba(p) across the epigenetic landscape during drug treatment and correlate with single\u2011cell RNA\u2011seq pseudotime.",
+        "Implement an optogenetically controlled Cas9 system (e.g., CRY2\u2011CIB1 split Cas9) to deliver precisely timed pulses; compare cell viability and DSB frequency for pulses of 5\u202fms, 50\u202fms, and continuous exposure.",
+        "Perform a head\u2011to\u2011head in vitro competition assay between DTCs treated with CA\u2011PWM versus conventional Cas9 expression, measuring lineage barcodes to quantify eradication ratios and off\u2011target mutation burden."
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Build a stochastic simulation of DTC trajectories on a reconstructed epigenetic manifold using Langevin dynamics, embed a curvature estimator, and apply a virtual CA\u2011PWM control policy that varies pulse width according to \u03ba(p). Compare outcomes (\u03c4_v reduction, eradication probability) against a fixed\u2011pulse baseline.",
+        "expected_metrics": [
+          "Mean first\u2011passage time \u03c4_v as a function of curvature",
+          "Proportion of simulated cells eliminated by CRISPR pulses",
+          "Sensitivity of outcomes to noise in curvature estimation"
+        ],
+        "rationale": "A validated in silico model will test whether the theoretical curvature\u2011pulse relationship can realistically produce the claimed therapeutic gain before costly wet\u2011lab implementation."
+      }
+    }
+  ],
+  "simulations": [
+    {
+      "id": "computational-model",
+      "title": "computational_model",
+      "type": "html5_canvas",
+      "description": "Simulate stochastic Langevin dynamics of DTCs on synthetic commitment manifolds with varying curvature distributions to test pulse-width optimization algorithms",
+      "rationale": "Would validate the geometric control framework's ability to compress transition corridors while maintaining specificity, addressing the paper's core hypothesis.",
+      "expected_metrics": [
+        "Mean first-passage time distributions across curvature regimes",
+        "Editing efficiency vs. off-target mutation rates",
+        "False-positive rate quantification using Weyl tube formulae"
+      ],
+      "scene": "trajectory_manifold",
+      "seed": 101,
+      "parameters": {}
+    },
+    {
+      "id": "in-silico",
+      "title": "in_silico",
+      "type": "html5_canvas",
+      "description": "Create an agent\u2011based simulation of DTCs moving on a discretized version of \u0393_t where curvature \u03ba(p) is computed at each step; implement both fixed\u2011duration CRISPR pulses and curvature\u2011adaptive pulses using the derived \u0394t* formula, and run 10,000 stochastic trajectories to estimate eradication ratio and false\u2011positive rate.",
+      "rationale": "This simulation directly tests the core hypothesis that curvature\u2011adaptive pulse timing compresses transition corridors and yields higher eradication, providing quantitative evidence to support the mathematical claims before committing to costly wet\u2011lab experiments.",
+      "expected_metrics": [
+        "Eradication_ratio = proportion of lineages eliminated by adaptive vs. fixed pulses",
+        "False_positive_rate = fraction of pulses delivered outside the tubular neighborhood \ud835\udca9_\u03b5(\u0393_t)",
+        "Mean \u03c4_v reduction = average decrease in commitment window duration"
+      ],
+      "scene": "trajectory_manifold",
+      "seed": 202,
+      "parameters": {}
+    },
+    {
+      "id": "computational-model",
+      "title": "computational_model",
+      "type": "html5_canvas",
+      "description": "Fit an overdamped Langevin model to scRNA-seq time-course data from endocrine-treated breast cancer organoids to estimate local diffusion D and potential U(p), then simulate CA-PWM versus fixed-pulse strategies to quantify how often pulses land within the true high-\u03ba corridor and the resulting change in eradication ratio.",
+      "rationale": "This in silico test would validate whether curvature-adaptive timing meaningfully improves targeting of transient commitment windows given realistic noise and sampling constraints, before costly in vivo work.",
+      "expected_metrics": [
+        "Fraction of simulated pulses delivered within \u00b110% of the true high-\u03ba window",
+        "Mean reduction in \u03c4_v for treated vs. control lineages",
+        "False-positive pulse rate (activation outside the tubular neighborhood)"
+      ],
+      "scene": "trajectory_manifold",
+      "seed": 303,
+      "parameters": {}
+    },
+    {
+      "id": "tumor-volume-3d",
+      "title": "Tumor Volume (3D)",
+      "type": "threejs",
+      "description": "Volumetric point-cloud tumor with phenotype-coloured clusters that grow, divide, and apoptose over time. Rotates the mass to expose where the model places phenotype boundaries.",
+      "rationale": "The 2D manifold view collapses depth \u2014 a 3D volumetric rendering tests whether claimed phenotype clusters survive when seen from arbitrary angles.",
+      "expected_metrics": [
+        "phenotype-cluster volumetric stability",
+        "intra-cluster density",
+        "boundary sharpness under rotation"
+      ],
+      "three_scene": "tumor_volume_3d",
+      "seed": 7881,
+      "parameters": {
+        "title": "Curvature-Adaptive CRISPR Pulse-Width Modulation Compresses Epigenetic Transition Corridors to Eradicate Disseminated Tumor Cells",
+        "confidence": 0.5166666666666667,
+        "critique": "No operational definition of the Commitment-Potential Indicator (CPI) sensor; FRET readouts of H3K27ac/H3K9me3 and transcriptional bursting do not uniquely map to a Riemannian manifold coordinate, nor are they validated ",
+        "catalyst": "[Practicing Oncologist] A successful preclinical trial demonstrating >1.5-fold eradication ratio in a metastatic model would sharply increase prediction-market confidence, while failed in vivo testing of curvature estimation would derail it."
+      }
+    },
+    {
+      "id": "mitotic-lattice-3d",
+      "title": "Mitotic Lattice (3D)",
+      "type": "threejs",
+      "description": "Rotating 3D lattice of cells with division events sampled from the validator-emitted novelty distribution. Daughter cells inherit colour from parent phenotype, exposing lineage drift.",
+      "rationale": "Hooks the falsifier visually: if the paper's mechanism predicts a specific division geometry, this scene makes deviations from it immediately visible.",
+      "expected_metrics": [
+        "division-rate per phenotype",
+        "lineage-drift entropy",
+        "spatial clustering of mitotic events"
+      ],
+      "three_scene": "mitotic_lattice_3d",
+      "seed": 7899,
+      "parameters": {
+        "title": "Curvature-Adaptive CRISPR Pulse-Width Modulation Compresses Epigenetic Transition Corridors to Eradicate Disseminated Tumor Cells",
+        "confidence": 0.5166666666666667,
+        "critique": "No operational definition of the Commitment-Potential Indicator (CPI) sensor; FRET readouts of H3K27ac/H3K9me3 and transcriptional bursting do not uniquely map to a Riemannian manifold coordinate, nor are they validated ",
+        "catalyst": "[Biotech Investor] Positive results from multi-animal model studies demonstrating \u22651.5-fold improvement in DTC eradication over conventional CRISPR approaches would significantly shift the prediction-market price upward."
+      }
+    },
+    {
+      "id": "perturbation-cone-3d",
+      "title": "Perturbation Cone (3D)",
+      "type": "threejs",
+      "description": "3D analog of the counterfactual scene: treated trajectories spread out from a baseline manifold along a confidence-weighted cone. Cone width tracks acceptance probability.",
+      "rationale": "Forces the prediction-vs-observation gap into a single visual. A narrow, well-aimed cone implies confident divergence; a fat cone signals high predictive uncertainty.",
+      "expected_metrics": [
+        "cone aperture",
+        "trajectory bundle coherence",
+        "off-axis trajectory frequency"
+      ],
+      "three_scene": "perturbation_cone_3d",
+      "seed": 7917,
+      "parameters": {
+        "title": "Curvature-Adaptive CRISPR Pulse-Width Modulation Compresses Epigenetic Transition Corridors to Eradicate Disseminated Tumor Cells",
+        "confidence": 0.5166666666666667,
+        "critique": "No operational definition of the Commitment-Potential Indicator (CPI) sensor; FRET readouts of H3K27ac/H3K9me3 and transcriptional bursting do not uniquely map to a Riemannian manifold coordinate, nor are they validated ",
+        "catalyst": "[Academic KOL] A negative catalyst would be an experimental demonstration that in vivo DTCs cannot be synchronized to high-\u03ba states with existing Cas RNP delivery windows, shifting price down; a positive catalyst would be a preprint showing FRET-based CPI sensors resolving sub-minute \u03ba(p) trajectories in patient-derived DTCs, shifting price up."
+      }
+    }
+  ]
+}

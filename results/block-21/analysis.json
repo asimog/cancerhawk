@@ -1,0 +1,459 @@
+{
+  "archetypes": [
+    {
+      "scores": {
+        "clinical_viability": 1,
+        "regulatory_risk": 10,
+        "market_potential": 2,
+        "patient_impact": 1,
+        "novelty": 10,
+        "falsifiability": 8
+      },
+      "verdict": "As a practicing oncologist, this is a theoretical masterpiece and a clinical hallucination. The paper proposes a closed-loop system requiring real-time, longitudinal single-cell ATAC-seq to calculate Ricci curvature on an epigenetic manifold to modulate dCas9 flux. In a clinical workflow, this is impossible. We struggle to get a single biopsy; the authors assume a continuous, high-resolution molecular stream from a living patient with latency requirements under 15% of a commitment window. Even if the math holds, the delivery vehicle\u2014continuous, adaptive CRISPR editing in vivo\u2014is a regulatory nightmare and a toxicity minefield. It ignores the 'off-label reality' that we cannot currently sequence a patient fast enough to change a dose, let alone reshape a manifold. It is intellectually provocative but functionally irrelevant to the bedside for the next several decades.",
+      "would_move_price": "A demonstration of this control loop functioning in a non-human primate using a non-invasive, real-time epigenetic biosensor would shift the price upward; failure to define the 'commitment window' $\\tau_v$ in actual human tissue would crash it.",
+      "archetype_id": "oncologist",
+      "archetype_name": "Practicing Oncologist"
+    },
+    {
+      "scores": {
+        "clinical_viability": 6,
+        "regulatory_risk": 8,
+        "market_potential": 5,
+        "patient_impact": 7,
+        "novelty": 8,
+        "falsifiability": 7
+      },
+      "verdict": "The proposed R-CASOC framework offers a mechanistically grounded, coordinate-invariant metric (Ricci curvature) linked to epigenetic transition kinetics, with a clear hypothesis (curvature inversely modulates MFPT) and measurable endpoints (MFPT reduction, metastatic seeding). However, the reliance on real-time single-cell ATAC-seq, Ollivier-Ricci flow estimation, and stringent latency/error thresholds introduces substantial implementation risk and limits immediate clinical translation, keeping regulatory and practical viability moderate.",
+      "would_move_price": "A successful in vivo validation with <15% biosensor latency and <30% curvature estimation error in a large animal model would sharply increase the price, whereas failure to meet these technical thresholds would depress it.",
+      "archetype_id": "biostatistician",
+      "archetype_name": "Biostatistician"
+    },
+    {
+      "scores": {
+        "clinical_viability": 3,
+        "regulatory_risk": 9,
+        "market_potential": 8,
+        "patient_impact": 9,
+        "novelty": 10,
+        "falsifiability": 7
+      },
+      "verdict": "From a regulatory standpoint, this proposal is a high-complexity nightmare. While the mechanistic elegance of using Ricci-curvature to modulate epigenetic commitment windows is theoretically profound, the path to an IND is obscured by massive 'black box' risks. We are looking at a closed-loop, real-time CRISPR-dCas9 delivery system that relies on continuous single-cell ATAC-seq feedback\u2014a technology that does not currently exist in a clinically deployable, real-time format. The 'biosensor latency' constraint (must be <15% of \u03c4_v) is a catastrophic failure mode; if the computational inference of the Ricci tensor lags, the therapeutic flux could inadvertently stabilize the very resistant states it intends to collapse, potentially accelerating metastasis through unintended epigenetic drift. To move toward an Investigational New Drug (IND) application, the sponsors must move beyond 'orthotopic xenograft models' and provide rigorous CMC (Chemistry, Manufacturing, and Controls) data on the stability of the dCas9-editing flux and a validated, non-destructive method for longitudinal epigenetic manifold reconstruction in vivo. Currently, this is a brilliant mathematical construct, not a drug candidate.",
+      "would_move_price": "The price would shift upward only upon the demonstration of a non-destructive, real-time epigenetic biosensor capable of sub-15% latency relative to commitment windows in a large animal model.",
+      "archetype_id": "fda",
+      "archetype_name": "FDA Regulator"
+    },
+    {
+      "scores": {
+        "": ""
+      },
+      "verdict": "",
+      "would_move_price": "",
+      "archetype_id": "kol",
+      "archetype_name": "Academic KOL"
+    },
+    {
+      "scores": {
+        "clinical_viability": 1,
+        "regulatory_risk": 10,
+        "market_potential": 3,
+        "patient_impact": 2,
+        "novelty": 10,
+        "falsifiability": 8
+      },
+      "verdict": "As a patient advocate, this paper is a mathematical hallucination of 'precision medicine' that ignores the visceral reality of the clinic. The authors propose a system requiring real-time, longitudinal single-cell ATAC-seq and CRISPR-dCas9 editing flux titration based on Ricci curvature. In the real world, a patient cannot be a living biopsy site for continuous high-dimensional manifold reconstruction. The 'biosensor latency' mentioned is a trivial engineering detail compared to the impossibility of delivering such a closed-loop system into a human body without causing catastrophic systemic toxicity or immune rejection. It treats the patient as a geometric coordinate rather than a person. While the math is elegant, the burden of treatment\u2014constant invasive sampling and genetic editing\u2014would be a nightmare. This is 'cognition without control' in its worst form: high-level theory with zero regard for the lived experience of the patient.",
+      "would_move_price": "Price would crash upon the first attempt to define a non-lethal delivery mechanism for real-time, in vivo dCas9 titration in humans.",
+      "archetype_id": "patient",
+      "archetype_name": "Patient Advocate"
+    },
+    {
+      "scores": {
+        "clinical_viability": 3,
+        "regulatory_risk": 9,
+        "market_potential": 4,
+        "patient_impact": 8,
+        "novelty": 10,
+        "falsifiability": 7
+      },
+      "verdict": "From a payer perspective, this proposal is a fiscal nightmare disguised as a mathematical masterpiece. While the mechanistic novelty of using Ricci-curvature to modulate epigenetic commitment windows is intellectually profound, the 'cost-effectiveness' is non-existent. We are looking at a therapy that requires longitudinal single-cell ATAC-seq, real-time manifold reconstruction, and continuous CRISPR-dCas9 titration. The diagnostic overhead alone\u2014requiring high-fidelity biosensors with <15% latency\u2014would drive the per-patient cost into the stratosphere, far exceeding any reasonable ICER threshold. Furthermore, the regulatory pathway for a 'closed-loop stochastic controller' that reshapes biological manifolds is undefined; the FDA will struggle to validate a device where the 'dosage' is a dynamic geometric tensor. Unless this can be decoupled from ultra-expensive real-time sequencing and transitioned to a more stable, 'set-and-forget' epigenetic reprogramming agent, it remains a high-science curiosity with zero budget-impact viability.",
+      "would_move_price": "The price would shift upward only if the R-CASOC framework could be proven to reduce long-term metastatic recurrence costs by >70% compared to standard-of-care, or if the diagnostic 'biosensor' requirement was replaced by a low-cost liquid biopsy proxy.",
+      "archetype_id": "payer",
+      "archetype_name": "Insurance Payer"
+    },
+    {
+      "scores": {
+        "clinical_viability": 1,
+        "regulatory_risk": 10,
+        "market_potential": 2,
+        "patient_impact": 1,
+        "novelty": 9,
+        "falsifiability": 8
+      },
+      "verdict": "This is a mathematical hallucination masquerading as oncology. The authors have built a cathedral of differential geometry\u2014Ricci tensors, Wasserstein graphs, Bochner-Weitzenb\u00f6ck identities\u2014on a foundation of sand. The fatal flaw is the 'closed-loop' requirement: real-time reconstruction of a high-dimensional epigenetic manifold via longitudinal scATAC-seq. You cannot perform destructive single-cell sequencing in real-time on a living patient to modulate CRISPR-dCas9 flux. The latency isn't '15% of the window'; it's the entire duration of the cell's life. It's an elegant piece of topology that ignores the basic physics of biological sampling. It will collapse the moment it hits a living system because the 'sensor' kills the 'subject'.",
+      "would_move_price": "A peer-reviewed demonstration of non-destructive, real-time epigenetic manifold tracking in vivo would send this mooning; otherwise, any attempt at a Phase I trial will be a total wipeout.",
+      "archetype_id": "short_seller",
+      "archetype_name": "Adversarial Short-Seller"
+    }
+  ],
+  "market_price": 0.3958333333333333,
+  "score_matrix": {
+    "oncologist": {
+      "clinical_viability": 1,
+      "regulatory_risk": 10,
+      "market_potential": 2,
+      "patient_impact": 1,
+      "novelty": 10,
+      "falsifiability": 8
+    },
+    "biostatistician": {
+      "clinical_viability": 6,
+      "regulatory_risk": 8,
+      "market_potential": 5,
+      "patient_impact": 7,
+      "novelty": 8,
+      "falsifiability": 7
+    },
+    "fda": {
+      "clinical_viability": 3,
+      "regulatory_risk": 9,
+      "market_potential": 8,
+      "patient_impact": 9,
+      "novelty": 10,
+      "falsifiability": 7
+    },
+    "kol": {
+      "": ""
+    },
+    "patient": {
+      "clinical_viability": 1,
+      "regulatory_risk": 10,
+      "market_potential": 3,
+      "patient_impact": 2,
+      "novelty": 10,
+      "falsifiability": 8
+    },
+    "payer": {
+      "clinical_viability": 3,
+      "regulatory_risk": 9,
+      "market_potential": 4,
+      "patient_impact": 8,
+      "novelty": 10,
+      "falsifiability": 7
+    },
+    "short_seller": {
+      "clinical_viability": 1,
+      "regulatory_risk": 10,
+      "market_potential": 2,
+      "patient_impact": 1,
+      "novelty": 9,
+      "falsifiability": 8
+    }
+  },
+  "consensus_dim": {
+    "clinical_viability": 2.5,
+    "regulatory_risk": 9.333333333333334,
+    "market_potential": 4.0,
+    "patient_impact": 4.666666666666667,
+    "novelty": 9.5,
+    "falsifiability": 7.5
+  },
+  "headline_catalysts": [
+    "[Practicing Oncologist] A demonstration of this control loop functioning in a non-human primate using a non-invasive, real-time epigenetic biosensor would shift the price upward; failure to define the 'commitment window' $\\tau_v$ in actual human tissue would crash it.",
+    "[Biostatistician] A successful in vivo validation with <15% biosensor latency and <30% curvature estimation error in a large animal model would sharply increase the price, whereas failure to meet these technical thresholds would depress it.",
+    "[FDA Regulator] The price would shift upward only upon the demonstration of a non-destructive, real-time epigenetic biosensor capable of sub-15% latency relative to commitment windows in a large animal model.",
+    "[Patient Advocate] Price would crash upon the first attempt to define a non-lethal delivery mechanism for real-time, in vivo dCas9 titration in humans.",
+    "[Insurance Payer] The price would shift upward only if the R-CASOC framework could be proven to reduce long-term metastatic recurrence costs by >70% compared to standard-of-care, or if the diagnostic 'biosensor' requirement was replaced by a low-cost liquid biopsy proxy.",
+    "[Adversarial Short-Seller] A peer-reviewed demonstration of non-destructive, real-time epigenetic manifold tracking in vivo would send this mooning; otherwise, any attempt at a Phase I trial will be a total wipeout."
+  ],
+  "derived_topics": [
+    {
+      "": ""
+    }
+  ],
+  "peer_reviews": [
+    {
+      "archetype_id": "oncologist",
+      "archetype_name": "Practicing Oncologist",
+      "recommendation": "minor_revision",
+      "confidence": 0.85,
+      "summary": "The paper presents a novel, mechanistically grounded approach to metastatic prevention using Ricci curvature-adaptive control. While theoretically robust and experimentally promising in preclinical models, critical challenges in clinical translation\u2014particularly biosensor latency constraints and off-label CRISPR-dCas9 use\u2014require refinement. The work deserves recognition for its geometric control framework but needs practical adjustments to address real-world feasibility.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 9,
+        "experimental_design": 7,
+        "evidence_support": 8,
+        "statistical_rigor": 9,
+        "clarity_of_writing": 6
+      },
+      "criticisms": [
+        "Relies on ultra-precise biosensors with <15% latency and <30% error thresholds, which may not be achievable in clinical settings.",
+        "CRISPR-dCas9 editing is off-label and lacks regulatory pathway discussion, raising safety/approval concerns.",
+        "Real-time ATAC-seq integration is computationally intensive and impractical for routine clinical workflows.",
+        "Orthotopic models lack human relevance; patient-derived data are absent.",
+        "Complexity of the control algorithm may hinder adoption due to workflow integration challenges."
+      ],
+      "required_fixes": [
+        "Propose alternative biomarkers (e.g., H3K27me3/H3K27ac ratios) that can be measured with lower latency/error.",
+        "Clarify off-label status of CRISPR-dCas9 and outline a pathway for regulatory approval.",
+        "Simplify the control algorithm for clinical implementation (e.g., fixed thresholds instead of real-time curvature adaptation)."
+      ],
+      "suggested_experiments": [
+        "Conduct a phase I clinical trial using a simplified biomarker panel (e.g., liquid biopsy H3K27me3/H3K27ac) with standard Cas9 delivery.",
+        "Simulate R-CASOC under realistic biosensor noise (e.g., 20% latency, 40% error) to quantify resilience."
+      ],
+      "simulation_proposal": null
+    },
+    {
+      "archetype_id": "fda",
+      "archetype_name": "FDA Regulator",
+      "recommendation": "major_revision",
+      "confidence": 0.78,
+      "summary": "The manuscript proposes a novel Ricci\u2011curvature\u2011adaptive control framework (R\u2011CASOC) for epigenetic editing to prevent metastasis, but critical methodological details, experimental validation, and quantitative risk assessment are insufficient for publication. Major revisions are required to clarify the mathematical formulation, provide comprehensive in vivo data, and address safety and translational feasibility.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 6,
+        "experimental_design": 4,
+        "evidence_support": 3,
+        "statistical_rigor": 3,
+        "clarity_of_writing": 5
+      },
+      "criticisms": [
+        "1. The Ricci curvature estimation pipeline (Ollivier\u2013Ricci flow on ATAC\u2011seq graphs) is described only qualitatively; no algorithmic details, parameter choices, or validation against ground truth are provided.",
+        "2. In vivo results are summarized in a single sentence (\u201cachieved a 68\u202f% suppression of metastatic seeding\u201d) without figures, statistical analysis, or control groups, making it impossible to assess reproducibility.",
+        "3. The control law assumes real\u2011time reconstruction of a high\u2011dimensional manifold and curvature estimation with <15\u202f% latency, yet no evidence is presented that current single\u2011cell ATAC\u2011seq or biosensor technologies can meet these stringent requirements.",
+        "4. Safety concerns (off\u2011target CRISPR\u2011dCas9 activity, immune responses to viral vectors, potential for epigenetic dysregulation) are acknowledged only briefly and lack quantitative risk assessment or mitigation strategies.",
+        "5. The manuscript repeatedly cites \u201cCancerHawk Block\u202f19/20\u201d as prior work but does not provide references or data, making it difficult to evaluate the novelty or incremental advance.",
+        "6. The statistical claims (\u226540\u202f% MFPT reduction, 68\u202f% metastatic suppression) are not supported by any reported p\u2011values, confidence intervals, or sample sizes.",
+        "7. The manuscript conflates geometric concepts (Ricci tensor, curvature flow) with biological processes (chromatin remodeling) without demonstrating a causal link via perturbation experiments.",
+        "8. The discussion of biosensor latency (>15\u202f% of \u03c4_v) and curvature\u2011estimation error (>30\u202f%) is speculative; no sensitivity analysis or robustness testing is shown.",
+        "9. No discussion of regulatory pathways (IND\u2011enabling studies, safety pharmacology, toxicology) is provided, despite the claim that the approach is translationally ready.",
+        "10. The writing style is dense and sometimes ambiguous, e.g., \u201ccompressing commitment windows \u03c4_v by accelerating escape from H3K27me3\u2011dominant tolerant states\u201d lacks a clear operational definition of \u03c4_v."
+      ],
+      "required_fixes": [
+        "1. Provide a detailed algorithmic description of the Ricci curvature estimation, including graph construction, parameter tuning, and computational complexity.",
+        "2. Include full experimental data: raw and processed ATAC\u2011seq, curvature maps, control vs. untreated groups, statistical tests, and figures illustrating MFPT and metastatic burden.",
+        "3. Demonstrate that the proposed real\u2011time control loop can be implemented with existing technologies, or provide a realistic engineering roadmap with latency and error budgets.",
+        "4. Conduct off\u2011target and toxicity studies (e.g., GUIDE\u2011seq, transcriptomics) to assess safety of the CRISPR\u2011dCas9 editing strategy.",
+        "5. Cite and summarize the referenced CancerHawk Blocks to establish novelty and context.",
+        "6. Perform sensitivity analyses to show robustness of the control law to curvature estimation error and biosensor delay, including worst\u2011case scenarios.",
+        "7. Provide a clear definition and measurement protocol for the commitment window \u03c4_v and MFPT in the experimental system.",
+        "8. Outline IND\u2011enabling studies: dose\u2011range finding, pharmacokinetics, biodistribution, and immunogenicity assays.",
+        "9. Revise the manuscript for clarity, breaking long sentences, defining all symbols, and ensuring all claims are supported by data or citations."
+      ],
+      "suggested_experiments": [
+        "1. Perform a time\u2011resolved single\u2011cell ATAC\u2011seq experiment with and without R\u2011CASOC treatment to directly measure changes in curvature distribution and commitment trajectories over time.",
+        "2. Use a CRISPR\u2011dCas9 system with a fluorescent reporter for editing activity to quantify off\u2011target effects and spatial distribution of edits in vivo.",
+        "3. Conduct a dose\u2011response study varying the control gain k to identify the optimal curvature\u2011adaptation parameter that balances metastatic suppression and safety.",
+        "4. Implement a mock biosensor with programmable latency to empirically test the 15\u202f% \u03c4_v threshold and observe control failure modes.",
+        "5. Compare R\u2011CASOC to a scalar Gaussian curvature\u2013based control strategy to demonstrate the added value of the Ricci tensor approach."
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Build a stochastic differential equation model of epigenetic state dynamics on a synthetic high\u2011dimensional manifold with tunable Ricci curvature. Implement the R\u2011CASOC control law and simulate scenarios with varying curvature\u2011estimation error and sensor latency to quantify their impact on MFPT and metastatic seeding probability.",
+        "expected_metrics": [
+          "Mean first\u2011passage time (MFPT) from tolerant to sensitive states",
+          "Probability of metastatic seeding in simulated tumor burden",
+          "Control input distribution over manifold",
+          "Robustness metrics (sensitivity to error and delay)"
+        ],
+        "rationale": "The simulation will provide quantitative evidence that the proposed curvature\u2011adaptive control law improves kinetic outcomes and delineate the parameter regimes where the approach is effective, thereby addressing the current lack of rigorous statistical and mechanistic validation."
+      }
+    },
+    {
+      "archetype_id": "patient",
+      "archetype_name": "Patient Advocate",
+      "recommendation": "major_revision",
+      "confidence": 0.85,
+      "summary": "The paper proposes a geometric control framework (R-CASOC) linking Ricci curvature of epigenetic manifolds to metastatic latency, but it is not yet translatable to lived experience: there is no patient-facing endpoint, no characterization of side-effect or access burden, and no plan for patient-reported outcomes (PROs) in the proposed workflow. The mechanistic premise is intriguing, but the clinical pathway is incomplete without explicit attention to biosensor burden, delivery toxicity, and real-world feasibility.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 8,
+        "experimental_design": 5,
+        "evidence_support": 5,
+        "statistical_rigor": 4,
+        "clarity_of_writing": 6
+      },
+      "criticisms": [
+        "No patient-centered or PRO endpoint is defined; \u2018metastatic seeding suppression\u2019 is a preclinical surrogate, not a lived-experience outcome (Abstract, Section 1).",
+        "Delivery and editing burden (dCas9 flux, Cas9 exposure, potential immunogenicity) are modeled as costs in the Hamiltonian but not translated into patient-facing risk or access constraints (Section 1\u20132).",
+        "Biosensor latency thresholds (<15% of \u03c4_v) are presented as engineering constraints without discussion of how frequent sampling would affect quality of life or care logistics (Section 1).",
+        "Heterogeneity of DTC subpopulations is mentioned, but there is no plan for subgroup-specific effect monitoring or equity of access to the required single-cell ATAC-seq and real-time control infrastructure (Section 1\u20132).",
+        "The \u226540% MFPT reduction and 68% seeding suppression claims reference CancerHawk Block 20 without providing primary data or uncertainty estimates; effect sizes and variance are not reported here (Abstract, Section 1).",
+        "No stopping rules or toxicity boundaries are specified; \u2018Cas9 exposure\u2019 is penalized in the cost functional but not mapped to clinical adverse events or cumulative organ burden (Section 1).",
+        "Failure modes are described abstractly (latency, estimation error) but not tied to patient-relevant failure (e.g., progression, hospitalization, treatment discontinuation) (Section 1)."
+      ],
+      "required_fixes": [
+        "Add a patient-centered primary or co-primary endpoint (e.g., time to symptomatic progression, PRO-based quality-of-life-adjusted metastasis-free interval) and justify its relevance to lived experience.",
+        "Specify a patient-facing risk-mitigation plan for Cas9 delivery (immunogenicity, off-target editing burden, vector-related toxicities) and how these will be monitored and reported.",
+        "Define maximum acceptable biosensor/visit frequency from a patient burden perspective and outline decentralized or minimal-burden alternatives; quantify how latency constraints map to real-world care schedules.",
+        "Include subgroup analyses and an access plan that addresses feasibility across diverse care settings (e.g., availability of single-cell ATAC-seq, turnaround time, cost)."
+      ],
+      "suggested_experiments": [
+        "Prospective PRO validation cohort: embed serial PRO measures (e.g., symptom burden, functional status) alongside ATAC-seq and curvature estimation to test whether R-CASOC\u2013guided intervals correlate with patient-reported stability, not just MFPT.",
+        "Toxicity and immunogenicity surveillance study: measure anti-Cas9 antibodies, cytokine flares, and off-target editing rates under the proposed flux schedule, and model cumulative burden against a patient-defined acceptable-risk threshold.",
+        "Real-world latency simulation: simulate biosensor delays and sampling frequencies that reflect community oncology workflows and estimate the degradation in metastasis-free survival and PRO outcomes, not just MFPT."
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Agent-based simulation coupling epigenetic diffusion on \u0393\u209c with a patient-level clinical trajectory module that includes (i) R-CASOC control gains based on Ric(\u2207\u03c4,\u2207\u03c4)^(-1/2), (ii) biosensor latency and sampling schedules reflecting real-world care (clinic visits every 2\u20136 weeks), (iii) toxicity/immunogenicity events that truncate or delay editing, and (iv) patient-valued endpoints (symptom progression, QoL-adjusted metastasis-free time).",
+        "expected_metrics": [
+          "Distribution of patient-valued metastasis-free time under R-CASOC vs standard surveillance",
+          "Cumulative toxicity-adjusted quality-of-life years",
+          "Proportion of patients exceeding acceptable biosensor burden threshold",
+          "Sensitivity of metastasis-free time to curvature-estimation error and latency"
+        ],
+        "rationale": "This simulation directly tests whether geometric control benefits persist when engineering constraints are mapped onto realistic care schedules and patient-valued outcomes, exposing failure modes that are invisible in MFPT-only analyses."
+      }
+    },
+    {
+      "archetype_id": "payer",
+      "archetype_name": "Insurance Payer",
+      "recommendation": "reject",
+      "confidence": 0.92,
+      "summary": "The paper proposes a geometric control framework (R-CASOC) for epigenetic commitment windows that is mechanism-rich but empirically underspecified; key efficacy claims (\u226540% MFPT reduction, 68% metastatic suppression) reference prior blocks without independent validation, and the cost-effectiveness and budget-impact analyses required for payer evaluation are absent. Latency/error failure modes are stated as thresholds but not experimentally stress-tested, and the CRISPR-dCas9 dosing-to-curvature mapping lacks pharmacokinetic/pharmacodynamic (PK/PD) translation, making coverage policy and prior-auth feasibility indeterminable.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 7,
+        "experimental_design": 4,
+        "evidence_support": 3,
+        "statistical_rigor": 3,
+        "clarity_of_writing": 6
+      },
+      "criticisms": [
+        "Efficacy claims (\u226540% MFPT reduction, 68% metastatic seeding suppression) cite CancerHawk Block 19/20 without presenting new orthotopic xenograft data, sample sizes, or replication; therefore, evidence support for the primary endpoint is inadequate.",
+        "No cost-effectiveness model: ICER, QALY gains, or incremental cost per metastasis prevented are absent, preventing assessment against payer ICER thresholds (e.g., $100k\u2013$150k/QALY).",
+        "Budget impact is unspecified: per-patient CRISPR-dCas9 cost, biosensor (Cas13a-H3K27ac) consumables, and ATAC-seq/Wasserstein graph computation at scale are not estimated, so formulary affordability cannot be evaluated.",
+        "Prior-auth complexity is unaddressed: criteria for biopsy timing, single-cell ATAC-seq turnaround, and real-time Ricci-curvature estimation in clinical labs are not mapped to operational workflows or failure rates.",
+        "Biosensor latency and curvature-estimation error are stated as failure boundaries (>15% \u03c4_v latency; >30% error) but not experimentally varied; no stress-test across DTC heterogeneity or inter-patient \u03c4_v variability.",
+        "CRISPR-dCas9 exposure is treated as a scalar cost in the Hamiltonian without PK/PD, off-target burden, or immunogenicity; this omission undermines risk-adjusted cost-effectiveness and budget impact.",
+        "Statistical uncertainty around MFPT and metastatic seeding is not quantified (no CIs, power, or multiplicity adjustment), and the 68% suppression figure lacks denominator clarity (per animal? per DTC burden?)."
+      ],
+      "required_fixes": [
+        "Provide de novo orthotopic xenograft dataset (n\u226510/group) reporting MFPT, metastatic burden, and survival with full statistical methods and uncertainty quantification; explicitly state whether 68% suppression is relative to vehicle or scrambled control.",
+        "Add a cost-effectiveness analysis: model Markov states (tolerant DTC, sensitive, metastatic), estimate transition probabilities from MFPT, assign costs (editing, biosensor, sequencing, downstream care), and report ICER vs standard-of-care with sensitivity analyses on curvature-estimation error and latency.",
+        "Include a budget-impact model (3\u20135 year horizon) with per-patient program cost (editing units, Cas13a biosensor, compute), eligible patient volume, and total budget delta for payer review."
+      ],
+      "suggested_experiments": [
+        "Dose-finding PK/PD study: titrate CRISPR-dCas9 flux against Ric(\u2207\u03c4,\u2207\u03c4)^(-1/2) with serial ATAC-seq to measure \u03c4_v compression, H3K27me3 domain volume, and off-target edits; fit Hill-type response to estimate IC50 and plateau.",
+        "Latency/error stress test: impose controlled biosensor delays (5%, 10%, 15%, 20% of \u03c4_v) and curvature misestimation (10%, 30%, 50%) in closed-loop simulations and in vivo, measuring MFPT and metastatic seeding to validate failure boundaries.",
+        "Heterogeneity challenge: repeat R-CASOC across \u22653 DTC lines with divergent baseline \u03c4_v and H3K27me3 densities to test robustness and identify patient subgroups most likely to benefit."
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Build a Markov decision process coupled to an epigenetic diffusion manifold simulator: states represent H3K27me3-tolerant vs sensitive attractors; actions are CRISPR-dCas9 flux scaled by Ric(\u2207\u03c4,\u2207\u03c4)^(-1/2); transition probabilities derive from Fokker\u2013Planck MFPT calibrated to ATAC-seq data. Simulate under varying biosensor latency and curvature-estimation error to map ICER and metastatic incidence as functions of program parameters.",
+        "expected_metrics": [
+          "ICER ($/QALY)",
+          "metastasis-free survival probability at 12 months",
+          "editing cost per metastasis prevented",
+          "failure probability under latency/error thresholds"
+        ],
+        "rationale": "This links geometric control to payer-relevant outcomes, quantifies how curvature-estimation accuracy and latency degrade cost-effectiveness, and identifies parameter regions where R-CASOC remains below ICER thresholds, informing coverage policy and prior-auth design."
+      }
+    }
+  ],
+  "simulations": [
+    {
+      "id": "computational-model",
+      "title": "computational_model",
+      "type": "html5_canvas",
+      "description": "Agent-based simulation coupling epigenetic diffusion on \u0393\u209c with a patient-level clinical trajectory module that includes (i) R-CASOC control gains based on Ric(\u2207\u03c4,\u2207\u03c4)^(-1/2), (ii) biosensor latency and sampling schedules reflecting real-world care (clinic visits every 2\u20136 weeks), (iii) toxicity/immunogenicity events that truncate or delay editing, and (iv) patient-valued endpoints (symptom progression, QoL-adjusted metastasis-free time).",
+      "rationale": "This simulation directly tests whether geometric control benefits persist when engineering constraints are mapped onto realistic care schedules and patient-valued outcomes, exposing failure modes that are invisible in MFPT-only analyses.",
+      "expected_metrics": [
+        "Distribution of patient-valued metastasis-free time under R-CASOC vs standard surveillance",
+        "Cumulative toxicity-adjusted quality-of-life years",
+        "Proportion of patients exceeding acceptable biosensor burden threshold",
+        "Sensitivity of metastasis-free time to curvature-estimation error and latency"
+      ],
+      "scene": "trajectory_manifold",
+      "seed": 101,
+      "parameters": {}
+    },
+    {
+      "id": "computational-model",
+      "title": "computational_model",
+      "type": "html5_canvas",
+      "description": "Build a stochastic differential equation model of epigenetic state dynamics on a synthetic high\u2011dimensional manifold with tunable Ricci curvature. Implement the R\u2011CASOC control law and simulate scenarios with varying curvature\u2011estimation error and sensor latency to quantify their impact on MFPT and metastatic seeding probability.",
+      "rationale": "The simulation will provide quantitative evidence that the proposed curvature\u2011adaptive control law improves kinetic outcomes and delineate the parameter regimes where the approach is effective, thereby addressing the current lack of rigorous statistical and mechanistic validation.",
+      "expected_metrics": [
+        "Mean first\u2011passage time (MFPT) from tolerant to sensitive states",
+        "Probability of metastatic seeding in simulated tumor burden",
+        "Control input distribution over manifold",
+        "Robustness metrics (sensitivity to error and delay)"
+      ],
+      "scene": "trajectory_manifold",
+      "seed": 202,
+      "parameters": {}
+    },
+    {
+      "id": "computational-model",
+      "title": "computational_model",
+      "type": "html5_canvas",
+      "description": "Build a Markov decision process coupled to an epigenetic diffusion manifold simulator: states represent H3K27me3-tolerant vs sensitive attractors; actions are CRISPR-dCas9 flux scaled by Ric(\u2207\u03c4,\u2207\u03c4)^(-1/2); transition probabilities derive from Fokker\u2013Planck MFPT calibrated to ATAC-seq data. Simulate under varying biosensor latency and curvature-estimation error to map ICER and metastatic incidence as functions of program parameters.",
+      "rationale": "This links geometric control to payer-relevant outcomes, quantifies how curvature-estimation accuracy and latency degrade cost-effectiveness, and identifies parameter regions where R-CASOC remains below ICER thresholds, informing coverage policy and prior-auth design.",
+      "expected_metrics": [
+        "ICER ($/QALY)",
+        "metastasis-free survival probability at 12 months",
+        "editing cost per metastasis prevented",
+        "failure probability under latency/error thresholds"
+      ],
+      "scene": "trajectory_manifold",
+      "seed": 303,
+      "parameters": {}
+    },
+    {
+      "id": "tumor-volume-3d",
+      "title": "Tumor Volume (3D)",
+      "type": "threejs",
+      "description": "Volumetric point-cloud tumor with phenotype-coloured clusters that grow, divide, and apoptose over time. Rotates the mass to expose where the model places phenotype boundaries.",
+      "rationale": "The 2D manifold view collapses depth \u2014 a 3D volumetric rendering tests whether claimed phenotype clusters survive when seen from arbitrary angles.",
+      "expected_metrics": [
+        "phenotype-cluster volumetric stability",
+        "intra-cluster density",
+        "boundary sharpness under rotation"
+      ],
+      "three_scene": "tumor_volume_3d",
+      "seed": 9770,
+      "parameters": {
+        "title": "Ricci-Curvature-Adaptive Control of Epigenetic Commitment Windows for Metastatic Prevention",
+        "confidence": 0.3958333333333333,
+        "critique": "Relies on ultra-precise biosensors with <15% latency and <30% error thresholds, which may not be achievable in clinical settings.",
+        "catalyst": "[Practicing Oncologist] A demonstration of this control loop functioning in a non-human primate using a non-invasive, real-time epigenetic biosensor would shift the price upward; failure to define the 'commitment window' $\\tau_v$ in actual human tissue would crash it."
+      }
+    },
+    {
+      "id": "mitotic-lattice-3d",
+      "title": "Mitotic Lattice (3D)",
+      "type": "threejs",
+      "description": "Rotating 3D lattice of cells with division events sampled from the validator-emitted novelty distribution. Daughter cells inherit colour from parent phenotype, exposing lineage drift.",
+      "rationale": "Hooks the falsifier visually: if the paper's mechanism predicts a specific division geometry, this scene makes deviations from it immediately visible.",
+      "expected_metrics": [
+        "division-rate per phenotype",
+        "lineage-drift entropy",
+        "spatial clustering of mitotic events"
+      ],
+      "three_scene": "mitotic_lattice_3d",
+      "seed": 9788,
+      "parameters": {
+        "title": "Ricci-Curvature-Adaptive Control of Epigenetic Commitment Windows for Metastatic Prevention",
+        "confidence": 0.3958333333333333,
+        "critique": "Relies on ultra-precise biosensors with <15% latency and <30% error thresholds, which may not be achievable in clinical settings.",
+        "catalyst": "[Biostatistician] A successful in vivo validation with <15% biosensor latency and <30% curvature estimation error in a large animal model would sharply increase the price, whereas failure to meet these technical thresholds would depress it."
+      }
+    },
+    {
+      "id": "perturbation-cone-3d",
+      "title": "Perturbation Cone (3D)",
+      "type": "threejs",
+      "description": "3D analog of the counterfactual scene: treated trajectories spread out from a baseline manifold along a confidence-weighted cone. Cone width tracks acceptance probability.",
+      "rationale": "Forces the prediction-vs-observation gap into a single visual. A narrow, well-aimed cone implies confident divergence; a fat cone signals high predictive uncertainty.",
+      "expected_metrics": [
+        "cone aperture",
+        "trajectory bundle coherence",
+        "off-axis trajectory frequency"
+      ],
+      "three_scene": "perturbation_cone_3d",
+      "seed": 9806,
+      "parameters": {
+        "title": "Ricci-Curvature-Adaptive Control of Epigenetic Commitment Windows for Metastatic Prevention",
+        "confidence": 0.3958333333333333,
+        "critique": "Relies on ultra-precise biosensors with <15% latency and <30% error thresholds, which may not be achievable in clinical settings.",
+        "catalyst": "[FDA Regulator] The price would shift upward only upon the demonstration of a non-destructive, real-time epigenetic biosensor capable of sub-15% latency relative to commitment windows in a large animal model."
+      }
+    }
+  ]
+}

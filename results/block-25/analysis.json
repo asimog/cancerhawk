@@ -1,0 +1,430 @@
+{
+  "archetypes": [
+    {
+      "scores": {
+        "clinical_viability": 4,
+        "regulatory_risk": 8,
+        "market_potential": 5,
+        "patient_impact": 6,
+        "novelty": 9,
+        "falsifiability": 7
+      },
+      "verdict": "From a workflow perspective, the Ricci\u2011guided approach is elegant but highly experimental. Implementing single\u2011cell ATAC\u2011seq\u2011derived curvature maps in the clinic would require a rapid, cost\u2011effective pipeline that currently does not exist. The CRISPR\u2011dCas9\u2011TET1 editing system is still in early preclinical stages, with delivery, off\u2011target, and immunogenicity concerns that would delay any off\u2011label use. Clinically, the benefit\u2014accelerated chemosensitivity reversal\u2014needs to be demonstrated in a controlled trial, and the 31\u201340% reduction in latency reported in organoids may not translate to durable remission in patients. Regulatory risk is high because the therapy combines genome editing with a novel mathematical control law, and the FDA will demand robust safety data. Market potential is moderate; if the method can be packaged as a companion diagnostic plus a gene\u2011editing kit, it could attract interest, but the high development cost and uncertain reimbursement will be hurdles. Overall, the concept is mechanistically novel and falsifiable\u2014one could test whether curvature\u2011guided editing truly shortens MFPT in vivo\u2014but clinical viability remains low at present.",
+      "would_move_price": "A successful phase I/II trial showing a \u226550% reduction in metastatic relapse would push the market price up; conversely, a failure to demonstrate safety of the CRISPR\u2011dCas9 delivery system would drive it down.",
+      "archetype_id": "oncologist",
+      "archetype_name": "Practicing Oncologist"
+    },
+    {
+      "scores": {
+        "clinical_viability": 4,
+        "regulatory_risk": 7,
+        "market_potential": 5,
+        "patient_impact": 6,
+        "novelty": 9,
+        "falsifiability": 8
+      },
+      "verdict": "From a patient advocate perspective, this paper offers an intriguing mechanistic concept\u2014using Ricci curvature to guide epigenetic editing\u2014but its clinical relevance remains speculative. The proposed curvature\u2011adaptive CRISPR\u2011dCas9\u2011TET1 system is technically demanding, with delivery, specificity, and off\u2011target risks that patients will understandably question. The in\u2011vitro organoid data show a modest 1.8\u2011fold acceleration of chemosensitivity, yet translating this to durable remission in humans is uncertain. Moreover, the approach hinges on single\u2011cell ATAC\u2011seq profiling and real\u2011time curvature computation, which are not yet routine in clinical workflows. Patients will be concerned about the invasiveness of repeated biopsies, the potential for unintended chromatin remodeling, and the cost of such a personalized therapy. While the concept is novel and falsifiable\u2014e.g., measuring MFPT reductions and curvature changes in patient samples\u2014the pathway to a marketable, patient\u2011friendly product is long and fraught with regulatory hurdles. Thus, the paper scores high on novelty but lower on immediate patient impact and clinical viability.",
+      "would_move_price": "A successful Phase\u202fII trial demonstrating a 30\u202f% reduction in metastatic relapse rates in a well\u2011defined TNBC cohort would push the prediction\u2011market price up, whereas evidence of significant off\u2011target chromatin alterations or lack of durable benefit would push it down.",
+      "archetype_id": "patient",
+      "archetype_name": "Patient Advocate"
+    },
+    {
+      "scores": {
+        "clinical_viability": 3,
+        "regulatory_risk": 7,
+        "market_potential": 2,
+        "patient_impact": 3,
+        "novelty": 9,
+        "falsifiability": 5
+      },
+      "verdict": "From a payer perspective this proposal looks like a high\u2011risk, low\u2011value experiment. It hinges on sophisticated curvature calculations and CRISPR\u2011dCas9\u2011TET1 delivery to manipulate epigenetic landscapes\u2014technologies that are still pre\u2011clinical, lack clear safety data, and would require extensive regulatory review. The projected 30\u201140% acceleration of chemosensitivity in organoids is intriguing but far from proven in humans, and the cost of custom CRISPR reagents and real\u2011time single\u2011cell ATAC sequencing would be prohibitive. Given uncertain clinical benefit, potential for off\u2011target epigenetic effects, and unclear reimbursement pathways, we would likely assign a negative coverage recommendation pending robust Phase\u202fI/II data demonstrating safety, a clear biomarker\u2011driven patient selection strategy, and a cost\u2011effectiveness profile below accepted ICER thresholds.",
+      "would_move_price": "A definitive Phase\u202fI safety signal combined with a validated curvature biomarker that predicts response would shift the price upward; failure to demonstrate safety or any clinical benefit would push it down.",
+      "archetype_id": "payer",
+      "archetype_name": "Insurance Payer"
+    },
+    {
+      "scores": {
+        "clinical_viability": 2,
+        "regulatory_risk": 9,
+        "market_potential": 2,
+        "patient_impact": 1,
+        "novelty": 8,
+        "falsifiability": 1
+      },
+      "verdict": "This is a textbook case of geometric overreach masquerading as mechanistic insight. The authors take legitimate tools from optimal transport theory (Wasserstein metrics, Ollivier-Ricci curvature) and graft them onto chromatin biology with zero physical justification for why curvature should encode 'resistance to state transitions.' The control law\u2014editing flux inversely proportional to sqrt(Fisher-weighted Ricci)\u2014appears from nowhere with no derivation. The 31% MFPT reduction is a simulation result, not data. The ex vivo organoid claim of '40% curvature increase' is logically incoherent: curvature is a computed mathematical quantity from ATAC-seq graphs, not a biological variable you can 'increase.' The 'parabolic log-hazard signature' is a post-hoc pattern search with no predictive validation. There is NO in vivo data, NO patient data, and the 'CancerHawk Blocks 22-24' citation appears to be self-referential. The fundamental falsifiability failure: there is no stated alternative hypothesis or clear experimental condition that could refute the core claim. This reads as a mathematical tourism exercise\u2014beautiful differential geometry applied to a problem where the mapping is unproven and likely incorrect. The therapy is at least a decade from any clinical relevance, assuming the basic premise is even correct, which the evidence does not support.",
+      "would_move_price": "A failed in vivo mouse study or independent replication failure in organoids would crater this; a major oncology journal rejection or pointed critique from the computational biology community would shift sentiment sharply negative.",
+      "archetype_id": "short_seller",
+      "archetype_name": "Adversarial Short-Seller"
+    }
+  ],
+  "market_price": 0.39625,
+  "score_matrix": {
+    "oncologist": {
+      "clinical_viability": 4,
+      "regulatory_risk": 8,
+      "market_potential": 5,
+      "patient_impact": 6,
+      "novelty": 9,
+      "falsifiability": 7
+    },
+    "patient": {
+      "clinical_viability": 4,
+      "regulatory_risk": 7,
+      "market_potential": 5,
+      "patient_impact": 6,
+      "novelty": 9,
+      "falsifiability": 8
+    },
+    "payer": {
+      "clinical_viability": 3,
+      "regulatory_risk": 7,
+      "market_potential": 2,
+      "patient_impact": 3,
+      "novelty": 9,
+      "falsifiability": 5
+    },
+    "short_seller": {
+      "clinical_viability": 2,
+      "regulatory_risk": 9,
+      "market_potential": 2,
+      "patient_impact": 1,
+      "novelty": 8,
+      "falsifiability": 1
+    }
+  },
+  "consensus_dim": {
+    "clinical_viability": 3.25,
+    "regulatory_risk": 7.75,
+    "market_potential": 3.5,
+    "patient_impact": 4.0,
+    "novelty": 8.75,
+    "falsifiability": 5.25
+  },
+  "headline_catalysts": [
+    "[Practicing Oncologist] A successful phase I/II trial showing a \u226550% reduction in metastatic relapse would push the market price up; conversely, a failure to demonstrate safety of the CRISPR\u2011dCas9 delivery system would drive it down.",
+    "[Patient Advocate] A successful Phase\u202fII trial demonstrating a 30\u202f% reduction in metastatic relapse rates in a well\u2011defined TNBC cohort would push the prediction\u2011market price up, whereas evidence of significant off\u2011target chromatin alterations or lack of durable benefit would push it down.",
+    "[Insurance Payer] A definitive Phase\u202fI safety signal combined with a validated curvature biomarker that predicts response would shift the price upward; failure to demonstrate safety or any clinical benefit would push it down.",
+    "[Adversarial Short-Seller] A failed in vivo mouse study or independent replication failure in organoids would crater this; a major oncology journal rejection or pointed critique from the computational biology community would shift sentiment sharply negative."
+  ],
+  "derived_topics": [
+    {
+      "id": 1,
+      "title": "Map Ricci curvature gradients to predict emergent resistance pathways in DTCs",
+      "probability": 0.68,
+      "impact": 8,
+      "token_cost": 420,
+      "rationale": "Extends the finding that static curvature identifies basins by adding gradient analysis to anticipate future escape routes, enabling pre\u2011emptive editing before resistance manifests."
+    },
+    {
+      "id": 2,
+      "title": "Integrate single\u2011cell multi\u2011omics (ATAC\u2011seq + RNA\u2011seq) to calibrate curvature\u2011guided editing flux",
+      "probability": 0.55,
+      "impact": 7,
+      "token_cost": 380,
+      "rationale": "Builds on curvature derived from ATAC\u2011seq alone; adding transcriptional readouts tests whether combined manifolds improve control law precision."
+    },
+    {
+      "id": 3,
+      "title": "Test curvature\u2011adaptive dCas9\u2011p300 acetyltransferase versus TET1 demethylase in latency compression",
+      "probability": 0.48,
+      "impact": 7,
+      "token_cost": 410,
+      "rationale": "Diversifies the epigenetic actuator, probing whether promoting H3K27ac directly yields greater MFPT reduction than demethylation, a logical extension of the original TET1 work."
+    },
+    {
+      "id": 4,
+      "title": "Develop a real\u2011time microfluidic biosensor to measure Ollivier\u2011Ricci curvature in live organoids",
+      "probability": 0.62,
+      "impact": 9,
+      "token_cost": 460,
+      "rationale": "Translates the ex\u2011vivo curvature measurement into a closed\u2011loop platform, addressing the current gap between computational curvature estimation and actionable feedback."
+    },
+    {
+      "id": 5,
+      "title": "Apply curvature\u2011guided control to hematologic malignancy models with dormant leukemic stem cells",
+      "probability": 0.41,
+      "impact": 6,
+      "token_cost": 390,
+      "rationale": "Generalizes the breast\u2011cancer organoid findings to another disease where latency is critical, testing the universality of Ricci\u2011based control across cancer types."
+    }
+  ],
+  "peer_reviews": [
+    {
+      "archetype_id": "oncologist",
+      "archetype_name": "Practicing Oncologist",
+      "recommendation": "major_revision",
+      "confidence": 0.78,
+      "summary": "The manuscript proposes an innovative geometric control framework linking Ollivier\u2013Ricci curvature of epigenetic manifolds to metastatic latency and uses curvature\u2011adaptive CRISPR\u2011dCas9\u2011TET1 editing in organoids. While conceptually novel, the work lacks mechanistic validation, quantitative description of curvature computation, and rigorous statistical analysis of the ex\u2011vivo data, making the current evidence insufficient for publication.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 5,
+        "experimental_design": 4,
+        "evidence_support": 3,
+        "statistical_rigor": 2,
+        "clarity_of_writing": 6
+      },
+      "criticisms": [
+        "The link between computed Ricci curvature and actual kinetic barriers is assumed without experimental corroboration (Section 1, 2).",
+        "Methods for constructing the single\u2011cell ATAC\u2011seq graph, choice of transport metric, and curvature estimation are insufficiently detailed, preventing reproducibility.",
+        "The organoid experiments report a 40% curvature increase and 1.8\u2011fold chemosensitivity acceleration but provide no raw data, sample size, or statistical tests.",
+        "Control conditions are limited to uniform editing; alternative epigenetic interventions (e.g., p300 activation) are not explored.",
+        "Theoretical claims (e.g., entropy decay bound) are presented without proof or reference to established results in optimal transport literature."
+      ],
+      "required_fixes": [
+        "Provide a detailed pipeline for ATAC\u2011seq preprocessing, graph construction, Wasserstein distance calculation, and Ollivier\u2013Ricci curvature estimation, including software versions and parameters.",
+        "Include raw single\u2011cell data (or a representative subset) and demonstrate that curvature differences between tolerant and sensitive basins are statistically significant.",
+        "Expand the organoid study to include at least three biological replicates per condition, report mean\u202f\u00b1\u202fSD, and perform appropriate statistical tests (e.g., ANOVA with post\u2011hoc correction).",
+        "Add a mechanistic validation experiment showing that curvature\u2011guided editing directly alters a measurable kinetic barrier (e.g., transition rate measured by time\u2011lapse live\u2011cell imaging of reporter activation).",
+        "Supply derivations or citations for the entropy\u2011decay theorem linking Ricci lower bounds to MFPT reduction, and discuss assumptions (RCD* condition, Fisher information density) in the biological context."
+      ],
+      "suggested_experiments": [
+        "Live\u2011cell tracking of a fluorescent reporter for H3K27ac activation in DTCs after curvature\u2011guided vs uniform editing to directly measure transition rates.",
+        "Perturbation of curvature by artificially increasing graph connectivity (e.g., adding synthetic edges) to test whether predicted MFPT changes follow the model.",
+        "Compare curvature\u2011adaptive dCas9\u2011TET1 editing with dCas9\u2011p300 acetyltransferase editing to assess whether the effect is specific to demethylation or general to chromatin remodeling."
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Implement a stochastic Langevin simulation of epigenetic state transitions on a synthetic Wasserstein manifold where curvature can be analytically controlled; compare MFPT under uniform editing flux versus curvature\u2011adaptive flux as defined in the manuscript.",
+        "expected_metrics": [
+          "Mean first\u2011passage time from tolerant to sensitive basin",
+          "Distribution of curvature values along simulated trajectories",
+          "Sensitivity of MFPT to errors in curvature estimation"
+        ],
+        "rationale": "A controlled in\u2011silico test will verify that the proposed curvature\u2011adaptive control law can theoretically achieve the reported MFPT reductions and will quantify robustness to noise in curvature measurement, strengthening the mechanistic claim before additional wet\u2011lab validation."
+      }
+    },
+    {
+      "archetype_id": "investor",
+      "archetype_name": "Biotech Investor",
+      "recommendation": "major_revision",
+      "confidence": 0.78,
+      "summary": "The manuscript proposes an innovative geometric control framework using Ollivier\u2013Ricci curvature to guide CRISPR\u2011dCas9\u2011TET1 editing and accelerate epigenetic transitions in metastatic latency. While the concept is novel, the mechanistic links between curvature and chromatin dynamics are under\u2011explained, the experimental validation is limited to a single organoid model without proper controls, and the statistical treatment of curvature measurements and first\u2011passage times is insufficient. Major revisions are needed to clarify the mathematical derivations, strengthen the experimental design, and provide rigorous quantitative evidence.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 4,
+        "experimental_design": 3,
+        "evidence_support": 3,
+        "statistical_rigor": 2,
+        "clarity_of_writing": 5
+      },
+      "criticisms": [
+        "The connection between Ollivier\u2013Ricci curvature on ATAC\u2011seq graphs and actual kinetic barriers of chromatin remodeling is asserted without direct biochemical validation.",
+        "Curvature calculations are performed on a single\u2011cell graph but the manuscript lacks description of graph construction, edge weighting, and sensitivity to sequencing depth.",
+        "The ex\u2011vivo organoid experiments (Section 2) compare only curvature\u2011guided editing to uniform editing; no negative control (e.g., dCas9\u2011dead) or dose\u2011response is presented.",
+        "Statistical analysis of the reported 40% curvature increase and 1.8\u2011fold chemosensitivity acceleration is absent; p\u2011values, confidence intervals, and sample sizes are not reported.",
+        "Theoretical claims (e.g., exponential entropy decay, Lyapunov function) rely on RCD*(K,N) assumptions that may not hold for discrete ATAC\u2011seq data, yet no justification or robustness checks are provided."
+      ],
+      "required_fixes": [
+        "Provide a detailed methodological supplement describing how the single\u2011cell ATAC\u2011seq graph is built, how Ollivier\u2013Ricci curvature is computed, and perform a sensitivity analysis to sequencing depth and graph parameters.",
+        "Include biochemical assays (e.g., ChIP\u2011seq for H3K27me3/H3K27ac, DNA methylation profiling) to directly link curvature changes to epigenetic modifications at targeted loci.",
+        "Add appropriate negative controls (dCas9 without effector, non\u2011targeting guide RNAs) and a dose\u2011response curve for dCas9\u2011TET1 editing to demonstrate specificity and safety of curvature\u2011guided dosing.",
+        "Report full statistical details for all quantitative results: number of organoids, replicates, statistical tests, p\u2011values, and effect size confidence intervals.",
+        "Justify the applicability of continuous optimal\u2011transport curvature theory to discrete single\u2011cell data, or provide a discrete\u2011graph analogue with proofs or citations.",
+        "Clarify the feedback control law implementation: how curvature is measured in real time, latency of measurement, and how the editing flux is adjusted experimentally."
+      ],
+      "suggested_experiments": [
+        "Perform CRISPR\u2011dCas9\u2011TET1 editing at loci with experimentally measured high negative curvature versus low curvature and assess differential demethylation kinetics by bisulfite sequencing.",
+        "Use live\u2011cell imaging of a fluorescent reporter for H3K27ac to monitor real\u2011time transition rates under curvature\u2011guided versus uniform editing across multiple organoid lines.",
+        "Introduce a stochastic perturbation (e.g., transient hypoxia) to test whether the curvature\u2011adaptive controller can maintain reduced MFPT under stress conditions."
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Develop an agent\u2011based stochastic simulation of epigenetic state transitions on a graph whose edge weights are derived from measured ATAC\u2011seq similarity, then overlay a virtual curvature\u2011adaptive editing policy that modulates transition probabilities inversely with computed Ollivier\u2013Ricci curvature.",
+        "expected_metrics": [
+          "Mean first\u2011passage time from tolerant to sensitive states",
+          "Distribution of curvature values over time",
+          "Robustness of MFPT reduction under varying noise levels"
+        ],
+        "rationale": "Such a simulation would test whether the proposed control law can theoretically achieve the reported 30% MFPT reduction and would allow exploration of parameter regimes (e.g., measurement noise, editing saturation) that are difficult to probe experimentally."
+      }
+    },
+    {
+      "archetype_id": "kol",
+      "archetype_name": "Academic KOL",
+      "recommendation": "major_revision",
+      "confidence": 0.78,
+      "summary": "The manuscript proposes an innovative geometric control framework linking Ollivier\u2011Ricci curvature of single\u2011cell ATAC\u2011seq graphs to epigenetic editing of drug\u2011tolerant DTCs, but the mechanistic derivations are overly abstract, the experimental validation is limited to a single organoid model, and key quantitative links between curvature, Fisher information, and first\u2011passage times lack rigorous statistical support. Substantial clarification of methods, additional controls, and stronger quantitative evidence are required before the work can be considered for publication.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 4,
+        "experimental_design": 5,
+        "evidence_support": 4,
+        "statistical_rigor": 3,
+        "clarity_of_writing": 6
+      },
+      "criticisms": [
+        "The connection between Ollivier\u2011Ricci curvature and kinetic barriers is presented as a theorem without proof or citation, making the central premise speculative.",
+        "Curvature calculations are described only qualitatively; parameters (graph construction, distance metric, weighting) are not disclosed, preventing reproducibility.",
+        "The in\u2011silico simulations (Section 3) use a four\u2011dimensional Otto\u2011Wasserstein model that is not benchmarked against known epigenetic dynamics, and the reported 31\u202f% MFPT reduction lacks confidence intervals or sensitivity analysis.",
+        "Ex\u2011vivo validation (Abstract, early results) is confined to one triple\u2011negative breast cancer organoid line, with no independent replication, dose\u2011response curves, or assessment of off\u2011target editing effects.",
+        "Statistical analysis of the organoid data is absent; p\u2011values, effect sizes, and sample sizes are not reported, undermining the claim of a 1.8\u2011fold acceleration.",
+        "The manuscript mixes mathematical formalism with biological narrative, making it difficult to discern which equations are implemented versus theoretical speculation.",
+        "Potential toxicity or global chromatin disruption from curvature\u2011adaptive dCas9\u2011TET1 dosing is not addressed.",
+        "The feedback control law (\u03c6 \u221d |Ric_f|\u207b\u00b9\u141f\u00b2) is introduced without a stability analysis or demonstration that saturation limits prevent overshooting.",
+        "No comparison to existing epigenetic reprogramming strategies (e.g., uniform TET1 delivery, BET inhibition) is provided, limiting assessment of the added value of curvature guidance."
+      ],
+      "required_fixes": [
+        "Provide a detailed methodological supplement describing graph construction from ATAC\u2011seq data, choice of transport metric, and computation of Ollivier\u2011Ricci curvature, including code or pseudocode.",
+        "Include a rigorous derivation or citation linking curvature to transition rates or MFPT, and perform a sensitivity analysis showing how curvature variations affect predicted MFPTs.",
+        "Expand the experimental validation to at least two additional patient\u2011derived organoid models (different subtypes or tissue origins) and include appropriate controls (uniform editing, mock editing).",
+        "Report full statistical analyses for organoid experiments: sample sizes, replicates, confidence intervals, p\u2011values, and effect sizes for curvature change, editing efficiency, and chemosensitivity reversal.",
+        "Demonstrate the stability of the curvature\u2011adaptive control law by simulating perturbations (e.g., noise in curvature estimates, delayed feedback) and showing bounded system response.",
+        "Assess off\u2011target epigenetic effects and cell viability under curvature\u2011guided editing versus uniform editing, providing genome\u2011wide methylation or ATAC\u2011seq profiles.",
+        "Add a comparative benchmark against a standard epigenetic drug (e.g., decitabine) to contextualize the magnitude of MFPT reduction."
+      ],
+      "suggested_experiments": [
+        "Test curvature\u2011guided dCas9\u2011TET1 editing in organoids derived from HER2\u2011positive and KRAS\u2011mutant lung adenocarcinoma to evaluate generalizability across tumor lineages.",
+        "Perform time\u2011resolved single\u2011cell ATAC\u2011seq before and after editing to directly observe curvature evolution along inferred trajectories and correlate with phenotypic switching.",
+        "Introduce a reversible perturbation (e.g., transient inhibition of TET1) to verify that the observed acceleration of chemosensitivity is indeed dependent on sustained curvature elevation."
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Implement a stochastic Langevin simulation of epigenetic state transitions on a synthetic Wasserstein manifold where transition rates are explicitly parameterized by local Ollivier\u2011Ricci curvature, then compare MFPTs under curvature\u2011adaptive versus uniform editing fluxes across a range of curvature noise levels.",
+        "expected_metrics": [
+          "Mean first\u2011passage time distribution",
+          "Sensitivity of MFPT to curvature estimation error",
+          "Robustness of control law (stability margin)"
+        ],
+        "rationale": "Such a simulation would provide quantitative proof that curvature\u2011guided dosing can reliably accelerate transitions under realistic measurement noise, addressing the current gap between abstract theory and biological implementation."
+      }
+    },
+    {
+      "archetype_id": "patient",
+      "archetype_name": "Patient Advocate",
+      "recommendation": "major_revision",
+      "confidence": 0.78,
+      "summary": "The manuscript proposes an intriguing geometric framework linking Ricci curvature of epigenetic landscapes to metastatic latency and demonstrates preliminary in silico and ex vivo results, but key methodological details, statistical rigor, and clinical relevance are insufficiently addressed for acceptance.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 7,
+        "experimental_design": 4,
+        "evidence_support": 3,
+        "statistical_rigor": 2,
+        "clarity_of_writing": 5
+      },
+      "criticisms": [
+        "1. Curvature estimation from single\u2011cell ATAC\u2011seq graphs is described only qualitatively; no validation of the Ollivier\u2013Ricci implementation or error propagation is provided.",
+        "2. The control law (\u03c6\u221d|Ric_f|\u207b\u00b9/\u00b2) lacks derivation from first principles and no sensitivity analysis is shown.",
+        "3. Ex vivo organoid data are limited to a single TNBC line; no replication or dose\u2013response curves are presented.",
+        "4. Statistical analysis of the 40\u202f% curvature increase and 1.8\u2011fold chemosensitivity acceleration is missing; p\u2011values, confidence intervals, and sample sizes are absent.",
+        "5. The manuscript conflates theoretical constructs (Wasserstein manifold, RCD*(K,N) condition) with biological observables without demonstrating that the synthetic curvature bounds map onto measurable chromatin features.",
+        "6. Clinical translation is speculative; no discussion of delivery, off\u2011target effects, or patient\u2011reported outcomes is included.",
+        "7. The paper lacks a clear failure mode for the proposed therapy (e.g., potential for inducing oncogenic programs)."
+      ],
+      "required_fixes": [
+        "1. Provide a detailed description and validation of the Ollivier\u2013Ricci curvature calculation, including code availability and benchmarking against known benchmarks.",
+        "2. Derive the curvature\u2011adaptive editing flux mathematically, and perform a parameter sensitivity analysis to show robustness.",
+        "3. Expand ex vivo validation to at least three independent patient\u2011derived organoid lines, include dose\u2013response curves, and report statistical tests (e.g., ANOVA with post\u2011hoc corrections).",
+        "4. Report all statistical metrics (means, SDs, n, p\u2011values) for the reported 40\u202f% curvature increase and 1.8\u2011fold acceleration, and include power calculations.",
+        "5. Demonstrate that the synthetic curvature bounds correspond to measurable chromatin changes (e.g., H3K27ac ChIP\u2011seq peaks) and correlate with the curvature field.",
+        "6. Add a section on translational feasibility, addressing delivery of dCas9\u2011TET1, potential off\u2011target effects, and patient\u2011reported outcome considerations.",
+        "7. Discuss possible failure modes, such as unintended activation of oncogenic pathways, and propose mitigation strategies."
+      ],
+      "suggested_experiments": [],
+      "simulation_proposal": null
+    }
+  ],
+  "simulations": [
+    {
+      "id": "computational-model",
+      "title": "computational_model",
+      "type": "html5_canvas",
+      "description": "Implement a stochastic Langevin simulation of epigenetic state transitions on a synthetic Wasserstein manifold where curvature can be analytically controlled; compare MFPT under uniform editing flux versus curvature\u2011adaptive flux as defined in the manuscript.",
+      "rationale": "A controlled in\u2011silico test will verify that the proposed curvature\u2011adaptive control law can theoretically achieve the reported MFPT reductions and will quantify robustness to noise in curvature measurement, strengthening the mechanistic claim before additional wet\u2011lab validation.",
+      "expected_metrics": [
+        "Mean first\u2011passage time from tolerant to sensitive basin",
+        "Distribution of curvature values along simulated trajectories",
+        "Sensitivity of MFPT to errors in curvature estimation"
+      ],
+      "scene": "trajectory_manifold",
+      "seed": 101,
+      "parameters": {}
+    },
+    {
+      "id": "computational-model",
+      "title": "computational_model",
+      "type": "html5_canvas",
+      "description": "Develop an agent\u2011based stochastic simulation of epigenetic state transitions on a graph whose edge weights are derived from measured ATAC\u2011seq similarity, then overlay a virtual curvature\u2011adaptive editing policy that modulates transition probabilities inversely with computed Ollivier\u2013Ricci curvature.",
+      "rationale": "Such a simulation would test whether the proposed control law can theoretically achieve the reported 30% MFPT reduction and would allow exploration of parameter regimes (e.g., measurement noise, editing saturation) that are difficult to probe experimentally.",
+      "expected_metrics": [
+        "Mean first\u2011passage time from tolerant to sensitive states",
+        "Distribution of curvature values over time",
+        "Robustness of MFPT reduction under varying noise levels"
+      ],
+      "scene": "trajectory_manifold",
+      "seed": 202,
+      "parameters": {}
+    },
+    {
+      "id": "computational-model",
+      "title": "computational_model",
+      "type": "html5_canvas",
+      "description": "Implement a stochastic Langevin simulation of epigenetic state transitions on a synthetic Wasserstein manifold where transition rates are explicitly parameterized by local Ollivier\u2011Ricci curvature, then compare MFPTs under curvature\u2011adaptive versus uniform editing fluxes across a range of curvature noise levels.",
+      "rationale": "Such a simulation would provide quantitative proof that curvature\u2011guided dosing can reliably accelerate transitions under realistic measurement noise, addressing the current gap between abstract theory and biological implementation.",
+      "expected_metrics": [
+        "Mean first\u2011passage time distribution",
+        "Sensitivity of MFPT to curvature estimation error",
+        "Robustness of control law (stability margin)"
+      ],
+      "scene": "trajectory_manifold",
+      "seed": 303,
+      "parameters": {}
+    },
+    {
+      "id": "tumor-volume-3d",
+      "title": "Tumor Volume (3D)",
+      "type": "threejs",
+      "description": "Volumetric point-cloud tumor with phenotype-coloured clusters that grow, divide, and apoptose over time. Rotates the mass to expose where the model places phenotype boundaries.",
+      "rationale": "The 2D manifold view collapses depth \u2014 a 3D volumetric rendering tests whether claimed phenotype clusters survive when seen from arbitrary angles.",
+      "expected_metrics": [
+        "phenotype-cluster volumetric stability",
+        "intra-cluster density",
+        "boundary sharpness under rotation"
+      ],
+      "three_scene": "tumor_volume_3d",
+      "seed": 5890,
+      "parameters": {
+        "title": "Ricci-Guided Geometric Control of Epigenetic Commitment Windows to Suppress Metastatic Latency",
+        "confidence": 0.39625,
+        "critique": "The link between computed Ricci curvature and actual kinetic barriers is assumed without experimental corroboration (Section 1, 2).",
+        "catalyst": "[Practicing Oncologist] A successful phase I/II trial showing a \u226550% reduction in metastatic relapse would push the market price up; conversely, a failure to demonstrate safety of the CRISPR\u2011dCas9 delivery system would drive it down."
+      }
+    },
+    {
+      "id": "mitotic-lattice-3d",
+      "title": "Mitotic Lattice (3D)",
+      "type": "threejs",
+      "description": "Rotating 3D lattice of cells with division events sampled from the validator-emitted novelty distribution. Daughter cells inherit colour from parent phenotype, exposing lineage drift.",
+      "rationale": "Hooks the falsifier visually: if the paper's mechanism predicts a specific division geometry, this scene makes deviations from it immediately visible.",
+      "expected_metrics": [
+        "division-rate per phenotype",
+        "lineage-drift entropy",
+        "spatial clustering of mitotic events"
+      ],
+      "three_scene": "mitotic_lattice_3d",
+      "seed": 5908,
+      "parameters": {
+        "title": "Ricci-Guided Geometric Control of Epigenetic Commitment Windows to Suppress Metastatic Latency",
+        "confidence": 0.39625,
+        "critique": "The link between computed Ricci curvature and actual kinetic barriers is assumed without experimental corroboration (Section 1, 2).",
+        "catalyst": "[Patient Advocate] A successful Phase\u202fII trial demonstrating a 30\u202f% reduction in metastatic relapse rates in a well\u2011defined TNBC cohort would push the prediction\u2011market price up, whereas evidence of significant off\u2011target chromatin alterations or lack of durable benefit would push it down."
+      }
+    },
+    {
+      "id": "perturbation-cone-3d",
+      "title": "Perturbation Cone (3D)",
+      "type": "threejs",
+      "description": "3D analog of the counterfactual scene: treated trajectories spread out from a baseline manifold along a confidence-weighted cone. Cone width tracks acceptance probability.",
+      "rationale": "Forces the prediction-vs-observation gap into a single visual. A narrow, well-aimed cone implies confident divergence; a fat cone signals high predictive uncertainty.",
+      "expected_metrics": [
+        "cone aperture",
+        "trajectory bundle coherence",
+        "off-axis trajectory frequency"
+      ],
+      "three_scene": "perturbation_cone_3d",
+      "seed": 5926,
+      "parameters": {
+        "title": "Ricci-Guided Geometric Control of Epigenetic Commitment Windows to Suppress Metastatic Latency",
+        "confidence": 0.39625,
+        "critique": "The link between computed Ricci curvature and actual kinetic barriers is assumed without experimental corroboration (Section 1, 2).",
+        "catalyst": "[Insurance Payer] A definitive Phase\u202fI safety signal combined with a validated curvature biomarker that predicts response would shift the price upward; failure to demonstrate safety or any clinical benefit would push it down."
+      }
+    }
+  ]
+}

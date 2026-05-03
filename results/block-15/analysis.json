@@ -1,0 +1,574 @@
+{
+  "archetypes": [
+    {
+      "scores": {
+        "clinical_viability": 2,
+        "regulatory_risk": 9,
+        "market_potential": 3,
+        "patient_impact": 2,
+        "novelty": 8,
+        "falsifiability": 3
+      },
+      "verdict": "This reads like a highly sophisticated mathematical exercise detached from any clinical reality. The 'epigenetic-transcriptional commitment manifold' is a theoretical construct with zero experimental validation - I've been treating ovarian and breast cancer for fifteen years and have no way to measure Gaussian curvature in a patient's tumor cells in real time. The in silico claims of 40% MFPT reduction mean nothing without animal model confirmation. The 'Cas13a-based fluorescent sensors' for live \u03ba(p) reporting are science fiction. Compare this to actual CRISPR trials in oncology - we're struggling with delivery, off-target effects, and patient selection using concrete biomarkers. This paper offers none of that. The failure mode about >30% noise is unfalsifiable because we can't measure \u03ba(p) at all. The only thing this has going for it is intellectual elegance. I'm not moving the price on this until someone demonstrates this works in a mouse model, let alone humans. We're a decade away from even Phase I considerations, if ever.",
+      "would_move_price": "Phase I/II data in patient-derived xenografts showing measurable curvature metrics correlating with treatment response would shift the price dramatically higher; without any in vivo validation, this remains purely speculative.",
+      "archetype_id": "oncologist",
+      "archetype_name": "Practicing Oncologist"
+    },
+    {
+      "scores": {
+        "clinical_viability": 2,
+        "regulatory_risk": 8,
+        "market_potential": 2,
+        "patient_impact": 2,
+        "novelty": 8,
+        "falsifiability": 3
+      },
+      "verdict": "This paper is a mathematical tour de force with zero clinical grounding. The authors claim in silico validation across 1,200 DTC clones, but this is a computational exercise\u2014not a single real cell was touched. The core construct\u2014local Gaussian curvature \u03ba(p) of an epigenetic-transcriptional commitment manifold\u2014is mathematically elegant but biologically unmeasurable. They propose Cas13a-based fluorescent sensors for real-time \u03ba(p) reporting, but this is a hypothesis for a hypothesis. The stated failure mode (\u03ba estimation noise >30% inflates resistant clones by \u226520%) is falsifiable in principle, but the threshold is arbitrary and there's no way to measure \u03ba(p) in the first place to test it. The endpoint\u2014mean first passage time to drug-sensitive states\u2014is a theoretical construct, not a clinically validated surrogate. No sample size calculation, no power analysis, no comparator arm, no regulatory strategy. This is a modeling paper masquerading as therapeutic development. For a prediction market: this stays near zero until someone publishes actual experimental data showing curvature predicts epigenetic state transitions in real tumor cells.",
+      "would_move_price": "Publication of experimental data demonstrating that local curvature \u03ba(p) can be measured in actual tumor cells and that it predicts epigenetic state transition kinetics would dramatically increase the price; without any empirical validation, the paper remains a mathematical curiosity with near-zero clinical probability.",
+      "archetype_id": "biostatistician",
+      "archetype_name": "Biostatistician"
+    },
+    {
+      "scores": {
+        "": ""
+      },
+      "archetype_id": "investor",
+      "archetype_name": "Biotech Investor"
+    },
+    {
+      "scores": {
+        "clinical_viability": 3,
+        "regulatory_risk": 8,
+        "market_potential": 4,
+        "patient_impact": 2,
+        "novelty": 9,
+        "falsifiability": 6
+      },
+      "verdict": "From a patient\u2019s lived\u2011experience lens, this proposal feels like science fiction masquerading as a therapy. It promises to sculpt the epigenetic landscape with CRISPR bursts timed to invisible curvature maps\u2014something no clinic can measure or monitor today. Even if the math works, the real\u2011world journey would involve invasive biopsies, live\u2011cell curvature reporters, and repeated high\u2011dose CRISPR deliveries, each carrying unknown off\u2011target risks and immune reactions. The projected 40% speed\u2011up in cellular transitions is a simulation artifact; we have no data on how patients would feel, what side\u2011effects would emerge, or whether the approach would actually improve survival or quality of life. Until we see tangible safety data, clear biomarkers, and a patient\u2011friendly delivery platform, the concept remains a high\u2011risk, low\u2011benefit gamble for those already battling metastatic disease.",
+      "would_move_price": "A successful Phase\u202fI trial showing safe, real\u2011time curvature read\u2011outs and a measurable reduction in resistant clone emergence would push the price up; any signal of off\u2011target toxicity or infeasible monitoring would drive it down.",
+      "archetype_id": "patient",
+      "archetype_name": "Patient Advocate"
+    },
+    {
+      "scores": {
+        "clinical_viability": 2,
+        "regulatory_risk": 9,
+        "market_potential": 3,
+        "patient_impact": 2,
+        "novelty": 7,
+        "falsifiability": 6
+      },
+      "verdict": "CASOC is a mathematical ornament on a biological chimera. The fatal flaw is ontological: it treats the epigenetic-transcriptional commitment manifold \u0393_t as a stationary Riemannian metric when in reality DTCs remodel their own geometry under therapeutic stress, breaking the curvature-to-kinetics mapping the control law depends on. Regulatory risk is severe because the dosing tensor \u0393_t(\u03ba, \u03c4_v, \u03bb) requires in vivo \u03ba(p) estimation with <30% noise\u2014unachievable with current live \u03ba reporters\u2014creating an unblinding risk in pivotal trials where misallocated CRISPR bursts generate off-target resistance that looks like progression. Market potential is capped by the need for patient-specific manifold inference plus CRISPR hardware that doesn\u2019t exist, while patient impact is negligible because the 40% MFPT reduction is in silico only and ignores clonal competition from pre-existing resistant clones. Falsifiability is moderate: the 30% \u03ba noise threshold is testable, but the underlying manifold assumption is not.",
+      "would_move_price": "A single-patient ex vivo validation showing that induced curvature changes (via HDAC inhibition) actually shorten \u03c4_v as predicted would shift price up; an in vivo CRISPR biodistribution study showing >30% variance in editing efficiency across high-\u03ba vs low-\u03ba loci would crash it.",
+      "archetype_id": "short_seller",
+      "archetype_name": "Adversarial Short-Seller"
+    }
+  ],
+  "market_price": 0.30124999999999996,
+  "score_matrix": {
+    "oncologist": {
+      "clinical_viability": 2,
+      "regulatory_risk": 9,
+      "market_potential": 3,
+      "patient_impact": 2,
+      "novelty": 8,
+      "falsifiability": 3
+    },
+    "biostatistician": {
+      "clinical_viability": 2,
+      "regulatory_risk": 8,
+      "market_potential": 2,
+      "patient_impact": 2,
+      "novelty": 8,
+      "falsifiability": 3
+    },
+    "investor": {
+      "": ""
+    },
+    "patient": {
+      "clinical_viability": 3,
+      "regulatory_risk": 8,
+      "market_potential": 4,
+      "patient_impact": 2,
+      "novelty": 9,
+      "falsifiability": 6
+    },
+    "short_seller": {
+      "clinical_viability": 2,
+      "regulatory_risk": 9,
+      "market_potential": 3,
+      "patient_impact": 2,
+      "novelty": 7,
+      "falsifiability": 6
+    }
+  },
+  "consensus_dim": {
+    "clinical_viability": 2.25,
+    "regulatory_risk": 8.5,
+    "market_potential": 3.0,
+    "patient_impact": 2.0,
+    "novelty": 8.0,
+    "falsifiability": 4.5
+  },
+  "headline_catalysts": [
+    "[Practicing Oncologist] Phase I/II data in patient-derived xenografts showing measurable curvature metrics correlating with treatment response would shift the price dramatically higher; without any in vivo validation, this remains purely speculative.",
+    "[Biostatistician] Publication of experimental data demonstrating that local curvature \u03ba(p) can be measured in actual tumor cells and that it predicts epigenetic state transition kinetics would dramatically increase the price; without any empirical validation, the paper remains a mathematical curiosity with near-zero clinical probability.",
+    "[Patient Advocate] A successful Phase\u202fI trial showing safe, real\u2011time curvature read\u2011outs and a measurable reduction in resistant clone emergence would push the price up; any signal of off\u2011target toxicity or infeasible monitoring would drive it down.",
+    "[Adversarial Short-Seller] A single-patient ex vivo validation showing that induced curvature changes (via HDAC inhibition) actually shorten \u03c4_v as predicted would shift price up; an in vivo CRISPR biodistribution study showing >30% variance in editing efficiency across high-\u03ba vs low-\u03ba loci would crash it."
+  ],
+  "derived_topics": [
+    {
+      "id": 1,
+      "title": "\u03ba(p)-weighted Cas9 burst noise shaping to suppress resistant basin leakage under epigenetic drift",
+      "probability": 0.72,
+      "impact": 8,
+      "token_cost": 2800,
+      "rationale": "Extends the CASOC control law by explicitly modeling Cas9 burst-size variance as a function of local \u03ba(p) to minimize escape probability when \u0393_t reconfigures; hypothesis: curvature-adapted burst noise shaping lowers resistant clone frequency by \u226535% vs amplitude-only adaptation; failure if epigenetic drift exceeds curvature re-estimation latency."
+    },
+    {
+      "id": 2,
+      "title": "Live \u03ba(p) reporters via Cas13a-H3K27ac sensors to tighten PTD-CRISPR phase alignment in DTCs",
+      "probability": 0.65,
+      "impact": 9,
+      "token_cost": 3200,
+      "rationale": "Extends the proposed real-time curvature feedback by coupling Cas13a fluorescence to high-\u03ba loci to dynamically update dosing intervals; hypothesis: closed-loop \u03ba(p) feedback raises sensitive-state commitment probability \u22650.94; failure if in vivo SNR < 3 or sensor perturbation alters \u0393_t geometry."
+    },
+    {
+      "id": 3,
+      "title": "Persistence-homology triggers for curvature map re-estimation during therapy-induced \u0393_t drift",
+      "probability": 0.68,
+      "impact": 7,
+      "token_cost": 2400,
+      "rationale": "Extends failure-mode analysis by embedding topological change detection to recompute \u03ba(p) when separatrix instability exceeds threshold; hypothesis: adaptive re-estimation caps resistant clone inflation \u226410% under drift; failure if drift timescale is faster than single-cell multi-omic readout latency."
+    },
+    {
+      "id": 4,
+      "title": "Overdamped Langevin control on Ricci-flow-deformed \u0393_t to amplify high-\u03ba corridor compression",
+      "probability": 0.6,
+      "impact": 8,
+      "token_cost": 3000,
+      "rationale": "Extends geometric control by coupling CRISPR activity to Ricci-flow evolution of g to transiently steepen \u03ba(p) in target corridors; hypothesis: curvature amplification shortens mean first passage time by additional \u226525%; failure if flow destabilizes basin boundaries or induces pathological geodesics."
+    },
+    {
+      "id": 5,
+      "title": "Inter-patient \u03ba(p) uncertainty propagation bounds for clinically feasible CASOC dosing tensors",
+      "probability": 0.75,
+      "impact": 6,
+      "token_cost": 2000,
+      "rationale": "Extends the 30% \u03ba(p) noise failure threshold by deriving patient-specific error budgets for \u0393_t(\u03ba,\u03c4_v,\u03bb) from limited biopsy sampling; hypothesis: uncertainty-aware control maintains \u226540% resistant clone reduction with \u226425% curvature measurement error; failure if posterior predictive variance exceeds controllability margins."
+    }
+  ],
+  "peer_reviews": [
+    {
+      "archetype_id": "oncologist",
+      "archetype_name": "Practicing Oncologist",
+      "recommendation": "major_revision",
+      "confidence": 0.82,
+      "summary": "The paper proposes a geometric control framework (CASOC) for CRISPR dosing against disseminated tumor cells that is mechanistically creative and internally coherent, but it is not yet translatable to clinical workflows. Key gaps include unspecified \u03ba(p) measurement, no plan for in vivo validation, undefined off-label CRISPR delivery schema, and absent comparison to standard-of-care DTC management (e.g., adjuvant therapy, ctDNA-guided intensification). Until these are addressed, the claims remain in silico only.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 8,
+        "experimental_design": 4,
+        "evidence_support": 5,
+        "statistical_rigor": 6,
+        "clarity_of_writing": 7
+      },
+      "criticisms": [
+        "No specification of how \u03ba(p) would be estimated in real time in patients; live \u03ba(p) reporters (Cas13a-H3K27ac sensors) are proposed without validation data, detection limits, or spatial resolution sufficient for clinical decision making.",
+        "Absent comparison to standard-of-care for DTC eradication (e.g., extended adjuvant therapy, ctDNA-triggered intensification, or clonal hematopoiesis\u2013aware regimens), making the \u226540% MFPT claim clinically unanchored.",
+        "Off-label realities unaddressed: CRISPR-Cas9 for non-viral in vivo DTC editing is not FDA-approved; dosing tensor \u0393_t(\u03ba,\u03c4_v,\u03bb) implies chronic Cas9 exposure without biodistribution, immunogenicity (anti-Cas9 antibodies), or genotoxicity (p53 activation, chromosomal translocations) analysis.",
+        "Patient burden poorly characterized: repeated invasive biopsies or imaging to infer \u03ba(p) is impractical; surrogate biomarker strategy (e.g., ctDNA methylation as curvature proxy) is missing.",
+        "Failure mode threshold (\u03ba estimation noise >30% \u2192 \u226520% resistant clones) is asserted without sensitivity analyses across clonal fitness landscapes or spatial heterogeneity in metastases.",
+        "No plan for inter-patient variability in \u0393_t topology (e.g., breast vs. ovarian vs. brain metastases) or for evolving \u03ba(p) under therapy-induced stress.",
+        "Control law u_t = \u2013\u03b1\u03ba(X_t)\u2207U(X_t) + \u03b2\u03ba(X_t)^2 \u03c3(X_t) lacks units and clinically interpretable parameters (e.g., how \u03b1 maps to Cas9 RNP dose or viral vector titer)."
+      ],
+      "required_fixes": [
+        "Define a feasible \u03ba(p) measurement strategy with error model (e.g., single-cell multi-omics from liquid biopsy or spatially resolved epigenomics) and specify maximum tolerable estimation error for clinical deployment.",
+        "Add a comparator arm reflecting standard-of-care DTC management (e.g., fixed-interval or ctDNA-triggered conventional therapy) and report incremental benefit in clinically meaningful endpoints (e.g., relapse-free survival, resistant clone fraction).",
+        "Incorporate off-label safety constraints: estimate cumulative Cas9 exposure, immunogenicity risk, and genotoxicity probability per dosing tensor, and include stopping rules if thresholds are exceeded.",
+        "Specify how the framework would integrate into clinical workflows (sampling cadence, turnaround time, decision latency) and quantify patient burden (procedures, toxicities, monitoring)."
+      ],
+      "suggested_experiments": [
+        "Ex vivo CRISPR titration on patient-derived DTCs with live epigenetic reporters to calibrate \u03ba(p)\u2194w*(p) relationship and estimate SNR thresholds for Cas13a-H3K27ac sensors.",
+        "In vivo xenograft or PDX study comparing CASOC-guided CRISPR (via LNPs or AAV) vs. fixed-interval editing, with serial ctDNA and single-cell multi-omics to measure \u03c4_v, resistant clone frequency, and off-target editing.",
+        "Clinical feasibility cohort (n\u224810\u201320) using serial liquid biopsy to reconstruct patient-specific \u0393_t curvature maps and simulate CASOC dosing without intervention, to validate \u03ba(p) estimation error and workflow latency."
+      ],
+      "simulation_proposal": {
+        "type": "in_silico",
+        "description": "Monte Carlo simulation of CASOC vs. fixed-interval and ctDNA-triggered standard-of-care across a synthetic cohort of 1,000 virtual patients with inter-individual variability in \u0393_t curvature, metastatic burden, and \u03ba(p) measurement noise; include off-label safety constraints (Cas9 immunogenicity and genotoxicity as probabilistic dose\u2013response).",
+        "expected_metrics": [
+          "Mean first passage time to sensitive state (MFPT)",
+          "Proportion of patients with >20% resistant clones at 12 months",
+          "Cumulative Cas9 exposure (AUC) and probability of anti-Cas9 seroconversion",
+          "Probability of severe off-target event (e.g., chromosomal translocation) per patient",
+          "Workflow feasibility: median time from \u03ba(p) measurement to dose adjustment"
+        ],
+        "rationale": "This simulation would test whether CASOC\u2019s geometric advantage persists under realistic noise, inter-patient heterogeneity, and safety constraints, and whether it meaningfully outperforms plausible standard-of-care alternatives."
+      }
+    },
+    {
+      "archetype_id": "biostatistician",
+      "archetype_name": "Biostatistician",
+      "recommendation": "minor_revision",
+      "confidence": 0.85,
+      "summary": "The paper presents a novel curvature-adaptive CRISPR control framework grounded in Riemannian geometry, with strong mechanistic plausibility. However, critical gaps in experimental validation (in vivo), statistical rigor for stochastic elements, and robustness to \u03ba(p) estimation errors require addressing before clinical relevance can be established.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 8,
+        "experimental_design": 6,
+        "evidence_support": 7,
+        "statistical_rigor": 7,
+        "clarity_of_writing": 6
+      },
+      "criticisms": [
+        "Relies heavily on in silico validation without in vivo experimental proof of concept, particularly for live \u03ba(p) reporter efficacy and epigenetic drift mitigation.",
+        "The 30% \u03ba(p) noise threshold causing \u226520% resistant clones is theoretically plausible but lacks empirical validation in biological systems.",
+        "Failure mode analysis focuses on theoretical thresholds but does not address practical challenges of real-time curvature feedback in clinical settings.",
+        "Statistical treatment of stochastic curvature estimation and cellular responses is underdeveloped, particularly in quantifying confidence intervals for MFPT reductions.",
+        "The connection between curvature-weighted control and biological outcomes (e.g., reduced resistant clones) is not directly demonstrated in experiments."
+      ],
+      "required_fixes": [
+        "Conduct in vivo experiments to validate live \u03ba(p) reporter performance and CASOC efficacy under physiological conditions.",
+        "Perform sensitivity analyses quantifying how \u03ba(p) estimation errors propagate to resistant clone frequency in simulated and experimental settings.",
+        "Add statistical power calculations for the 40% MFPT reduction claim, including confidence intervals and effect size estimates.",
+        "Clarify how persistence homology techniques will be implemented in vivo to monitor \u0393_t topology changes.",
+        "Include comparative controls (e.g., fixed-interval CRISPR dosing) in experimental designs to isolate CASOC's geometric advantage."
+      ],
+      "suggested_experiments": [
+        "In vivo validation of Cas13a-based \u03ba(p) reporters in tumor models with controlled epigenetic drift.",
+        "Stochastic simulations varying \u03ba(p) noise levels (0-50%) to test robustness of CASOC's 30% threshold.",
+        "Epigenetic drift experiments using CRISPR-induced stress to model \u0393_t reconfiguration during therapy.",
+        "Clinical pilot study with CRISPR dosing guided by curvature feedback (if feasible)."
+      ],
+      "simulation_proposal": null
+    },
+    {
+      "archetype_id": "fda",
+      "archetype_name": "FDA Regulator",
+      "recommendation": "minor_revision",
+      "confidence": 0.75,
+      "summary": "The paper presents a novel, mechanistically grounded framework for CRISPR scheduling using curvature-adaptive stochastic optimal control (CASOC). While the geometric model of \u0393_t and theoretical derivation are robust, the lack of experimental validation and real-world applicability concerns (e.g., \u03ba(p) estimation noise) necessitate additional data to support clinical translation.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 8,
+        "experimental_design": 7,
+        "evidence_support": 6,
+        "statistical_rigor": 7,
+        "clarity_of_writing": 6
+      },
+      "criticisms": [
+        "Relies heavily on in silico simulations without in vitro/in vivo validation of CASOC's efficacy.",
+        "Assumes real-time \u03ba(p) measurement via Cas13a reporters is feasible, but technical feasibility and SNR thresholds (e.g., <3) are not experimentally tested.",
+        "Failure mode analysis (e.g., \u03ba(p) noise >30% inflating resistant clones) is theoretical; empirical thresholds for clinical relevance are missing.",
+        "Statistical methods for handling stochastic curvature estimation and epigenetic drift lack rigor (e.g., no bootstrap validation or error bounds)."
+      ],
+      "required_fixes": [
+        "Conduct in vitro CRISPR editing experiments with curvature reporters to validate MFPT reduction claims.",
+        "Perform sensitivity analysis on \u03ba(p) estimation noise (e.g., 30% noise) using real biological data to quantify resistant clone frequency increases.",
+        "Clarify how epigenetic drift is monitored in vivo and validate persistence homology techniques with experimental data."
+      ],
+      "suggested_experiments": [
+        "In vitro validation: Test CASOC against fixed-interval protocols in DTC models with measured \u03ba(p) reporters to confirm \u226540% MFPT reduction.",
+        "In vivo pilot study: Use CRISPR-Cas9 with Cas13a-based \u03ba(p) reporters in a xenograft model to assess real-time feedback efficacy and safety signals.",
+        "Statistical robustness: Replicate in silico results with 100+ independent simulations under varying \u03ba(p) noise and epigenetic drift scenarios."
+      ],
+      "simulation_proposal": {
+        "type": "in_silico",
+        "description": "Simulate CASOC in a synthetic \u0393_t manifold with controlled \u03ba(p) noise and epigenetic drift to quantify MFPT robustness and resistant clone frequency under varying SNR thresholds.",
+        "expected_metrics": [
+          "MFPT under noise",
+          "resistant clone frequency",
+          "CASOC adaptation time"
+        ]
+      }
+    },
+    {
+      "archetype_id": "investor",
+      "archetype_name": "Biotech Investor",
+      "recommendation": "major_revision",
+      "confidence": 0.75,
+      "summary": "This computational oncology paper proposes an elaborate mathematical framework (CASOC) for CRISPR scheduling based on epigenetic manifold curvature. While the theoretical architecture is internally consistent, the complete absence of experimental validation beyond in silico simulations (1,200 clones from existing atlases) renders clinical translation claims premature. The paper relies heavily on unpublished CancerHawk Blocks 13 and 14 for foundational curvature-manifold concepts. From an investment perspective, the TAM is substantial but time-to-clinic exceeds 15 years given the Technology Readiness Level, capital requirements would exceed $500M, and IP defensibility is uncertain without demonstrated reduction to practice. The 30% noise threshold for \u03ba(p) estimation provides a falsifiable hypothesis, but no data supports this specific cutoff. Major revisions required before acceptance.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 5,
+        "experimental_design": 2,
+        "evidence_support": 2,
+        "statistical_rigor": 4,
+        "clarity_of_writing": 7
+      },
+      "criticisms": [
+        "No experimental validation - only in silico simulation across 1,200 DTC clones from existing atlases (Section 1 claims validation but provides no methodological detail on clone generation or model parameters)",
+        "Heavy dependence on unpublished CancerHawk Blocks 13 and 14 for foundational concepts (\u0393_t construction, curvature-transition kinetics relationship) without which this work is unverifiable",
+        "The Cas13a-based live \u03ba(p) reporters (Section 1) are proposed but not demonstrated - this is a hypothesis within a hypothesis",
+        "No quantitative details on the 1,200 clone simulations: What cancer types? What noise models? What baseline protocols? The 40% MFPT reduction claim lacks statistical confidence intervals",
+        "The 30% \u03ba(p) estimation noise threshold appears arbitrary - no sensitivity analysis provided to justify this specific cutoff",
+        "From investor lens: No discussion of delivery vectors (AAV, lipid nanoparticles) or tissue penetration challenges for CRISPR in disseminated ovarian/breast cancer",
+        "Pontryagin maximum principle application to biological system (Section 3) lacks justification for treating cells as optimal control agents",
+        "The paper conflates mathematical elegance with biological plausibility - cells do not solve Hamilton-Jacobi-Bellman equations"
+      ],
+      "required_fixes": [
+        "Provide complete Methods section with simulation parameters, clone source data (which atlases?), noise models, and statistical testing for the 40% MFPT claim",
+        "Include sensitivity analysis around the 30% \u03ba(p) noise threshold with quantitative impact on resistant clone frequency",
+        "Either provide experimental validation data or explicitly frame this as a computational hypothesis-generating study",
+        "Detail the specific CRISPR target (which oncogene/oncogene?), delivery mechanism, and expected timing for in vivo testing",
+        "Clarify the relationship to CancerHawk Blocks 13 and 14 - are these submitted concurrently? Provide sufficient background to make this work standalone",
+        "Add confidence intervals and effect sizes to all numerical claims"
+      ],
+      "suggested_experiments": [
+        "In vitro validation: Culture ovarian cancer (OVCAR-3) and breast cancer (MDA-MB-231) DTC models, measure H3K27ac landscapes via CUT&RUN, construct empirical \u0393_t from single-cell multi-omics, validate curvature-transition kinetics correlation",
+        "Test \u03ba(p) reporter feasibility: Engineer Cas13a-based sensors targeting high-\u03ba loci (H3K27ac peaks), measure SNR in DTCs under basal and stress conditions",
+        "In vivo proof-of-concept: xenograft DTC models with CRISPR delivery, compare CASOC protocol vs fixed-interval dosing, measure DTC burden reduction",
+        "Capital intensity estimate: Budget >$200M for IND-enabling studies given the combinatorial complexity of CRISPR + curvature imaging + patient-specific \u0393_t mapping"
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Agent-based stochastic simulation of 10,000 DTC trajectories on a computationally reconstructed \u0393_t from published ovarian/breast cancer single-cell atlases (e.g., TCGA, GEO). Implement CASOC control law u_t = -\u03b1 \u03ba(X_t)\u2207U(X_t) + \u03b2 \u03ba(X_t)^2 \u03c3(X_t) vs baseline protocols (fixed-interval, continuous, curvature-proportional). Vary \u03ba(p) estimation noise from 0-50% to characterize the noise threshold effect on resistant clone fraction.",
+        "expected_metrics": [
+          "Mean first passage time (MFPT) from resistant to sensitive basin",
+          "Resistant clone fraction at t=30 days post-intervention",
+          "Probability of irreversible commitment to sensitive lineage",
+          "Sensitivity curves: resistant clone fraction vs \u03ba-estimation noise (to validate/invalidate 30% threshold)"
+        ],
+        "rationale": "This addresses the core criticism that the 40% MFPT claim and 30% noise threshold lack quantitative support. The simulation should be reproducible using publicly available single-cell data, enabling independent validation before any investment decision. If the 40% effect survives noise levels typical of clinical imaging (~15-20%), this strengthens the investment thesis; if it requires <10% noise, the approach is likely undeployable."
+      }
+    },
+    {
+      "archetype_id": "kol",
+      "archetype_name": "Academic KOL",
+      "recommendation": "major_revision",
+      "confidence": 0.75,
+      "summary": "The paper proposes a geometric control framework (CASOC) linking Gaussian curvature of an epigenetic-transcriptional manifold to CRISPR scheduling for disseminated tumor cells. The mechanism is creative and internally coherent, but key claims (\u226540% MFPT reduction, \u03ba(p)^(-1/2) pulse-width law) are asserted without reproducible derivations or error bounds. The manuscript conflates Riemannian geometry with control policy without clarifying observability (how \u03ba(p) is measured in vivo) or robustness to drift; as written, it is not falsifiable in a wet-lab setting. With explicit derivations, identifiable parameters, and a testable failure-mode experiment, it could slot as a theory/methods paper in a systems-biology venue and would be championed by geometric-control/CRISPR-engineering groups but attacked by empiricists for phenomenology.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 7,
+        "experimental_design": 4,
+        "evidence_support": 4,
+        "statistical_rigor": 5,
+        "clarity_of_writing": 6
+      },
+      "criticisms": [
+        "Theorem 1 and the \u226540% MFPT reduction claim are stated without proof, assumptions, or confidence intervals; sample size (n=1,200 clones) is mentioned but distribution across patients and clones is undefined.",
+        "The scaling law w*(p) \u221d \u03ba(p)^{-1/2} is asserted without derivation from first principles or a control Hamiltonian; dimensional analysis is missing (units of \u03ba, w*).",
+        "Observability of \u03ba(p) in vivo is underspecified: the text invokes Cas13a-based reporters and imaging but does not quantify noise, spatial resolution, or temporal lag relative to the epigenetic manifold dynamics.",
+        "Failure-mode threshold (\u03ba estimation noise >30% \u2192 resistant clone frequency \u226520%) is presented as a point estimate without sensitivity analysis or a probabilistic bound.",
+        "The manuscript repeatedly references prior CancerHawk Blocks 13/14 as established results but does not restate necessary definitions or provide citations; this undermines standalone readability.",
+        "Separatrix targeting via Morse\u2013Smale complexes is mentioned but not operationalized (how to identify and avoid critical points with CRISPR dosing)."
+      ],
+      "required_fixes": [
+        "Supply a complete derivation of the CASOC law from a stated Hamilton\u2013Jacobi\u2013Bellman equation, including state/control spaces, cost functional, and noise model; prove Theorem 1 with explicit constants and domain assumptions.",
+        "Provide closed-form or numerical justification for w*(p) \u221d \u03ba(p)^{-1/2}, including units and domain of validity; report sensitivity to misspecification of g and D.",
+        "Define an identifiable measurement model for \u03ba(p) (e.g., Cram\u00e9r\u2013Rao lower bound from reporter readouts) and incorporate this into the control policy as a filtering/estimation layer."
+      ],
+      "suggested_experiments": [
+        "In an isogenic DTC line, perturb curvature by targeted epigenetic editing (e.g., EZH2 inhibition to alter H3K27ac landscapes), measure in situ \u03ba(p) via live ATAC\u2013/ChIP\u2013imaging, and test whether CASOC-timed Cas9 pulses reduce resistant reversion more than fixed-interval dosing; primary endpoint: fraction of cells re-entering resistant state within 14 days.",
+        "Spike-in control experiment: titrate reporter noise (CRISPRa-based \u03ba(p) sensors with variable promoters) to validate the 30% \u03ba-estimation noise threshold for resistant clone expansion."
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Monte Carlo simulation of overdamped Langevin dynamics on a synthetic 2D Riemannian manifold with tunable Gaussian curvature, comparing CASOC, curvature-proportional, and fixed-interval policies under \u03ba-estimation noise; estimate MFPT and resistant-state occupation probability.",
+        "expected_metrics": [
+          "MFPT to sensitive basin",
+          "fraction of trajectories escaping to resistant basin",
+          "coefficient of variation of MFPT across noise realizations"
+        ],
+        "rationale": "This would test the claimed \u226540% MFPT reduction and the 30% \u03ba-noise failure threshold in a controlled, reproducible setting before experimental investment."
+      }
+    },
+    {
+      "archetype_id": "patient",
+      "archetype_name": "Patient Advocate",
+      "recommendation": "major_revision",
+      "confidence": 0.75,
+      "summary": "The paper proposes a geometric control framework (CASOC) to exploit curvature of an epigenetic-transcriptional manifold for CRISPR scheduling against disseminated tumor cells. Mechanistically intriguing, but it is not yet translatable to lived experience: there is no plan for patient-reported outcomes, no strategy for real-world delivery/toxicity monitoring, and no pathway to obtain informed consent for geometry-guided editing in disseminated disease. The in silico claims (\u226540% MFPT reduction) are presented without uncertainty quantification across patient subgroups, and \u03ba(p) estimation noise thresholds ignore inter-patient heterogeneity in tissue access and reporter performance.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 8,
+        "experimental_design": 4,
+        "evidence_support": 5,
+        "statistical_rigor": 5,
+        "clarity_of_writing": 6
+      },
+      "criticisms": [
+        "No patient-reported outcome (PRO) endpoints or instruments are specified; the abstract and Section 3 focus exclusively on MFPT and in silico clones, omitting symptom burden, quality of life, or treatment tolerability.",
+        "Delivery feasibility for disseminated disease is unaddressed: how CASOC-guided CRISPR pulses would be administered to DTCs across bone marrow, peritoneum, or leptomeninges is not specified, nor are tissue-specific access barriers or Cas9 immunogenicity risks in real-world patients.",
+        "The 30% \u03ba(p) estimation noise threshold is presented as a universal failure mode without justification for variability across clinical imaging platforms, tumor sites, or patient-level factors (e.g., fibrosis, prior therapies) that degrade reporter SNR.",
+        "No plan for consent or shared decision-making in the context of geometry-informed editing: patients would need to understand that dosing is algorithmically modulated by real-time curvature estimates derived from invasive or imaging-based reporters.",
+        "Failure mode analysis omits off-target editing and Cas9 tolerance/immunogenicity under repeated, curvature-adaptive bursts; selective pressure for Cas9-tolerant subclones is mentioned but not tied to measurable clinical endpoints (e.g., time to resistance, need for salvage therapy).",
+        "In silico validation claims (\u226540% MFPT reduction across 1,200 DTC clones) lack subgroup analyses by cancer type, prior therapy exposure, or anatomical site; real-world benefit may differ substantially by disease burden and microenvironment.",
+        "No strategy for stopping rules or de-escalation if curvature estimates diverge or toxicity emerges; adaptive protocols must specify when to revert to standard care."
+      ],
+      "required_fixes": [
+        "Integrate patient-centered endpoints: add validated PROs (e.g., symptom burden, functional status) as co-primary endpoints alongside MFPT; specify measurement schedules and missing-data handling.",
+        "Define a delivery roadmap for disseminated disease: specify routes (intrathecal, intraperitoneal, intravenous), tissue penetration limits, and monitoring for Cas9 immunogenicity or off-target effects in each compartment.",
+        "Derive \u03ba(p) noise thresholds from realistic imaging/reporter performance in relevant tissues, with explicit patient-level variability and sensitivity analyses; state how discordant estimates trigger protocol deviations or re-consent.",
+        "Add a consent framework and shared decision-making module that explains curvature-guided dosing, reporter requirements, and uncertainty to patients; include opt-out criteria tied to tolerability or disease progression.",
+        "Expand failure modes to include off-target editing rates, Cas9 tolerance, and immunogenicity under repeated bursts; link these to clinical failure (e.g., time to resistance, salvage therapy use)."
+      ],
+      "suggested_experiments": [
+        "Prospective pilot of CASOC-guided CRISPR in a single-center cohort with disseminated ovarian or breast cancer DTCs, embedding serial PROs (e.g., EORTC QLQ-C30), patient diaries for symptom flares, and stopping rules tied to \u03ba(p) discordance or grade \u22653 toxicities.",
+        "Multi-site validation of \u03ba(p) reporters (Cas13a-based or epigenetic sensors) across bone marrow, ascites, and normal tissues to quantify SNR and noise distributions by site and prior therapy; use these to refine the 30% noise threshold into site-specific bounds.",
+        "Adaptive crossover simulation informed by real-world delivery delays and missed doses: test robustness of MFPT gains when CRISPR bursts are delayed or skipped due to toxicity or access issues."
+      ],
+      "simulation_proposal": {
+        "type": "in_silico",
+        "description": "Monte Carlo simulation of CASOC versus fixed-interval CRISPR across 1,200 DTC clones with patient-level heterogeneity in \u03ba(p) noise, delivery delays, and missed doses; include subgroup strata by prior therapy, anatomical site, and baseline disease burden.",
+        "expected_metrics": [
+          "MFPT reduction with 95% prediction intervals by subgroup",
+          "proportion of patients falling below a prespecified MFPT benefit threshold",
+          "probability of protocol deviation due to \u03ba(p) discordance or toxicity",
+          "cumulative off-target editing burden under curvature-adaptive bursts"
+        ],
+        "rationale": "This test matters because it quantifies whether the \u226540% MFPT claim is robust to real-world variability that patients will encounter, and it identifies which subgroups (or sites) are most likely to benefit or be harmed, informing consent and stopping rules."
+      }
+    },
+    {
+      "archetype_id": "short_seller",
+      "archetype_name": "Adversarial Short-Seller",
+      "recommendation": "reject",
+      "confidence": 0.92,
+      "summary": "The paper collapses under its own formalism: it asserts geometric control of CRISPR dosing via a Riemannian epigenetic manifold \u0393_t, but provides no falsifiable mapping between curvature \u03ba(p) and Cas9 editing efficiency, conflates deterministic geodesics with uncontrolled biological noise, and offers post-hoc inequalities that cannot be tested without in vivo curvature reporters that do not exist. The 40% MFPT claim and the \u03ba(p)^(-1/2) dosing rule are numerically asserted, not derived from first principles or validated against empirical single-cell editing trajectories.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 3,
+        "experimental_design": 2,
+        "evidence_support": 2,
+        "statistical_rigor": 3,
+        "clarity_of_writing": 6
+      },
+      "criticisms": [
+        "The central object \u0393_t (epigenetic-transcriptional commitment manifold) is treated as an observable Riemannian space, but no protocol is provided to reconstruct it from single-cell multi-omics with sufficient temporal resolution to estimate \u03ba(p) during active CRISPR editing. Without this, curvature-adaptive control is a metaphor, not a protocol.",
+        "Section 3 claims w*(p) \u221d \u03ba(p)^{-1/2} and a \u226540% MFPT reduction, yet neither bound nor simulation derivation is shown. Theorem 1 is referenced but not stated or proved; the inequality W_\u03ba(X,Y) \u2265 \u00bd\u222b\u221a\u03ba \u2016dX\u2016dt is unmotivated and dimensionally inconsistent (W_\u03ba has units of distance, right-hand side has units of 1/\u221alength \u00d7 length = \u221alength).",
+        "The overdamped Langevin model assumes \u2207^g U and D are known and stationary, but CRISPR editing itself alters the potential (via double-strand breaks, p53 activation, epigenetic remodeling). The control law u_t = -\u03b1 \u03ba(X_t)\u2207U + \u03b2 \u03ba^2 \u03c3 ignores this back-action, making the policy internally inconsistent.",
+        "Failure-mode thresholds (\u03ba estimation noise >30% \u2192 \u226520% increase in resistant clones) are presented as quantitative predictions without derivation or simulation evidence. There is no sensitivity analysis showing how noise in \u03ba propagates to dosing errors and then to clone frequency.",
+        "The proposed Cas13a-based live \u03ba reporters tethered to H3K27ac-marked loci are biochemically implausible as written: Cas13a is an RNA-targeting RNase; it cannot report 3D chromatin curvature or Gaussian curvature of a manifold. No sequence specificity or calibration scheme is provided.",
+        "Quasi-potential barrier inequality \u0394U_min \u2264 \u0394U - \u03ba(q)\u00b7d_g(p*,q)^2/8 is asserted without derivation from Eyring-Kramers on a manifold. For positive \u03ba, this would lower the barrier, but on a compact manifold, high curvature can also create entropic bottlenecks that raise MFPT; the paper ignores this possibility.",
+        "No baseline comparison to empirically measurable quantities (e.g., actual Cas9 editing efficiency vs. local chromatin accessibility) is provided. The model predicts 'dose-sparing regimens' but does not define dose in molar units or exposure, rendering the claim untestable."
+      ],
+      "required_fixes": [
+        "State Theorem 1 explicitly, prove it under defined assumptions, and release code/data for the 1,200 DTC clone simulations so that the \u226540% MFPT claim can be independently verified.",
+        "Provide a mapping from multi-omics data (scATAC-seq, ChIP-seq, RNA velocity) to an estimated \u0393_t and \u03ba(p) with uncertainty quantification, including a minimal protocol for temporal sampling during editing.",
+        "Derive or remove the inequality W_\u03ba(X,Y) \u2265 \u00bd\u222b\u221a\u03ba \u2016dX\u2016dt; if retained, correct dimensional inconsistencies and justify its use as a cost metric.",
+        "Replace the Cas13a curvature reporter with a biophysically plausible construct or remove it; if retained, specify guide RNAs, tethering chemistry, and calibration against ground-truth curvature (e.g., from FISH-based 3D distances)."
+      ],
+      "suggested_experiments": [
+        "Measure single-cell editing outcomes (indel frequency, allele switching) as a function of local H3K27ac density and 3D chromatin distance to nearest TAD boundary in DTC models, to test whether high-\u03ba regions (as independently defined) correlate with higher editing efficiency or faster state switching.",
+        "Time-resolved scATAC-seq + CUT&RUN during Cas9 RNP delivery to quantify how DSB-induced chromatin remodeling alters the effective potential U and the separatrix between sensitive/resistant basins.",
+        "CRISPRi/a titration in DTCs to perturb putative high-\u03ba corridors and measure changes in \u03c4_v (by barcoded lineage tracing) and resistant clone frequency, providing empirical bounds on curvature-controlled transition rates."
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Simulate overdamped Langevin dynamics on an explicit 2D Riemannian manifold with tunable Gaussian curvature (e.g., a surface of revolution with \u03ba(p) prescribed), Cas9 editing modeled as an absorbing or switching process at resistant/sensitive basins, and curvature estimation noise added to the control law. Compare CASOC against fixed-interval and curvature-proportional dosing under identical noise realizations.",
+        "expected_metrics": [
+          "MFPT from resistant to sensitive basin",
+          "fraction of cells reverting to resistance within 72h",
+          "sensitivity of resistant clone frequency to \u03ba estimation noise (0\u201350%)",
+          "editing burden (cumulative Cas9 exposure)"
+        ],
+        "rationale": "This isolates geometric effects from biological confounders and tests whether the claimed 40% MFPT improvement and \u03ba(p)^{-1/2} rule hold under controlled noise, or whether the policy collapses when curvature is misestimated."
+      }
+    }
+  ],
+  "simulations": [
+    {
+      "id": "in-silico",
+      "title": "in_silico",
+      "type": "html5_canvas",
+      "description": "Simulate CASOC in a synthetic \u0393_t manifold with controlled \u03ba(p) noise and epigenetic drift to quantify MFPT robustness and resistant clone frequency under varying SNR thresholds.",
+      "rationale": "Recommended by the peer-review panel.",
+      "expected_metrics": [
+        "MFPT under noise",
+        "resistant clone frequency",
+        "CASOC adaptation time"
+      ],
+      "scene": "trajectory_manifold",
+      "seed": 101,
+      "parameters": {}
+    },
+    {
+      "id": "in-silico",
+      "title": "in_silico",
+      "type": "html5_canvas",
+      "description": "Monte Carlo simulation of CASOC vs. fixed-interval and ctDNA-triggered standard-of-care across a synthetic cohort of 1,000 virtual patients with inter-individual variability in \u0393_t curvature, metastatic burden, and \u03ba(p) measurement noise; include off-label safety constraints (Cas9 immunogenicity and genotoxicity as probabilistic dose\u2013response).",
+      "rationale": "This simulation would test whether CASOC\u2019s geometric advantage persists under realistic noise, inter-patient heterogeneity, and safety constraints, and whether it meaningfully outperforms plausible standard-of-care alternatives.",
+      "expected_metrics": [
+        "Mean first passage time to sensitive state (MFPT)",
+        "Proportion of patients with >20% resistant clones at 12 months",
+        "Cumulative Cas9 exposure (AUC) and probability of anti-Cas9 seroconversion",
+        "Probability of severe off-target event (e.g., chromosomal translocation) per patient",
+        "Workflow feasibility: median time from \u03ba(p) measurement to dose adjustment"
+      ],
+      "scene": "trajectory_manifold",
+      "seed": 202,
+      "parameters": {}
+    },
+    {
+      "id": "computational-model",
+      "title": "computational_model",
+      "type": "html5_canvas",
+      "description": "Agent-based stochastic simulation of 10,000 DTC trajectories on a computationally reconstructed \u0393_t from published ovarian/breast cancer single-cell atlases (e.g., TCGA, GEO). Implement CASOC control law u_t = -\u03b1 \u03ba(X_t)\u2207U(X_t) + \u03b2 \u03ba(X_t)^2 \u03c3(X_t) vs baseline protocols (fixed-interval, continuous, curvature-proportional). Vary \u03ba(p) estimation noise from 0-50% to characterize the noise threshold effect on resistant clone fraction.",
+      "rationale": "This addresses the core criticism that the 40% MFPT claim and 30% noise threshold lack quantitative support. The simulation should be reproducible using publicly available single-cell data, enabling independent validation before any investment decision. If the 40% effect survives noise levels typical of clinical imaging (~15-20%), this strengthens the investment thesis; if it requires <10% noise, the approach is likely undeployable.",
+      "expected_metrics": [
+        "Mean first passage time (MFPT) from resistant to sensitive basin",
+        "Resistant clone fraction at t=30 days post-intervention",
+        "Probability of irreversible commitment to sensitive lineage",
+        "Sensitivity curves: resistant clone fraction vs \u03ba-estimation noise (to validate/invalidate 30% threshold)"
+      ],
+      "scene": "trajectory_manifold",
+      "seed": 303,
+      "parameters": {}
+    },
+    {
+      "id": "tumor-volume-3d",
+      "title": "Tumor Volume (3D)",
+      "type": "threejs",
+      "description": "Volumetric point-cloud tumor with phenotype-coloured clusters that grow, divide, and apoptose over time. Rotates the mass to expose where the model places phenotype boundaries.",
+      "rationale": "The 2D manifold view collapses depth \u2014 a 3D volumetric rendering tests whether claimed phenotype clusters survive when seen from arbitrary angles.",
+      "expected_metrics": [
+        "phenotype-cluster volumetric stability",
+        "intra-cluster density",
+        "boundary sharpness under rotation"
+      ],
+      "three_scene": "tumor_volume_3d",
+      "seed": 9867,
+      "parameters": {
+        "title": "Curvature-Adaptive Stochastic Optimal Control for CRISPR-Mediated Eradication of Disseminated Tumor Cells",
+        "confidence": 0.30124999999999996,
+        "critique": "No specification of how \u03ba(p) would be estimated in real time in patients; live \u03ba(p) reporters (Cas13a-H3K27ac sensors) are proposed without validation data, detection limits, or spatial resolution sufficient for clinical",
+        "catalyst": "[Practicing Oncologist] Phase I/II data in patient-derived xenografts showing measurable curvature metrics correlating with treatment response would shift the price dramatically higher; without any in vivo validation, this remains purely speculative."
+      }
+    },
+    {
+      "id": "mitotic-lattice-3d",
+      "title": "Mitotic Lattice (3D)",
+      "type": "threejs",
+      "description": "Rotating 3D lattice of cells with division events sampled from the validator-emitted novelty distribution. Daughter cells inherit colour from parent phenotype, exposing lineage drift.",
+      "rationale": "Hooks the falsifier visually: if the paper's mechanism predicts a specific division geometry, this scene makes deviations from it immediately visible.",
+      "expected_metrics": [
+        "division-rate per phenotype",
+        "lineage-drift entropy",
+        "spatial clustering of mitotic events"
+      ],
+      "three_scene": "mitotic_lattice_3d",
+      "seed": 9885,
+      "parameters": {
+        "title": "Curvature-Adaptive Stochastic Optimal Control for CRISPR-Mediated Eradication of Disseminated Tumor Cells",
+        "confidence": 0.30124999999999996,
+        "critique": "No specification of how \u03ba(p) would be estimated in real time in patients; live \u03ba(p) reporters (Cas13a-H3K27ac sensors) are proposed without validation data, detection limits, or spatial resolution sufficient for clinical",
+        "catalyst": "[Biostatistician] Publication of experimental data demonstrating that local curvature \u03ba(p) can be measured in actual tumor cells and that it predicts epigenetic state transition kinetics would dramatically increase the price; without any empirical validation, the paper remains a mathematical curiosity with near-zero clinical probability."
+      }
+    },
+    {
+      "id": "perturbation-cone-3d",
+      "title": "Perturbation Cone (3D)",
+      "type": "threejs",
+      "description": "3D analog of the counterfactual scene: treated trajectories spread out from a baseline manifold along a confidence-weighted cone. Cone width tracks acceptance probability.",
+      "rationale": "Forces the prediction-vs-observation gap into a single visual. A narrow, well-aimed cone implies confident divergence; a fat cone signals high predictive uncertainty.",
+      "expected_metrics": [
+        "cone aperture",
+        "trajectory bundle coherence",
+        "off-axis trajectory frequency"
+      ],
+      "three_scene": "perturbation_cone_3d",
+      "seed": 9903,
+      "parameters": {
+        "title": "Curvature-Adaptive Stochastic Optimal Control for CRISPR-Mediated Eradication of Disseminated Tumor Cells",
+        "confidence": 0.30124999999999996,
+        "critique": "No specification of how \u03ba(p) would be estimated in real time in patients; live \u03ba(p) reporters (Cas13a-H3K27ac sensors) are proposed without validation data, detection limits, or spatial resolution sufficient for clinical",
+        "catalyst": "[Patient Advocate] A successful Phase\u202fI trial showing safe, real\u2011time curvature read\u2011outs and a measurable reduction in resistant clone emergence would push the price up; any signal of off\u2011target toxicity or infeasible monitoring would drive it down."
+      }
+    }
+  ]
+}

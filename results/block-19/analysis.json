@@ -1,0 +1,583 @@
+{
+  "archetypes": [
+    {
+      "scores": {
+        "clinical_viability": 2,
+        "regulatory_risk": 9,
+        "market_potential": 3,
+        "patient_impact": 2,
+        "novelty": 9,
+        "falsifiability": 7
+      },
+      "verdict": "Mechanistically seductive but clinic-ready vaporware. Ricci curvature as a control knob is elegant, but we have no validated intra-patient Ricci estimator, no GMP-grade Cas13a-H3K27ac fusosomes, and no hydrogel you can program in a community oncology infusion suite. Patient burden is prohibitive (serial biopsies or apheresis for single-cell ATAC, 72-h control latency). Off-label, you cannot bill for curvature-adaptive anything, and the FDA will choke on a closed-loop CRISPR device that titrates nuclease flux to a tensor you cannot measure in real time. Compared to standard-of-care observation or short-course adjuvant therapy, this adds complexity without a survival or relapse-free survival endpoint. The 40% MFPT gain is a simulation metric, not a clinical event. If forced to use this today, I would dose capecitabine or a CDK4/6i and watch the DTC count; it is cheaper, falsifiable, and reimbursable.",
+      "would_move_price": "A prospective, registered trial (NCT-style) showing that Ricci-informed CRISPR scheduling reduces overt metastasis (imaging or biopsy-proven) by \u226550% at 18 months compared to standard surveillance would move the price sharply up; failure to beat observation for MRD clearance at 6 months would crash it.",
+      "archetype_id": "oncologist",
+      "archetype_name": "Practicing Oncologist"
+    },
+    {
+      "scores": {
+        "clinical_viability": 7,
+        "regulatory_risk": 6,
+        "market_potential": 9,
+        "patient_impact": 10,
+        "novelty": 10,
+        "falsifiability": 9
+      },
+      "verdict": "The Ricci curvature-adaptive CRISPR framework presents a groundbreaking mechanistic approach to metastatic prevention, combining geometric control theory with real-time epigenetic monitoring. While the organoid-based experimental design and closed-loop control system demonstrate strong mechanistic plausibility, clinical translation remains speculative without human trial data. The defined failure modes (biosensor latency, curvature estimation errors) enhance rigor, but practical challenges in maintaining precise epigenetic state tracking during dynamic tumor evolution could limit real-world efficacy.",
+      "would_move_price": "A positive phase I trial demonstrating sustained epigenetic reprogramming in metastatic patients would drive prices up, while failure to replicate organoid results in vivo would push them down.",
+      "archetype_id": "biostatistician",
+      "archetype_name": "Biostatistician"
+    },
+    {
+      "scores": {
+        "clinical_viability": 2,
+        "regulatory_risk": 9,
+        "market_potential": 5,
+        "patient_impact": 3,
+        "novelty": 8,
+        "falsifiability": 7
+      },
+      "verdict": "This is an elegant but un-IND-enableable concept paper. The Ricci-curvature\u2013adaptive CRISPR control paradigm is mechanistically interesting but rests on non-validated surrogates (Cas13a-H3K27ac fusosomal biosensors, Ollivier\u2013Ricci flow on ATAC-seq) that have no GMP precedent and no validated link to in vivo metastatic prevention. Safety signals are unbounded: off-target Cas9/dCas9 activity titrated by a high-dimensional geometric estimator could generate unpredictable editing landscapes, and the 15% biosensor-latency failure mode is not clinically actionable. Accelerated approval is implausible without a validated surrogate endpoint tied to metastasis-free survival; prior precedents (e.g., fixed-schedule CRISPR ex vivo editing) do not support closed-loop in vivo geometric dosing. We would not clear an IND without rigorous biodistribution, immunogenicity, and tumorigenicity packages, plus a quantitative bridge between Ricci curvature estimates and clinical DTC dormancy escape. Novelty is high but clinical viability is low; the dossier is pre-IND and high-risk.",
+      "would_move_price": "Publication of an in vivo large-animal study showing that Ric(\u2207\u03c4,\u2207\u03c4)\u2013guided dCas9 titration reduces DTC outgrowth with a validated safety margin (no off-target editing above background and no Cas9-specific T-cell activation) would shift the prediction-market price sharply upward; conversely, replication failure in a second DTC organoid cohort or demonstration that curvature estimation error >20% abolishes metastatic delay would move the price down.",
+      "archetype_id": "fda",
+      "archetype_name": "FDA Regulator"
+    },
+    {
+      "scores": {
+        "clinical_viability": 2,
+        "regulatory_risk": 9,
+        "market_potential": 4,
+        "patient_impact": 6,
+        "novelty": 9,
+        "falsifiability": 8
+      },
+      "verdict": "This is fascinating science fiction masquerading as translational research. The Ricci curvature framework is intellectually elegant but decades away from clinical reality. The regulatory path would be nightmarish - FDA has no framework for geometric control theory in oncology. Capital requirements would be enormous given the need to validate entirely new scientific paradigms. Syndicate would need mathematicians, control theorists, and synthetic biologists - an unusual mix that would struggle to raise venture money. Comparable exits? None. This belongs in a theoretical biology journal, not an investment memo.",
+      "would_move_price": "Positive Phase I human data showing metastasis prevention would send this soaring, while any safety signal in the CRISPR component would crater it.",
+      "archetype_id": "investor",
+      "archetype_name": "Biotech Investor"
+    },
+    {
+      "scores": {
+        "clinical_viability": 3,
+        "regulatory_risk": 8,
+        "market_potential": 4,
+        "patient_impact": 5,
+        "novelty": 9,
+        "falsifiability": 7
+      },
+      "verdict": "A tour-de-force of geometric oncology that slots squarely between systems-biology elegance and synthetic-biology audacity. The Ricci-adaptive control idea is publishable in Cell Systems or Nature Biomedical Engineering if the authors can defend the Ollivier\u2013Ricci approximation from single-cell ATAC-seq as a bona fide proxy for kinetic resistance; expect the single-cell manifold-learning crowd to attack the Wasserstein \u03b4_W=0.05 threshold as phenomenologically underspecified, while the CRISPR-delivery orthodoxy will dismiss the Cas13a-H3K27ac fusosome as an in-vivo specificity liability. The paper will test well at Keystone Symposia on Tumor Evolution and at the AACR Geometric Cancer Systems session, but will face withering questions on clinical translatability from the bone-marrow microenvironment and pharmacodynamic latency camps. Falsifiability is rescued by the explicit 30% curvature-estimation failure mode and \u226540% MFPT endpoint, yet the 72-hour organoid horizon and the \u03c4_v <15% biosensor-latency gate reveal a proof-of-concept that still needs a survival readout and an IND-grade safety package.",
+      "would_move_price": "A revision showing in-vivo extension of MFPT gains to progression-free survival in a xenograft DTC dormancy model would move the prediction-market price sharply upward, whereas a demonstration that Cas13a-H3K27ac fusosomes induce off-target H3K27ac loss in hematopoietic progenitors would crater it.",
+      "archetype_id": "kol",
+      "archetype_name": "Academic KOL"
+    },
+    {
+      "scores": {
+        "clinical_viability": 6,
+        "regulatory_risk": 5,
+        "market_potential": 7,
+        "patient_impact": 8,
+        "novelty": 9,
+        "falsifiability": 8
+      },
+      "verdict": "This paper presents a groundbreaking geometric approach to CRISPR scheduling for metastatic prevention, which aligns with my patient advocate lens by addressing a critical unmet need in DTC management. However, clinical viability is tempered by the complexity of real-time curvature estimation and biosensor integration, which could burden patients with invasive monitoring. Regulatory risk is moderate due to the novelty of curvature-adaptive CRISPR, but the mechanism-level focus reduces policy-related risks. Patient impact is high if successful, as it could reduce metastatic burden, but side-effect burden from CRISPR and hardware requirements may offset benefits. Novelty is exceptional, merging geometric control with epigenetics\u2014a direction rarely explored in clinical contexts. Falsifiability is strong with clear endpoints (MFPT reduction) and failure modes (curvature errors). While promising, the approach requires robust validation in real-world settings before meaningful patient impact can be realized.",
+      "would_move_price": "A successful phase II trial demonstrating >50% MFPT reduction in metastatic DTCs with minimal side effects would sharply increase the prediction-market price.",
+      "archetype_id": "patient",
+      "archetype_name": "Patient Advocate"
+    },
+    {
+      "scores": {
+        "clinical_viability": 6,
+        "regulatory_risk": 7,
+        "market_potential": 5,
+        "patient_impact": 8,
+        "novelty": 9,
+        "falsifiability": 8
+      },
+      "verdict": "The paper presents a theoretically compelling geometric framework for CRISPR scheduling in DTCs, but its clinical viability is constrained by technical complexity. The Ricci curvature-adaptive control (R-CASOC) mechanism is mechanistically sound and falsifiable, with clear endpoints and failure modes. However, the reliance on high-dimensional manifold modeling, machine learning for curvature estimation, and real-time biosensor integration introduces significant implementation risks. Regulatory approval would hinge on overcoming prior-auth complexity for CRISPR-based therapies and demonstrating cost savings over existing protocols. While patient impact is high (reducing metastasis), market potential is limited by the niche applicability to DTCs and the need for specialized infrastructure. The novelty is strong, but practical scalability remains unproven.",
+      "would_move_price": "A Phase II trial demonstrating a 30% reduction in metastatic progression with lower CRISPR dosing costs would sharply increase the prediction-market price, while safety concerns or high implementation costs would drive it down.",
+      "archetype_id": "payer",
+      "archetype_name": "Insurance Payer"
+    }
+  ],
+  "market_price": 0.5114285714285715,
+  "score_matrix": {
+    "oncologist": {
+      "clinical_viability": 2,
+      "regulatory_risk": 9,
+      "market_potential": 3,
+      "patient_impact": 2,
+      "novelty": 9,
+      "falsifiability": 7
+    },
+    "biostatistician": {
+      "clinical_viability": 7,
+      "regulatory_risk": 6,
+      "market_potential": 9,
+      "patient_impact": 10,
+      "novelty": 10,
+      "falsifiability": 9
+    },
+    "fda": {
+      "clinical_viability": 2,
+      "regulatory_risk": 9,
+      "market_potential": 5,
+      "patient_impact": 3,
+      "novelty": 8,
+      "falsifiability": 7
+    },
+    "investor": {
+      "clinical_viability": 2,
+      "regulatory_risk": 9,
+      "market_potential": 4,
+      "patient_impact": 6,
+      "novelty": 9,
+      "falsifiability": 8
+    },
+    "kol": {
+      "clinical_viability": 3,
+      "regulatory_risk": 8,
+      "market_potential": 4,
+      "patient_impact": 5,
+      "novelty": 9,
+      "falsifiability": 7
+    },
+    "patient": {
+      "clinical_viability": 6,
+      "regulatory_risk": 5,
+      "market_potential": 7,
+      "patient_impact": 8,
+      "novelty": 9,
+      "falsifiability": 8
+    },
+    "payer": {
+      "clinical_viability": 6,
+      "regulatory_risk": 7,
+      "market_potential": 5,
+      "patient_impact": 8,
+      "novelty": 9,
+      "falsifiability": 8
+    }
+  },
+  "consensus_dim": {
+    "clinical_viability": 4.0,
+    "regulatory_risk": 7.571428571428571,
+    "market_potential": 5.285714285714286,
+    "patient_impact": 6.0,
+    "novelty": 9.0,
+    "falsifiability": 7.714285714285714
+  },
+  "headline_catalysts": [
+    "[Practicing Oncologist] A prospective, registered trial (NCT-style) showing that Ricci-informed CRISPR scheduling reduces overt metastasis (imaging or biopsy-proven) by \u226550% at 18 months compared to standard surveillance would move the price sharply up; failure to beat observation for MRD clearance at 6 months would crash it.",
+    "[Biostatistician] A positive phase I trial demonstrating sustained epigenetic reprogramming in metastatic patients would drive prices up, while failure to replicate organoid results in vivo would push them down.",
+    "[FDA Regulator] Publication of an in vivo large-animal study showing that Ric(\u2207\u03c4,\u2207\u03c4)\u2013guided dCas9 titration reduces DTC outgrowth with a validated safety margin (no off-target editing above background and no Cas9-specific T-cell activation) would shift the prediction-market price sharply upward; conversely, replication failure in a second DTC organoid cohort or demonstration that curvature estimation error >20% abolishes metastatic delay would move the price down.",
+    "[Biotech Investor] Positive Phase I human data showing metastasis prevention would send this soaring, while any safety signal in the CRISPR component would crater it.",
+    "[Academic KOL] A revision showing in-vivo extension of MFPT gains to progression-free survival in a xenograft DTC dormancy model would move the prediction-market price sharply upward, whereas a demonstration that Cas13a-H3K27ac fusosomes induce off-target H3K27ac loss in hematopoietic progenitors would crater it.",
+    "[Patient Advocate] A successful phase II trial demonstrating >50% MFPT reduction in metastatic DTCs with minimal side effects would sharply increase the prediction-market price.",
+    "[Insurance Payer] A Phase II trial demonstrating a 30% reduction in metastatic progression with lower CRISPR dosing costs would sharply increase the prediction-market price, while safety concerns or high implementation costs would drive it down."
+  ],
+  "derived_topics": [
+    {
+      "id": 1,
+      "title": "In Vivo Validation of Ricci Curvature-Guided CRISPR Scheduling in Metastatic Models",
+      "probability": 0.75,
+      "impact": 8,
+      "token_cost": 200,
+      "rationale": "Extend organoid results to in vivo models (e.g., xenografts) to test Ric(\u2207\u03c4,\u2207\u03c4)-based control in metastatic DTCs. Failure would require demonstration that curvature estimation errors or biosensor latency negate MFPT gains in vivo."
+    },
+    {
+      "id": 2,
+      "title": "Machine Learning-Driven Ricci Curvature Estimation for Real-Time Control",
+      "probability": 0.65,
+      "impact": 9,
+      "token_cost": 150,
+      "rationale": "Develop robust ML models to infer Ric(\u2207\u03c4,\u2207\u03c4) from Cas13a-H3K27ac data, addressing current approximation limitations. Failure would involve persistent estimation errors (>30%) despite ML optimization."
+    },
+    {
+      "id": 3,
+      "title": "Reducing Biosensor Latency in Cas13a-H3K27ac Fusosomes"
+    }
+  ],
+  "peer_reviews": [
+    {
+      "archetype_id": "oncologist",
+      "archetype_name": "Practicing Oncologist",
+      "recommendation": "major_revision",
+      "confidence": 0.85,
+      "summary": "The paper proposes a geometric control framework (Ricci curvature\u2013adaptive CRISPR scheduling) to truncate transient commitment windows in disseminated tumor cells, but it conflates mathematical formalism with deliverable clinical intervention. As a clinician-reviewer, I see no actionable pathway to patient care: biosensor latency, in vivo curvature estimation, and closed-loop CRISPR delivery are not benchmarked against current standard-of-care (e.g., adjuvant CDK4/6 or PARP inhibition, minimal residual disease monitoring), off-label drug realities are unaddressed, and patient burden from programmable hydrogels and repeated Cas13a/dCas9 exposure is assumed away. Mechanistically, the hypothesis is interesting but rests on unvalidated mapping between Cas13a-H3K27ac signals and Ollivier\u2013Ricci curvature in n\u226510 epigenetic manifolds. Without a credible plan for clinical integration and a realistic accounting of failure modes, the work remains a provocative simulation rather than a translational strategy.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 7,
+        "experimental_design": 5,
+        "evidence_support": 5,
+        "statistical_rigor": 4,
+        "clarity_of_writing": 6
+      },
+      "criticisms": [
+        "No comparator to standard-of-care: adjuvant therapy, MRD-guided salvage, or intermittent dosing schedules are absent, making it impossible to judge incremental benefit.",
+        "Patient burden is under-specified: programmable hydrogels + Cas13a/dCas9 fusosomal biosensors imply repeated invasive procedures or long-term implantation without safety data, immunogenicity assessment, or quality-of-life metrics.",
+        "Off-label realities ignored: CRISPR effectors (dCas9, Cas13a) are not approved for in vivo DTC prophylaxis; the manuscript does not address IND pathways, vector choice, genotoxicity, or on-target editing in non-tumor tissue.",
+        "Biosensor latency vs transient commitment window: the abstract claims \u03c4_L < 12 min, yet Section 1 states failure when biosensor latency exceeds 15% of \u03c4_v. \u03c4_v is not empirically defined, nor is its distribution across patients, making the 15% threshold arbitrary.",
+        "Ricci curvature estimation fidelity: Ollivier\u2013Ricci flow on single-cell ATAC-seq with \u03b4_W=0.05 is presented as sufficient, but no sensitivity analysis shows how 30% curvature error (the stated failure threshold) propagates to MFPT or false-positive editing.",
+        "Closed-loop actuation is underspecified: how Cas13a-H3K27ac signal gradients are converted to Ric(\u2207\u03c4,\u2207\u03c4) estimates in vivo, and how dCas9 flux is titrated in real time, lacks engineering detail (gain scheduling, integral windup, stability margins).",
+        "Sample size and replication: n (patients/organoids) is not stated; 72-hour time courses across how many biological replicates are unclear, undermining statistical claims of \u226540% MFPT reduction and 3.1-fold suppression of Cas9-tolerant subclones.",
+        "No discussion of clonal heterogeneity: DTCs are treated as a population average, yet curvature may vary by clone; control laws that average Ric(\u2207\u03c4,\u2207\u03c4) risk amplifying resistant subclones."
+      ],
+      "required_fixes": [
+        "Add a clinically grounded comparator arm (e.g., standard adjuvant therapy \u00b1 MRD-triggered salvage) and define absolute risk reduction or number-needed-to-treat required to justify intervention.",
+        "Define \u03c4_v empirically from patient-derived DTCs (distribution, median, IQR) and justify biosensor latency targets with failure-mode simulations.",
+        "Provide a safety and regulatory pathway paragraph addressing off-label CRISPR use, genotoxicity, immunogenicity, and monitoring for off-target editing in hematopoietic or stromal compartments.",
+        "Quantify patient burden: specify number of biopsies/hydrogel implantations, monitoring visits, and expected adverse events; include a patient-facing risk table.",
+        "Include sensitivity analyses for curvature estimation error (10\u201350%) and biosensor latency (5\u201330% of \u03c4_v) on MFPT and emergence of tolerant subclones.",
+        "State n and replication scheme for all experimental claims; pre-specify statistical thresholds and correction for multiple comparisons."
+      ],
+      "suggested_experiments": [
+        "Head-to-head comparison in DTC organoids: R-CASOC vs fixed-interval dCas9 vs no-intervention, with endpoints of MFPT to H3K27ac-high state and frequency of Cas9-tolerant clones (barcoded lineage tracing). Include a standard-of-care arm mimicking intermittent endocrine therapy.",
+        "In vivo biodistribution and safety: implant programmable hydrogels \u00b1 biosensor/dCas9 in immunocompetent mice; quantify local inflammation (cytokines), off-target editing (GUIDE-seq or DISCOVER-seq) in liver/spleen, and hydrogel stability over 8 weeks.",
+        "Latency challenge experiment: deliberately delay biosensor readouts (0\u201360 min) while holding Ric(\u2207\u03c4,\u2207\u03c4) estimates constant; measure degradation in MFPT benefit and rate of misallocation to low-curvature plateaus.",
+        "Multi-clone competition assay: mix barcode-labeled DTC clones with divergent Ric(\u2207\u03c4,\u2207\u03c4) landscapes under R-CASOC; test whether control laws inadvertently select for low-curvature, high-tolerance clones."
+      ],
+      "simulation_proposal": {
+        "type": "in_silico",
+        "description": "Monte Carlo simulation of DTC state transitions on a synthetic n=12 epigenetic manifold with empirically sampled Ric(\u2207\u03c4,\u2207\u03c4) distributions. Compare R-CASOC, curvature-naive (\u03ba-based) scheduling, and no-control across a grid of biosensor latencies (0\u201330 min) and curvature estimation errors (0\u201350%).",
+        "expected_metrics": [
+          "MFPT to sensitive attractor",
+          "probability of tolerant clone emergence",
+          "cumulative dCas9 exposure (editing burden)",
+          "fraction of editing events misallocated to low-curvature plateaus"
+        ],
+        "rationale": "This simulation quantifies the robustness of the geometric control claim under realistic noise and delay, and defines the operational envelope (acceptable latency/error) before R-CASOC loses its \u226540% MFPT advantage\u2014essential for deciding whether the approach can ever be clinically viable."
+      }
+    },
+    {
+      "archetype_id": "biostatistician",
+      "archetype_name": "Biostatistician",
+      "recommendation": ": major_revision",
+      "confidence": 0.86,
+      "summary": "The manuscript proposes a novel Ricci\u2011curvature\u2011adaptive CRISPR control strategy for disseminated tumor cells and presents intriguing preliminary data, but the statistical and experimental foundations are insufficient to support the claimed \u226540% reduction in mean first\u2011passage time and 3.1\u2011fold suppression of tolerant subclones. Key information on sample size, replication, variability, hypothesis testing, and power is missing, and the validation of the Ricci curvature estimator and biosensor latency thresholds is not demonstrated. Major revisions are required to provide rigorous experimental design, appropriate statistical analysis, and transparent reporting before the findings can be considered credible.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 7,
+        "experimental_design": 5,
+        "evidence_support": 4,
+        "statistical_rigor": 3,
+        "clarity_of_writing": 6
+      },
+      "criticisms": [
+        "No explicit sample size or power calculation is provided for the primary endpoint (mean first\u2011passage time reduction); the claim of a \u226540% effect is presented without confidence intervals or p\u2011values.",
+        "The experimental section describes organoid cultures and hydrogel gradients but does not state the number of biological replicates, technical replicates, or how variability was quantified.",
+        "Endpoint definitions are ambiguous: mean first\u2011passage time is reported as a reduction but the distribution, censoring, and statistical test used to compare R\u2011CASOC versus curvature\u2011naive schedules are not disclosed.",
+        "Potential confounders such as hydrogel stiffness gradients, peptide nanocluster density, and biosensor expression levels are not controlled or randomized, raising the risk that observed effects are due to unintended biophysical changes rather than Ricci\u2011curvature\u2011guided control.",
+        "The Ricci curvature estimation procedure (Ollivier\u2013Ricci flow with \u03b4_W=0.05) is not validated against a ground\u2011truth curvature measure, and the sensitivity analysis only mentions a 30% error threshold without showing how this threshold was derived or its impact on the outcome.",
+        "Failure modes (biosensor latency >15% of \u03c4_v, curvature error >30%) are introduced post\u2011hoc; no pre\u2011specified stopping rules or adjustment for multiple looks are described."
+      ],
+      "required_fixes": [
+        "Report the exact number of independent organoid lines, replicates per condition, and the statistical unit used for analysis.",
+        "Provide descriptive statistics (mean\u202f\u00b1\u202fSD or median\u202f[IQR]) for MFPT and subclone frequencies in both R\u2011CASOC and control groups, together with confidence intervals and p\u2011values from an appropriate test (e.g., t\u2011test, Mann\u2011Whitney, or survival analysis if time\u2011to\u2011event).",
+        ".Include an a priori power calculation showing that the chosen sample size provides \u226580% power to detect a 40% reduction in MFPT at \u03b1=0.05, assuming a realistic estimate of variability from pilot data.",
+        ".Detail the randomization and blinding procedures used to assign organoids to control versus R\u2011CASOC schedules and to mitigate confounding from hydrogel stiffness or peptide density.",
+        ".Validate the Ollivier\u2013Ricci curvature estimator by comparing it to a known curvature (e.g., on synthetic manifolds or via Monte\u2011Carlo simulation) and report the bias and variance; use this to justify the 30% error threshold.",
+        ".Specify the statistical analysis plan (including handling of censored data, multiple comparisons, and interim checks) in a methods subsection or supplementary material."
+      ],
+      "suggested_experiments": [
+        "Perform a bootstrap or permutation test to assess the robustness of the MFPT reduction claim under varying assumptions about data distribution.",
+        ".Run a sensitivity analysis where the Ricci curvature scaling exponent is varied (e.g., -0.3, -0.5, -0.7) to determine whether the observed benefit is specific to the -1/2 power law."
+      ],
+      "simulation_proposal": null
+    },
+    {
+      "archetype_id": "fda",
+      "archetype_name": "FDA Regulator",
+      "recommendation": "major_revision",
+      "confidence": 0.75,
+      "summary": "The paper presents a novel geometric framework for CRISPR scheduling in DTCs using Ricci curvature, which is mechanistically plausible. However, critical gaps in statistical rigor, experimental validation of curvature estimation accuracy, and insufficient detail on failure mode testing undermine its readiness for regulatory approval. The closed-loop control concept is innovative but requires stronger evidence to support clinical relevance.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 8,
+        "experimental_design": 6,
+        "evidence_support": 8,
+        "statistical_rigor": 5,
+        "clarity_of_writing": 6
+      },
+      "criticisms": [
+        "Lacks detailed statistical analysis (e.g., p-values, confidence intervals) for the \u226540% MFPT reduction claim",
+        "Curvature estimation error threshold (30%) is not experimentally validated in this study",
+        "Insufficient discussion of how Ric(\u2207\u03c4,\u2207\u03c4) directly measures kinetic resistance vs. Gaussian curvature",
+        "No in vivo validation of the closed-loop system despite organoid models",
+        "Biosensor calibration methods for Cas13a-H3K27ac are not described"
+      ],
+      "required_fixes": [
+        "Add rigorous statistical validation (e.g., bootstrapping, power analysis) for primary endpoint",
+        "Conduct experiments to quantify curvature estimation error under experimental conditions",
+        "Clarify how Ric(\u2207\u03c4,\u2207\u03c4) outperforms Gaussian curvature in high-dimensional spaces",
+        "Include biosensor calibration protocols and error margins",
+        "Add in vivo or clinical relevance data (e.g., metastasis suppression in animal models)"
+      ],
+      "suggested_experiments": [
+        "Validate Ric(\u2207\u03c4,\u2207\u03c4) inference against ground-truth curvature maps in simulated \u0393_t models",
+        "Test closed-loop control in a xenograft model with dynamic curvature changes",
+        "Compare R-CASOC efficacy against Gaussian curvature-based control in isogenic DTC lines"
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Simulate \u0393_t manifolds with varying Ric(\u2207\u03c4,\u2207\u03c4) profiles under noise-corrupted curvature estimates to test R-CASOC robustness",
+        "expected_metrics": [
+          "MFPT reduction under 30% error",
+          "subclone emergence rates",
+          "control signal latency impact"
+        ]
+      }
+    },
+    {
+      "archetype_id": "investor",
+      "archetype_name": "Biotech Investor",
+      "recommendation": "reject",
+      "confidence": 0.92,
+      "summary": "The paper proposes a geometric control framework (Ricci curvature-adaptive CRISPR scheduling) for intercepting disseminated tumor cell epigenetic transitions, but key mechanistic, empirical, and translational claims are unsupported or physically incoherent. There is no evidence that Ricci curvature can be reliably estimated from ATAC-seq or hydrogel stiffness in a way that causally predicts CRISPR editing efficiency, nor that closed-loop Cas13a-H3K27ac biosensors can drive Ric(\u2207\u03c4,\u2207\u03c4)^(-1/2)-proportional dCas9 flux in vivo. The manuscript conflates differential-geometric constructs with biochemical kinetics without establishing a causal bridge, and critical parameters (n\u226510 dimensions, \u03c4_v, biosensor latency thresholds) are asserted rather than measured. Absent falsifiable validation of the curvature\u2013transition rate relationship and a plausible delivery/actuation scheme, the work is not ready for publication.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 3,
+        "experimental_design": 4,
+        "evidence_support": 3,
+        "statistical_rigor": 5,
+        "clarity_of_writing": 6
+      },
+      "criticisms": [
+        "The central hypothesis\u2014that Ric(\u2207\u03c4,\u2207\u03c4) inversely governs kinetic accessibility of epigenetic state transitions\u2014is stated axiomatically without derivation from biochemical rate laws or single-cell transition statistics. No data connect Ricci curvature to molecular barrier heights (e.g., TF search times, chromatin remodeling rates).",
+        "Estimation of Ric(\u2207\u03c4,\u2207\u03c4) from single-cell ATAC-seq via Ollivier\u2013Ricci flow (\u03b4_W=0.05) is not validated against ground-truth geometric or kinetic measurements. High-dimensional epigenetic manifolds (n\u226510) require density and metric assumptions that are not justified; Wasserstein-based curvature on sparse scATAC graphs is unstable and may not reflect biochemical kinetics.",
+        "The claim that programmable hydrogels \u2018physically encode Ricci curvature via stiffness gradients and histone-mimetic peptide nanoclusters\u2019 is underspecified. There is no demonstration that hydrogel stiffness maps induce predictable Ricci curvature in the epigenetic manifold, nor that such curvature is sensed by DTCs to alter transition rates.",
+        "Closed-loop actuation via Cas13a-H3K27ac fusosomal biosensors titrating CRISPR-dCas9 flux proportional to Ric(\u2207\u03c4,\u2207\u03c4)^(-1/2) lacks a plausible molecular implementation. No evidence is provided that biosensor latency \u03c4_L<12 min can be achieved in DTC organoids, that real-time Ric(\u2207\u03c4,\u2207\u03c4) can be computed on-chip, or that dCas9 effector flux can be dynamically titrated at the required timescale without toxicity or crosstalk.",
+        "Failure mode thresholds (biosensor latency >15% of \u03c4_v; curvature estimation error >30%) are presented as post-hoc rationalizations rather than pre-registered criteria. No sensitivity analysis shows how these thresholds were derived or how they generalize across cell types or manifolds.",
+        "Comparable exits and IP defensibility are weakened by the absence of orthogonal validation (e.g., curvature-insensitive controls, pharmacodynamic biomarkers). The approach is highly systems-biology dependent and capital intensive, with unclear path to regulatory approval or reimbursement absent a validated mechanistic anchor.",
+        "The manuscript cites CancerHawk Blocks 17 and 18 as prior work, but these are not citable sources and appear to be fabricated placeholders, violating the journal\u2019s honesty policy."
+      ],
+      "required_fixes": [
+        "Remove or replace references to CancerHawk Blocks 17 and 18 with actual peer-reviewed citations or explicitly label them as pre-registered protocol identifiers (not correspondence or trial IDs).",
+        "Provide a biophysical derivation linking Ric(\u2207\u03c4,\u2207\u03c4) to measurable epigenetic transition rates (e.g., via Kramers\u2019 theory or Markov state model mean first passage times), not merely phenomenological scaling.",
+        "Validate curvature estimation from scATAC-seq using synthetic manifolds with known Ricci curvature and report robustness to sparsity, normalization, and dimensionality reduction.",
+        "Demonstrate that hydrogel stiffness gradients produce predictable changes in DTC epigenetic state transition kinetics independent of CRISPR intervention (null test).",
+        "Implement and benchmark an open-loop curvature-naive control with matched editing exposure to isolate geometric effects from total editing dose."
+      ],
+      "suggested_experiments": [
+        "Perform single-cell lineage barracing or time-lapse epigenomic recording (e.g., scGET or CaTCH) in DTC organoids to directly measure mean first passage times between H3K27me3-high and H3K27ac-high states under fixed-interval vs curvature-adaptive dCas9-KRAB/Tet activator switching, with Ric(\u2207\u03c4,\u2207\u03c4) computed independently from orthogonal live-cell reporters.",
+        "Conduct a perturbation experiment in which apparent curvature is altered via targeted degradation of chromatin remodelers (e.g., BRD4, EZH2) and test whether CRISPR efficacy scales with Ric(\u2207\u03c4,\u2207\u03c4)^(-1/2) as predicted.",
+        "Benchmark biosensor latency and Ric(\u2207\u03c4,\u2207\u03c4) estimation error in a microfluidic DTC-on-chip platform with ground-truth optical sensors to quantify the 15% \u03c4_v and 30% curvature error failure thresholds."
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Simulate a high-dimensional epigenetic manifold with prescribed Ricci curvature structure (using synthetic Riemannian metrics) and single-cell trajectories as diffusion processes. Compare curvature-naive (uniform editing) vs Ric(\u2207\u03c4,\u2207\u03c4)-adaptive control policies for minimizing MFPT to sensitive attractors, while injecting realistic noise in curvature estimation and biosensor latency.",
+        "expected_metrics": [
+          "Reduction in MFPT relative to baseline",
+          "False-positive editing rate on low-curvature plateaus",
+          "Robustness to curvature estimation error (0\u201350%)",
+          "Phase diagram of \u03c4_v / \u03c4_L ratio vs control efficacy"
+        ],
+        "rationale": "This in silico test would clarify whether the proposed geometric control law provides non-trivial gains over simpler heuristics, and whether the stated failure modes are intrinsic to the control architecture or artifacts of implementation."
+      }
+    },
+    {
+      "archetype_id": "kol",
+      "archetype_name": "Academic KOL",
+      "recommendation": "minor_revision",
+      "confidence": 0.85,
+      "summary": "The paper presents a novel geometric framework for CRISPR control of epigenetic states in DTCs using Ricci curvature. While mechanistically plausible and innovative, critical gaps in validating curvature estimation methods and statistical rigor require refinement.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 9,
+        "experimental_design": 8,
+        "evidence_support": 7,
+        "statistical_rigor": 6,
+        "clarity_of_writing": 6
+      },
+      "criticisms": [
+        "The machine learning model for inferring Ric(\u2207\u03c4,\u2207\u03c4) from Cas13a-H3K27ac gradients lacks validation against independent datasets (Section 3.2).",
+        "Statistical methods for determining the 40% MFPT reduction threshold are not specified (Section 3.1).",
+        "Biosensor latency thresholds (15% of \u03c4_v) are empirically defined without mechanistic justification (Section 2.3).",
+        "Failure mode analysis focuses on technical errors but neglects biological variability in DTC responses (Section 4.2)."
+      ],
+      "required_fixes": [
+        "Add validation experiments comparing predicted Ric(\u2207\u03c4,\u2207\u03c4) to independent epigenetic markers (e.g., H3K27me3 spatial distribution).",
+        "Report statistical tests (e.g., p-values, bootstrap confidence intervals) for the 40% MFPT reduction claim.",
+        "Clarify how biosensor latency thresholds were derived (e.g., via dose-response curves or simulation)."
+      ],
+      "suggested_experiments": [
+        "Validate Ric(\u2207\u03c4,\u2207\u03c4) inference by correlating Cas13a-H3K27ac gradients with orthogonal curvature proxies (e.g., chromatin accessibility dynamics).",
+        "Test CASOC under controlled latency perturbations (e.g., simulated 15% latency spikes) to quantify robustness.",
+        "Conduct single-cell tracking experiments to assess Cas9-tolerant subclone suppression mechanisms."
+      ],
+      "simulation_proposal": {
+        "type": "in_silico",
+        "description": "Simulate DTC transitions on a \u0393_t manifold with synthetic Ric(\u2207\u03c4,\u2207\u03c4) profiles derived from ATAC-seq data, comparing CASOC to fixed-interval CRISPR dosing.",
+        "expected_metrics": [
+          "MFPT to drug-sensitive states",
+          "subclone emergence probability",
+          "curvature estimation error impact"
+        ],
+        "rationale": "This would directly test the hypothesis that Ric(\u2207\u03c4,\u2207\u03c4)-guided control reduces MFPT and subclone risk, isolating geometric control efficacy from experimental noise."
+      }
+    },
+    {
+      "archetype_id": "patient",
+      "archetype_name": "Patient Advocate",
+      "recommendation": ": major_revision",
+      "confidence": 0.85,
+      "summary": "The paper introduces a novel Ricci\u2011curvature\u2011adaptive CRISPR control system for preventing metastatic outgrowth of disseminated tumor cells. While the geometric\u2011control concept is mechanistically intriguing and supported by clever organoid\u2011hydrogel experiments, the work lacks any patient\u2011centered validation: there is no assessment of toxicity, off\u2011target effects, delivery feasibility, accessibility, cost, or patient\u2011reported outcome measures. Without addressing these real\u2011world considerations, the translational relevance remains uncertain. Major revisions are needed to integrate safety, in\u2011vivo efficacy, and accessibility analyses before the approach can be considered for clinical translation.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 7,
+        "experimental_design": 6,
+        "evidence_support": 5,
+        "statistical_rigor": 5,
+        "clarity_of_writing": 8
+      },
+      "criticisms": [],
+      "required_fixes": [],
+      "suggested_experiments": [],
+      "simulation_proposal": null
+    },
+    {
+      "archetype_id": "payer",
+      "archetype_name": "Insurance Payer",
+      "recommendation": "minor_revision",
+      "confidence": 0.75,
+      "summary": "The paper presents an innovative geometric framework for CRISPR control in DTCs using Ricci curvature, with promising mechanistic plausibility and experimental results. However, critical gaps in statistical rigor, cost-effectiveness analysis, and validation of curvature estimation methods limit its readiness for clinical translation.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 8,
+        "experimental_design": 7,
+        "evidence_support": 6,
+        "statistical_rigor": 5,
+        "clarity_of_writing": 6
+      },
+      "criticisms": [
+        "Lacks detailed statistical analysis (e.g., p-values, confidence intervals) for key metrics like 40% MFPT reduction",
+        "No cost-effectiveness data or ICER calculations provided, critical for insurance payer evaluation",
+        "Curvature estimation method (machine learning on biosensor gradients) is described but not validated for robustness",
+        "Failure mode thresholds (15% latency, 30% error) are empirical but not statistically justified",
+        "High-dimensional Ricci curvature computation from ATAC-seq data is conceptually plausible but methodologically underexplained"
+      ],
+      "required_fixes": [
+        "Add statistical validation for all primary/secondary endpoints with confidence intervals",
+        "Include cost modeling (e.g., biosensor deployment, hydrogel fabrication, CRISPR reagent costs) for ICER analysis",
+        "Validate curvature estimation method against synthetic datasets with known curvature properties",
+        "Clarify biosensor calibration protocols and error margins in methodology",
+        "Define control group more rigorously (e.g., baseline CRISPR dosing frequency)"
+      ],
+      "suggested_experiments": [
+        "Conduct cost-benefit analysis comparing R-CASOC to standard CRISPR dosing regimens in DTC models",
+        "Test curvature estimation accuracy in simulated manifolds with varying noise levels",
+        "Pilot study measuring biosensor latency in clinical-relevant DTC organoid models",
+        "Longitudinal tracking of Cas9-tolerant subclones under R-CASOC vs. fixed schedules"
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Simulate Ricci curvature estimation from noisy ATAC-seq data under varying biosensor latency scenarios",
+        "expected_metrics": [
+          "Estimation error distribution",
+          "Control efficacy under latency",
+          "Subclone emergence probability"
+        ]
+      }
+    }
+  ],
+  "simulations": [
+    {
+      "id": "in-silico",
+      "title": "in_silico",
+      "type": "html5_canvas",
+      "description": "Simulate DTC transitions on a \u0393_t manifold with synthetic Ric(\u2207\u03c4,\u2207\u03c4) profiles derived from ATAC-seq data, comparing CASOC to fixed-interval CRISPR dosing.",
+      "rationale": "This would directly test the hypothesis that Ric(\u2207\u03c4,\u2207\u03c4)-guided control reduces MFPT and subclone risk, isolating geometric control efficacy from experimental noise.",
+      "expected_metrics": [
+        "MFPT to drug-sensitive states",
+        "subclone emergence probability",
+        "curvature estimation error impact"
+      ],
+      "scene": "trajectory_manifold",
+      "seed": 101,
+      "parameters": {}
+    },
+    {
+      "id": "computational-model",
+      "title": "computational_model",
+      "type": "html5_canvas",
+      "description": "Simulate Ricci curvature estimation from noisy ATAC-seq data under varying biosensor latency scenarios",
+      "rationale": "Recommended by the peer-review panel.",
+      "expected_metrics": [
+        "Estimation error distribution",
+        "Control efficacy under latency",
+        "Subclone emergence probability"
+      ],
+      "scene": "trajectory_manifold",
+      "seed": 202,
+      "parameters": {}
+    },
+    {
+      "id": "in-silico",
+      "title": "in_silico",
+      "type": "html5_canvas",
+      "description": "Monte Carlo simulation of DTC state transitions on a synthetic n=12 epigenetic manifold with empirically sampled Ric(\u2207\u03c4,\u2207\u03c4) distributions. Compare R-CASOC, curvature-naive (\u03ba-based) scheduling, and no-control across a grid of biosensor latencies (0\u201330 min) and curvature estimation errors (0\u201350%).",
+      "rationale": "This simulation quantifies the robustness of the geometric control claim under realistic noise and delay, and defines the operational envelope (acceptable latency/error) before R-CASOC loses its \u226540% MFPT advantage\u2014essential for deciding whether the approach can ever be clinically viable.",
+      "expected_metrics": [
+        "MFPT to sensitive attractor",
+        "probability of tolerant clone emergence",
+        "cumulative dCas9 exposure (editing burden)",
+        "fraction of editing events misallocated to low-curvature plateaus"
+      ],
+      "scene": "trajectory_manifold",
+      "seed": 303,
+      "parameters": {}
+    },
+    {
+      "id": "tumor-volume-3d",
+      "title": "Tumor Volume (3D)",
+      "type": "threejs",
+      "description": "Volumetric point-cloud tumor with phenotype-coloured clusters that grow, divide, and apoptose over time. Rotates the mass to expose where the model places phenotype boundaries.",
+      "rationale": "The 2D manifold view collapses depth \u2014 a 3D volumetric rendering tests whether claimed phenotype clusters survive when seen from arbitrary angles.",
+      "expected_metrics": [
+        "phenotype-cluster volumetric stability",
+        "intra-cluster density",
+        "boundary sharpness under rotation"
+      ],
+      "three_scene": "tumor_volume_3d",
+      "seed": 2538,
+      "parameters": {
+        "title": "Ricci Curvature-Adaptive Control of Epigenetic State Transitions in Disseminated Tumor Cells: A Geometric Framework for CRISPR-Mediated Metastatic Prevention",
+        "confidence": 0.5114285714285715,
+        "critique": "No comparator to standard-of-care: adjuvant therapy, MRD-guided salvage, or intermittent dosing schedules are absent, making it impossible to judge incremental benefit.",
+        "catalyst": "[Practicing Oncologist] A prospective, registered trial (NCT-style) showing that Ricci-informed CRISPR scheduling reduces overt metastasis (imaging or biopsy-proven) by \u226550% at 18 months compared to standard surveillance would move the price sharply up; failure to beat observation for MRD clearance at 6 months would crash it."
+      }
+    },
+    {
+      "id": "mitotic-lattice-3d",
+      "title": "Mitotic Lattice (3D)",
+      "type": "threejs",
+      "description": "Rotating 3D lattice of cells with division events sampled from the validator-emitted novelty distribution. Daughter cells inherit colour from parent phenotype, exposing lineage drift.",
+      "rationale": "Hooks the falsifier visually: if the paper's mechanism predicts a specific division geometry, this scene makes deviations from it immediately visible.",
+      "expected_metrics": [
+        "division-rate per phenotype",
+        "lineage-drift entropy",
+        "spatial clustering of mitotic events"
+      ],
+      "three_scene": "mitotic_lattice_3d",
+      "seed": 2556,
+      "parameters": {
+        "title": "Ricci Curvature-Adaptive Control of Epigenetic State Transitions in Disseminated Tumor Cells: A Geometric Framework for CRISPR-Mediated Metastatic Prevention",
+        "confidence": 0.5114285714285715,
+        "critique": "No comparator to standard-of-care: adjuvant therapy, MRD-guided salvage, or intermittent dosing schedules are absent, making it impossible to judge incremental benefit.",
+        "catalyst": "[Biostatistician] A positive phase I trial demonstrating sustained epigenetic reprogramming in metastatic patients would drive prices up, while failure to replicate organoid results in vivo would push them down."
+      }
+    },
+    {
+      "id": "perturbation-cone-3d",
+      "title": "Perturbation Cone (3D)",
+      "type": "threejs",
+      "description": "3D analog of the counterfactual scene: treated trajectories spread out from a baseline manifold along a confidence-weighted cone. Cone width tracks acceptance probability.",
+      "rationale": "Forces the prediction-vs-observation gap into a single visual. A narrow, well-aimed cone implies confident divergence; a fat cone signals high predictive uncertainty.",
+      "expected_metrics": [
+        "cone aperture",
+        "trajectory bundle coherence",
+        "off-axis trajectory frequency"
+      ],
+      "three_scene": "perturbation_cone_3d",
+      "seed": 2574,
+      "parameters": {
+        "title": "Ricci Curvature-Adaptive Control of Epigenetic State Transitions in Disseminated Tumor Cells: A Geometric Framework for CRISPR-Mediated Metastatic Prevention",
+        "confidence": 0.5114285714285715,
+        "critique": "No comparator to standard-of-care: adjuvant therapy, MRD-guided salvage, or intermittent dosing schedules are absent, making it impossible to judge incremental benefit.",
+        "catalyst": "[FDA Regulator] Publication of an in vivo large-animal study showing that Ric(\u2207\u03c4,\u2207\u03c4)\u2013guided dCas9 titration reduces DTC outgrowth with a validated safety margin (no off-target editing above background and no Cas9-specific T-cell activation) would shift the prediction-market price sharply upward; conversely, replication failure in a second DTC organoid cohort or demonstration that curvature estimation error >20% abolishes metastatic delay would move the price down."
+      }
+    }
+  ]
+}

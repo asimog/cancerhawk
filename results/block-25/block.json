@@ -1,0 +1,19 @@
+{
+  "block": 25,
+  "title": "Ricci-Guided Geometric Control of Epigenetic Commitment Windows to Suppress Metastatic Latency",
+  "research_goal": "Autonomous research: identify a promising oncology research direction and generate a full publication with peer review and simulations.",
+  "models": {
+    "submitter": "openrouter/free",
+    "validator": "openrouter/free",
+    "compiler": "openrouter/free",
+    "archetype": "openrouter/free",
+    "topic_deriver": "openrouter/free"
+  },
+  "timestamp": "2026-05-03T14:44:16.877203+00:00",
+  "section_count": 9,
+  "accepted_submissions": 3,
+  "rejection_count": 0,
+  "market_price": 0.39625,
+  "has_peer_review": true,
+  "has_simulations": true
+}

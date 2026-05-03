@@ -1,0 +1,650 @@
+{
+  "archetypes": [
+    {
+      "scores": {
+        "clinical_viability": 2,
+        "regulatory_risk": 9,
+        "market_potential": 3,
+        "patient_impact": 2,
+        "novelty": 8,
+        "falsifiability": 7
+      },
+      "verdict": "In clinic I can\u2019t dose a metastasis based on a Gaussian curvature readout. The construct is elegant but friction-heavy: we\u2019d need live-cell CPI FRET imaging of disseminated cells in real time (not feasible outside a bespoke trial), plus CRISPR-Cure-7 (no such drug; surrogate for Cas-KRAB?) delivered on adaptive HJB schedules. Off-label reality is grim: no billing code for curvature-guided therapy, no GMP sensor, and no precedent for dynamic CRISPR timing in solid tumors. Compared to SOC surveillance (ctDNA, imaging) and timed standard regimens, this adds patient burden without proven survival gain. The mechanism\u2014\u03ba-driven \u03c4_v compression\u2014is clever and biologically plausible, but it remains a simulation anchored to an unmeasurable manifold. Until we can map \u0393_t in a patient without implanting a research microscope, this stays in the realm of systems-biology fiction.",
+      "would_move_price": "A peer-reviewed in-vivo demonstration that CPI-derived curvature predicts DTC transition timing in a humanized mouse model with a measurable survival delta would sharply move the price up; failure to reproduce the \u22651.5\u00d7 eradication ratio in an independent, non-simulated cohort would collapse it.",
+      "archetype_id": "oncologist",
+      "archetype_name": "Practicing Oncologist"
+    },
+    {
+      "scores": {
+        "clinical_viability": 6,
+        "regulatory_risk": 5,
+        "market_potential": 8,
+        "patient_impact": 7,
+        "novelty": 9,
+        "falsifiability": 8
+      },
+      "verdict": "The paper proposes a groundbreaking geometric control framework for CRISPR timing in metastatic cancer, leveraging curvature of commitment manifolds to optimize intervention windows. While the mechanistic insights and mathematical formalism are highly novel, clinical viability remains constrained by the unproven feasibility of real-time curvature estimation and adaptive policy implementation in vivo. The approach's reliance on lineage-specific curvature fields and closed-loop control systems introduces significant technical hurdles, though successful execution could revolutionize precision oncology by dynamically targeting transient therapeutic windows.",
+      "would_move_price": "Positive Phase I trial results demonstrating >1.5x eradication ratio improvement with curvature-guided scheduling would significantly increase the prediction-market price for this paper.",
+      "archetype_id": "biostatistician",
+      "archetype_name": "Biostatistician"
+    },
+    {
+      "scores": {
+        "clinical_viability": 5,
+        "regulatory_risk": 8,
+        "market_potential": 7,
+        "patient_impact": 6,
+        "novelty": 10,
+        "falsifiability": 8
+      },
+      "verdict": "This paper presents a mechanistically ambitious framework for curvature-guided CRISPR timing in metastatic cancer, leveraging geometric properties of the commitment manifold to optimize intervention timing. While the hypothesis is novel and falsifiable (targeting eradication ratio as a measurable endpoint), its clinical viability is constrained by unvalidated assumptions about CPI sensor reliability and HJB policy translation to in vivo systems. The regulatory risk is high due to the complexity of real-time curvature estimation in heterogeneous tumor microenvironments and potential lineage-specific variability in curvature fields. Market potential is moderate, contingent on overcoming technical hurdles in sensor integration and control algorithm robustness. Patient impact remains speculative without clinical proof. The novelty score reflects the innovative geometric control paradigm, but its practicality hinges on addressing safety signals from off-target CRISPR activation and CPI reporting inaccuracies.",
+      "would_move_price": "A positive phase 2 clinical trial demonstrating \u22651.5-fold eradication ratio improvement with curvature-guided scheduling versus static schedules in a metastatic cancer cohort would significantly shift the prediction-market price upward.",
+      "archetype_id": "fda",
+      "archetype_name": "FDA Regulator"
+    },
+    {
+      "scores": {
+        "clinical_viability": 3,
+        "regulatory_risk": 8,
+        "market_potential": 7,
+        "patient_impact": 6,
+        "novelty": 9,
+        "falsifiability": 7
+      },
+      "verdict": "Mechanistically dazzling but capital-thirsty and clinically distant. The curvature-control thesis (\u0393_t, \u03ba-dependent \u03c4_v) is a fresh lens on DTC persister kinetics and could justify premium pricing if translatable. However, the CPI biosensor + in vivo HJB scheduler demands multiplexed live-cell imaging and lineage-restricted CRISPR delivery that pushes IND-enabling tox packages into 8\u201310 years and >$200M. Regulatory path is undefined (no precedent for geometry-driven dosing algorithms), and payers will balk at bespoke manufacturing until an exit via platform licensing to a CRISPR heavyweight (Editas, Beam, or Intellia) validates the modality. Patent claims around curvature-weighted control are defensible but narrow; composition-of-matter IP is absent, leaving freedom-to-operate exposed. Comparable exits favor platform bets over single-asset shots. We would write a small, staged tranche contingent on CPI sensor SNR >3 in vivo and a 1.5\u00d7 eradication ratio in a barcoded DTC PDX model within 18 months; absent that, kill criteria trigger.",
+      "would_move_price": "An in vivo demonstration that CPI-guided CRISPR timing achieves \u22651.5-fold DTC eradication versus static schedule in a barcoded PDX model without off-target editing in \ud835\udca9_\u03b5(\u0393_t) would shift the price sharply up; failure to achieve this threshold or CPI SNR <3 in vivo would crater valuation.",
+      "archetype_id": "investor",
+      "archetype_name": "Biotech Investor"
+    },
+    {
+      "scores": {
+        "clinical_viability": 3,
+        "regulatory_risk": 8,
+        "market_potential": 5,
+        "patient_impact": 4,
+        "novelty": 9,
+        "falsifiability": 6
+      },
+      "verdict": "From a patient\u2011advocate standpoint, this paper reads like a brilliant math exercise that may never reach the bedside. The idea of timing CRISPR edits to the curvature of a cell\u2019s commitment manifold is intellectually thrilling, yet it hinges on biosensors (CPI) and real\u2011time stochastic control that have not been shown to work in living tumors, let alone in the heterogeneous, micro\u2011environment\u2011driven settings patients actually face. Even if the geometry\u2011guided schedule improves eradication in silico, the added layers of gene\u2011editing delivery, sensor expression, and adaptive dosing raise serious safety and manufacturability concerns, and they would likely inflate treatment costs far beyond what most patients can access. Until we see concrete data showing reduced metastasis, manageable off\u2011target effects, and a feasible route to clinical manufacturing, the promise remains abstract rather than actionable for those living with cancer.",
+      "would_move_price": "A demonstrable, reproducible improvement in metastasis\u2011free survival with acceptable toxicity in a patient\u2011derived xenograft or early\u2011phase trial using the curvature\u2011guided CRISPR system would shift the market price upward, while failure to show any benefit over standard CRISPR timing in a rigorous preclinical model would push the price down.",
+      "archetype_id": "patient",
+      "archetype_name": "Patient Advocate"
+    },
+    {
+      "scores": {
+        "clinical_viability": 3,
+        "regulatory_risk": 7,
+        "market_potential": 4,
+        "patient_impact": 3,
+        "novelty": 8,
+        "falsifiability": 5
+      },
+      "verdict": "The proposal is a high\u2011concept mathematical overlay on CRISPR delivery that collapses under real\u2011world scrutiny. It assumes you can measure Gaussian curvature of an abstract epigenetic manifold in vivo with a FRET sensor, feed that into a Kalman\u2011Bucy estimator, and then fire a CRISPR construct with millisecond precision. No data exist that CPI actually reports curvature, let alone that curvature predicts a 1.5\u2011fold boost in DTC kill\u2011rate. Even if the sensor worked, the stochastic nature of tumor microenvironments, delivery barriers, and off\u2011target editing make the HJB optimal\u2011stopping policy impossible to validate in patients. The regulatory path is murky because the device\u2011drug combination would be a novel Class III product with no precedent. In short, the mechanistic chain is speculative, the translational gap is massive, and the hypothesis is not readily falsifiable in a clinical trial, making the whole venture a likely flop.",
+      "would_move_price": "A pre\u2011clinical demonstration that CPI accurately quantifies curvature and that curvature\u2011guided timing improves DTC eradication in an orthotopic metastasis model would be the only catalyst to lift the price, otherwise any negative readout will drive it down.",
+      "archetype_id": "short_seller",
+      "archetype_name": "Adversarial Short-Seller"
+    }
+  ],
+  "market_price": 0.4816666666666667,
+  "score_matrix": {
+    "oncologist": {
+      "clinical_viability": 2,
+      "regulatory_risk": 9,
+      "market_potential": 3,
+      "patient_impact": 2,
+      "novelty": 8,
+      "falsifiability": 7
+    },
+    "biostatistician": {
+      "clinical_viability": 6,
+      "regulatory_risk": 5,
+      "market_potential": 8,
+      "patient_impact": 7,
+      "novelty": 9,
+      "falsifiability": 8
+    },
+    "fda": {
+      "clinical_viability": 5,
+      "regulatory_risk": 8,
+      "market_potential": 7,
+      "patient_impact": 6,
+      "novelty": 10,
+      "falsifiability": 8
+    },
+    "investor": {
+      "clinical_viability": 3,
+      "regulatory_risk": 8,
+      "market_potential": 7,
+      "patient_impact": 6,
+      "novelty": 9,
+      "falsifiability": 7
+    },
+    "patient": {
+      "clinical_viability": 3,
+      "regulatory_risk": 8,
+      "market_potential": 5,
+      "patient_impact": 4,
+      "novelty": 9,
+      "falsifiability": 6
+    },
+    "short_seller": {
+      "clinical_viability": 3,
+      "regulatory_risk": 7,
+      "market_potential": 4,
+      "patient_impact": 3,
+      "novelty": 8,
+      "falsifiability": 5
+    }
+  },
+  "consensus_dim": {
+    "clinical_viability": 3.6666666666666665,
+    "regulatory_risk": 7.5,
+    "market_potential": 5.666666666666667,
+    "patient_impact": 4.666666666666667,
+    "novelty": 8.833333333333334,
+    "falsifiability": 6.833333333333333
+  },
+  "headline_catalysts": [
+    "[Practicing Oncologist] A peer-reviewed in-vivo demonstration that CPI-derived curvature predicts DTC transition timing in a humanized mouse model with a measurable survival delta would sharply move the price up; failure to reproduce the \u22651.5\u00d7 eradication ratio in an independent, non-simulated cohort would collapse it.",
+    "[Biostatistician] Positive Phase I trial results demonstrating >1.5x eradication ratio improvement with curvature-guided scheduling would significantly increase the prediction-market price for this paper.",
+    "[FDA Regulator] A positive phase 2 clinical trial demonstrating \u22651.5-fold eradication ratio improvement with curvature-guided scheduling versus static schedules in a metastatic cancer cohort would significantly shift the prediction-market price upward.",
+    "[Biotech Investor] An in vivo demonstration that CPI-guided CRISPR timing achieves \u22651.5-fold DTC eradication versus static schedule in a barcoded PDX model without off-target editing in \ud835\udca9_\u03b5(\u0393_t) would shift the price sharply up; failure to achieve this threshold or CPI SNR <3 in vivo would crater valuation.",
+    "[Patient Advocate] A demonstrable, reproducible improvement in metastasis\u2011free survival with acceptable toxicity in a patient\u2011derived xenograft or early\u2011phase trial using the curvature\u2011guided CRISPR system would shift the market price upward, while failure to show any benefit over standard CRISPR timing in a rigorous preclinical model would push the price down.",
+    "[Adversarial Short-Seller] A pre\u2011clinical demonstration that CPI accurately quantifies curvature and that curvature\u2011guided timing improves DTC eradication in an orthotopic metastasis model would be the only catalyst to lift the price, otherwise any negative readout will drive it down."
+  ],
+  "derived_topics": [
+    {
+      "id": 1,
+      "title": "\u03ba-driven CRISPR pulse-width modulation to exploit compressed epigenetic transition corridors",
+      "probability": 0.72,
+      "impact": 9,
+      "token_cost": 2100,
+      "rationale": "Extends the finding that high \u03ba compresses the transition corridor by testing whether ultra-short, curvature-triggered Cas pulses (rather than prolonged expression) increase lethal editing specificity in drug-tolerant persisters while minimizing off-target in low-\u03ba regions."
+    },
+    {
+      "id": 2,
+      "title": "Lineage-resolved chromatin topology as a curvature amplifier for synthetic \u03c4_v narrowing",
+      "probability": 0.65,
+      "impact": 8,
+      "token_cost": 2400,
+      "rationale": "Builds on the role of lineage-specific chromatin topology in shaping \u0393_t by engineering synthetic enhancer circuits that locally increase \u03ba at key fate nodes, testing whether induced curvature hotspots can force premature commitment into death basins before resistance stabilizes."
+    },
+    {
+      "id": 3,
+      "title": "Coupled HJB\u2013epigenetic oscillator control to steer DTCs across saddle barriers",
+      "probability": 0.68,
+      "impact": 9,
+      "token_cost": 2600,
+      "rationale": "Extends the HJB policy by modeling epigenetic state as a driven oscillator near saddle points of \u0393_t, hypothesizing that timed CRISPR kicks synchronized to curvature-phase can push trajectories over commitment barriers that static dosing cannot reach."
+    },
+    {
+      "id": 4,
+      "title": "CPI noise filtering via curvature-conditioned Kalman gain to shrink \ud835\udca9_\u03b5 false positives",
+      "probability": 0.8,
+      "impact": 7,
+      "token_cost": 1800,
+      "rationale": "Derives from the \u03b5-tube false-positive risk by proposing adaptive Kalman gains that tighten state estimates in high-\u03ba regimes, testing whether dynamic sensor fusion reduces off-manifold CRISPR activations and improves the therapeutic index."
+    },
+    {
+      "id": 5,
+      "title": "Metabolic curvature coupling: nutrient-sensor fusions to map \u03ba via NADH/ATP gradients",
+      "probability": 0.6,
+      "impact": 8,
+      "token_cost": 2200,
+      "rationale": "Extends \u0393_t geometry into metabolic dimensions by integrating FRET-based energy sensors with CPI, hypothesizing that local curvature \u03ba covaries with redox/ATP microenvironments and can be used to time CRISPR when DTCs are energetically vulnerable."
+    }
+  ],
+  "peer_reviews": [
+    {
+      "archetype_id": "oncologist",
+      "archetype_name": "Practicing Oncologist",
+      "recommendation": ": major_revision",
+      "confidence": 0.7,
+      "summary": "No summary provided.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 5,
+        "experimental_design": 5,
+        "evidence_support": 5,
+        "statistical_rigor": 5,
+        "clarity_of_writing": 5
+      },
+      "criticisms": [],
+      "required_fixes": [],
+      "suggested_experiments": [],
+      "simulation_proposal": null
+    },
+    {
+      "archetype_id": "biostatistician",
+      "archetype_name": "Biostatistician",
+      "recommendation": "reject",
+      "confidence": 0.92,
+      "summary": "The paper presents a mathematically elaborate control-theoretic narrative that is not anchored in measurable biological variables, contains undefined or unobservable constructs (\u0393_t, \u03ba(x), \u03c4_v, CPI), and proposes a trial framework without specifying endpoints, sampling strategies, or power calculations. As a result, the claims are neither falsifiable nor actionable for an oncology trial.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 4,
+        "experimental_design": 2,
+        "evidence_support": 2,
+        "statistical_rigor": 1,
+        "clarity_of_writing": 5
+      },
+      "criticisms": [
+        "State space and curvature (\u0393_t, \u03ba(x)) are not operationally defined in terms of measurable epigenetic or transcriptional variables; no dimensionality, coordinate system, or scale is provided, making curvature estimation non-identifiable.",
+        "Commitment-Potential Indicator (CPI) is described as a FRET biosensor but lacks spectral properties, dynamic range, calibration standards, and validation against ground-truth commitment states; observability of \u0393_t is asserted without evidence.",
+        "The primary endpoint (\"eradication ratio\") is not defined with a denominator, time horizon, or censoring rule; no statistical hypothesis (H0/H1), \u03b1/\u03b2, or multiplicity adjustment is stated.",
+        "No sample-size justification or feasibility analysis for metastatic DTC sampling (blood, bone marrow, or tissue) is provided; required number of barcoded lineages, detection limits of barcodes, and dropout rates are unspecified.",
+        "ACWSC/HJB policy is presented symbolically but not parameterized (no state dynamics, no cost function, no control bounds); risk function r(x)=exp(\u2212\u03b1\u03ba(x)) introduces an arbitrary \u03b1 with no biological calibration.",
+        "Confounding risks (tumor burden, prior therapy, niche microenvironment, lineage-specific enhancer effects) are acknowledged but not modeled or adjusted for; no plan for stratification or sensitivity analyses.",
+        "Simulation claims (\u22651.5-fold increase in eradication) lack Monte Carlo specifications, parameter distributions, or sensitivity analyses; no failure-mode simulations for sensor noise or model misspecification.",
+        "CRISPR-Cure-7 is treated as a black-box intervention with no pharmacokinetic/pharmacodynamic (PK/PD) model, delivery efficiency, or off-target rates, preventing translation to a clinical protocol."
+      ],
+      "required_fixes": [
+        "Define \u0393_t as a finite-dimensional manifold with explicit coordinates (e.g., vector of histone marks, TF ChIP-seq scores, RNA velocity) and specify \u03ba(x) as a computable function (e.g., scalar curvature from Riemannian metric on empirical embedding).",
+        "Specify the primary endpoint (e.g., proportion of barcoded DTC lineages undetectable at 6 months) with time-to-event censoring, and state null/alternative hypotheses and target \u03b1/\u03b2.",
+        "Provide a sample-size calculation that accounts for DTC sampling frequency, barcode detection limit (e.g., 1 lineage per 10^6 cells), expected dropout, and inter-patient heterogeneity; include feasibility data from pilot cohorts.",
+        "Parameterize the HJB policy with explicit state dynamics, running/terminal costs, and control constraints; report how \u03b1 in r(x) is calibrated from data or sensitivity ranges.",
+        "Pre-specify confounder adjustment (e.g., baseline tumor burden, prior lines of therapy) and analysis plans (stratified log-rank, mixed-effects models) with multiplicity control.",
+        "Release a simulation protocol with parameter distributions, noise models for CPI, and Monte Carlo replications to support the \u22651.5-fold claim; include failure-mode analyses (sensor delay, model misspecification)."
+      ],
+      "suggested_experiments": [
+        "Pilot observational cohort (n\u224820\u201330 metastatic patients) with longitudinal DTC sampling to estimate empirical state-space dimensionality, barcode persistence, and within-patient variance of proposed epigenetic coordinates; use this to calibrate \u03ba(x) and CPI thresholds.",
+        "In vitro time-lapse CRISPR perturbation experiment in barcoded DTC models with single-cell epigenomic readouts to quantify \u03c4_v distributions as a function of local curvature proxies (e.g., chromatin accessibility variance); estimate PK/PD of CRISPR-Cure-7.",
+        "Adaptive seamless phase II simulation study using resampling/bootstrap from pilot data to compute power and bias of curvature-guided vs static schedules under realistic sampling cadence and sensor noise."
+      ],
+      "simulation_proposal": {
+        "type": "statistical",
+        "description": "Monte Carlo simulation of a two-arm trial (curvature-guided vs static CRISPR timing) with explicit DTC lineage dynamics (birth-death-resistance), barcode detection limits, and CPI measurement error; estimate power for the primary endpoint (eradication ratio) across a grid of \u03b1 and \u03ba-effect sizes.",
+        "expected_metrics": [
+          "Power at \u03b1=0.05 to detect \u22651.5-fold increase in eradication ratio",
+          "Bias and RMSE of curvature estimator under varying sensor noise",
+          "Type I error under model misspecification",
+          "Expected sample size and DTC sequencing depth to achieve target power"
+        ],
+        "rationale": "This quantifies whether the claimed benefit is detectable given realistic biological and technical variability, and identifies minimal detectable effect sizes and required sequencing depth before committing to wet experiments."
+      }
+    },
+    {
+      "archetype_id": "fda",
+      "archetype_name": "FDA Regulator",
+      "recommendation": ": major_revision",
+      "confidence": 0.88,
+      "summary": "The manuscript presents an intriguing theoretical framework linking commitment-manifold curvature to CRISPR timing via stochastic control, but it lacks any experimental validation, IND\u2011enabling data, or concrete safety assessments required for FDA consideration. The claims are supported only by simulations and cited CancerHawk blocks that are not publicly verifiable. To move toward an IND, the authors must demonstrate that the Commitment\u2011Potential Indicator (CPI) sensor reliably reports curvature in live cells, that curvature\u2011guided CRISPR delivery improves eradication in relevant metastatic models, and that off\u2011target effects and immunogenicity are within acceptable limits. Without these data, the proposal remains speculative and cannot support an approval pathway, accelerated or otherwise.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 6,
+        "experimental_design": 2,
+        "evidence_support": 2,
+        "statistical_risk": 3,
+        "clarity_of_writing": 7,
+        "statistical_rigor": 5
+      },
+      "criticisms": [
+        "No experimental data are presented; all claims rely on simulations and unpublished CancerHawk blocks.",
+        "The CPI sensor is described only conceptually; no validation of its specificity, dynamic range, or toxicity is provided.",
+        "No in\u2011vitro or in\u2011vivo efficacy data show that curvature\u2011guided CRISPR reduces DTC burden or improves survival.",
+        "Safety signals (off\u2011target editing, immune response to Cas9, potential oncogenic effects of persistent curvature modulation) are not addressed.",
+        "The paper does not define measurable endpoints, failure modes, or statistical power calculations needed for IND\u2011enabling studies.",
+        "Regulatory precedent for geometry\u2011guided drug timing is absent; the authors do not discuss how this approach fits existing accelerated\u2011approval pathways.",
+        "The manuscript mixes notation and repeats sections (e.g., duplicated Introduction), impairing readability."
+      ],
+      "required_fixes": [
+        "Provide proof\u2011of\u2011concept data showing that the CPI sensor reports Gaussian curvature \u03ba in live DTCs with quantitative calibration (e.g., FRET ratio vs. known curvature-inducing drugs).",
+        "Demonstrate that ACWSC\u2011guided delivery of CRISPR\u2011Cas7 (or a suitable nuclease) increases eradication of barcoded DTC lineages in vitro compared with static scheduling, using appropriate controls and statistical analysis (e.g., \u22651.5\u2011fold increase with p<0.05).",
+        "Validate the approach in at least one metastatic mouse model (e.g., tail\u2011vein injection of luciferase\u2011labelled DTCs) showing reduced bioluminescent burden and/or prolonged survival with curvature\u2011guided dosing versus standard regimen.",
+        "Conduct GLP\u2011compliant toxicology studies (in vitro off\u2011target sequencing, cytokine release, innate immune activation) to identify safety signals and define a therapeutic index.",
+        "Clearly state the primary hypothesis, measurable endpoint (e.g., eradication ratio, false\u2011positive rate), statistical analysis plan, and predefined failure criteria for IND\u2011enabling studies.",
+        "Reference or provide accessible details for the CancerHawk blocks cited, or replace them with peer\u2011reviewed sources.",
+        "Edit the manuscript to remove duplicated sections, standardize notation, and improve clarity for regulatory reviewers."
+      ],
+      "suggested_experiments": [
+        "Generate a panel of isogenic DTC lines with engineered chromatin modifiers that produce predictable high\u2011 and low\u2011curvature commitment manifolds (validated by ATAC\u2011seq/Hi\u2011C). Use these lines to calibrate the CPI sensor\u2019s FRET response to known \u03ba values.",
+        "Perform a side\u2011by\u2011side comparison of static versus ACWSC\u2011timed CRISPR\u2011Cas9\u2011KRAB delivery in the engineered lines, measuring lineage\u2011specific death (Annexin V/PI) and persistence (drug\u2011tolerant colony formation) over 14 days.",
+        "In a metastatic mouse model, administer CRISPR\u2011Cas7 ribonucleoprotein complexes encapsulated in curvature\u2011responsive nanoparticles (release triggered by high \u03ba as reported by CPI\u2011linked reporter). Quantify DTC eradication by bioluminescence imaging and limiting\u2011dilution assay, and assess off\u2011target editing by GUIDE\u2011seq in recovered tumors.",
+        "Conduct a dose\u2011escalation safety study in healthy mice to evaluate cytokine storms, liver/kidney function, and germline editing after repeated ACWSC\u2011guided dosing."
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Implement an agent\u2011based model of disseminated tumor cells navigating a stochastic epigenetic landscape where curvature \u03ba modulates the width of the commitment window \u03c4_v. Simulate static versus ACWSC\u2011guided CRISPR delivery (modeled as a timed increase in death probability) across heterogeneous DTC subpopulations with lineage\u2011specific enhancer landscapes.",
+        "expected_metrics": [
+          "Mean eradication ratio (% of DTC lineages eliminated)",
+          "False\u2011positive CRISPR activation rate (events outside \ud835\udca9_\u03b5(\u0393_t))",
+          "Time to resistance emergence"
+        ]
+      }
+    },
+    {
+      "archetype_id": "investor",
+      "archetype_name": "Biotech Investor",
+      "recommendation": "major_revision",
+      "confidence": 0.75,
+      "summary": "The paper proposes a geometric control framework for timing CRISPR interventions against metastatic DTCs, with a compelling mechanistic hook (curvature of the commitment manifold shortening \u03c4_v) but insufficient empirical grounding, undefined key constructs (e.g., CRISPR-Cure-7, CPI sensor), and missing falsifiability criteria. The HJB formalism is suggestive but not linked to measurable state variables or failure modes. With explicit assays, controls, and quantitative predictions, this could be reframed as a testable systems-level hypothesis.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 7,
+        "experimental_design": 3,
+        "evidence_support": 3,
+        "statistical_rigor": 2,
+        "clarity_of_writing": 6
+      },
+      "criticisms": [
+        "Undefined molecular agents: CRISPR-Cure-7 and Commitment-Potential Indicator (CPI) are treated as black boxes with no sgRNA targets, delivery modality (viral vs. RNP), dCas9-effector (KRAB vs. SAM), or spectral properties of the FRET pair; this prevents assessment of feasibility or off-target liabilities.",
+        "No direct evidence is provided that local Gaussian curvature \u03ba of any in-cell manifold can be measured at single-cell resolution with sufficient temporal frequency to close an HJB loop; live-cell epigenetic tensor imaging is asserted but not demonstrated.",
+        "The risk function r(x)=exp(\u2212\u03b1\u03ba(x)) is introduced without derivation from a biological loss function (e.g., cost of off-target editing vs. benefit of hitting a persister), obscuring how \u03b1 should be set and how it trades off with false-positive rate in \ud835\udca9_\u03b5(\u0393_t).",
+        "Failure mode is described qualitatively (no improvement in eradication ratio) but not operationalized: there is no prespecified threshold (e.g., eradication ratio <1.2), multiplicity correction for lineage comparisons, or plan for sensor-noise-induced type I/II error.",
+        "No pharmacodynamic or pharmacokinetic bridge: CRISPR editing kinetics (allelic conversion half-life) are not mapped onto \u03c4_v; without this, the claim that curvature-guided timing yields \u22651.5\u00d7 eradication is not anchored in molecular half-lives.",
+        "Lineage-specific enhancer-driven CPI reporters are proposed post hoc as a fix without baseline characterization of curvature heterogeneity across clonal barcodes, making it impossible to distinguish true geometric signal from expression noise."
+      ],
+      "required_fixes": [
+        "Define CRISPR-Cure-7 precisely (Cas variant, guide targets, delivery vehicle, editing efficiency and half-life in DTC models) and specify the FRET pair and subcellular localization for CPI with expected dynamic range and noise floor.",
+        "Derive or justify r(x)=exp(\u2212\u03b1\u03ba(x)) from a concrete cost function linking curvature to transition rates; state how \u03b1 will be estimated from data or set via cross-validation.",
+        "Specify a quantitative decision boundary for success (e.g., posterior probability >0.95 that eradication ratio >1.5) and a stopping rule for futility.",
+        "Provide a power analysis or simulation-based sample-size justification for the proposed in vivo experiment, accounting for barcode dropout and measurement error in \u03ba."
+      ],
+      "suggested_experiments": [
+        "Orthogonal reporter validation: engineer paired CRC lines with distinct enhancer landscapes (e.g., SOX2 vs. ASCL1 driven) to quantify lineage-specific \u03ba via time-lapse smFISH of commitment-state transcripts and test whether CPI FRET predicts curvature inferred from state-covariance tensors.",
+        "Closed-loop perturbation: in a microfluidic device, acutely tune microenvironmental stresses (e.g., TGF\u03b2 pulse) to transiently increase local \u03ba and measure \u03c4_v shortening via timelapse lineage tracing; deliver CRISPRa/i at algorithm-prescribed vs. fixed intervals and compare eradication ratio and off-target editing (GUIDE-seq).",
+        "Fail-safe test: scramble the curvature signal by buffering enhancer activity (CRISPRi against key TFs) and verify that predicted high-\u03ba regions no longer yield elevated eradication, establishing specificity of geometric control."
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Simulate single-cell trajectories on a 2D commitment manifold with tunable Gaussian curvature \u03ba, additive sensor noise, and CRISPR editing modeled as a stochastic transition kernel with finite on-rate and off-target leak. Compare adaptive HJB policy (using noisy \u03ba estimates) against fixed-schedule dosing across a grid of \u03ba, noise, and editing half-life parameters.",
+        "expected_metrics": [
+          "Eradication ratio (proportion of barcoded lineages eliminated)",
+          "False-positive rate (fraction of CRISPR activations outside \ud835\udca9_\u03b5(\u0393_t))",
+          "Regret relative to oracle policy with perfect \u03ba observability"
+        ],
+        "rationale": "This in silico test directly probes the paper\u2019s core claim that curvature-guided timing yields \u22651.5\u00d7 improvement; by mapping performance landscapes and failure modes (e.g., when sensor noise overwhelms \u03ba signal), it defines the observability and editing-efficiency thresholds required for the biological experiments to be viable."
+      }
+    },
+    {
+      "archetype_id": "kol",
+      "archetype_name": "Academic KOL",
+      "recommendation": "major_revision",
+      "confidence": 0.85,
+      "summary": "This paper presents a highly innovative but incomplete theoretical framework proposing curvature-guided CRISPR timing for metastatic cancer. While the geometric control concept is mechanistically intriguing, the manuscript lacks experimental validation, contains placeholder citations, and is incomplete (cuts off mid-equation in section 3). The theoretical foundation needs substantial development and empirical support before publication.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 5,
+        "experimental_design": 3,
+        "evidence_support": 2,
+        "statistical_rigor": 3,
+        "clarity_of_writing": 7
+      },
+      "criticisms": [
+        "Paper is incomplete - cuts off mid-equation in section 3 ('the model leverages the state-dependent risk function $ r')",
+        "Contains placeholder citations ('CancerHawk Block 9', 'CancerHawk Block 10') instead of proper references",
+        "No experimental data presented - only simulation predictions mentioned in abstract",
+        "Lack of validation for Commitment-Potential Indicator (CPI) sensor technology",
+        "No demonstration that Gaussian curvature of commitment manifold can be reliably measured in living cells",
+        "Missing details on how ACWSC framework was implemented or validated",
+        "No comparison with existing adaptive therapy approaches",
+        "Failure mode analysis is insufficient - does not address biological variability between patients"
+      ],
+      "required_fixes": [
+        "Complete section 3 and all subsequent sections of the manuscript",
+        "Replace placeholder citations with actual peer-reviewed references",
+        "Provide experimental validation data for CPI sensor technology",
+        "Include actual results from simulations with statistical analysis",
+        "Demonstrate feasibility of real-time curvature estimation in biological systems",
+        "Add comparison with standard CRISPR delivery protocols",
+        "Include power analysis and sample size calculations for proposed experiments"
+      ],
+      "suggested_experiments": [
+        "Validate CPI sensor in cell lines by correlating FRET signals with known commitment state markers",
+        "Measure curvature of commitment manifold in vitro using single-cell RNA-seq trajectory inference",
+        "Test ACWSC framework in patient-derived organoids with barcoded DTCs",
+        "Compare curvature-guided vs. fixed-timed CRISPR delivery in mouse models of metastasis",
+        "Assess lineage-specific differences in commitment manifold curvature across breast, lung, and pancreatic cancer models"
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Develop an agent-based model of DTC state transitions incorporating realistic epigenetic landscape geometry, where cells transition between states based on local curvature and stochastic noise. Implement the ACWSC algorithm to determine optimal CRISPR intervention timing and compare eradication ratios between curvature-guided and fixed-schedule approaches across 1000 simulation runs.",
+        "expected_metrics": [
+          "Eradication ratio (proportion of DTC lineages eliminated)",
+          "False positive rate (interventions outside tubular neighborhood)",
+          "Timing accuracy of intervention relative to commitment window",
+          "Robustness to sensor noise and estimation error"
+        ],
+        "rationale": "This simulation would test the core hypothesis that curvature-guided timing outperforms static scheduling while quantifying the impact of various sources of uncertainty on framework performance"
+      }
+    },
+    {
+      "archetype_id": "patient",
+      "archetype_name": "Patient Advocate",
+      "recommendation": "major_revision",
+      "confidence": 0.65,
+      "summary": "The paper presents a novel curvature-guided CRISPR framework with strong mechanistic plausibility but lacks critical real-world validation and patient-centric considerations. While the geometric control theory is innovative, the absence of clinical trial data, side-effect analysis, and patient-reported outcomes undermines its applicability to metastatic cancer treatment journeys.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 8,
+        "experimental_design": 5,
+        "evidence_support": 6,
+        "statistical_rigor": 7,
+        "clarity_of_writing": 7
+      },
+      "criticisms": [
+        "No discussion of side-effect burden or toxicity profiles for CRISPR-Cure-7 in metastatic contexts",
+        "Relies heavily on simulations without in vitro/in vivo validation of CPI sensor accuracy",
+        "Fails to address accessibility barriers (e.g., cost, infrastructure) for curvature-guided therapies",
+        "Ignores patient-reported outcomes (e.g., quality of life during treatment)",
+        "Limited consideration of real-world treatment journey complexities (e.g., adherence, comorbidities)"
+      ],
+      "required_fixes": [
+        "Add clinical trial design details with patient stratification by metastatic stage",
+        "Include preclinical data on CRISPR-Cure-7 side effects (e.g., off-target edits, immune responses)",
+        "Integrate patient-reported outcome measures (PROMs) into the hypothesis testing",
+        "Address accessibility challenges in the Discussion section",
+        "Clarify how lineage-specific curvature variations will be managed in diverse patient populations"
+      ],
+      "suggested_experiments": [
+        "Conduct a Phase I clinical trial measuring PROMs (e.g., pain, fatigue) alongside eradication ratios",
+        "Perform in vitro studies with patient-derived DTCs to validate CPI sensor reliability",
+        "Model cost-effectiveness of curvature-guided vs. standard CRISPR scheduling",
+        "Develop a digital twin framework to simulate real-world treatment journeys with curvature-guided interventions"
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "A patient-level simulation integrating curvature-guided CRISPR timing with real-world constraints (e.g., treatment delays, comorbidities)",
+        "expected_metrics": [
+          "eradication ratio",
+          "side-effect incidence",
+          "patient adherence rates"
+        ],
+        "rationale": "This would test whether the framework improves outcomes in realistic scenarios while quantifying trade-offs between efficacy and patient burden"
+      }
+    },
+    {
+      "archetype_id": "payer",
+      "archetype_name": "Insurance Payer",
+      "recommendation": "reject",
+      "confidence": 0.92,
+      "summary": "The paper proposes a mathematically sophisticated stochastic-control framework for CRISPR timing in metastatic cancer, but it fails as an actionable, testable research plan: key constructs (CRISPR-Cure-7, CPI sensor, \u0393_t curvature readout) are undefined; no in vitro or in vivo validation is described; and the claimed \u22651.5\u00d7 eradication benefit lacks statistical bounds, sample-size justification, or uncertainty quantification. As a result, the work is not falsifiable in its current form and cannot support downstream translational investment.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 5,
+        "experimental_design": 2,
+        "evidence_support": 2,
+        "statistical_rigor": 3,
+        "clarity_of_writing": 6
+      },
+      "criticisms": [
+        "Undefined intervention: CRISPR-Cure-7 is referenced without molecular composition, delivery modality, dosing, or on/off-target profile, making cost and efficacy modeling impossible.",
+        "Unvalidated sensor: The Commitment-Potential Indicator (CPI) is asserted to report local Gaussian curvature via FRET, but no calibration data, dynamic range, noise model, or lineage specificity are provided; failure modes (e.g., spectral bleed-through, phototoxicity) are not addressed.",
+        "No experimental cohort or power analysis: The \u22651.5-fold increase in DTC eradication is stated without n, variance, or statistical test; confidence intervals and multiplicity corrections are absent.",
+        "Unrealistic observability assumptions: Real-time curvature estimation via Kalman\u2013Bucy filtering presumes continuous, high-SNR state observation in vivo; no discussion of sampling frequency, sensor latency, or partial observability in metastatic niches.",
+        "Missing budget-impact and ICER scaffolding: No per-patient cost for CPI-CRISPR delivery, no comparator (standard-of-care SOC), no QALY or life-year estimates, and no threshold analysis against common payer ICER bounds ($100k\u2013$150k/QALY).",
+        "Prior-auth and coverage complexity ignored: No discussion of companion-diagnostic (CPI) validation, CLIA/CMS coverage pathways, or site-of-care requirements that would drive real-world utilization and cost.",
+        "Failure modes are hand-waved: The paper acknowledges potential failure (lineage chromatin buffering, sensor noise) but proposes no pre-specified stopping rules, futility boundaries, or fallback protocols."
+      ],
+      "required_fixes": [
+        "Define CRISPR-Cure-7 explicitly (Cas variant, guide class, delivery vector, dosing schedule) and provide in vitro potency (EC50, selectivity) and in vivo PK/PD.",
+        "Fully specify the CPI biosensor (promoter/enhancer drivers, FRET pair, dynamic range, calibration against ground-truth epigenetic state) and report lineage-wise observability limits.",
+        "Pre-specify statistical analysis: primary endpoint (DTC eradication ratio), null hypothesis, sample size per arm, interim analysis plan, and multiplicity control.",
+        "Embed a cost-minimization or cost-effectiveness model comparing ACWSC-CRISPR vs SOC with deterministic ICER and probabilistic sensitivity analysis; include budget impact over 1\u20135 years for a 1M-lives payer.",
+        "State companion-diagnostic and prior-auth requirements, including CMS coverage with evidence development (CED) triggers and turnaround-time constraints."
+      ],
+      "suggested_experiments": [
+        "In vitro time-lapse lineage tracing with epigenetically barcoded DTC models to quantify \u03c4_v distributions under static vs curvature-simulated schedules; report hazard ratios for eradication and false-positive CRISPR activation rates.",
+        "Orthotopic metastasis model with intravital FRET-CPI to validate curvature\u2013\u03c4_v relationship and Kalman\u2013Bucy estimator accuracy under realistic SNR and sampling cadence.",
+        "Budget-impact microsimulation: combine per-patient CPI-CRISPR cost (development + delivery), response durability (Weibull fits), and downstream care costs to estimate 3-year PMPM impact for a commercial payer."
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Monte-Carlo simulation of ACWSC vs fixed-schedule CRISPR under varying curvature observability (\u03c3_\u03ba = 0.1\u20130.5) and per-intervention cost; estimate incremental cost per DTC-eradicated and ICER relative to SOC with QALY mapping.",
+        "expected_metrics": [
+          "Eradication ratio (mean, 95% CI)",
+          "False-positive activation rate",
+          "Cost per patient",
+          "ICER ($/QALY)",
+          "Budget impact ($M/year per 1M covered lives)"
+        ],
+        "rationale": "Quantifies whether curvature-guided timing confers economically meaningful benefit given realistic sensor noise and intervention costs; identifies observability and cost thresholds below which ACWSC is dominated by simpler policies."
+      }
+    },
+    {
+      "archetype_id": "short_seller",
+      "archetype_name": "Adversarial Short-Seller",
+      "recommendation": "reject",
+      "confidence": 0.92,
+      "summary": "The paper collapses under a category error: it treats abstract differential-geometric curvature of an unmeasured, high-dimensional epigenetic manifold as an actionable, real-time control variable, then embeds this fiction in an optimal-stopping policy without demonstrating observability, identifiability, or even a plausible molecular mapping from \u03ba to CRISPR activation. There is no falsifiable path from curvature to molecular kinetics, no evidence that Gaussian curvature of \u0393_t is experimentally accessible in vivo, and no accounting for the non-stationarity introduced by CRISPR-mediated epigenetic rewriting of the very manifold being controlled.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 3,
+        "experimental_design": 2,
+        "evidence_support": 2,
+        "statistical_rigor": 4,
+        "clarity_of_writing": 7
+      },
+      "criticisms": [
+        "Unobservable state variable: \u0393_t, \u03ba(x), and the \u03b5-tubular neighborhood \ud835\udca9_\u03b5(\u0393_t) are treated as measurable quantities, yet no evidence is provided that live-cell CPI-FRET can reconstruct local Gaussian curvature of a high-dimensional epigenetic manifold at single-cell resolution; the Kalman-Bucy estimator is asserted without state-space identifiability or noise model validation.",
+        "Category error between geometry and kinetics: the claim that \u03c4_v shortens with increasing \u03ba is presented as mechanistic but lacks a biophysical mapping from curvature (a geometric property) to transition rates (kinetic parameters); no derivation from Langevin or Fokker\u2013Planck dynamics linking \u03ba to Kramers-like barrier crossing times is provided.",
+        "Endogeneity of control: CRISPR-Cas epigenetic editing (dCas9-KRAB/CRISPRa) is acknowledged to alter the epigenetic potential that defines \u0393_t, yet the HJB policy treats curvature as exogenous; this creates a moving-target control problem that invalidates the assumed cost structure and optimal stopping boundaries.",
+        "No failure-mode quantification: the stated failure mode (no improvement in eradication ratio) is insufficient; the paper does not specify power, effect-size thresholds, or Type-I/II error control for the \u22651.5-fold eradication claim, nor does it define the false-positive rate operationally (activations outside \ud835\udca9_\u03b5(\u0393_t)) in terms of measurable off-target edits.",
+        "Circular grounding: references to CancerHawk Block 9/10 function as self-citation placeholders rather than independent mechanistic validation; the convexity and \u03b5-tube claims are assumed rather than demonstrated, undermining falsifiability.",
+        "Simulation opacity: the ACWSC simulations predicting \u22651.5-fold gains lack specification of state-space dimensionality, noise parameters, sensor latency, or delivery constraints; without these, the prediction is unfalsifiable and could emerge from arbitrary parameter tuning."
+      ],
+      "required_fixes": [
+        "Define a biophysically grounded mapping from local curvature \u03ba to transition-rate modulation (e.g., via curvature-dependent prefactors in a Kramers escape model) and show that this mapping is consistent with single-cell epigenetic dynamics under dCas9 perturbation.",
+        "Demonstrate that CPI-FRET plus live-cell epigenomic tensors can reconstruct \u03ba with quantified uncertainty; provide a state-space model with observability analysis and empirical validation against orthogonal fate reporters.",
+        "Reformulate the HJB policy to include endogenous state evolution induced by CRISPR-mediated epigenetic remodeling; derive robust or adaptive control bounds that account for curvature changes driven by the intervention itself.",
+        "Specify a pre-registered statistical plan for the eradication-ratio endpoint, including null definition, non-inferiority/superiority margins, multiplicity control across lineages, and stopping rules tied to false-positive activation rates."
+      ],
+      "suggested_experiments": [
+        "Single-cell lineage tracing with orthogonal epigenetic clocks: combine barcoded DTCs with methylation/dye-based age reporters to empirically estimate \u03c4_v distributions as a function of enhancer-driven chromatin architecture; test whether high-\u03ba regions (inferred from state-space diffusion maps) correlate with compressed \u03c4_v independent of CRISPR intervention.",
+        "CRISPR-dose\u2013curvature perturbation: titrate dCas9-KRAB occupancy at lineage-defining enhancers while measuring concurrent changes in local epigenetic state-space geometry (via multi-omics) and transition rates into tolerance; quantify whether curvature is causally altered and whether timing of editing relative to inferred \u03ba modulates outcomes.",
+        "Sensor validation under controlled drift: engineer synthetic enhancer circuits with tunable noise and topology to create manifolds of known (engineered) curvature; deploy CPI-like reporters and test whether Kalman-Bucy estimation recovers \u03ba and whether control policies using these estimates improve target-state hitting times."
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Implement a low-dimensional (2\u20133D) epigenetic-state SDE with explicitly defined curvature \u03ba(x), inject CPI-like measurement noise and latency, and simulate ACWSC versus fixed-schedule CRISPR delivery under both stationary and CRISPR-perturbed (non-stationary) curvature regimes; compare eradication ratio, false-positive activation rate, and robustness to sensor delay.",
+        "expected_metrics": [
+          "Eradication ratio (DTC lineages eliminated / total) vs static control",
+          "False-positive activation rate (fraction of CRISPR triggers outside \ud835\udca9_\u03b5(\u0393_t))",
+          "Regret relative to oracle policy with perfect \u03ba observability",
+          "Sensitivity of policy performance to sensor latency and Kalman gain misspecification"
+        ],
+        "rationale": "This isolates the core claim\u2014that curvature-adaptive timing improves outcomes\u2014while exposing whether gains require implausible sensor fidelity or vanish when the intervention endogenously alters curvature; it provides a falsifiable benchmark before wet-lab investment."
+      }
+    }
+  ],
+  "simulations": [
+    {
+      "id": "computational-model",
+      "title": "computational_model",
+      "type": "html5_canvas",
+      "description": "Implement an agent\u2011based model of disseminated tumor cells navigating a stochastic epigenetic landscape where curvature \u03ba modulates the width of the commitment window \u03c4_v. Simulate static versus ACWSC\u2011guided CRISPR delivery (modeled as a timed increase in death probability) across heterogeneous DTC subpopulations with lineage\u2011specific enhancer landscapes.",
+      "rationale": "Recommended by the peer-review panel.",
+      "expected_metrics": [
+        "Mean eradication ratio (% of DTC lineages eliminated)",
+        "False\u2011positive CRISPR activation rate (events outside \ud835\udca9_\u03b5(\u0393_t))",
+        "Time to resistance emergence"
+      ],
+      "scene": "trajectory_manifold",
+      "seed": 101,
+      "parameters": {}
+    },
+    {
+      "id": "computational-model",
+      "title": "computational_model",
+      "type": "html5_canvas",
+      "description": "Develop an agent-based model of DTC state transitions incorporating realistic epigenetic landscape geometry, where cells transition between states based on local curvature and stochastic noise. Implement the ACWSC algorithm to determine optimal CRISPR intervention timing and compare eradication ratios between curvature-guided and fixed-schedule approaches across 1000 simulation runs.",
+      "rationale": "This simulation would test the core hypothesis that curvature-guided timing outperforms static scheduling while quantifying the impact of various sources of uncertainty on framework performance",
+      "expected_metrics": [
+        "Eradication ratio (proportion of DTC lineages eliminated)",
+        "False positive rate (interventions outside tubular neighborhood)",
+        "Timing accuracy of intervention relative to commitment window",
+        "Robustness to sensor noise and estimation error"
+      ],
+      "scene": "trajectory_manifold",
+      "seed": 202,
+      "parameters": {}
+    },
+    {
+      "id": "computational-model",
+      "title": "computational_model",
+      "type": "html5_canvas",
+      "description": "Simulate single-cell trajectories on a 2D commitment manifold with tunable Gaussian curvature \u03ba, additive sensor noise, and CRISPR editing modeled as a stochastic transition kernel with finite on-rate and off-target leak. Compare adaptive HJB policy (using noisy \u03ba estimates) against fixed-schedule dosing across a grid of \u03ba, noise, and editing half-life parameters.",
+      "rationale": "This in silico test directly probes the paper\u2019s core claim that curvature-guided timing yields \u22651.5\u00d7 improvement; by mapping performance landscapes and failure modes (e.g., when sensor noise overwhelms \u03ba signal), it defines the observability and editing-efficiency thresholds required for the biological experiments to be viable.",
+      "expected_metrics": [
+        "Eradication ratio (proportion of barcoded lineages eliminated)",
+        "False-positive rate (fraction of CRISPR activations outside \ud835\udca9_\u03b5(\u0393_t))",
+        "Regret relative to oracle policy with perfect \u03ba observability"
+      ],
+      "scene": "trajectory_manifold",
+      "seed": 303,
+      "parameters": {}
+    },
+    {
+      "id": "tumor-volume-3d",
+      "title": "Tumor Volume (3D)",
+      "type": "threejs",
+      "description": "Volumetric point-cloud tumor with phenotype-coloured clusters that grow, divide, and apoptose over time. Rotates the mass to expose where the model places phenotype boundaries.",
+      "rationale": "The 2D manifold view collapses depth \u2014 a 3D volumetric rendering tests whether claimed phenotype clusters survive when seen from arbitrary angles.",
+      "expected_metrics": [
+        "phenotype-cluster volumetric stability",
+        "intra-cluster density",
+        "boundary sharpness under rotation"
+      ],
+      "three_scene": "tumor_volume_3d",
+      "seed": 4279,
+      "parameters": {
+        "title": "Curvature-Guided CRISPR Timing via Stochastic Control for Metastatic Cancer",
+        "confidence": 0.4816666666666667,
+        "critique": "No summary provided.",
+        "catalyst": "[Practicing Oncologist] A peer-reviewed in-vivo demonstration that CPI-derived curvature predicts DTC transition timing in a humanized mouse model with a measurable survival delta would sharply move the price up; failure to reproduce the \u22651.5\u00d7 eradication ratio in an independent, non-simulated cohort would collapse it."
+      }
+    },
+    {
+      "id": "mitotic-lattice-3d",
+      "title": "Mitotic Lattice (3D)",
+      "type": "threejs",
+      "description": "Rotating 3D lattice of cells with division events sampled from the validator-emitted novelty distribution. Daughter cells inherit colour from parent phenotype, exposing lineage drift.",
+      "rationale": "Hooks the falsifier visually: if the paper's mechanism predicts a specific division geometry, this scene makes deviations from it immediately visible.",
+      "expected_metrics": [
+        "division-rate per phenotype",
+        "lineage-drift entropy",
+        "spatial clustering of mitotic events"
+      ],
+      "three_scene": "mitotic_lattice_3d",
+      "seed": 4297,
+      "parameters": {
+        "title": "Curvature-Guided CRISPR Timing via Stochastic Control for Metastatic Cancer",
+        "confidence": 0.4816666666666667,
+        "critique": "No summary provided.",
+        "catalyst": "[Biostatistician] Positive Phase I trial results demonstrating >1.5x eradication ratio improvement with curvature-guided scheduling would significantly increase the prediction-market price for this paper."
+      }
+    },
+    {
+      "id": "perturbation-cone-3d",
+      "title": "Perturbation Cone (3D)",
+      "type": "threejs",
+      "description": "3D analog of the counterfactual scene: treated trajectories spread out from a baseline manifold along a confidence-weighted cone. Cone width tracks acceptance probability.",
+      "rationale": "Forces the prediction-vs-observation gap into a single visual. A narrow, well-aimed cone implies confident divergence; a fat cone signals high predictive uncertainty.",
+      "expected_metrics": [
+        "cone aperture",
+        "trajectory bundle coherence",
+        "off-axis trajectory frequency"
+      ],
+      "three_scene": "perturbation_cone_3d",
+      "seed": 4315,
+      "parameters": {
+        "title": "Curvature-Guided CRISPR Timing via Stochastic Control for Metastatic Cancer",
+        "confidence": 0.4816666666666667,
+        "critique": "No summary provided.",
+        "catalyst": "[FDA Regulator] A positive phase 2 clinical trial demonstrating \u22651.5-fold eradication ratio improvement with curvature-guided scheduling versus static schedules in a metastatic cancer cohort would significantly shift the prediction-market price upward."
+      }
+    }
+  ]
+}
