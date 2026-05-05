@@ -7,7 +7,7 @@ type Job = {
   job_id: string;
   created_at: string;
   research_goal: string;
-  status: 'pending' | 'running' | 'completed' | 'failed';
+  status: 'pending' | 'running' | 'completed' | 'published' | 'failed';
   config?: Record<string, unknown>;
   result?: {
     title?: string;
@@ -61,6 +61,7 @@ export default function JobsPage({ backendUrl }: { backendUrl: string }) {
     pending: 'badge-pending',
     running: 'badge-running',
     completed: 'badge-completed',
+    published: 'badge-published',
     failed: 'badge-failed',
   };
 

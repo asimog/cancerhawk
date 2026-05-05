@@ -3,6 +3,15 @@
 .pytest_cache
 .venv
 node_modules
+package.json
+package-lock.json
+next.config.ts
+next-env.d.ts
+tsconfig.json
+tsconfig.tsbuildinfo
+src
+pages
+public
 hermes-agent
 G0DM0D3
 MiroShark

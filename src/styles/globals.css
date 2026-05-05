@@ -150,6 +150,7 @@ th { color: var(--teal); text-transform: uppercase; letter-spacing: 0.08em; font
 .badge-pending { background: rgba(255,200,87,0.18); color: #ffc857; border: 1px solid rgba(255,200,87,0.32); }
 .badge-running { background: rgba(73,197,182,0.18); color: var(--teal); border: 1px solid rgba(73,197,182,0.32); }
 .badge-completed { background: rgba(111,219,111,0.18); color: #6fdb6f; border: 1px solid rgba(111,219,111,0.32); }
+.badge-published { background: rgba(124,228,210,0.18); color: var(--teal-bright); border: 1px solid rgba(124,228,210,0.36); }
 .badge-failed { background: rgba(255,107,107,0.18); color: #ff6b6b; border: 1px solid rgba(255,107,107,0.32); }
 
 /* ===== Stats Cards (reused from home) ===== */

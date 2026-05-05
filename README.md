@@ -1,5 +1,7 @@
 # CancerHawk
 
+Licensed under the MIT License.
+
 Autonomous oncology research blocks. Each "block" is a peer-reviewed paper plus
 2D and 3D simulations, generated end-to-end by:
 
@@ -147,5 +149,9 @@ MiroShark/, G0DM0D3/  Vendored upstream codebases (reference)
 ```bash
 python -m pytest        # 115 tests, ~1.3s
 ```
+
+## License
+
+CancerHawk is open source under the [MIT License](LICENSE).
 
 Code published to <https://github.com/asimog/cancerhawk>.

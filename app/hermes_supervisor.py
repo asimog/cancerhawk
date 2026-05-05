@@ -238,11 +238,12 @@ class HermesSupervisor:
             logger.info("stage_end", extra={"stage": "publish", "supervisor": "hermes"})
 
         stats = tracker.stats()
+        block_n = publish_meta.get("block") if publish_meta else None
         return HermesRunResult(
             title=paper.title,
             market_price=analysis.market_price,
-            block=publish_meta.get("block") if publish_meta else None,
-            result_url=(f"/results/block-{publish_meta['block']}/paper.html" if publish_meta else None),
+            block=block_n,
+            result_url=(f"/results/block-{block_n}/paper.html" if block_n else None),
             stats=stats,
             calls=[c.to_dict() for c in tracker.calls],
             git_status=git_status,

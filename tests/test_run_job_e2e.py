@@ -37,12 +37,15 @@ class FakeResult:
 
 
 class FakeSupervisor:
+    last_config = None
+
     def __init__(self, *, emit, on_call, tracker):
         self.emit = emit
         self.on_call = on_call
         self.tracker = tracker
 
     async def run(self, cfg):
+        FakeSupervisor.last_config = cfg
         await self.emit("paper_done", "Paper compiled", {"title": "E2E CancerHawk Block"})
         await self.emit("publish_done", "Hermes wrote block 7 -> results/block-7", {"block": 7})
         await self.emit("git", "hermes pushed block 7; deploy hook skipped", {"status": "ok"})
@@ -89,3 +92,53 @@ def test_start_job_creates_live_card_and_completes(tmp_path):
     assert "git" in stages
     assert stages[-1] == "done"
 
+
+def test_start_job_parses_boolean_strings_and_persists_config(tmp_path):
+    test_jobs_file = tmp_path / "jobs.json"
+    payload = {
+        "api_key": "sk-test",
+        "research_goal": "Check string boolean parsing",
+        "n_submitters": "2",
+        "auto_publish": "false",
+        "git_push": "false",
+    }
+
+    with (
+        patch.object(jobs, "JOBS_FILE", test_jobs_file),
+        patch("app.main.HermesSupervisor", FakeSupervisor),
+    ):
+        client = TestClient(app)
+        response = client.post("/api/jobs/start", json=payload)
+        assert response.status_code == 200
+        job_id = response.json()["job_id"]
+        job = client.get(f"/api/jobs/{job_id}").json()
+
+    assert job["config"]["n_submitters"] == 2
+    assert job["config"]["auto_publish"] is False
+    assert job["config"]["git_push"] is False
+    assert FakeSupervisor.last_config.n_submitters == 2
+
+
+def test_start_job_idempotency_key_returns_existing_job(tmp_path):
+    test_jobs_file = tmp_path / "jobs.json"
+    payload = {
+        "api_key": "sk-test",
+        "research_goal": "Deduplicate accidental double submit",
+        "n_submitters": 1,
+        "idempotency_key": "same-click",
+    }
+
+    with (
+        patch.object(jobs, "JOBS_FILE", test_jobs_file),
+        patch("app.main.HermesSupervisor", FakeSupervisor),
+    ):
+        client = TestClient(app)
+        first = client.post("/api/jobs/start", json=payload)
+        second = client.post("/api/jobs/start", json=payload)
+        listed = client.get("/api/jobs").json()["jobs"]
+
+    assert first.status_code == 200
+    assert second.status_code == 200
+    assert second.json()["deduped"] is True
+    assert second.json()["job_id"] == first.json()["job_id"]
+    assert len(listed) == 1

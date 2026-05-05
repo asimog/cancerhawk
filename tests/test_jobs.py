@@ -28,7 +28,10 @@ from app.jobs import (
     _ulid,
     append_job_event,
     create_job,
+    find_job_by_idempotency_key,
     get_job,
+    get_jobs_file,
+    job_store_info,
     list_jobs,
     update_job_status,
 )
@@ -47,12 +50,24 @@ class TestJobStorage:
         self.test_file = Path(os.path.join(os.path.dirname(__file__), "..", "test_jobs.json"))
         if self.test_file.exists():
             self.test_file.unlink()
+        self.env_patches = [
+            patch.dict(os.environ, {}, clear=False),
+            patch.dict(os.environ, {
+                "CANCERHAWK_JOBS_FILE": "",
+                "CANCERHAWK_JOBS_PATH": "",
+                "RAILWAY_VOLUME_MOUNT_PATH": "",
+            }, clear=False),
+        ]
+        for env_patch in self.env_patches:
+            env_patch.start()
         # Patch JOBS_FILE to point to our test file (as a Path object)
         self.patcher = patch("app.jobs.JOBS_FILE", self.test_file)
         self.patcher.start()
 
     def teardown_method(self):
         self.patcher.stop()
+        for env_patch in reversed(self.env_patches):
+            env_patch.stop()
         if os.path.exists(self.test_file):
             os.remove(self.test_file)
 
@@ -107,6 +122,11 @@ class TestJobStorage:
         assert retrieved["status"] == "completed"
         assert retrieved["result"]["title"] == "Test Paper"
 
+    def test_find_job_by_idempotency_key(self):
+        job = create_job(research_goal="test", config={"idempotency_key": "abc123"})
+        assert find_job_by_idempotency_key("abc123")["job_id"] == job["job_id"]
+        assert find_job_by_idempotency_key("missing") is None
+
     def test_update_job_error(self):
         job = create_job(research_goal="test", config={})
         update_job_status(job["job_id"], "failed", error="something broke")
@@ -138,6 +158,32 @@ class TestJobStorage:
 
         completed = list_jobs(status="completed")
         assert all(j["status"] == "completed" for j in completed)
+
+    def test_job_store_uses_explicit_durable_file(self, tmp_path):
+        jobs_file = tmp_path / "durable" / "jobs.json"
+        with patch.dict(os.environ, {"CANCERHAWK_JOBS_FILE": str(jobs_file)}, clear=False):
+            job = create_job(research_goal="durable", config={})
+            assert get_jobs_file() == jobs_file
+            assert jobs_file.exists()
+            assert get_job(job["job_id"])["research_goal"] == "durable"
+            assert job_store_info()["durable"] is True
+
+    def test_job_store_uses_railway_volume_mount(self, tmp_path):
+        with patch.dict(os.environ, {"RAILWAY_VOLUME_MOUNT_PATH": str(tmp_path)}, clear=False):
+            expected = tmp_path / "cancerhawk" / "jobs.json"
+            assert get_jobs_file() == expected
+            assert job_store_info()["durable"] is True
+
+    def test_job_store_warns_on_railway_without_durable_path(self):
+        with patch.dict(os.environ, {
+            "CANCERHAWK_JOBS_FILE": "",
+            "CANCERHAWK_JOBS_PATH": "",
+            "RAILWAY_VOLUME_MOUNT_PATH": "",
+            "RAILWAY_ENVIRONMENT_NAME": "production",
+        }, clear=False):
+            info = job_store_info()
+            assert info["durable"] is False
+            assert "attach a Railway volume" in info["warning"]
 
 
 class TestULIDGeneration:
@@ -199,12 +245,19 @@ class TestJobAPIEndpoints:
         self.test_file = Path(os.path.join(os.path.dirname(__file__), "..", "test_jobs_api.json"))
         if self.test_file.exists():
             self.test_file.unlink()
+        self.env_patch = patch.dict(os.environ, {
+            "CANCERHAWK_JOBS_FILE": "",
+            "CANCERHAWK_JOBS_PATH": "",
+            "RAILWAY_VOLUME_MOUNT_PATH": "",
+        }, clear=False)
+        self.env_patch.start()
         # Patch JOBS_FILE to point to our test file
         self.patcher = patch("app.jobs.JOBS_FILE", self.test_file)
         self.patcher.start()
 
     def teardown_method(self):
         self.patcher.stop()
+        self.env_patch.stop()
         if self.test_file.exists():
             self.test_file.unlink()
 

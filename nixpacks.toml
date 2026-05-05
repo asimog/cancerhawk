@@ -10,7 +10,7 @@ nixPkgs = ["python312", "python312Packages.pip", "gcc", "git"]
 
 [phases.install]
 cmds = [
-  "pip install --break-system-packages --no-cache-dir -r requirements.txt"
+  "pip install --break-system-packages --no-cache-dir -r app/requirements.txt"
 ]
 
 [phases.build]

@@ -14,6 +14,13 @@ export function fetchWithTimeout(
 ): Promise<Response> {
   const { timeout = 8000, ...rest } = options;
   const controller = new AbortController();
+  if (rest.signal) {
+    if (rest.signal.aborted) {
+      controller.abort();
+    } else {
+      rest.signal.addEventListener('abort', () => controller.abort(), { once: true });
+    }
+  }
   const id = setTimeout(() => controller.abort(), timeout);
   return fetch(url, { ...rest, signal: controller.signal }).finally(() => clearTimeout(id));
 }

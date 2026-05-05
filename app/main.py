@@ -42,7 +42,7 @@ APP_DIR = Path(__file__).resolve().parent
 from .token_tracker import APICall, TokenTracker  # noqa: E402
 from .hermes_supervisor import HermesRunConfig, HermesSupervisor  # noqa: E402
 from .openrouter import close as close_openrouter  # noqa: E402
-from .jobs import append_job_event, create_job, get_job, list_jobs, update_job_status  # noqa: E402
+from .jobs import append_job_event, create_job, find_job_by_idempotency_key, get_job, job_store_info, list_jobs, update_job_status  # noqa: E402
 from .publisher import publish_from_staging, STAGING_DIR  # noqa: E402
 
 HOST = os.environ.get("HOST", "0.0.0.0")
@@ -109,6 +109,7 @@ async def hermes_status() -> JSONResponse:
         "has_github_token": bool(os.environ.get("GITHUB_TOKEN", "").strip()),
         "commit_paths": [p.strip() for p in os.environ.get("HERMES_COMMIT_PATHS", "results").split(",") if p.strip()],
         "vercel_deploy_hook": bool(os.environ.get("VERCEL_DEPLOY_HOOK_URL", "").strip()),
+        "job_store": job_store_info(),
     })
 
 
@@ -131,19 +132,22 @@ async def get_job_details(job_id: str) -> JSONResponse:
 @app.post("/api/jobs/start")
 async def start_job(payload: dict[str, Any], background_tasks: BackgroundTasks) -> JSONResponse:
     """Create a job card immediately, then run CancerHawk in the background."""
-    api_key, research_goal, n_submitters, auto_publish, git_push, models_cfg = _parse_run_payload(payload)
-    if not api_key:
-        raise HTTPException(status_code=400, detail="OpenRouter API key required")
-    if not research_goal:
-        raise HTTPException(status_code=400, detail="Research goal required")
-    if len(research_goal) > 1000:
-        raise HTTPException(status_code=400, detail="Research goal must be at most 1000 characters")
+    api_key, research_goal, n_submitters, auto_publish, git_push, models_cfg = _parse_run_payload_or_400(payload)
+
+    idempotency_key = str(payload.get("idempotency_key") or "").strip()[:160]
+    if idempotency_key:
+        existing_job = find_job_by_idempotency_key(idempotency_key)
+        if existing_job:
+            return JSONResponse({"job": existing_job, "job_id": existing_job["job_id"], "deduped": True})
 
     job_config = {
         "models": models_cfg,
         "n_submitters": n_submitters,
         "auto_publish": auto_publish,
         "git_push": git_push,
+        "idempotency_key": idempotency_key or None,
+        "wallet_address": str(payload.get("wallet_address") or "").strip()[:128] or None,
+        "wallet_chain": str(payload.get("wallet_chain") or "").strip()[:24] or None,
     }
     job = create_job(research_goal=research_goal, config=job_config)
     job_id = job["job_id"]
@@ -216,14 +220,30 @@ async def ws_hermes_run(ws: WebSocket) -> None:
     await _ws_hermes_run(ws)
 
 
+def _parse_bool(value: Any, default: bool) -> bool:
+    if value is None:
+        return default
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        normalized = value.strip().lower()
+        if normalized in {"1", "true", "yes", "on"}:
+            return True
+        if normalized in {"0", "false", "no", "off"}:
+            return False
+    raise ValueError("expected boolean")
+
+
 def _parse_run_payload(cfg: dict[str, Any]) -> tuple[str, str, int, bool, bool, dict[str, str]]:
     api_key = (cfg.get("api_key") or "").strip()
     if not api_key:
         api_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
     research_goal = (cfg.get("research_goal") or "").strip()
-    n_submitters = max(1, min(8, int(cfg.get("n_submitters") or 3)))
-    auto_publish = bool(cfg.get("auto_publish", True))
-    git_push = bool(cfg.get("git_push", True))
+    n_submitters = int(cfg.get("n_submitters") or 3)
+    if n_submitters < 1 or n_submitters > 8:
+        raise ValueError("n_submitters must be between 1 and 8")
+    auto_publish = _parse_bool(cfg.get("auto_publish"), True)
+    git_push = _parse_bool(cfg.get("git_push"), True)
     models_cfg = {
         "submitter": cfg.get("submitter") or DEFAULT_MODELS["submitter"],
         "validator": cfg.get("validator") or DEFAULT_MODELS["validator"],
@@ -231,6 +251,20 @@ def _parse_run_payload(cfg: dict[str, Any]) -> tuple[str, str, int, bool, bool, 
         "archetype": cfg.get("archetype") or DEFAULT_MODELS["archetype"],
         "topic_deriver": cfg.get("topic_deriver") or DEFAULT_MODELS["topic_deriver"],
     }
+    return api_key, research_goal, n_submitters, auto_publish, git_push, models_cfg
+
+
+def _parse_run_payload_or_400(cfg: dict[str, Any]) -> tuple[str, str, int, bool, bool, dict[str, str]]:
+    try:
+        api_key, research_goal, n_submitters, auto_publish, git_push, models_cfg = _parse_run_payload(cfg)
+    except (TypeError, ValueError) as exc:
+        raise HTTPException(status_code=400, detail=f"Invalid run payload: {exc}") from exc
+    if not api_key:
+        raise HTTPException(status_code=400, detail="OpenRouter API key required")
+    if not research_goal:
+        raise HTTPException(status_code=400, detail="Research goal required")
+    if len(research_goal) > 1000:
+        raise HTTPException(status_code=400, detail="Research goal must be at most 1000 characters")
     return api_key, research_goal, n_submitters, auto_publish, git_push, models_cfg
 
 
@@ -565,6 +599,10 @@ async def publish_cycle_worker() -> None:
 
 async def maybe_auto_generate() -> None:
     """Generate a block automatically if no user submissions."""
+    if os.environ.get("HERMES_AUTO_GENERATE_ENABLED", "").strip().lower() not in {"1", "true", "yes", "on"}:
+        logger.debug("auto_generation_skipped_disabled")
+        return
+
     api_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
     if not api_key:
         logger.debug("auto_generation_skipped_no_api_key")

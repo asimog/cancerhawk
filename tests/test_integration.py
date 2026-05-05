@@ -140,12 +140,16 @@ def mock_engines():
     def fake_try_git_publish(*args, **kwargs):
         return "ok"
 
+    async def fake_chat_json(*args, **kwargs):
+        return {"topics": [{"title": "Next validation", "rationale": "Keep the run deterministic."}]}
+
     patches = [
         patch("app.hermes_supervisor.run_paper_engine", new=fake_paper_engine),
         patch("app.hermes_supervisor.run_analysis_engine", new=fake_analysis_engine),
         patch("app.hermes_supervisor.run_peer_review_engine", new=fake_peer_review_engine),
         patch("app.hermes_supervisor.publish_block", new=fake_publish_block),
         patch("app.hermes_supervisor.try_git_publish", new=fake_try_git_publish),
+        patch("app.hermes_supervisor.chat_json", new=fake_chat_json),
     ]
     for p in patches:
         p.start()
@@ -184,13 +188,13 @@ def test_websocket_run_success(mock_engines):
         # engines don't emit per-engine stages (analyze/review/...) — those
         # are tested in their own engine-level unit tests. Here we only
         # assert main.py's orchestration sends start, paper_done,
-        # publish_done, done.
+        # stage_done, done.
         stages = [json.loads(m)["stage"] for m in messages]
         assert "start" in stages
         assert "paper_done" in stages
         assert "simulate" in stages
         assert "simulate_done" in stages
-        assert "publish_done" in stages
+        assert "stage_done" in stages
         assert "done" in stages
 
         # Verify final done payload

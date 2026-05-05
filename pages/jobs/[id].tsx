@@ -16,7 +16,7 @@ type Job = {
   job_id: string;
   created_at: string;
   research_goal: string;
-  status: 'pending' | 'running' | 'completed' | 'failed';
+  status: 'pending' | 'running' | 'completed' | 'published' | 'failed';
   config?: Record<string, unknown>;
   result?: {
     title?: string;
@@ -194,7 +194,7 @@ export default function JobDetailPage({ job, backendUrl }: { job: Job | null; ba
         </section>
       )}
 
-      {liveJob.status === 'completed' && liveJob.result && (
+      {(liveJob.status === 'completed' || liveJob.status === 'published') && liveJob.result && (
         <section className="job-section">
           <h2>Result</h2>
           {liveJob.result.title && <h3>{String(liveJob.result.title)}</h3>}

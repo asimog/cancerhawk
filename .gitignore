@@ -16,11 +16,15 @@ public/results/
 # trackable so each completed block can be committed and displayed.
 !/results/
 !/results/**
+/results/staging/
 
 # Editor / OS
 .DS_Store
 Thumbs.db
 .vscode/*.log
+.playwright-mcp/
+current_block_check.md
+vercel_check_snapshot.md
 
 # Env / secrets
 .env

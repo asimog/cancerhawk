@@ -78,7 +78,7 @@ const OPENROUTER_BASE = 'https://openrouter.ai/api/v1/chat/completions';
 
 class HermesAgent {
   constructor() {
-    this.apiKey = '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';
+    this.apiKey = process.env.OPENROUTER_API_KEY || '';
     this.model = 'nousresearch/hermes-3-llama-3.1-70b'; // Free model
   }
 
@@ -193,7 +193,7 @@ Provide a detailed evaluation based on your expertise. Spend computational "toke
 
 class GodmodeAgent {
   constructor() {
-    this.apiKey = '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';
+    this.apiKey = process.env.OPENROUTER_API_KEY || '';
     this.model = 'nousresearch/hermes-3-llama-3.1-405b'; // Free model
   }
 

@@ -27,7 +27,7 @@ from dataclasses import asdict
 from datetime import datetime, timezone
 from pathlib import Path
 
-from .jobs import get_job, update_job_status  # noqa: E402
+from .jobs import append_job_event, get_job, update_job_status  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 RESULTS_DIR = REPO_ROOT / "results"
@@ -1313,6 +1313,12 @@ def publish_from_staging(job_id: str) -> int:
         new_result = job.get("result") or {}
         new_result["block"] = block_n
         new_result["result_url"] = f"/results/block-{block_n}/paper.html"
+        append_job_event(
+            job_id,
+            stage="publish_done",
+            message=f"Published as block {block_n}",
+            data={"block": block_n, "result_url": new_result["result_url"]},
+        )
         update_job_status(job_id, "published", result=new_result)
 
     logger = logging.getLogger("cancerhawk.worker")
