@@ -6,6 +6,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 import httpx
 
+from app import openrouter
 from app.openrouter import chat, chat_json, OpenRouterError, _extract_json
 
 
@@ -36,7 +37,8 @@ async def test_chat_success():
 
 
 @pytest.mark.asyncio
-async def test_chat_http_error():
+async def test_chat_http_error(monkeypatch):
+    monkeypatch.setattr(openrouter, "OPENROUTER_MAX_RETRIES", 0)
     mock_response = MagicMock()
     mock_response.status_code = 429
     mock_response.text = "Rate limited"
@@ -52,7 +54,8 @@ async def test_chat_http_error():
 
 
 @pytest.mark.asyncio
-async def test_chat_network_error():
+async def test_chat_network_error(monkeypatch):
+    monkeypatch.setattr(openrouter, "OPENROUTER_MAX_RETRIES", 0)
     with patch("app.openrouter._get_client") as get_client:
         client = AsyncMock()
         client.post.side_effect = httpx.ConnectError("Network down")
@@ -60,6 +63,76 @@ async def test_chat_network_error():
 
         with pytest.raises(OpenRouterError):
             await chat("sk-test", "m", [{"role": "user", "content": "x"}])
+
+
+@pytest.mark.asyncio
+async def test_chat_retries_transient_http_error(monkeypatch):
+    monkeypatch.setattr(openrouter, "OPENROUTER_MAX_RETRIES", 2)
+    monkeypatch.setattr(openrouter, "OPENROUTER_RETRY_BASE_SECONDS", 0)
+    call_count = 0
+
+    async def post_side_effect(*args, **kwargs):
+        nonlocal call_count
+        call_count += 1
+        mock = MagicMock()
+        if call_count == 1:
+            mock.status_code = 429
+            mock.text = "Rate limited"
+            mock.headers = {}
+            return mock
+        mock.status_code = 200
+        mock.json.return_value = {
+            "choices": [{"message": {"content": "Recovered"}}],
+            "usage": {"prompt_tokens": 3, "completion_tokens": 4},
+        }
+        return mock
+
+    with patch("app.openrouter._get_client") as get_client:
+        client = AsyncMock()
+        client.post.side_effect = post_side_effect
+        get_client.return_value = client
+
+        result = await chat("sk-test", "m", [{"role": "user", "content": "x"}])
+
+    assert result == "Recovered"
+    assert call_count == 2
+
+
+@pytest.mark.asyncio
+async def test_chat_records_failed_retry_attempts(monkeypatch):
+    from app.token_tracker import TokenTracker
+
+    monkeypatch.setattr(openrouter, "OPENROUTER_MAX_RETRIES", 1)
+    monkeypatch.setattr(openrouter, "OPENROUTER_RETRY_BASE_SECONDS", 0)
+    tracker = TokenTracker()
+    on_call = AsyncMock()
+    call_count = 0
+
+    async def post_side_effect(*args, **kwargs):
+        nonlocal call_count
+        call_count += 1
+        mock = MagicMock()
+        if call_count == 1:
+            mock.status_code = 200
+            mock.json.return_value = {"unexpected": "provider returned malformed body"}
+            return mock
+        mock.status_code = 200
+        mock.json.return_value = {
+            "choices": [{"message": {"content": "ok"}}],
+            "usage": {"prompt_tokens": 1, "completion_tokens": 2},
+        }
+        return mock
+
+    with patch("app.openrouter._get_client") as get_client:
+        client = AsyncMock()
+        client.post.side_effect = post_side_effect
+        get_client.return_value = client
+        result = await chat("k", "m", [], tracker=tracker, on_call=on_call)
+
+    assert result == "ok"
+    assert tracker.total_calls == 2
+    assert tracker.failed_calls == 1
+    assert on_call.await_count == 2
 
 
 @pytest.mark.asyncio

@@ -349,58 +349,68 @@ async def run_paper_engine(
 
         shared_context = _aggregate_context(accepted_submissions)
 
-        # Batched validator calls
+        # Batched validator calls. A transient validator/provider failure
+        # should not kill the whole run; safety guards and convergence rules
+        # decide whether the aggregate can continue.
         batch_validations: list[dict] = []
         batch_size = len(valid_submissions)
-        if batch_size == 1:
-            decisions = await _validate_batch(
-                api_key=api_key,
-                model=models["validator"],
-                research_goal=research_goal,
-                shared_context=shared_context,
-                submissions=[valid_submissions[0]],
-                tracker=tracker,
-                on_call=on_call,
-            )
-            if decisions:
-                batch_validations = decisions
-        elif batch_size == 2:
-            decisions = await _validate_batch(
-                api_key=api_key,
-                model=models["validator"],
-                research_goal=research_goal,
-                shared_context=shared_context,
-                submissions=valid_submissions,
-                tracker=tracker,
-                on_call=on_call,
-            )
-            if decisions:
-                batch_validations = decisions
-        elif batch_size == 3:
-            decisions = await _validate_batch(
-                api_key=api_key,
-                model=models["validator"],
-                research_goal=research_goal,
-                shared_context=shared_context,
-                submissions=valid_submissions,
-                tracker=tracker,
-                on_call=on_call,
-            )
-            if decisions:
-                batch_validations = decisions
-        else:
-            for sub in valid_submissions:
-                v = await _validate_batch(
+        try:
+            if batch_size == 1:
+                decisions = await _validate_batch(
                     api_key=api_key,
                     model=models["validator"],
                     research_goal=research_goal,
                     shared_context=shared_context,
-                    submissions=[sub],
+                    submissions=[valid_submissions[0]],
                     tracker=tracker,
                     on_call=on_call,
                 )
-                if v:
-                    batch_validations.extend(v)
+                if decisions:
+                    batch_validations = decisions
+            elif batch_size == 2:
+                decisions = await _validate_batch(
+                    api_key=api_key,
+                    model=models["validator"],
+                    research_goal=research_goal,
+                    shared_context=shared_context,
+                    submissions=valid_submissions,
+                    tracker=tracker,
+                    on_call=on_call,
+                )
+                if decisions:
+                    batch_validations = decisions
+            elif batch_size == 3:
+                decisions = await _validate_batch(
+                    api_key=api_key,
+                    model=models["validator"],
+                    research_goal=research_goal,
+                    shared_context=shared_context,
+                    submissions=valid_submissions,
+                    tracker=tracker,
+                    on_call=on_call,
+                )
+                if decisions:
+                    batch_validations = decisions
+            else:
+                for sub in valid_submissions:
+                    v = await _validate_batch(
+                        api_key=api_key,
+                        model=models["validator"],
+                        research_goal=research_goal,
+                        shared_context=shared_context,
+                        submissions=[sub],
+                        tracker=tracker,
+                        on_call=on_call,
+                    )
+                    if v:
+                        batch_validations.extend(v)
+        except Exception as exc:
+            rejection_feedback.append(f"validator unavailable: {type(exc).__name__}")
+            await emit(
+                "validate",
+                f"Validator batch failed in round {round_num}; continuing under safety guards: {exc}",
+                {"error": str(exc), "round": round_num, "valid_submissions": len(valid_submissions)},
+            )
 
         round_accepts = 0
         round_novelty_scores: list[float] = []

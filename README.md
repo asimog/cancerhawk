@@ -111,6 +111,9 @@ The full engine internals are documented in [app/README.md](app/README.md).
 | `CANCERHAWK_MAX_ACCEPTED` | `12` | Caps aggregate submissions retained for compilation. |
 | `CANCERHAWK_MAX_CALL_TEXT_CHARS` | `4000` | Stores bounded prompt/response previews in job call logs. |
 | `CANCERHAWK_MAX_STORED_CALLS` | `200` | Caps stored per-call log records while keeping token totals accurate. |
+| `CANCERHAWK_OPENROUTER_MAX_RETRIES` | `8` | Retries transient OpenRouter failures before treating an API call as failed. |
+| `CANCERHAWK_OPENROUTER_RETRY_BASE_SECONDS` | `2` | Base exponential backoff delay between OpenRouter retry attempts. |
+| `CANCERHAWK_OPENROUTER_RETRY_MAX_SECONDS` | `60` | Maximum delay between OpenRouter retry attempts. |
 
 Full MOTO now runs with bounded local defaults so runaway jobs cannot consume
 the whole machine. Raise or disable the caps deliberately for longer hosted

@@ -355,3 +355,52 @@ class TestRunPaperEngineIntegration:
                     tracker=tracker,
                     on_call=on_call,
                 )
+
+    @pytest.mark.asyncio
+    async def test_validator_provider_error_does_not_abort_run(self, monkeypatch):
+        """A transient validator failure should count as a zero-acceptance
+        round instead of failing the whole job immediately."""
+        monkeypatch.setattr(paper_engine, "MIN_ACCEPTED_FLOOR", 1)
+        monkeypatch.setattr(paper_engine, "SATURATION_ROUNDS", 1)
+        monkeypatch.setattr(paper_engine, "PLATEAU_ROUNDS", 99)
+        monkeypatch.setattr(paper_engine, "MAX_API_CALLS_SOFT", 0)
+        monkeypatch.setattr(paper_engine, "MAX_WALL_CLOCK_SECONDS", 0)
+        monkeypatch.setattr(paper_engine, "MAX_ROUNDS", 5)
+
+        calls = {"validator": 0}
+
+        async def fake_chat(api_key, model, messages, **kwargs):
+            if kwargs.get("role") == "compiler_section":
+                return "Section body."
+            return "submission"
+
+        async def fake_chat_json(api_key, model, messages, **kwargs):
+            role = kwargs.get("role", "")
+            if role == "validator":
+                calls["validator"] += 1
+                if calls["validator"] == 1:
+                    raise RuntimeError("rate limited")
+                return {"accept": True, "scores": {"novelty": 6}, "reason": "ok"}
+            if role == "compiler_outline":
+                return {"title": "Recovered", "sections": [{"heading": "Main", "summary": "body"}]}
+            return {}
+
+        with patch.object(paper_engine, "chat", side_effect=fake_chat), \
+             patch.object(paper_engine, "chat_json", side_effect=fake_chat_json):
+            emit = AsyncMock()
+            paper = await run_paper_engine(
+                api_key="sk-test",
+                research_goal="g",
+                models={"submitter": "m", "validator": "m", "compiler": "m"},
+                n_submitters=1,
+                emit=emit,
+                tracker=TokenTracker(),
+                on_call=AsyncMock(),
+            )
+
+        assert paper.title == "Recovered"
+        assert len(paper.accepted_submissions) >= 1
+        assert calls["validator"] > 1
+        assert paper.convergence_reason.startswith("safety_guard:")
+        emitted_messages = [call.args[1] for call in emit.await_args_list if len(call.args) > 1]
+        assert any("Validator batch failed" in message for message in emitted_messages)
