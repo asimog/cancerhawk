@@ -39,7 +39,7 @@ logger = logging.getLogger("cancerhawk")
 
 APP_DIR = Path(__file__).resolve().parent
 
-from .token_tracker import APICall, TokenTracker  # noqa: E402
+from .token_tracker import APICall, APIFailureLimitExceeded, TokenTracker  # noqa: E402
 from .hermes_supervisor import HermesRunConfig, HermesSupervisor  # noqa: E402
 from .openrouter import close as close_openrouter  # noqa: E402
 from .jobs import append_job_event, create_job, find_job_by_idempotency_key, get_job, job_store_info, list_jobs, update_job_status  # noqa: E402
@@ -47,6 +47,11 @@ from .publisher import publish_from_staging, STAGING_DIR  # noqa: E402
 
 HOST = os.environ.get("HOST", "0.0.0.0")
 PORT = int(os.environ.get("PORT", "8765"))
+TERMINAL_JOB_STATUSES = {"completed", "published", "failed", "stopped"}
+
+
+class JobStopped(RuntimeError):
+    pass
 
 app = FastAPI(title="CancerHawk")
 
@@ -127,6 +132,22 @@ async def get_job_details(job_id: str) -> JSONResponse:
     if not job:
         raise HTTPException(status_code=404, detail="job not found")
     return JSONResponse(job)
+
+
+@app.post("/api/jobs/{job_id}/stop")
+async def stop_job(job_id: str) -> JSONResponse:
+    """Request a running job to stop and mark its card immediately."""
+    job = get_job(job_id)
+    if not job:
+        raise HTTPException(status_code=404, detail="job not found")
+    if job.get("status") in TERMINAL_JOB_STATUSES:
+        return JSONResponse({"job": job, "job_id": job_id, "stopped": False, "status": job.get("status")})
+
+    message = "Stopped by user request."
+    update_job_status(job_id, "stopped", error=message)
+    append_job_event(job_id, stage="stopped", message=message, data={"job_id": job_id})
+    stopped_job = get_job(job_id) or job
+    return JSONResponse({"job": stopped_job, "job_id": job_id, "stopped": True, "status": "stopped"})
 
 
 @app.post("/api/jobs/start")
@@ -245,13 +266,30 @@ def _parse_run_payload(cfg: dict[str, Any]) -> tuple[str, str, int, bool, bool, 
     auto_publish = _parse_bool(cfg.get("auto_publish"), True)
     git_push = _parse_bool(cfg.get("git_push"), True)
     models_cfg = {
-        "submitter": cfg.get("submitter") or DEFAULT_MODELS["submitter"],
-        "validator": cfg.get("validator") or DEFAULT_MODELS["validator"],
-        "compiler": cfg.get("compiler") or DEFAULT_MODELS["compiler"],
-        "archetype": cfg.get("archetype") or DEFAULT_MODELS["archetype"],
-        "topic_deriver": cfg.get("topic_deriver") or DEFAULT_MODELS["topic_deriver"],
+        "submitter": _resolve_job_model(cfg.get("submitter"), "submitter"),
+        "validator": _resolve_job_model(cfg.get("validator"), "validator"),
+        "compiler": _resolve_job_model(cfg.get("compiler"), "compiler"),
+        "archetype": _resolve_job_model(cfg.get("archetype"), "archetype"),
+        "topic_deriver": _resolve_job_model(cfg.get("topic_deriver"), "topic_deriver"),
     }
     return api_key, research_goal, n_submitters, auto_publish, git_push, models_cfg
+
+
+def _resolve_job_model(value: Any, role: str) -> str:
+    """Resolve public job starts to the free OpenRouter auto-router.
+
+    The browser can have stale saved role preferences from older dropdowns.
+    For user-started jobs we keep the interface stable by routing every role
+    through OpenRouter's free router instead of pinning a provider model like
+    qwen/qwen3-coder:free at job creation time.
+    """
+    configured = str(value or "").strip()
+    if configured and configured != FREE_ROUTER_MODEL:
+        logger.info(
+            "model_normalized_to_free_router",
+            extra={"role": role, "configured_model": configured, "resolved_model": FREE_ROUTER_MODEL},
+        )
+    return FREE_ROUTER_MODEL
 
 
 def _parse_run_payload_or_400(cfg: dict[str, Any]) -> tuple[str, str, int, bool, bool, dict[str, str]]:
@@ -268,6 +306,12 @@ def _parse_run_payload_or_400(cfg: dict[str, Any]) -> tuple[str, str, int, bool,
     return api_key, research_goal, n_submitters, auto_publish, git_push, models_cfg
 
 
+def _raise_if_job_stopped(job_id: str) -> None:
+    job = get_job(job_id)
+    if job and job.get("status") == "stopped":
+        raise JobStopped("Stopped by user request.")
+
+
 async def _run_job_background(
     job_id: str,
     api_key: str,
@@ -281,6 +325,7 @@ async def _run_job_background(
     run_start = time.time()
 
     async def emit(stage: str, message: str, data: dict | None = None) -> None:
+        _raise_if_job_stopped(job_id)
         append_job_event(job_id, stage=stage, message=message, data=data)
         logger.info("pipeline_event", extra={"job_id": job_id, "stage": stage, "event_message": message[:200], "data": data})
 
@@ -297,6 +342,7 @@ async def _run_job_background(
             message=message,
             data={"call": call.to_dict(), "totals": tracker.stats()},
         )
+        _raise_if_job_stopped(job_id)
         logger.info(
             "api_call #%s role=%s model=%s in=%s out=%s latency=%sms cost=$%.4f",
             call.seq,
@@ -327,6 +373,7 @@ async def _run_job_background(
                 stage=True,
             )
         )
+        _raise_if_job_stopped(job_id)
         update_job_status(job_id, "completed", result={
             "title": result.title,
             "market_price": result.market_price,
@@ -356,6 +403,13 @@ async def _run_job_background(
                 "git_status": result.git_status,
             },
         )
+    except JobStopped as exc:
+        append_job_event(job_id, stage="stopped", message=str(exc), data={"failed_calls": tracker.failed_calls})
+        update_job_status(job_id, "stopped", error=str(exc))
+    except APIFailureLimitExceeded as exc:
+        message = str(exc)
+        append_job_event(job_id, stage="stopped", message=message, data={"failed_calls": exc.failed_calls, "limit": exc.limit})
+        update_job_status(job_id, "failed", error=message)
     except Exception as exc:
         tb = traceback.format_exc()
         logger.error("job_run_failed", extra={"job_id": job_id, "error_type": type(exc).__name__, "error": str(exc)})
@@ -539,6 +593,11 @@ async def _ws_hermes_run(ws: WebSocket) -> None:
         logger.warning("client_disconnected")
         update_job_status(job_id, "failed", error="client disconnected")
         return
+    except APIFailureLimitExceeded as exc:
+        message = str(exc)
+        logger.error("run_failed_api_failure_limit", extra={"failed_calls": exc.failed_calls, "limit": exc.limit})
+        await emit("stopped", message, {"failed_calls": exc.failed_calls, "limit": exc.limit})
+        update_job_status(job_id, "failed", error=message)
     except Exception as exc:
         tb = traceback.format_exc()
         logger.error("run_failed", extra={"error_type": type(exc).__name__, "error": str(exc)})
@@ -666,50 +725,18 @@ async def shutdown() -> None:
     await close_openrouter()
 
 
-# Free OpenRouter model list. The run UI reads this list from the Railway
-# worker and offers every role the same selectable free options.
-MODELS = [
-    "openrouter/free",
-    "openrouter/owl-alpha",
-    "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
-    "poolside/laguna-xs.2:free",
-    "poolside/laguna-m.1:free",
-    "inclusionai/ling-2.6-1t:free",
-    "tencent/hy3-preview:free",
-    "baidu/qianfan-ocr-fast:free",
-    "google/gemma-4-26b-a4b-it:free",
-    "google/gemma-4-31b-it:free",
-    "google/lyria-3-pro-preview",
-    "google/lyria-3-clip-preview",
-    "nvidia/nemotron-3-super-120b-a12b:free",
-    "minimax/minimax-m2.5:free",
-    "liquid/lfm-2.5-1.2b-thinking:free",
-    "liquid/lfm-2.5-1.2b-instruct:free",
-    "nvidia/nemotron-3-nano-30b-a3b:free",
-    "nvidia/nemotron-nano-12b-v2-vl:free",
-    "qwen/qwen3-next-80b-a3b-instruct:free",
-    "nvidia/nemotron-nano-9b-v2:free",
-    "openai/gpt-oss-120b:free",
-    "openai/gpt-oss-20b:free",
-    "z-ai/glm-4.5-air:free",
-    "qwen/qwen3-coder:free",
-    "cognitivecomputations/dolphin-mistral-24b-venice-edition:free",
-    "google/gemma-3n-e2b-it:free",
-    "google/gemma-3n-e4b-it:free",
-    "google/gemma-3-4b-it:free",
-    "google/gemma-3-12b-it:free",
-    "google/gemma-3-27b-it:free",
-    "meta-llama/llama-3.3-70b-instruct:free",
-    "meta-llama/llama-3.2-3b-instruct:free",
-    "nousresearch/hermes-3-llama-3.1-405b:free",
-]
+# Public job starts use OpenRouter's free auto-router. This avoids pinning a
+# specific provider model at the beginning of a job, so a rate-limited free
+# backend such as qwen/qwen3-coder:free does not become the job contract.
+FREE_ROUTER_MODEL = "openrouter/free"
+MODELS = [FREE_ROUTER_MODEL]
 
 DEFAULT_MODELS = {
-    "submitter": "openrouter/free",
-    "validator": "openrouter/free",
-    "compiler": "openrouter/free",
-    "archetype": "openrouter/free",
-    "topic_deriver": "openrouter/free",
+    "submitter": FREE_ROUTER_MODEL,
+    "validator": FREE_ROUTER_MODEL,
+    "compiler": FREE_ROUTER_MODEL,
+    "archetype": FREE_ROUTER_MODEL,
+    "topic_deriver": FREE_ROUTER_MODEL,
 }
 
 

@@ -45,6 +45,16 @@ def _env_int(name: str, default: int) -> int:
 
 MAX_STORED_CALLS = _env_int("CANCERHAWK_MAX_STORED_CALLS", 200)
 MAX_CALL_TEXT_CHARS = _env_int("CANCERHAWK_MAX_CALL_TEXT_CHARS", 4000)
+MAX_FAILED_API_CALLS = _env_int("CANCERHAWK_MAX_FAILED_API_CALLS", 50)
+
+
+class APIFailureLimitExceeded(RuntimeError):
+    """Raised when a run hits the hard failed-API-call limit."""
+
+    def __init__(self, failed_calls: int, limit: int):
+        self.failed_calls = failed_calls
+        self.limit = limit
+        super().__init__(f"Stopped job after {failed_calls} failed API calls (limit {limit}).")
 
 
 def _truncate_text(value: str | None, max_chars: int | None = None) -> str:
@@ -136,6 +146,9 @@ class TokenTracker:
         prompt_messages: list[dict] | None = None,
         response_text: str | None = None,
     ) -> APICall:
+        if MAX_FAILED_API_CALLS and self.failed_calls >= MAX_FAILED_API_CALLS:
+            raise APIFailureLimitExceeded(self.failed_calls, MAX_FAILED_API_CALLS)
+
         cost = _estimate_cost(model, prompt_tokens, completion_tokens)
         self.total_calls += 1
         if not ok:

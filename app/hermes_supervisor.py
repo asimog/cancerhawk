@@ -24,7 +24,7 @@ from .peer_review_engine import (
 from .prompts import topic_deriver_prompt
 from .publisher import hydrate_results_from_github, load_previous_block_context, publish_block, try_git_publish, stage_block
 from .simulation_engine import generate_html5_simulations
-from .token_tracker import APICall, TokenTracker
+from .token_tracker import APICall, APIFailureLimitExceeded, TokenTracker
 
 logger = logging.getLogger("cancerhawk.hermes")
 
@@ -187,6 +187,8 @@ class HermesSupervisor:
                 on_call=self.on_call,
             )
             derived_topics = topics_payload.get("topics", [])
+        except APIFailureLimitExceeded:
+            raise
         except Exception as exc:
             logger.warning("topic_derivation_failed", extra={"error": str(exc)})
             await self.emit("derive", f"topic derivation failed: {exc}", {"error": str(exc)})

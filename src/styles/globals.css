@@ -51,11 +51,17 @@ code, pre { font-family: "Fragment Mono", ui-monospace, SFMono-Regular, Menlo, m
 .paper h1, .paper h2 { color: var(--ink); font-weight: 800; line-height: 1.05; }
 .paper h2 { margin-top: 2rem; color: var(--teal); font-size: 1.8rem; }
 .paper p, .paper li { line-height: 1.62; }
+.math-display { max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: 0.35rem 0; }
+.katex { color: var(--ink); font-size: 1.04em; }
+.katex-display { margin: 0.9rem 0; }
 .table-scroll { max-width: 100%; overflow-x: auto; border: 1px solid var(--border-soft); border-radius: 12px; }
 table { width: 100%; border-collapse: collapse; min-width: 760px; }
 th, td { padding: 0.65rem; border-bottom: 1px solid var(--border-soft); text-align: left; vertical-align: top; }
 th { color: var(--teal); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; }
 .block-grid, .sim-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
+.archive-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+.archive-pagination { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.8rem; margin-top: 1.2rem; }
+.archive-page-count { color: var(--soft); font-family: "Fragment Mono", ui-monospace, monospace; font-size: 0.84rem; }
 .sim-grid { margin-top: 1rem; }
 .button { display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--border); border-radius: 999px; background: rgba(73,197,182,0.15); color: var(--ink); padding: 0.7rem 0.95rem; cursor: pointer; }
 .backend-frame { width: 100%; min-height: 72vh; border: 1px solid var(--border); border-radius: 16px; background: #000; }
@@ -79,8 +85,8 @@ th { color: var(--teal); text-transform: uppercase; letter-spacing: 0.08em; font
 .youtube-list { display: grid; gap: 0.4rem; margin-top: 0.85rem; color: var(--soft); font-family: "Fragment Mono", ui-monospace, monospace; font-size: 0.78rem; }
 .global-play-pause-btn { position: fixed; left: 1.5rem; bottom: 1.5rem; z-index: 60; width: 56px; height: 56px; border: 2px solid rgba(39,121,167,0.6); border-radius: 50%; background: rgba(39,121,167,0.15); color: var(--teal); backdrop-filter: blur(10px); box-shadow: 0 0 10px rgba(39,121,167,0.2); cursor: pointer; }
 .global-play-pause-btn.is-playing { background: rgba(39,121,167,0.28); box-shadow: 0 0 20px rgba(39,121,167,0.42); }
-@media (max-width: 860px) { .run-grid { grid-template-columns: 1fr; } .run-models { grid-template-columns: 1fr; } }
-@media (max-width: 720px) { .home-grid { grid-template-columns: 1fr; } .home-box { min-height: 128px; } .youtube-form { grid-template-columns: 1fr; } }
+@media (max-width: 860px) { .run-grid { grid-template-columns: 1fr; } .run-models { grid-template-columns: 1fr; } .archive-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 720px) { .home-grid { grid-template-columns: 1fr; } .home-box { min-height: 128px; } .youtube-form { grid-template-columns: 1fr; } .archive-grid { grid-template-columns: 1fr; } }
 
 /* ===== Music Page ===== */
 .music-page {
@@ -122,6 +128,8 @@ th { color: var(--teal); text-transform: uppercase; letter-spacing: 0.08em; font
 .job-card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
 .job-date { font-size: 0.82rem; color: rgba(255,255,255,0.38); }
 .job-goal { margin: 0.3rem 0; color: var(--ink); font-size: 1.45rem; font-weight: 400; line-height: 1.15; }
+.job-wallet { margin: 0.45rem 0; color: rgba(213, 247, 241, 0.82); font-family: "Fragment Mono", ui-monospace, monospace; font-size: 0.82rem; overflow-wrap: anywhere; }
+.job-stop-button { margin-top: 0.6rem; border-color: rgba(255,107,107,0.36); background: rgba(255,107,107,0.12); }
 .job-result-title { margin: 0.4rem 0 0; color: var(--teal); font-size: 1.1rem; }
 .job-error { margin: 0.4rem 0 0; color: #ff6b6b; font-size: 0.92rem; }
 
@@ -152,6 +160,7 @@ th { color: var(--teal); text-transform: uppercase; letter-spacing: 0.08em; font
 .badge-completed { background: rgba(111,219,111,0.18); color: #6fdb6f; border: 1px solid rgba(111,219,111,0.32); }
 .badge-published { background: rgba(124,228,210,0.18); color: var(--teal-bright); border: 1px solid rgba(124,228,210,0.36); }
 .badge-failed { background: rgba(255,107,107,0.18); color: #ff6b6b; border: 1px solid rgba(255,107,107,0.32); }
+.badge-stopped { background: rgba(255,200,87,0.16); color: #ffc857; border: 1px solid rgba(255,200,87,0.32); }
 
 /* ===== Stats Cards (reused from home) ===== */
 .job-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.85rem; margin-top: 1rem; }

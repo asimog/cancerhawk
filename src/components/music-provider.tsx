@@ -77,6 +77,7 @@ type MusicContextValue = {
   next: () => Promise<void>;
   previous: () => Promise<void>;
   select: (id: string) => Promise<void>;
+  playFile: (file: File) => Promise<void>;
   setYoutubeUrl: (url: string) => void;
   loadYoutube: () => Promise<void>;
 };
@@ -173,6 +174,7 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
   const audioLockRef = useRef<Promise<HTMLAudioElement> | null>(null);
   const youtubeLockRef = useRef<Promise<YouTubePlayer> | null>(null);
   const youtubeLoadingRef = useRef(false);
+  const uploadedTrackUrlsRef = useRef<string[]>([]);
 
   const selectedTrack = useMemo(
     () => tracks.find((track) => track.id === selectedId) || tracks[0],
@@ -284,6 +286,19 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
     setSelectedId(track.id);
     await play(track);
   }, [play, tracks]);
+
+  const playFile = useCallback(async (file: File) => {
+    const url = URL.createObjectURL(file);
+    uploadedTrackUrlsRef.current.push(url);
+    const track: Track = {
+      id: `upload-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+      label: file.name.replace(/\.[^/.]+$/, '') || file.name,
+      url,
+    };
+    setTracks((current) => [track, ...current.filter((item) => item.url !== url)]);
+    setSelectedId(track.id);
+    await play(track);
+  }, [play]);
 
   const toggle = useCallback(async () => {
     if (sourceKind === 'youtube' && youtubePlayerRef.current) {
@@ -422,12 +437,13 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
       cancelAnimationFrame(rafRef.current);
       window.clearInterval(youtubePollRef.current);
       youtubePlayerRef.current?.destroy();
+      uploadedTrackUrlsRef.current.forEach((url) => URL.revokeObjectURL(url));
       void contextRef.current?.close();
     };
   }, []);
 
   return (
-    <MusicContext.Provider value={{ tracks, selectedTrack, sourceKind, youtubeUrl, youtubeTitle, youtubeEntries, youtubeLoading, isPlaying, status, features, toggle, next, previous, select, setYoutubeUrl, loadYoutube }}>
+    <MusicContext.Provider value={{ tracks, selectedTrack, sourceKind, youtubeUrl, youtubeTitle, youtubeEntries, youtubeLoading, isPlaying, status, features, toggle, next, previous, select, playFile, setYoutubeUrl, loadYoutube }}>
       {children}
       <div style={{ height: 1, left: -9999, opacity: 0, overflow: 'hidden', position: 'fixed', top: -9999, width: 1 }} ref={youtubeHostRef} />
     </MusicContext.Provider>

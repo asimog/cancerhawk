@@ -15,7 +15,7 @@ from typing import Any, Awaitable, Callable
 
 import httpx
 
-from .token_tracker import APICall, TokenTracker
+from .token_tracker import APICall, APIFailureLimitExceeded, MAX_FAILED_API_CALLS, TokenTracker
 
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
 APP_REFERER = "http://localhost:8765"
@@ -167,6 +167,9 @@ async def chat(
     last_err: Exception | None = None
 
     for attempt in range(OPENROUTER_MAX_RETRIES + 1):
+        if tracker is not None and MAX_FAILED_API_CALLS and tracker.failed_calls >= MAX_FAILED_API_CALLS:
+            raise APIFailureLimitExceeded(tracker.failed_calls, MAX_FAILED_API_CALLS)
+
         started = time.perf_counter()
         err: Exception | None = None
         response_data: dict | None = None

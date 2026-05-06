@@ -1,13 +1,51 @@
 import React from 'react';
+import katex from 'katex';
+
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function math(value: string, displayMode = false) {
+  try {
+    return {
+      __html: katex.renderToString(value, {
+        displayMode,
+        throwOnError: false,
+        strict: 'ignore',
+      }),
+    };
+  } catch {
+    return { __html: escapeHtml(value) };
+  }
+}
+
+function MathSpan({ value }: { value: string }) {
+  return <span dangerouslySetInnerHTML={math(value)} />;
+}
+
+function MathBlock({ value }: { value: string }) {
+  return <div className="math-display" dangerouslySetInnerHTML={math(value, true)} />;
+}
 
 function inline(value: string) {
-  const parts = value.split(/(\*\*[^*]+\*\*|`[^`]+`)/g);
+  const parts = value.split(/(\*\*[^*]+\*\*|`[^`]+`|\\\(.+?\\\)|(?<!\$)\$(?!\$).+?(?<!\$)\$(?!\$))/g);
   return parts.map((part, index) => {
     if (part.startsWith('**') && part.endsWith('**')) {
       return <strong key={index}>{part.slice(2, -2)}</strong>;
     }
     if (part.startsWith('`') && part.endsWith('`')) {
       return <code key={index}>{part.slice(1, -1)}</code>;
+    }
+    if (part.startsWith('\\(') && part.endsWith('\\)')) {
+      return <MathSpan key={index} value={part.slice(2, -2)} />;
+    }
+    if (part.startsWith('$') && part.endsWith('$')) {
+      return <MathSpan key={index} value={part.slice(1, -1)} />;
     }
     return <React.Fragment key={index}>{part}</React.Fragment>;
   });
@@ -37,6 +75,46 @@ export function Markdown({ content, skipTitle = false }: { content: string; skip
     const line = raw.trim();
     if (!line) {
       flushParagraph();
+      continue;
+    }
+    if (line.startsWith('$$')) {
+      flushParagraph();
+      const mathLines: string[] = [];
+      const first = line.slice(2);
+      if (first.endsWith('$$') && first.length > 2) {
+        blocks.push(<MathBlock key={blocks.length} value={first.slice(0, -2)} />);
+        continue;
+      }
+      if (first) mathLines.push(first);
+      i += 1;
+      while (i < lines.length && !lines[i].trim().endsWith('$$')) {
+        mathLines.push(lines[i]);
+        i += 1;
+      }
+      if (i < lines.length) {
+        mathLines.push(lines[i].trim().replace(/\$\$$/, ''));
+      }
+      blocks.push(<MathBlock key={blocks.length} value={mathLines.join('\n')} />);
+      continue;
+    }
+    if (line.startsWith('\\[')) {
+      flushParagraph();
+      const mathLines: string[] = [];
+      const first = line.slice(2);
+      if (first.endsWith('\\]') && first.length > 2) {
+        blocks.push(<MathBlock key={blocks.length} value={first.slice(0, -2)} />);
+        continue;
+      }
+      if (first) mathLines.push(first);
+      i += 1;
+      while (i < lines.length && !lines[i].trim().endsWith('\\]')) {
+        mathLines.push(lines[i]);
+        i += 1;
+      }
+      if (i < lines.length) {
+        mathLines.push(lines[i].trim().replace(/\\\]$/, ''));
+      }
+      blocks.push(<MathBlock key={blocks.length} value={mathLines.join('\n')} />);
       continue;
     }
     if (skipTitle && line.startsWith('# ')) continue;

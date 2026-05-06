@@ -16,7 +16,7 @@ type Job = {
   job_id: string;
   created_at: string;
   research_goal: string;
-  status: 'pending' | 'running' | 'completed' | 'published' | 'failed';
+  status: 'pending' | 'running' | 'completed' | 'published' | 'failed' | 'stopped';
   config?: Record<string, unknown>;
   result?: {
     title?: string;
@@ -32,6 +32,13 @@ type Job = {
   error?: string | null;
   events?: JobEvent[];
 };
+
+function walletLabel(config?: Record<string, unknown>) {
+  const address = typeof config?.wallet_address === 'string' ? config.wallet_address.trim() : '';
+  if (!address) return null;
+  const chain = typeof config?.wallet_chain === 'string' ? config.wallet_chain.trim() : '';
+  return chain ? `${chain}: ${address}` : address;
+}
 
 export const getStaticPaths: GetStaticPaths = async () => ({
   paths: [],
@@ -55,6 +62,8 @@ export default function JobDetailPage({ job, backendUrl }: { job: Job | null; ba
   const router = useRouter();
   const [liveJob, setLiveJob] = useState<Job | null>(job);
   const [pollError, setPollError] = useState('');
+  const [stopError, setStopError] = useState('');
+  const [stopping, setStopping] = useState(false);
   const workerUrl = useMemo(() => backendUrl.replace(/\/+$/, ''), [backendUrl]);
   const jobId = typeof router.query.id === 'string' ? router.query.id : job?.job_id || '';
   const logRef = useRef<HTMLDivElement | null>(null);
@@ -134,6 +143,28 @@ export default function JobDetailPage({ job, backendUrl }: { job: Job | null; ba
 
   const statusClass = `badge badge-${liveJob.status}`;
   const events = liveJob.events || [];
+  const wallet = walletLabel(liveJob.config);
+  const canStop = liveJob.status === 'running' || liveJob.status === 'pending';
+
+  async function stopJob() {
+    if (!workerUrl || !jobId || stopping) return;
+    setStopping(true);
+    setStopError('');
+    try {
+      const response = await fetchWithTimeout(`${workerUrl}/api/jobs/${jobId}/stop`, {
+        method: 'POST',
+        cache: 'no-store',
+      });
+      const payload = await response.json().catch(() => ({})) as { job?: Job; detail?: string };
+      if (!response.ok) throw new Error(payload.detail || `Backend returned ${response.status}`);
+      if (payload.job) setLiveJob(payload.job);
+      await load();
+    } catch (error) {
+      setStopError(error instanceof Error ? error.message : String(error));
+    } finally {
+      setStopping(false);
+    }
+  }
 
   return (
     <div className="page job-detail">
@@ -146,6 +177,13 @@ export default function JobDetailPage({ job, backendUrl }: { job: Job | null; ba
         </div>
         <h1 className="job-goal">{liveJob.research_goal}</h1>
         <p className="job-id">Job ID: {liveJob.job_id}</p>
+        {wallet && <p className="job-wallet">Submitter wallet: {wallet}</p>}
+        {canStop && (
+          <button className="button job-stop-button" disabled={stopping} onClick={stopJob} type="button">
+            {stopping ? 'Stopping...' : 'Stop job'}
+          </button>
+        )}
+        {stopError && <p className="job-error">Stop failed: {stopError}</p>}
         {pollError && (
           <p className="job-error">
             Live refresh paused: {pollError}

@@ -16,7 +16,7 @@ from dataclasses import dataclass, field
 from typing import Awaitable, Callable
 
 from .openrouter import CallEmitFn, chat, chat_json
-from .token_tracker import TokenTracker
+from .token_tracker import APIFailureLimitExceeded, TokenTracker
 
 # MOTO aggregator prompts (backend)
 from backend.aggregator.prompts.submitter_prompts import build_submitter_prompt
@@ -343,6 +343,8 @@ async def run_paper_engine(
         valid_submissions: list[str] = []
         for i, sub in enumerate(raw_submissions):
             if isinstance(sub, Exception):
+                if isinstance(sub, APIFailureLimitExceeded):
+                    raise sub
                 await emit("validate", f"Submitter {i+1} failed: {sub}", {"error": str(sub)})
             else:
                 valid_submissions.append(_truncate(sub or "", MAX_SUBMISSION_CHARS))
@@ -404,6 +406,8 @@ async def run_paper_engine(
                     )
                     if v:
                         batch_validations.extend(v)
+        except APIFailureLimitExceeded:
+            raise
         except Exception as exc:
             rejection_feedback.append(f"validator unavailable: {type(exc).__name__}")
             await emit(

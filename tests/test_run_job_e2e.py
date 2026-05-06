@@ -119,6 +119,33 @@ def test_start_job_parses_boolean_strings_and_persists_config(tmp_path):
     assert FakeSupervisor.last_config.n_submitters == 2
 
 
+def test_start_job_persists_wallet_and_normalizes_models_to_free_router(tmp_path):
+    test_jobs_file = tmp_path / "jobs.json"
+    payload = {
+        "api_key": "sk-test",
+        "research_goal": "Wallet and free-router contract",
+        "n_submitters": 1,
+        "validator": "qwen/qwen3-coder:free",
+        "wallet_address": "0x1234567890abcdef1234567890abcdef12345678",
+        "wallet_chain": "base",
+    }
+
+    with (
+        patch.object(jobs, "JOBS_FILE", test_jobs_file),
+        patch("app.main.HermesSupervisor", FakeSupervisor),
+    ):
+        client = TestClient(app)
+        response = client.post("/api/jobs/start", json=payload)
+        assert response.status_code == 200
+        job_id = response.json()["job_id"]
+        job = client.get(f"/api/jobs/{job_id}").json()
+
+    assert job["config"]["wallet_address"] == payload["wallet_address"]
+    assert job["config"]["wallet_chain"] == "base"
+    assert job["config"]["models"]["validator"] == "openrouter/free"
+    assert FakeSupervisor.last_config.models["validator"] == "openrouter/free"
+
+
 def test_start_job_idempotency_key_returns_existing_job(tmp_path):
     test_jobs_file = tmp_path / "jobs.json"
     payload = {
@@ -142,3 +169,21 @@ def test_start_job_idempotency_key_returns_existing_job(tmp_path):
     assert second.json()["deduped"] is True
     assert second.json()["job_id"] == first.json()["job_id"]
     assert len(listed) == 1
+
+
+def test_stop_job_marks_running_job_stopped(tmp_path):
+    test_jobs_file = tmp_path / "jobs.json"
+
+    with patch.object(jobs, "JOBS_FILE", test_jobs_file):
+        job = jobs.create_job(research_goal="Stop this run", config={})
+        jobs.update_job_status(job["job_id"], "running")
+        client = TestClient(app)
+
+        response = client.post(f"/api/jobs/{job['job_id']}/stop")
+        stopped = client.get(f"/api/jobs/{job['job_id']}").json()
+
+    assert response.status_code == 200
+    assert response.json()["stopped"] is True
+    assert stopped["status"] == "stopped"
+    assert stopped["error"] == "Stopped by user request."
+    assert stopped["events"][-1]["stage"] == "stopped"

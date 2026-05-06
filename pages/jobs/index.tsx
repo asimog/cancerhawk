@@ -7,13 +7,25 @@ type Job = {
   job_id: string;
   created_at: string;
   research_goal: string;
-  status: 'pending' | 'running' | 'completed' | 'published' | 'failed';
+  status: 'pending' | 'running' | 'completed' | 'published' | 'failed' | 'stopped';
   config?: Record<string, unknown>;
   result?: {
     title?: string;
   };
   error?: string | null;
 };
+
+function walletLabel(config?: Record<string, unknown>) {
+  const address = typeof config?.wallet_address === 'string' ? config.wallet_address.trim() : '';
+  if (!address) return null;
+  const chain = typeof config?.wallet_chain === 'string' ? config.wallet_chain.trim() : '';
+  return chain ? `${chain}: ${address}` : address;
+}
+
+function JobWallet({ config }: { config?: Record<string, unknown> }) {
+  const wallet = walletLabel(config);
+  return wallet ? <p className="job-wallet">Submitter wallet: {wallet}</p> : null;
+}
 
 export const getStaticProps: GetStaticProps<{ backendUrl: string }> = async () => ({
   props: { backendUrl: (await import('@/lib/blocks')).getBackendUrl() },
@@ -63,6 +75,7 @@ export default function JobsPage({ backendUrl }: { backendUrl: string }) {
     completed: 'badge-completed',
     published: 'badge-published',
     failed: 'badge-failed',
+    stopped: 'badge-stopped',
   };
 
   return (
@@ -94,6 +107,7 @@ export default function JobsPage({ backendUrl }: { backendUrl: string }) {
               href={`/jobs/${job.job_id}`}
               className="job-card"
             >
+              <JobWallet config={job.config} />
               <div className="job-card-top">
                 <span className={`badge ${statusBadge[job.status] || 'badge-pending'}`}>
                   {job.status}

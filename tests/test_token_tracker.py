@@ -2,7 +2,7 @@
 
 import time
 from app import token_tracker
-from app.token_tracker import TokenTracker, APICall, _estimate_cost
+from app.token_tracker import APICall, APIFailureLimitExceeded, TokenTracker, _estimate_cost
 
 
 def test_token_tracker_initial_stats():
@@ -134,3 +134,18 @@ def test_record_caps_stored_call_list_without_losing_totals(monkeypatch):
     assert tracker.total_calls == 5
     assert tracker.stats()["total_input"] == 15
     assert [call.seq for call in tracker.calls] == [4, 5]
+
+
+def test_failed_api_call_hard_limit_blocks_additional_records(monkeypatch):
+    monkeypatch.setattr(token_tracker, "MAX_FAILED_API_CALLS", 2)
+    tracker = TokenTracker()
+
+    tracker.record("validator", "m", 0, 0, 1, False)
+    tracker.record("validator", "m", 0, 0, 1, False)
+
+    try:
+        tracker.record("validator", "m", 0, 0, 1, True)
+        assert False, "expected failure limit to stop further records"
+    except APIFailureLimitExceeded as exc:
+        assert exc.failed_calls == 2
+        assert exc.limit == 2

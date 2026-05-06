@@ -27,6 +27,8 @@ def test_models_endpoint():
     assert "defaults" in data
     assert isinstance(data["models"], list)
     assert isinstance(data["defaults"], dict)
+    assert data["models"] == ["openrouter/free"]
+    assert data["defaults"]["validator"] == "openrouter/free"
 
 
 def test_hermes_status_exposes_job_store_info():
