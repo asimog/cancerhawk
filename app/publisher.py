@@ -553,7 +553,7 @@ a{{color:#6fdb6f}} h1,h2{{color:#6fdb6f}} header{{border-bottom:1px solid #1a3a1
 <header>
   <h1>CancerHawk Block Archive</h1>
   <p>All published research blocks. Future blocks can cite and extend these papers when appropriate.</p>
-  <p><a href="./">Latest block</a> · <a href="run.html">Run a block</a></p>
+  <p><a href="./">Latest block</a> · <a href="/run-research">Run a block</a></p>
 </header>
 {body}
 </body></html>
@@ -563,7 +563,7 @@ a{{color:#6fdb6f}} h1,h2{{color:#6fdb6f}} header{{border-bottom:1px solid #1a3a1
 def _nav_html(block: int, *, in_block_page: bool) -> str:
     latest_href = "../" if in_block_page else "./"
     archive_href = "../blocks.html" if in_block_page else "blocks.html"
-    run_href = "../run.html" if in_block_page else "run.html"
+    run_href = "/run-research"
     permanent_href = "paper.html" if in_block_page else f"block-{block}/paper.html"
     return (
         '<nav class="site-nav">'
