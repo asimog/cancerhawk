@@ -13,9 +13,9 @@ const boxes: HomeBox[] = [
   { href: '/current-block', title: 'Current Block', desc: 'Open the newest paper with simulations embedded inside the paper.' },
   { href: '/previous-blocks', title: 'Previous Blocks', desc: 'Browse generated oncology research blocks and review artifacts.' },
   { href: '/jobs', title: 'Feed', desc: 'Job cards for every research run — click to inspect.' },
-  { href: 'https://hypermyths.com', title: 'HyperMythX', desc: 'Explore the HyperMyth reality-expansion engine.', external: true },
   { href: '/run-research', title: 'Run Research', desc: 'Generate the next block with the Hermes worker.' },
   { href: '/music', title: 'Music', desc: 'Keep the global audio-reactive orb alive across the whole app.' },
+  { href: 'https://hypermyths.com', title: 'HyperMythX', desc: 'Explore the HyperMyth reality-expansion engine.', external: true },
 ] as const;
 
 export const getStaticProps: GetStaticProps<{ current: BlockBundle | null }> = async () => ({
