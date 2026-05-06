@@ -33,15 +33,6 @@ type Job = {
   events?: JobEvent[];
 };
 
-function escapeHtml(value: string): string {
-  return value
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
-
 export const getStaticPaths: GetStaticPaths = async () => ({
   paths: [],
   fallback: 'blocking',
@@ -232,7 +223,7 @@ export default function JobDetailPage({ job, backendUrl }: { job: Job | null; ba
       {liveJob.status === 'failed' && liveJob.error && (
         <section className="job-section job-error-section">
           <h2>Error</h2>
-          <pre className="job-error" dangerouslySetInnerHTML={{ __html: escapeHtml(liveJob.error) }} />
+          <pre className="job-error">{liveJob.error}</pre>
         </section>
       )}
 

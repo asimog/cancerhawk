@@ -8,7 +8,7 @@
     "prebuild": "node scripts/sync-results-public.mjs",
     "build": "next build --webpack",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next typegen && tsc --noEmit"
   },
   "dependencies": {
     "next": "^16.2.4",

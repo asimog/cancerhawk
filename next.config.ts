@@ -14,12 +14,12 @@ const nextConfig: NextConfig = {
             key: 'Content-Security-Policy',
             value:
               "default-src 'self'; " +
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.youtube.com https://s.ytimg.com; " +
+              "script-src 'self' 'unsafe-inline' https://www.youtube.com https://s.ytimg.com; " +
               "frame-src https://www.youtube.com; " +
               "img-src 'self' https: data: blob:; " +
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
               "font-src 'self' https://fonts.gstatic.com; " +
-              "connect-src 'self' https:; " +
+              "connect-src 'self' https: wss: ws:; " +
               "media-src 'self' blob:;",
           },
         ],

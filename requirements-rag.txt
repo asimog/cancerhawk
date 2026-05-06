@@ -1,0 +1,31 @@
+# Optional heavyweight backend/RAG dependencies.
+#
+# Install this only when you are deliberately working on the vendored backend
+# RAG/compiler/autonomous modules. It is not needed for `run_cancerhawk.bat`,
+# `python -m app.main`, or the standard test suite.
+
+# RAG and embeddings
+chromadb>=0.4.22
+sentence-transformers>=2.3.1
+rank-bm25>=0.2.2
+fastembed>=0.3.6
+onnxruntime>=1.18.0,<2.0
+
+# Data processing
+numpy>=1.26.0
+pydantic>=2.5.3,<=2.12.4
+pydantic-settings>=2.1.0
+
+# Utilities used by backend/ optional modules
+python-dotenv>=1.0.0
+aiofiles>=23.2.1,<25.0
+tiktoken>=0.5.2
+keyring>=25.6.0
+python-multipart>=0.0.6
+websockets>=12.0
+
+# PDF generation (headless Chromium via Playwright)
+playwright>=1.40.0
+
+# Additional dependencies for aggregator/compiler/autonomous
+protobuf>=5.29.5

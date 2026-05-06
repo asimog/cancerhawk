@@ -2,7 +2,14 @@ import Link from 'next/link';
 import type { GetStaticProps } from 'next';
 import type { BlockBundle } from '@/lib/blocks.types';
 
-const boxes = [
+type HomeBox = {
+  href: string;
+  title: string;
+  desc: string;
+  external?: boolean;
+};
+
+const boxes: HomeBox[] = [
   { href: '/current-block', title: 'Current Block', desc: 'Open the newest paper with simulations embedded inside the paper.' },
   { href: '/previous-blocks', title: 'Previous Blocks', desc: 'Browse generated oncology research blocks and review artifacts.' },
   { href: '/jobs', title: 'Feed', desc: 'Job cards for every research run — click to inspect.' },
@@ -25,7 +32,7 @@ export default function HomePage({ current }: { current: BlockBundle | null }) {
       <nav aria-label="Primary routes" className="home-grid-wrap">
         <div className="home-grid">
           {boxes.map((box) => {
-            const isExternal = (box as any).external;
+            const isExternal = Boolean(box.external);
             const linkProps = isExternal
               ? { href: box.href, target: '_blank', rel: 'noreferrer' }
               : { href: box.href };

@@ -157,8 +157,14 @@ async function loadModels() {
 function appendLog(stage, message) {
   const row = document.createElement("div");
   row.className = "entry";
-  row.innerHTML = `<span class="stage ${stage}">${stage}</span><span class="msg"></span>`;
-  row.querySelector(".msg").textContent = message;
+  const safeStage = String(stage || "info").replace(/[^a-z0-9_-]/gi, "_").slice(0, 40) || "info";
+  const stageEl = document.createElement("span");
+  stageEl.className = `stage ${safeStage}`;
+  stageEl.textContent = String(stage || "info");
+  const msgEl = document.createElement("span");
+  msgEl.className = "msg";
+  msgEl.textContent = message;
+  row.append(stageEl, msgEl);
   logEl.appendChild(row);
   logEl.scrollTop = logEl.scrollHeight;
 }

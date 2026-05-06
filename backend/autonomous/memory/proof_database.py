@@ -16,7 +16,7 @@ import aiofiles
 
 from backend.shared.config import system_config
 from backend.shared.models import FailedProofCandidate, ProofCandidate, ProofRecord
-from backend.shared.path_safety import validate_single_path_component
+from backend.shared.path_safety import resolve_path_within_root, validate_single_path_component
 from backend.autonomous.prompts.proof_prompts import format_failure_hints_for_injection
 
 logger = logging.getLogger(__name__)
@@ -499,6 +499,7 @@ class ProofDatabase:
                 "source_title": proof.source_title,
                 "solver": proof.solver,
                 "is_novel": proof.novel,
+                "novelty_tier": proof.novelty_tier,
                 "created_at": proof.created_at.isoformat() if proof.created_at else None,
             }
             for proof in proofs
@@ -625,13 +626,20 @@ class ProofDatabase:
 
         lines = [
             "=== VERIFIED NOVEL MATHEMATICAL PROOFS (Lean 4 Verified) ===",
-            "[These proofs have been formally verified. They represent proven mathematical truths.]",
+            "[These proofs have been formally verified. They represent proven mathematical truths.",
+            "Novelty tiers: Mathematical Discovery (highest — new result), Novel Reformulation (novel reformulation of known proof), Novel Formalization (first Lean 4 formalization of known result).]",
             "",
         ]
         for index, proof in enumerate(novel_proofs, start=1):
+            tier = proof.get("novelty_tier", "")
+            tier_label = {
+                "mathematical_discovery": "Mathematical Discovery",
+                "novel_variant": "Novel Reformulation",
+                "novel_formulation": "Novel Formalization",
+            }.get(tier, "Novel")
             lines.extend(
                 [
-                    f"PROOF {index}: {proof.get('theorem_statement', '').strip()}",
+                    f"PROOF {index} [{tier_label}]: {proof.get('theorem_statement', '').strip()}",
                     f"Source: {proof.get('source_type', '')} {proof.get('source_id', '')}".strip(),
                     "Lean 4 Code:",
                     proof.get("lean_code", "").strip(),
@@ -744,6 +752,7 @@ class ProofDatabase:
                 "source_title": proof_data.get("source_title", ""),
                 "solver": proof_data.get("solver", "Lean 4"),
                 "novel": is_novel,
+                "novelty_tier": proof_data.get("novelty_tier", "not_novel"),
                 "novelty_reasoning": proof_data.get("novelty_reasoning", ""),
                 "verification_notes": proof_data.get("verification_notes", ""),
                 "attempt_count": proof_data.get("attempt_count", 0),
@@ -759,20 +768,23 @@ class ProofDatabase:
         if session_id == "legacy":
             proofs_dir = Path(system_config.data_dir) / "proofs"
         else:
-            proofs_dir = Path(system_config.auto_sessions_base_dir) / validate_single_path_component(session_id, "session ID") / "proofs"
+            safe_session = validate_single_path_component(session_id, "session ID")
+            proofs_dir = resolve_path_within_root(
+                Path(system_config.auto_sessions_base_dir), safe_session, "proofs"
+            )
 
         if not proofs_dir.exists():
             return None
 
         safe_id = validate_single_path_component(proof_id, "proof ID")
-        record_path = proofs_dir / f"proof_{safe_id}.json"
-        lean_path = proofs_dir / f"proof_{safe_id}_lean.lean"
+        record_path = resolve_path_within_root(proofs_dir, f"proof_{safe_id}.json")
+        lean_path = resolve_path_within_root(proofs_dir, f"proof_{safe_id}_lean.lean")
 
         if not record_path.exists():
             return None
 
         try:
-            async with aiofiles.open(record_path, "r", encoding="utf-8") as handle:
+            async with aiofiles.open(str(record_path), "r", encoding="utf-8") as handle:
                 proof_data = json.loads(await handle.read())
         except Exception as exc:
             logger.error("Failed to read proof %s from session %s: %s", proof_id, session_id, exc)
@@ -781,7 +793,7 @@ class ProofDatabase:
         lean_code = ""
         if lean_path.exists():
             try:
-                async with aiofiles.open(lean_path, "r", encoding="utf-8") as handle:
+                async with aiofiles.open(str(lean_path), "r", encoding="utf-8") as handle:
                     lean_code = await handle.read()
             except Exception:
                 lean_code = str(proof_data.get("lean_code", "") or "")

@@ -301,7 +301,11 @@ class TestRunPaperEngineIntegration:
 
         assert isinstance(paper, Paper)
         assert paper.title == "Test Paper"
-        assert len(paper.sections) == 2
+        assert [section["heading"] for section in paper.sections] == [
+            "Abstract",
+            "1. Intro",
+            "2. Mechanism",
+        ]
         assert len(paper.accepted_submissions) >= 3
         assert "saturation" in paper.convergence_reason
         assert paper.rounds_run >= 2

@@ -68,10 +68,14 @@ run_cancerhawk.bat
 Other platforms:
 
 ```bash
-pip install -r app/requirements.txt
+pip install -r requirements.txt
 python -m app.main
 # open http://localhost:8765
 ```
+
+`requirements.txt` is intentionally the safe, lightweight local install. The
+large backend RAG/ML extras live in `requirements-rag.txt` and should only be
+installed when you are deliberately working on those optional modules.
 
 The full engine internals are documented in [app/README.md](app/README.md).
 
@@ -100,11 +104,17 @@ The full engine internals are documented in [app/README.md](app/README.md).
 | `CANCERHAWK_MIN_ACCEPTED` | `3` | Minimum accepted submissions before the convergence detector is allowed to stop. |
 | `CANCERHAWK_SATURATION_ROUNDS` | `2` | Stop when this many consecutive rounds yield zero acceptances. |
 | `CANCERHAWK_PLATEAU_ROUNDS` | `3` | Stop when avg validator-novelty score is non-increasing for this many rounds. |
-| `CANCERHAWK_MAX_CALLS` | `400` | Soft safety guard on total API calls (set `0` to disable). |
-| `CANCERHAWK_MAX_WALL_CLOCK` | `3600` | Soft safety guard on wall-clock seconds (set `0` to disable). |
+| `CANCERHAWK_MAX_CALLS` | `80` | Soft safety guard on total API calls (set `0` to disable). |
+| `CANCERHAWK_MAX_WALL_CLOCK` | `900` | Soft safety guard on wall-clock seconds (set `0` to disable). |
+| `CANCERHAWK_MAX_ROUNDS` | `20` | Hard guard on adaptive MOTO rounds (set `0` to disable). |
+| `CANCERHAWK_MAX_PARALLEL_SUBMITTERS` | `3` | Caps concurrent submitter calls even if the UI requests more. |
+| `CANCERHAWK_MAX_ACCEPTED` | `12` | Caps aggregate submissions retained for compilation. |
+| `CANCERHAWK_MAX_CALL_TEXT_CHARS` | `4000` | Stores bounded prompt/response previews in job call logs. |
+| `CANCERHAWK_MAX_STORED_CALLS` | `200` | Caps stored per-call log records while keeping token totals accurate. |
 
-There are no hard round/accept caps — full MOTO runs as long as the field has
-signal under the supplied research goal.
+Full MOTO now runs with bounded local defaults so runaway jobs cannot consume
+the whole machine. Raise or disable the caps deliberately for longer hosted
+runs.
 
 ## Deployment
 

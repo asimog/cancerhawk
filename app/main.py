@@ -597,6 +597,17 @@ async def publish_cycle_worker() -> None:
             logger.error("publish_cycle_error", exc_info=e)
         await asyncio.sleep(600)
 
+
+def _publish_cycle_enabled() -> bool:
+    configured = os.environ.get("CANCERHAWK_PUBLISH_CYCLE_ENABLED", "").strip().lower()
+    if configured:
+        return configured in {"1", "true", "yes", "on"}
+
+    # Avoid surprise background work on local laptops. Railway can still run
+    # the staging publisher by default, and auto-generation remains separately
+    # gated by HERMES_AUTO_GENERATE_ENABLED.
+    return bool(os.environ.get("RAILWAY_ENVIRONMENT") or os.environ.get("RAILWAY_PROJECT_ID"))
+
 async def maybe_auto_generate() -> None:
     """Generate a block automatically if no user submissions."""
     if os.environ.get("HERMES_AUTO_GENERATE_ENABLED", "").strip().lower() not in {"1", "true", "yes", "on"}:
@@ -643,7 +654,11 @@ async def maybe_auto_generate() -> None:
 
 @app.on_event("startup")
 async def startup_event() -> None:
-    asyncio.create_task(publish_cycle_worker())
+    if _publish_cycle_enabled():
+        asyncio.create_task(publish_cycle_worker())
+        logger.info("publish_cycle_worker_started")
+    else:
+        logger.info("publish_cycle_worker_disabled")
 
 
 @app.on_event("shutdown")

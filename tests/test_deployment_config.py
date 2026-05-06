@@ -21,6 +21,16 @@ def test_railway_build_installs_worker_requirements_only():
     assert "-r requirements.txt" not in source
 
 
+def test_root_requirements_are_safe_for_laptops():
+    source = open("requirements.txt", encoding="utf-8").read()
+
+    assert "-r app/requirements.txt" in source
+    assert "-r app/requirements-dev.txt" in source
+    assert "chromadb" not in source
+    assert "sentence-transformers" not in source
+    assert "torch" not in source
+
+
 def test_railway_source_context_excludes_frontend_build_state():
     source = open(".railwayignore", encoding="utf-8").read()
 

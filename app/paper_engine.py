@@ -43,8 +43,16 @@ def _env_int(name: str, default: int) -> int:
 MIN_ACCEPTED_FLOOR = _env_int("CANCERHAWK_MIN_ACCEPTED", 3)
 SATURATION_ROUNDS = _env_int("CANCERHAWK_SATURATION_ROUNDS", 2)
 PLATEAU_ROUNDS = _env_int("CANCERHAWK_PLATEAU_ROUNDS", 3)
-MAX_API_CALLS_SOFT = _env_int("CANCERHAWK_MAX_CALLS", 400)
-MAX_WALL_CLOCK_SECONDS = _env_int("CANCERHAWK_MAX_WALL_CLOCK", 3600)
+MAX_API_CALLS_SOFT = _env_int("CANCERHAWK_MAX_CALLS", 80)
+MAX_WALL_CLOCK_SECONDS = _env_int("CANCERHAWK_MAX_WALL_CLOCK", 900)
+MAX_ROUNDS = _env_int("CANCERHAWK_MAX_ROUNDS", 20)
+MAX_PARALLEL_SUBMITTERS = _env_int("CANCERHAWK_MAX_PARALLEL_SUBMITTERS", 3)
+MAX_ACCEPTED_SUBMISSIONS = _env_int("CANCERHAWK_MAX_ACCEPTED", 12)
+MAX_SUBMISSION_CHARS = _env_int("CANCERHAWK_MAX_SUBMISSION_CHARS", 12000)
+MAX_AGGREGATE_CONTEXT_CHARS = _env_int("CANCERHAWK_MAX_AGGREGATE_CONTEXT_CHARS", 40000)
+SUBMITTER_MAX_TOKENS = _env_int("CANCERHAWK_SUBMITTER_MAX_TOKENS", 4096)
+VALIDATOR_MAX_TOKENS = _env_int("CANCERHAWK_VALIDATOR_MAX_TOKENS", 3000)
+COMPILER_SECTION_MAX_TOKENS = _env_int("CANCERHAWK_COMPILER_SECTION_MAX_TOKENS", 1800)
 
 
 @dataclass
@@ -74,6 +82,10 @@ def _check_convergence(
         return True, f"safety_guard:api_calls>={MAX_API_CALLS_SOFT}"
     if MAX_WALL_CLOCK_SECONDS and elapsed_s >= MAX_WALL_CLOCK_SECONDS:
         return True, f"safety_guard:wall_clock>={MAX_WALL_CLOCK_SECONDS}s"
+    if MAX_ROUNDS and rounds_run >= MAX_ROUNDS:
+        return True, f"safety_guard:rounds>={MAX_ROUNDS}"
+    if MAX_ACCEPTED_SUBMISSIONS and accepted_count >= MAX_ACCEPTED_SUBMISSIONS:
+        return True, f"safety_guard:accepted>={MAX_ACCEPTED_SUBMISSIONS}"
     if accepted_count < MIN_ACCEPTED_FLOOR:
         return False, ""
     if rounds_run >= SATURATION_ROUNDS:
@@ -107,6 +119,45 @@ def _normalize_section_specs(raw_sections: object) -> list[dict[str, str]]:
             "summary": summary or "Develop this section from the accepted research aggregate.",
         })
     return normalized
+
+
+def _truncate(value: str, max_chars: int) -> str:
+    if not max_chars or len(value) <= max_chars:
+        return value
+    return value[:max_chars]
+
+
+def _aggregate_context(submissions: list[str]) -> str:
+    parts: list[str] = []
+    total = 0
+    for submission in reversed(submissions):
+        text = submission.strip()
+        if not text:
+            continue
+        remaining = MAX_AGGREGATE_CONTEXT_CHARS - total
+        if remaining <= 0:
+            break
+        snippet = _truncate(text, remaining)
+        parts.append(snippet)
+        total += len(snippet) + 2
+    return "\n\n".join(reversed(parts))
+
+
+def _decision_accepted(decision: dict) -> bool:
+    raw = decision.get("decision", decision.get("accept", False))
+    if isinstance(raw, bool):
+        return raw
+    return str(raw).strip().lower() in {"accept", "accepted", "true", "yes"}
+
+
+def _decision_feedback(decision: dict) -> str:
+    return str(
+        decision.get("summary")
+        or decision.get("reasoning")
+        or decision.get("reason")
+        or decision.get("steering_feedback")
+        or ""
+    )
 
 
 async def _generate_submission(
@@ -153,7 +204,7 @@ async def _generate_submission(
         role="submitter",
         tracker=tracker,
         on_call=on_call,
-        max_tokens=25000,
+        max_tokens=SUBMITTER_MAX_TOKENS,
     )
     try:
         parsed = json.loads(response)
@@ -183,7 +234,7 @@ async def _validate_batch(
             role="validator",
             tracker=tracker,
             on_call=on_call,
-            max_tokens=2000,
+            max_tokens=min(VALIDATOR_MAX_TOKENS, 2000),
         )
         return [resp] if isinstance(resp, dict) else []
     elif batch_len == 2:
@@ -196,10 +247,12 @@ async def _validate_batch(
             role="validator",
             tracker=tracker,
             on_call=on_call,
-            max_tokens=3000,
+            max_tokens=min(VALIDATOR_MAX_TOKENS, 3000),
         )
         if isinstance(resp, dict) and "decisions" in resp:
             return resp["decisions"]
+        if isinstance(resp, dict) and ("decision" in resp or "accept" in resp):
+            return [resp]
         return []
     elif batch_len == 3:
         prompt_str = build_validator_triple_prompt(research_goal, submissions, shared_context, "")
@@ -211,10 +264,12 @@ async def _validate_batch(
             role="validator",
             tracker=tracker,
             on_call=on_call,
-            max_tokens=4000,
+            max_tokens=min(VALIDATOR_MAX_TOKENS, 4000),
         )
         if isinstance(resp, dict) and "decisions" in resp:
             return resp["decisions"]
+        if isinstance(resp, dict) and ("decision" in resp or "accept" in resp):
+            return [resp]
         return []
     else:
         raise ValueError("Validator batch size must be 1, 2, or 3")
@@ -239,10 +294,20 @@ async def run_paper_engine(
     started_at = time.time()
     convergence_reason = ""
 
+    effective_submitters = max(1, n_submitters)
+    if MAX_PARALLEL_SUBMITTERS:
+        effective_submitters = min(effective_submitters, MAX_PARALLEL_SUBMITTERS)
+
     await emit(
         "brainstorm",
         "MOTO aggregator: starting adaptive brainstorming (batch validation, empirical provenance)",
-        {"n_submitters": n_submitters, "min_accepted": MIN_ACCEPTED_FLOOR},
+        {
+            "n_submitters": effective_submitters,
+            "requested_submitters": n_submitters,
+            "min_accepted": MIN_ACCEPTED_FLOOR,
+            "max_calls": MAX_API_CALLS_SOFT,
+            "max_rounds": MAX_ROUNDS,
+        },
     )
 
     # ── Phase 1: Adaptive aggregation ────────────────────────────────────────
@@ -250,7 +315,7 @@ async def run_paper_engine(
         round_num += 1
         await emit(
             "brainstorm",
-            f"Round {round_num}: spawning {n_submitters} parallel submitters "
+            f"Round {round_num}: spawning {effective_submitters} parallel submitters "
             f"· aggregate size {len(accepted_submissions)}",
             {
                 "round": round_num,
@@ -271,7 +336,7 @@ async def run_paper_engine(
                 tracker=tracker,
                 on_call=on_call,
             )
-            for _ in range(n_submitters)
+            for _ in range(effective_submitters)
         ]
         raw_submissions = await asyncio.gather(*generation_tasks, return_exceptions=True)
 
@@ -280,9 +345,9 @@ async def run_paper_engine(
             if isinstance(sub, Exception):
                 await emit("validate", f"Submitter {i+1} failed: {sub}", {"error": str(sub)})
             else:
-                valid_submissions.append(sub or "")
+                valid_submissions.append(_truncate(sub or "", MAX_SUBMISSION_CHARS))
 
-        shared_context = "\n\n".join(accepted_submissions)
+        shared_context = _aggregate_context(accepted_submissions)
 
         # Batched validator calls
         batch_validations: list[dict] = []
@@ -351,7 +416,7 @@ async def run_paper_engine(
             else:
                 round_novelty_scores.append(0.0)
 
-            if decision.get("decision") == "accept":
+            if _decision_accepted(decision):
                 accepted_submissions.append(valid_submissions[dec_idx])
                 round_accepts += 1
                 await emit(
@@ -361,7 +426,7 @@ async def run_paper_engine(
                     {"scores": scores, "accepted_total": len(accepted_submissions)},
                 )
             else:
-                steering = decision.get("summary") or decision.get("reasoning") or ""
+                steering = _decision_feedback(decision)
                 rejection_feedback.append(steering[:200])
                 await emit(
                     "validate",
@@ -376,7 +441,7 @@ async def run_paper_engine(
         )
         novelty_per_round.append(round_avg_novelty)
 
-        api_calls = len(tracker.calls) if hasattr(tracker, "calls") else 0
+        api_calls = getattr(tracker, "total_calls", len(tracker.calls) if hasattr(tracker, "calls") else 0)
         elapsed_s = time.time() - started_at
 
         await emit(
@@ -470,7 +535,7 @@ async def run_paper_engine(
             role="compiler_section",
             tracker=tracker,
             on_call=on_call,
-            max_tokens=2200,
+            max_tokens=COMPILER_SECTION_MAX_TOKENS,
         )
         written.append({
             "heading": spec.get("heading", f"Section {i + 1}"),

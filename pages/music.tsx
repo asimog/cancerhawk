@@ -2,6 +2,10 @@ import { useRef, useState, useEffect, useCallback } from 'react';
 import { Nav } from '@/components/nav';
 import { useMusic } from '@/components/music-provider';
 
+type BrowserWindowWithWebkitAudio = Window & {
+  webkitAudioContext?: typeof AudioContext;
+};
+
 export default function MusicPage() {
   const music = useMusic();
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -47,7 +51,13 @@ export default function MusicPage() {
     const audio = new Audio();
     audioRef.current = audio;
 
-    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const AudioContextConstructor =
+      window.AudioContext || (window as BrowserWindowWithWebkitAudio).webkitAudioContext;
+    if (!AudioContextConstructor) {
+      setDropError('This browser does not support the Web Audio API.');
+      return;
+    }
+    const ctx = new AudioContextConstructor();
     const source = ctx.createMediaElementSource(audio);
     const analyserNode = ctx.createAnalyser();
     analyserNode.fftSize = 256;

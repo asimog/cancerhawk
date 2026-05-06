@@ -1,6 +1,7 @@
 """Unit tests for app.token_tracker."""
 
 import time
+from app import token_tracker
 from app.token_tracker import TokenTracker, APICall, _estimate_cost
 
 
@@ -100,3 +101,36 @@ def test_api_call_to_dict():
     assert d["ok"] is True
     assert "Hello" in d["prompt"]
     assert "Hi" in d["response"]
+
+
+def test_record_stores_bounded_prompt_and_response_previews(monkeypatch):
+    monkeypatch.setattr(token_tracker, "MAX_CALL_TEXT_CHARS", 10)
+    tracker = TokenTracker()
+
+    call = tracker.record(
+        role="submitter",
+        model="m",
+        prompt_tokens=1,
+        completion_tokens=1,
+        latency_ms=1,
+        prompt_messages=[{"role": "user", "content": "P" * 40}],
+        response_text="R" * 40,
+    )
+
+    payload = call.to_dict()
+    assert len(call.prompt_messages[0]["content"]) < 40
+    assert len(call.response_text) < 40
+    assert "truncated" in payload["prompt"]
+    assert "truncated" in payload["response"]
+
+
+def test_record_caps_stored_call_list_without_losing_totals(monkeypatch):
+    monkeypatch.setattr(token_tracker, "MAX_STORED_CALLS", 2)
+    tracker = TokenTracker()
+
+    for index in range(5):
+        tracker.record("role", "m", index + 1, 1, 1, True)
+
+    assert tracker.total_calls == 5
+    assert tracker.stats()["total_input"] == 15
+    assert [call.seq for call in tracker.calls] == [4, 5]

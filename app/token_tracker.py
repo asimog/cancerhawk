@@ -12,6 +12,7 @@ from __future__ import annotations
 import time
 from collections import defaultdict
 from dataclasses import dataclass, field
+import os
 
 # Approximate OpenRouter pricing in USD per 1M tokens (input, output).
 # Used for a rough cumulative cost estimate. Update freely — these numbers
@@ -34,6 +35,41 @@ PRICING_PER_M = {
 }
 
 
+def _env_int(name: str, default: int) -> int:
+    try:
+        value = int(os.environ.get(name, str(default)))
+    except ValueError:
+        return default
+    return max(0, value)
+
+
+MAX_STORED_CALLS = _env_int("CANCERHAWK_MAX_STORED_CALLS", 200)
+MAX_CALL_TEXT_CHARS = _env_int("CANCERHAWK_MAX_CALL_TEXT_CHARS", 4000)
+
+
+def _truncate_text(value: str | None, max_chars: int | None = None) -> str:
+    if not value:
+        return ""
+    if max_chars is None:
+        max_chars = MAX_CALL_TEXT_CHARS
+    if not max_chars or len(value) <= max_chars:
+        return value
+    omitted = len(value) - max_chars
+    return f"{value[:max_chars]}\n...[truncated {omitted} chars]"
+
+
+def _truncate_messages(messages: list[dict] | None) -> list[dict] | None:
+    if not messages:
+        return messages
+    return [
+        {
+            **message,
+            "content": _truncate_text(str(message.get("content", ""))),
+        }
+        for message in messages
+    ]
+
+
 @dataclass
 class APICall:
     seq: int
@@ -46,8 +82,8 @@ class APICall:
     cost_usd: float
     ok: bool
     error: str | None = None
-    prompt_messages: list[dict] | None = None  # full messages array
-    response_text: str | None = None           # full response text
+    prompt_messages: list[dict] | None = None  # bounded preview of messages
+    response_text: str | None = None           # bounded preview of response text
 
     def to_dict(self) -> dict:
         return {
@@ -134,10 +170,12 @@ class TokenTracker:
             cost_usd=cost,
             ok=ok,
             error=error,
-            prompt_messages=prompt_messages,
-            response_text=response_text,
+            prompt_messages=_truncate_messages(prompt_messages),
+            response_text=_truncate_text(response_text),
         )
         self.calls.append(call)
+        if MAX_STORED_CALLS and len(self.calls) > MAX_STORED_CALLS:
+            del self.calls[: len(self.calls) - MAX_STORED_CALLS]
         return call
 
     def elapsed_seconds(self) -> float:

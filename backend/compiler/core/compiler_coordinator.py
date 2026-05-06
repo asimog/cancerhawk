@@ -707,7 +707,7 @@ class CompilerCoordinator:
             logger.warning(f"Compiler: all free models exhausted: {e}")
             await self._broadcast("free_models_exhausted", {
                 "role_id": "compiler",
-                "message": str(e),
+                "message": "All free models exhausted, waiting to retry",
             })
             await asyncio.sleep(120)  # Wait before retrying (all models exhausted)
             if self.is_running:
@@ -716,8 +716,7 @@ class CompilerCoordinator:
             logger.error(f"Compiler workflow error: {e}", exc_info=True)
             self.is_running = False
             await self._broadcast("compiler_error", {
-                "error": str(e),
-                "traceback": traceback.format_exc(),
+                "error": "Compiler workflow encountered an internal error",
                 "mode": self.current_mode,
                 "total_submissions": self.total_submissions
             })
@@ -2184,6 +2183,7 @@ INVALID:
                     lean_code=lean_result.lean_code,
                     is_novel=lean_result.is_novel,
                     theorem_name=lean_result.theorem_name,
+                    novelty_tier=lean_result.novelty_tier,
                     placement_outcome="inline",
                 )
                 try:
@@ -2260,6 +2260,7 @@ INVALID:
             lean_code=lean_result.lean_code,
             is_novel=lean_result.is_novel,
             theorem_name=lean_result.theorem_name,
+            novelty_tier=lean_result.novelty_tier,
             placement_outcome="appendix_fallback",
         )
         appended = await paper_memory.append_to_theorems_appendix(appendix_entry)
