@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { GetStaticProps } from 'next';
-import { getBackendUrl, fetchWithTimeout } from '@/lib/blocks';
+import { getBackendUrl, fetchWithTimeout, GIVEWELL_WALLET, GIVEWELL_URL } from '@/lib/blocks';
 import { useState, useEffect, useRef } from 'react';
 
 type Job = {
@@ -15,16 +15,22 @@ type Job = {
   error?: string | null;
 };
 
-function walletLabel(config?: Record<string, unknown>) {
-  const address = typeof config?.wallet_address === 'string' ? config.wallet_address.trim() : '';
-  if (!address) return null;
-  const chain = typeof config?.wallet_chain === 'string' ? config.wallet_chain.trim() : '';
-  return chain ? `${chain}: ${address}` : address;
-}
-
 function JobWallet({ config }: { config?: Record<string, unknown> }) {
-  const wallet = walletLabel(config);
-  return wallet ? <p className="job-wallet">Submitter wallet: {wallet}</p> : null;
+  const address = typeof config?.wallet_address === 'string' ? config.wallet_address.trim() : GIVEWELL_WALLET;
+  const isDefault = !config?.wallet_address || address === GIVEWELL_WALLET;
+  return (
+    <p className="job-wallet" style={{ fontSize: '0.8rem', color: '#888' }}>
+      Wallet: {address.slice(0, 8)}...{address.slice(-6)}
+      {isDefault && (
+        <span>
+          {' '}&mdash;{' '}
+          <a href={GIVEWELL_URL} target="_blank" rel="noreferrer" style={{ color: '#64b5f6' }}>
+            GiveWell charity
+          </a>
+        </span>
+      )}
+    </p>
+  );
 }
 
 export const getStaticProps: GetStaticProps<{ backendUrl: string }> = async () => ({

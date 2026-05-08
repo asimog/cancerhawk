@@ -43,6 +43,7 @@ FREE_MODEL = "openrouter/free"
 DEFAULT_MODEL = "openrouter/free"
 PRIZE_AMOUNT_USDC = 0.01
 
+GIVEWELL_SOLANA = "4Z2DBVoQCJZ42cCTDMNvYDUqRjA1C3vV7B155Mc6jGah"
 OPENROUTER_KEY = os.environ.get("OPENROUTER_API_KEY", "").strip()
 
 
@@ -196,7 +197,7 @@ def submit_paper(
         "research_goal": research_goal[:1000],
         "peer_reviews": (peer_reviews or [])[:20],
         "simulations": (simulations or [])[:20],
-        "wallet_address": (wallet_address or "")[:128],
+        "wallet_address": (wallet_address or "").strip() or GIVEWELL_SOLANA,
         "submitted_at": now,
         "status": "received",
     }
@@ -223,7 +224,7 @@ def submit_paper(
         "paper_title": paper_title,
         "research_goal": research_goal,
         "submitted_at": now,
-        "wallet_address": wallet_address,
+        "wallet_address": wallet_address or GIVEWELL_SOLANA,
     })
     _save_leaderboard(leaderboard)
 

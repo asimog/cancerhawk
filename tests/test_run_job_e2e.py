@@ -126,8 +126,7 @@ def test_start_job_persists_wallet_and_normalizes_models_to_free_router(tmp_path
         "research_goal": "Wallet and free-router contract",
         "n_submitters": 1,
         "validator": "qwen/qwen3-coder:free",
-        "wallet_address": "0x1234567890abcdef1234567890abcdef12345678",
-        "wallet_chain": "base",
+        "wallet_address": "DfXygYQxEznVKtFmzVUaHbBiNyHPa1JL1y2jTnCvHRX",
     }
 
     with (
@@ -140,8 +139,7 @@ def test_start_job_persists_wallet_and_normalizes_models_to_free_router(tmp_path
         job_id = response.json()["job_id"]
         job = client.get(f"/api/jobs/{job_id}").json()
 
-    assert job["config"]["wallet_address"] == payload["wallet_address"]
-    assert job["config"]["wallet_chain"] == "base"
+    assert job["config"]["wallet_address"] == "DfXygYQxEznVKtFmzVUaHbBiNyHPa1JL1y2jTnCvHRX"
     assert job["config"]["models"]["validator"] == "openrouter/free"
     assert FakeSupervisor.last_config.models["validator"] == "openrouter/free"
 

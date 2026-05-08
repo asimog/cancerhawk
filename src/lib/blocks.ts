@@ -25,15 +25,16 @@ export function fetchWithTimeout(
   return fetch(url, { ...rest, signal: controller.signal }).finally(() => clearTimeout(id));
 }
 
-const SOLANA_BASE58 = /^[A-HJ-NP-Za-km-z1-9]{32,44}$/;
-const EVM_ADDRESS = /^0x[a-fA-F0-9]{40}$/;
+const SOLANA_BASE58 = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
 
-export function validateWalletAddress(value: string): { valid: boolean; chain: 'solana' | 'base' | null; error?: string } {
+export const GIVEWELL_WALLET = "4Z2DBVoQCJZ42cCTDMNvYDUqRjA1C3vV7B155Mc6jGah";
+export const GIVEWELL_URL = "https://www.givewell.org/about/donate/cryptocurrency";
+
+export function validateWalletAddress(value: string): { valid: boolean; solana: string; isDefault: boolean; error?: string } {
   const trimmed = value.trim();
-  if (!trimmed) return { valid: true, chain: null };
-  if (SOLANA_BASE58.test(trimmed)) return { valid: true, chain: 'solana' };
-  if (EVM_ADDRESS.test(trimmed)) return { valid: true, chain: 'base' };
-  return { valid: false, chain: null, error: 'Enter a valid Solana or Base (0x…) address.' };
+  if (!trimmed) return { valid: true, solana: GIVEWELL_WALLET, isDefault: true };
+  if (SOLANA_BASE58.test(trimmed)) return { valid: true, solana: trimmed, isDefault: trimmed === GIVEWELL_WALLET };
+  return { valid: false, solana: "", isDefault: false, error: 'Enter a valid Solana base58 address (32-44 chars).' };
 }
 
 export function excerpt(markdown: string, maxLength = 280) {

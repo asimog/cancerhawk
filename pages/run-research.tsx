@@ -2,7 +2,7 @@ import type { GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Nav } from '@/components/nav';
-import { fetchWithTimeout, validateWalletAddress } from '@/lib/blocks';
+import { fetchWithTimeout, validateWalletAddress, GIVEWELL_WALLET, GIVEWELL_URL } from '@/lib/blocks';
 
 type ModelsPayload = {
   models: string[];
@@ -94,10 +94,13 @@ export default function RunResearchPage({ backendUrl }: { backendUrl: string }) 
       return;
     }
 
+    const wallet = walletValidation.solana;
+    const useGiveWell = walletValidation.isDefault && !walletAddress.trim();
+
     const confirmed = window.confirm(
       mode === 'paid'
-        ? 'This will use your OpenRouter API key and may incur significant costs. Continue?'
-        : 'This will run using free OpenRouter models at no cost. Continue?'
+        ? `This will use your OpenRouter API key and may incur costs. Wallet: ${wallet.slice(0, 6)}...${wallet.slice(-4)}. Continue?`
+        : `This will run using free OpenRouter models at no cost. Wallet: ${wallet.slice(0, 6)}...${wallet.slice(-4)}. Continue?`
     );
     if (!confirmed) return;
 
@@ -125,9 +128,7 @@ export default function RunResearchPage({ backendUrl }: { backendUrl: string }) 
           auto_publish: true,
           git_push: true,
           idempotency_key: idempotencyKey,
-          wallet_address: walletValidation.chain ? walletAddress.trim() : undefined,
-          wallet_chain: walletValidation.chain || undefined,
-          enable_paysh: enablePaysh,
+          wallet_address: wallet,
           ...selectedModels,
         }),
       });
@@ -242,14 +243,22 @@ export default function RunResearchPage({ backendUrl }: { backendUrl: string }) 
             <input max={8} min={1} onChange={(event) => setSubmitterCount(Math.min(8, Math.max(1, Number(event.target.value) || 3)))} type="number" value={submitterCount} />
           </label>
           <label>
-            Wallet address (optional — Solana or Base)
+            Wallet address (optional — Solana)
             <input
               autoComplete="off"
               onChange={(event) => onWalletChange(event.target.value)}
-              placeholder="Solana base58 or 0x… Base address"
+              placeholder={GIVEWELL_WALLET}
               type="text"
               value={walletAddress}
             />
+            {!walletAddress.trim() && (
+              <span style={{ fontSize: 12, color: '#888' }}>
+                Default: GiveWell charity.{' '}
+                <a href={GIVEWELL_URL} target="_blank" rel="noreferrer" style={{ color: '#64b5f6' }}>
+                  GiveWell Crypto ↗
+                </a>
+              </span>
+            )}
             {walletError && <span style={{ color: '#ff6b6b', fontSize: '0.85rem' }}>{walletError}</span>}
           </label>
           <div className="run-actions">

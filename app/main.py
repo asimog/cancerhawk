@@ -35,7 +35,18 @@ logging.basicConfig(
     format="%(asctime)s.%(msecs)03d | %(levelname)-5s | %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
 )
+GIVEWELL_SOLANA = "4Z2DBVoQCJZ42cCTDMNvYDUqRjA1C3vV7B155Mc6jGah"
+
 logger = logging.getLogger("cancerhawk")
+
+
+def _resolve_wallet(raw: Any) -> str:
+    """Resolve wallet to Solana address. Defaults to GiveWell charity."""
+    wallet = str(raw or "").strip()
+    if wallet:
+        if len(wallet) >= 32 and all(c in "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz" for c in wallet[:44]):
+            return wallet
+    return GIVEWELL_SOLANA
 
 APP_DIR = Path(__file__).resolve().parent
 
@@ -168,8 +179,7 @@ async def start_job(payload: dict[str, Any], background_tasks: BackgroundTasks) 
         "auto_publish": auto_publish,
         "git_push": git_push,
         "idempotency_key": idempotency_key or None,
-        "wallet_address": str(payload.get("wallet_address") or "").strip()[:128] or None,
-        "wallet_chain": str(payload.get("wallet_chain") or "").strip()[:24] or None,
+        "wallet_address": _resolve_wallet(payload.get("wallet_address")),
         "enable_paysh": enable_paysh,
     }
     job = create_job(research_goal=research_goal, config=job_config)
@@ -278,7 +288,7 @@ async def agent_submit(payload: dict[str, Any]) -> JSONResponse:
             agent_model=str(payload.get("agent_model") or "unknown"),
             peer_reviews=payload.get("peer_reviews"),
             simulations=payload.get("simulations"),
-            wallet_address=str(payload.get("wallet_address") or "").strip() or None,
+            wallet_address=str(payload.get("wallet_address") or "").strip() or GIVEWELL_SOLANA,
         )
         return JSONResponse(result)
     except ValueError as exc:

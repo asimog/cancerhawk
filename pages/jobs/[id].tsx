@@ -1,7 +1,7 @@
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { getBackendUrl, fetchWithTimeout } from '@/lib/blocks';
+import { getBackendUrl, fetchWithTimeout, GIVEWELL_WALLET, GIVEWELL_URL } from '@/lib/blocks';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Nav } from '@/components/nav';
 
@@ -34,10 +34,13 @@ type Job = {
 };
 
 function walletLabel(config?: Record<string, unknown>) {
-  const address = typeof config?.wallet_address === 'string' ? config.wallet_address.trim() : '';
-  if (!address) return null;
-  const chain = typeof config?.wallet_chain === 'string' ? config.wallet_chain.trim() : '';
-  return chain ? `${chain}: ${address}` : address;
+  const address = typeof config?.wallet_address === 'string' ? config.wallet_address.trim() : GIVEWELL_WALLET;
+  const isDefault = !config?.wallet_address || address === GIVEWELL_WALLET;
+  return {
+    address,
+    short: `${address.slice(0, 8)}...${address.slice(-6)}`,
+    isDefault,
+  };
 }
 
 export const getStaticPaths: GetStaticPaths = async () => ({
@@ -177,7 +180,17 @@ export default function JobDetailPage({ job, backendUrl }: { job: Job | null; ba
         </div>
         <h1 className="job-goal">{liveJob.research_goal}</h1>
         <p className="job-id">Job ID: {liveJob.job_id}</p>
-        {wallet && <p className="job-wallet">Submitter wallet: {wallet}</p>}
+        <p className="job-wallet">
+          Wallet: {wallet.short}
+          {wallet.isDefault && (
+            <span style={{ fontSize: '0.85rem', color: '#888' }}>
+              {' '}&mdash;{' '}
+              <a href={GIVEWELL_URL} target="_blank" rel="noreferrer" style={{ color: '#64b5f6' }}>
+                GiveWell charity (default)
+              </a>
+            </span>
+          )}
+        </p>
         {canStop && (
           <button className="button job-stop-button" disabled={stopping} onClick={stopJob} type="button">
             {stopping ? 'Stopping...' : 'Stop job'}
