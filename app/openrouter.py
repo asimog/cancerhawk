@@ -3,12 +3,15 @@
 API key is passed per-call (sourced from the browser session, never
 persisted server-side). Per-call usage is recorded into a TokenTracker
 when one is supplied via ``ctx``.
+
+Fallback chain: primary API key → fallback keys → openrouter/free model.
 """
 
 from __future__ import annotations
 
 import asyncio
 import json
+import logging
 import os
 import time
 from typing import Any, Awaitable, Callable
@@ -16,6 +19,8 @@ from typing import Any, Awaitable, Callable
 import httpx
 
 from .token_tracker import APICall, APIFailureLimitExceeded, MAX_FAILED_API_CALLS, TokenTracker
+
+logger = logging.getLogger("cancerhawk.openrouter")
 
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
 APP_REFERER = "http://localhost:8765"
@@ -29,6 +34,20 @@ TRANSIENT_EXCEPTIONS = (
     httpx.RemoteProtocolError,
     httpx.PoolTimeout,
 )
+
+def _load_fallback_keys() -> list[str]:
+    raw = os.environ.get("CANCERHAWK_FALLBACK_KEYS", "").strip()
+    if raw:
+        return [k.strip() for k in raw.split(",") if k.strip().startswith("sk-or-")]
+    fallback = os.environ.get("CANCERHAWK_FALLBACK_KEY", "").strip()
+    if fallback and fallback.startswith("sk-or-"):
+        return [fallback]
+    return []
+
+
+FALLBACK_API_KEYS = _load_fallback_keys()
+FALLBACK_MODEL = os.environ.get("CANCERHAWK_FALLBACK_MODEL", "openrouter/free").strip() or "openrouter/free"
+AUTH_FAILURE_STATUSES = {401, 402, 403}
 
 # Optional async hook the engines can install to push every API call to
 # the WebSocket as it happens. Signature: async (call: APICall) -> None.
@@ -98,6 +117,18 @@ def _should_retry(err: Exception | None, status_code: int | None) -> bool:
     return False
 
 
+def _is_auth_failure(status_code: int | None, err: Exception | None) -> bool:
+    if status_code in AUTH_FAILURE_STATUSES:
+        return True
+    if err is not None:
+        msg = str(err).lower()
+        if any(kw in msg for kw in ("credit", "insufficient", "balance", "quota",
+                                      "key limit", "limit exceeded", "unauthorized",
+                                      "invalid api key", "no api key")):
+            return True
+    return False
+
+
 async def _record_call(
     *,
     tracker: TokenTracker | None,
@@ -132,7 +163,7 @@ async def _record_call(
             pass
 
 
-async def chat(
+async def _try_single_key(
     api_key: str,
     model: str,
     messages: list[dict],
@@ -143,9 +174,8 @@ async def chat(
     role: str = "unknown",
     tracker: TokenTracker | None = None,
     on_call: CallEmitFn | None = None,
-) -> str:
-    if not api_key:
-        raise OpenRouterError("OpenRouter API key missing")
+) -> tuple[str | None, Exception | None, int | None]:
+    """Try a single API key+model combo. Returns (text, error, status_code)."""
     payload: dict[str, Any] = {
         "model": model,
         "messages": messages,
@@ -165,6 +195,7 @@ async def chat(
 
     client = _get_client()
     last_err: Exception | None = None
+    last_status: int | None = None
 
     for attempt in range(OPENROUTER_MAX_RETRIES + 1):
         if tracker is not None and MAX_FAILED_API_CALLS and tracker.failed_calls >= MAX_FAILED_API_CALLS:
@@ -209,18 +240,77 @@ async def chat(
         )
 
         if err is None:
-            return text or ""
+            return text, None, None
 
         last_err = err
+        last_status = status_code
+
+        if _is_auth_failure(status_code, err):
+            return None, err, status_code
+
         should_retry = attempt < OPENROUTER_MAX_RETRIES and _should_retry(err, status_code)
         if not should_retry:
             break
 
         await asyncio.sleep(_retry_delay(attempt + 1, response))
 
-    if isinstance(last_err, OpenRouterError):
-        raise last_err
-    raise OpenRouterError(f"{type(last_err).__name__}: {last_err}") from last_err
+    return None, last_err, last_status
+
+
+def _build_key_model_chain(api_key: str, model: str) -> list[tuple[str, str]]:
+    """Build fallback chain: [primary, fallback_keys..., primary+free_model]."""
+    chain = [(api_key, model)]
+    for fk in FALLBACK_API_KEYS:
+        if fk != api_key:
+            chain.append((fk, model))
+    if model != FALLBACK_MODEL:
+        chain.append((api_key, FALLBACK_MODEL))
+    return chain
+
+
+async def chat(
+    api_key: str,
+    model: str,
+    messages: list[dict],
+    *,
+    temperature: float = 0.7,
+    max_tokens: int | None = None,
+    response_format: dict | None = None,
+    role: str = "unknown",
+    tracker: TokenTracker | None = None,
+    on_call: CallEmitFn | None = None,
+) -> str:
+    if not api_key:
+        raise OpenRouterError("OpenRouter API key missing")
+
+    key_model_pairs = _build_key_model_chain(api_key, model)
+    errors: list[str] = []
+
+    for idx, (key, mdl) in enumerate(key_model_pairs):
+        label = "primary" if idx == 0 else f"fallback key #{idx}" if mdl == model else "free fallback"
+        logger.info("openrouter_try_key", extra={"label": label, "model": mdl, "role": role})
+        text, err, status = await _try_single_key(
+            key, mdl, messages,
+            temperature=temperature,
+            max_tokens=max_tokens,
+            response_format=response_format,
+            role=role,
+            tracker=tracker,
+            on_call=on_call,
+        )
+        if text is not None:
+            if idx > 0:
+                logger.info("openrouter_fallback_used", extra={"label": label, "model": mdl})
+            return text
+        if err is not None:
+            errors.append(f"{label}: {err}")
+        else:
+            errors.append(f"{label}: unknown error")
+
+    raise OpenRouterError(
+        f"All API keys exhausted for model '{model}'. "
+        f"Errors: {'; '.join(errors[-3:])}"
+    )
 
 
 async def chat_json(
@@ -286,7 +376,6 @@ async def chat_json(
 
 
 def _parse_and_unwrap(json_str: str) -> dict:
-    """Parse JSON string and unwrap arrays containing a single dict."""
     parsed = json.loads(json_str)
     if isinstance(parsed, list) and len(parsed) == 1 and isinstance(parsed[0], dict):
         return parsed[0]
@@ -296,19 +385,8 @@ def _parse_and_unwrap(json_str: str) -> dict:
 
 
 def _extract_json(text: str) -> dict:
-    """Extract a JSON object from an LLM response.
-
-    Handles:
-      - Markdown code fences (```json ... ```)
-      - Leading/trailing explanatory text
-      - Truncated JSON (response cut off by max_tokens) — repaired by
-        closing the open string (if any), then trimming back to the last
-        complete element and closing all unclosed containers.
-      - Arrays wrapping a single object: [{...}] is unwrapped to {...}.
-    """
     text = text.strip()
 
-    # Strip code fences.
     if text.startswith("```"):
         lines = text.splitlines()
         if lines and lines[0].startswith("```"):
@@ -317,7 +395,6 @@ def _extract_json(text: str) -> dict:
             lines = lines[:-1]
         text = "\n".join(lines).strip()
 
-    # Fast path: whole text valid JSON.
     try:
         return _parse_and_unwrap(text)
     except json.JSONDecodeError:
@@ -331,10 +408,6 @@ def _extract_json(text: str) -> dict:
 
     body = text[start:]
 
-    # Walk the body tracking string/escape state and the container stack.
-    # Record the index of the last complete element boundary (a `,` or
-    # an opening `{`/`[` at the current top level) so we can trim back to
-    # it if the response was truncated mid-value.
     in_string = False
     escape_next = False
     stack: list[str] = []
@@ -356,8 +429,6 @@ def _extract_json(text: str) -> dict:
             continue
         if ch in "{[":
             stack.append(ch)
-            # After an opener, a safe trim is just before this point — i.e.
-            # the empty container "{}" / "[]" is always a valid fallback.
             last_safe_trim = i + 1
             continue
         if ch in "}]":
@@ -368,7 +439,6 @@ def _extract_json(text: str) -> dict:
                 break
             continue
         if ch == "," and stack:
-            # End of a complete element at the current container level.
             last_safe_trim = i
 
     if balanced_end is not None:
@@ -378,20 +448,14 @@ def _extract_json(text: str) -> dict:
         except json.JSONDecodeError:
             pass
 
-    # Truncated. Build a repaired candidate.
     repaired = body
     if in_string:
-        repaired += '"'  # close the open string
-    # Trim trailing whitespace and dangling separators that follow the
-    # last completed element.
+        repaired += '"'
     if last_safe_trim is not None and last_safe_trim < len(repaired):
-        # Trim back to last complete element; this drops the partial
-        # (truncated) element entirely.
         repaired = repaired[:last_safe_trim].rstrip().rstrip(",:")
     else:
         repaired = repaired.rstrip().rstrip(",:=")
 
-    # Close remaining open containers in reverse order.
     closers = {"{": "}", "[": "]"}
     repaired += "".join(closers[c] for c in reversed(stack))
 

@@ -436,7 +436,7 @@ def _resolve_job_model(value: Any, role: str, user_provided_key: bool = False) -
     configured = str(value or "").strip()
     if user_provided_key and configured and configured in MODELS:
         return configured
-    return FREE_ROUTER_MODEL
+    return DEFAULT_MODELS.get(role, "deepseek/deepseek-v4-pro")
 
 
 def _parse_run_payload_or_400(cfg: dict[str, Any]) -> tuple[str, str, int, bool, bool, dict[str, str], bool]:
@@ -877,11 +877,11 @@ async def maybe_auto_generate() -> None:
 
     for i in range(n_to_generate):
         models = {
-            "submitter": os.environ.get("HERMES_MODEL_SUBMITTER", "openrouter/free"),
-            "validator": os.environ.get("HERMES_MODEL_VALIDATOR", "openrouter/free"),
-            "compiler": os.environ.get("HERMES_MODEL_COMPILER", "openrouter/free"),
-            "archetype": os.environ.get("HERMES_MODEL_ARCHETYPE", "openrouter/free"),
-            "topic_deriver": os.environ.get("HERMES_MODEL_TOPIC_DERIVER", "openrouter/free"),
+            "submitter": os.environ.get("HERMES_MODEL_SUBMITTER", "deepseek/deepseek-v4-pro"),
+            "validator": os.environ.get("HERMES_MODEL_VALIDATOR", "deepseek/deepseek-v4-pro"),
+            "compiler": os.environ.get("HERMES_MODEL_COMPILER", "deepseek/deepseek-v4-pro"),
+            "archetype": os.environ.get("HERMES_MODEL_ARCHETYPE", "deepseek/deepseek-v4-pro"),
+            "topic_deriver": os.environ.get("HERMES_MODEL_TOPIC_DERIVER", "deepseek/deepseek-v4-pro"),
         }
         n_submitters = int(os.environ.get("HERMES_N_SUBMITTERS", "3"))
         goal = goals[i % len(goals)]
@@ -980,11 +980,11 @@ PAID_MODELS = [
 MODELS = PAID_MODELS + [FREE_ROUTER_MODEL]
 
 DEFAULT_MODELS = {
-    "submitter": FREE_ROUTER_MODEL,
-    "validator": FREE_ROUTER_MODEL,
-    "compiler": FREE_ROUTER_MODEL,
-    "archetype": FREE_ROUTER_MODEL,
-    "topic_deriver": FREE_ROUTER_MODEL,
+    "submitter": "deepseek/deepseek-v4-pro",
+    "validator": "deepseek/deepseek-v4-pro",
+    "compiler": "deepseek/deepseek-v4-pro",
+    "archetype": "deepseek/deepseek-v4-pro",
+    "topic_deriver": "deepseek/deepseek-v4-pro",
 }
 
 
