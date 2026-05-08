@@ -7,7 +7,8 @@ export function Nav() {
       <Link href="/current-block">Current Block</Link>
       <Link href="/previous-blocks">Previous Blocks</Link>
       <Link href="/run-research">Run Research</Link>
-      <Link href="/music">Music</Link>
+      <Link href="/autonomous-logs">Autonomous Logs</Link>
+      <Link href="/jobs">Job Feed</Link>
     </nav>
   );
 }

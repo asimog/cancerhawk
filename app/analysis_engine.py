@@ -28,12 +28,14 @@ EmitFn = Callable[[str, str, dict | None], Awaitable[None]]
 
 
 PRICE_WEIGHTS = {
-    "clinical_viability": 0.25,
-    "regulatory_risk": -0.20,  # negated below
-    "market_potential": 0.20,
+    "clinical_viability": 0.20,
+    "regulatory_risk": -0.15,  # negated below
+    "market_potential": 0.15,
     "patient_impact": 0.15,
+    "impact_to_society": 0.15,
     "novelty": 0.10,
-    "falsifiability": 0.10,
+    "correctness": 0.10,
+    "falsifiability": 0.05,
 }
 
 

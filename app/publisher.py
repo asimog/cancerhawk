@@ -186,6 +186,12 @@ def _render_peer_reviews(peer_reviews: list[dict]) -> str:
     if not peer_reviews:
         return '<p class="muted">No peer reviews available.</p>'
 
+    def _rec(r: dict) -> str:
+        raw = r.get("recommendation", "major_revision")
+        if isinstance(raw, list):
+            raw = raw[0] if raw else "major_revision"
+        return str(raw).lower()
+
     # Compute acceptance probability from individual reviews
     accept_weight = {
         "accept": 1.0,
@@ -196,7 +202,7 @@ def _render_peer_reviews(peer_reviews: list[dict]) -> str:
     conf_sum = 0.0
     weighted_sum = 0.0
     for r in peer_reviews:
-        rec = r.get("recommendation", "major_revision").lower()
+        rec = _rec(r)
         conf = _safe_float(r.get("confidence"), 0.7, lower=0.0, upper=1.0)
         weight = accept_weight.get(rec, 0.3)
         weighted_sum += weight * conf
@@ -214,7 +220,7 @@ def _render_peer_reviews(peer_reviews: list[dict]) -> str:
     reviews_html = []
     for idx, r in enumerate(peer_reviews):
         archetype_name = html.escape(r.get("archetype_name", "Unknown"))
-        rec = r.get("recommendation", "major_revision").lower()
+        rec = _rec(r)
         # CSS class uses the first word (accept/minor/major/reject)
         rec_class = rec.split("_")[0]
         confidence = _safe_float(r.get("confidence"), 0.7, lower=0.0, upper=1.0)
@@ -587,14 +593,16 @@ def _archetype_table(archetypes: list[dict]) -> str:
             f'<td>{_score_text(scores.get("regulatory_risk"))}</td>'
             f'<td>{_score_text(scores.get("market_potential"))}</td>'
             f'<td>{_score_text(scores.get("patient_impact"))}</td>'
+            f'<td>{_score_text(scores.get("impact_to_society"))}</td>'
+            f'<td>{_score_text(scores.get("correctness"))}</td>'
             f'<td>{_score_text(scores.get("novelty"))}</td>'
             f'<td>{_score_text(scores.get("falsifiability"))}</td>'
             f'<td class="verdict">{verdict}</td></tr>'
         )
     return (
         '<table class="archetype"><thead><tr>'
-        "<th>Archetype</th><th>Clin.Viab</th><th>Reg.Risk</th><th>Market</th>"
-        "<th>Patient</th><th>Novelty</th><th>Falsif.</th><th>Verdict</th>"
+        "<th>Archetype</th><th>Clin</th><th>RegRisk</th><th>Market</th>"
+        "<th>Patient</th><th>Society</th><th>Correct</th><th>Novelty</th><th>Falsif.</th><th>Verdict</th>"
         f"</tr></thead><tbody>{''.join(rows)}</tbody></table>"
     )
 

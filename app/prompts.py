@@ -244,11 +244,14 @@ def archetype_prompt(archetype: dict, paper_text: str) -> list[dict]:
                 "{\n"
                 '  "scores": { "clinical_viability": 1-10, "regulatory_risk": 1-10,\n'
                 '              "market_potential": 1-10, "patient_impact": 1-10,\n'
-                '              "novelty": 1-10, "falsifiability": 1-10 },\n'
+                '              "novelty": 1-10, "falsifiability": 1-10,\n'
+                '              "impact_to_society": 1-10, "correctness": 1-10 },\n'
                 '  "verdict": "<200 word verdict in your archetype voice>",\n'
                 '  "would_move_price": "<one sentence on what catalyst would shift '
                 'the prediction-market price for this paper, up or down>"\n'
                 "}\n"
+                '"impact_to_society" measures how profoundly this research could change human lives if successful.\n'
+                '"correctness" measures the scientific accuracy and methodological soundness of the claims.\n'
                 "Score honestly from your lens — adversarial archetypes should be adversarial.\n\n"
                 "PAPER:\n---\n" + paper_text[:10000] + "\n---"
             ),

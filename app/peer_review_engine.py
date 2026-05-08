@@ -194,8 +194,11 @@ async def _review_one(
         on_call=on_call,
     )
 
-    # Extract fields with defaults
-    rec = response.get("recommendation", "major_revision").lower()
+    # Extract fields with defaults — unwrap list-typed values from LLMs
+    rec_raw = response.get("recommendation", "major_revision")
+    if isinstance(rec_raw, list):
+        rec_raw = rec_raw[0] if rec_raw else "major_revision"
+    rec = str(rec_raw).lower()
     confidence = max(0.0, min(1.0, float(response.get("confidence", 0.7))))
     summary = response.get("summary", "No summary provided.")
 

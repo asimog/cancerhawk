@@ -27,7 +27,7 @@ def test_models_endpoint():
     assert "defaults" in data
     assert isinstance(data["models"], list)
     assert isinstance(data["defaults"], dict)
-    assert data["models"] == ["openrouter/free"]
+    assert "openrouter/free" in data["models"]
     assert data["defaults"]["validator"] == "openrouter/free"
 
 

@@ -364,9 +364,10 @@ def _parse_bool(value: Any, default: bool) -> bool:
 
 
 def _parse_run_payload(cfg: dict[str, Any]) -> tuple[str, str, int, bool, bool, dict[str, str]]:
-    api_key = (cfg.get("api_key") or "").strip()
-    if not api_key:
-        api_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
+    user_api_key = (cfg.get("api_key") or "").strip()
+    server_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
+    user_provided_key = bool(user_api_key and user_api_key != server_key)
+    api_key = user_api_key or server_key
     research_goal = (cfg.get("research_goal") or "").strip()
     n_submitters = int(cfg.get("n_submitters") or 3)
     if n_submitters < 1 or n_submitters > 8:
@@ -374,29 +375,19 @@ def _parse_run_payload(cfg: dict[str, Any]) -> tuple[str, str, int, bool, bool, 
     auto_publish = _parse_bool(cfg.get("auto_publish"), True)
     git_push = _parse_bool(cfg.get("git_push"), True)
     models_cfg = {
-        "submitter": _resolve_job_model(cfg.get("submitter"), "submitter"),
-        "validator": _resolve_job_model(cfg.get("validator"), "validator"),
-        "compiler": _resolve_job_model(cfg.get("compiler"), "compiler"),
-        "archetype": _resolve_job_model(cfg.get("archetype"), "archetype"),
-        "topic_deriver": _resolve_job_model(cfg.get("topic_deriver"), "topic_deriver"),
+        "submitter": _resolve_job_model(cfg.get("submitter"), "submitter", user_provided_key),
+        "validator": _resolve_job_model(cfg.get("validator"), "validator", user_provided_key),
+        "compiler": _resolve_job_model(cfg.get("compiler"), "compiler", user_provided_key),
+        "archetype": _resolve_job_model(cfg.get("archetype"), "archetype", user_provided_key),
+        "topic_deriver": _resolve_job_model(cfg.get("topic_deriver"), "topic_deriver", user_provided_key),
     }
     return api_key, research_goal, n_submitters, auto_publish, git_push, models_cfg
 
 
-def _resolve_job_model(value: Any, role: str) -> str:
-    """Resolve public job starts to the free OpenRouter auto-router.
-
-    The browser can have stale saved role preferences from older dropdowns.
-    For user-started jobs we keep the interface stable by routing every role
-    through OpenRouter's free router instead of pinning a provider model like
-    qwen/qwen3-coder:free at job creation time.
-    """
+def _resolve_job_model(value: Any, role: str, user_provided_key: bool = False) -> str:
     configured = str(value or "").strip()
-    if configured and configured != FREE_ROUTER_MODEL:
-        logger.info(
-            "model_normalized_to_free_router",
-            extra={"role": role, "configured_model": configured, "resolved_model": FREE_ROUTER_MODEL},
-        )
+    if user_provided_key and configured and configured in MODELS:
+        return configured
     return FREE_ROUTER_MODEL
 
 
@@ -849,7 +840,18 @@ async def shutdown() -> None:
 # specific provider model at the beginning of a job, so a rate-limited free
 # backend such as qwen/qwen3-coder:free does not become the job contract.
 FREE_ROUTER_MODEL = "openrouter/free"
-MODELS = [FREE_ROUTER_MODEL]
+PAID_MODELS = [
+    "deepseek/deepseek-v4-pro",
+    "anthropic/claude-sonnet-4-20250514",
+    "google/gemini-2.5-pro",
+    "openai/gpt-4.1",
+    "openai/o3",
+    "anthropic/claude-3.5-haiku",
+    "deepseek/deepseek-chat",
+    "google/gemini-2.0-flash",
+    "meta-llama/llama-4-maverick",
+]
+MODELS = PAID_MODELS + [FREE_ROUTER_MODEL]
 
 DEFAULT_MODELS = {
     "submitter": FREE_ROUTER_MODEL,
