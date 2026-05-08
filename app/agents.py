@@ -247,7 +247,7 @@ def submit_paper(
         "submission_id": submission_id,
         "message": f"Paper submitted! Your submission ID is {submission_id}. "
                    f"Results will be scored by the CancerHawk engine. "
-                   f"Prize: {PRIZE_AMOUNT_USDC} USDC for the highest market-price synthesis.",
+                   f"Highest-scoring eligible paper is recorded for {PRIZE_AMOUNT_USDC} USDC prize review.",
         "leaderboard_position": len(leaderboard),
         "total_submissions": len(leaderboard),
         "prize": f"{PRIZE_AMOUNT_USDC} USDC",
