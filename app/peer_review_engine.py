@@ -258,7 +258,7 @@ def _synthesize(reviews: list[PeerReview]) -> ConsolidatedReview:
 
     # Major concerns: any criticism mentioned by ≥3 reviewers
     # Simple keyword-based aggregation for demo
-    all_criticisms = [c.lower() for r in reviews for c in r.criticisms]
+    all_criticisms = [str(c).lower() for r in reviews for c in r.criticisms]
     # This is a placeholder — a real implementation would cluster semantically
     major_concerns = []
     # (We'll skip the clustering logic for now; populate from top issues)
@@ -287,7 +287,7 @@ def _synthesize(reviews: list[PeerReview]) -> ConsolidatedReview:
     fix_counts: dict[str, int] = {}
     for r in reviews:
         for fix in r.required_fixes:
-            fix_lower = fix.lower().strip()
+            fix_lower = str(fix).lower().strip()
             fix_counts[fix_lower] = fix_counts.get(fix_lower, 0) + 1
     revision_priorities = sorted(
         [fix for fix, count in fix_counts.items() if count >= 2],
