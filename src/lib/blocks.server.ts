@@ -114,12 +114,16 @@ function remoteBlockToBundle(payload: Record<string, any>): BlockBundle | null {
 async function getRemoteBlocks(): Promise<BlockBundle[]> {
   const jobsResponse = await fetchBackendJson<{ jobs?: Array<Record<string, any>> }>('/api/jobs?limit=100');
   const jobs = Array.isArray(jobsResponse?.jobs) ? jobsResponse.jobs : [];
-  const blockNumbers = Array.from(new Set(
+  let blockNumbers = Array.from(new Set(
     jobs
       .filter((job) => job?.status === 'completed' || job?.status === 'published')
       .map(blockNumberFromJob)
       .filter((number): number is number => typeof number === 'number'),
   )).sort((a, b) => b - a);
+
+  if (!blockNumbers.length) {
+    blockNumbers = Array.from({ length: 50 }, (_, index) => index + 1);
+  }
 
   const blocks = await Promise.all(
     blockNumbers.map(async (number) => {
