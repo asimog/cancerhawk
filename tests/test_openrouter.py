@@ -136,6 +136,35 @@ async def test_chat_records_failed_retry_attempts(monkeypatch):
 
 
 @pytest.mark.asyncio
+async def test_chat_retries_empty_completion_content(monkeypatch):
+    monkeypatch.setattr(openrouter, "OPENROUTER_MAX_RETRIES", 1)
+    monkeypatch.setattr(openrouter, "OPENROUTER_RETRY_BASE_SECONDS", 0)
+    call_count = 0
+
+    async def post_side_effect(*args, **kwargs):
+        nonlocal call_count
+        call_count += 1
+        mock = MagicMock()
+        mock.status_code = 200
+        mock.headers = {}
+        mock.json.return_value = {
+            "choices": [{"message": {"content": None if call_count == 1 else "Recovered"}}],
+            "usage": {"prompt_tokens": 1, "completion_tokens": 2},
+        }
+        return mock
+
+    with patch("app.openrouter._get_client") as get_client:
+        client = AsyncMock()
+        client.post.side_effect = post_side_effect
+        get_client.return_value = client
+
+        result = await chat("k", "m", [])
+
+    assert result == "Recovered"
+    assert call_count == 2
+
+
+@pytest.mark.asyncio
 async def test_chat_records_to_tracker():
     from app.token_tracker import TokenTracker
 

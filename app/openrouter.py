@@ -114,6 +114,8 @@ def _should_retry(err: Exception | None, status_code: int | None) -> bool:
         return True
     if isinstance(err, (KeyError, IndexError, json.JSONDecodeError)):
         return True
+    if isinstance(err, OpenRouterError) and "empty completion content" in str(err).lower():
+        return True
     return False
 
 
@@ -215,6 +217,8 @@ async def _try_single_key(
                 raise OpenRouterError(f"HTTP {response.status_code}: {response.text[:500]}")
             response_data = response.json()
             text = response_data["choices"][0]["message"]["content"]
+            if not isinstance(text, str) or not text.strip():
+                raise OpenRouterError("empty completion content")
         except (httpx.HTTPError, KeyError, IndexError, json.JSONDecodeError, OpenRouterError) as exc:
             err = exc
         except Exception as exc:
