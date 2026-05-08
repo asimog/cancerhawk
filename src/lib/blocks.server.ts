@@ -88,6 +88,8 @@ function remoteBlockToBundle(payload: Record<string, any>): BlockBundle | null {
   const meta = {
     ...(payload.meta || {}),
     block: number,
+    title: payload.meta?.title ?? payload.meta?.paper_title ?? '',
+    research_goal: payload.meta?.research_goal ?? '',
     market_price: Number(
       payload.meta?.market_price ??
       payload.analysis?.market_price ??
@@ -132,7 +134,9 @@ async function getRemoteBlocks(): Promise<BlockBundle[]> {
     }),
   );
 
-  return blocks.filter((block): block is BlockBundle => Boolean(block));
+  return blocks
+    .filter((block): block is BlockBundle => Boolean(block))
+    .sort((a, b) => b.number - a.number);
 }
 
 export async function getLiveBlocks(): Promise<BlockBundle[]> {
