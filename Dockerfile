@@ -11,23 +11,18 @@ RUN pip install --no-cache-dir --upgrade pip
 COPY app/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Install pay CLI for x402 payment handling.
-# The install.sh script downloads a prebuilt binary for Linux amd64/arm64.
+# Install pay CLI. The install.sh script may need to be run differently.
+# Nix or cargo-based approaches below. Prefer the direct binary if possible.
 RUN curl -fsSL https://pay.sh/install.sh -o /tmp/install-pay.sh \
     && sh /tmp/install-pay.sh \
-    && find / -name pay -type f 2>/dev/null | head -5 \
-    && (cp /root/.local/bin/pay /usr/local/bin/pay 2>/dev/null \
-        || cp /root/.cargo/bin/pay /usr/local/bin/pay 2>/dev/null \
-        || cp /usr/local/cargo/bin/pay /usr/local/bin/pay 2>/dev/null \
-        || echo "WARNING: pay binary not found after install") \
-    && chmod +x /usr/local/bin/pay 2>/dev/null || true \
-    && echo "pay CLI available: $(which pay 2>/dev/null || echo 'not found')" \
-    && pay --version 2>/dev/null || echo "pay version check failed"
+    && found=$(find / -name pay -type f -executable 2>/dev/null | head -1) \
+    && if [ -n "$found" ]; then cp "$found" /usr/local/bin/pay && chmod +x /usr/local/bin/pay; fi \
+    && (which pay && pay --version) || echo "pay CLI install failed — enrichment disabled"
 
 COPY app/ app/
 COPY backend/ backend/
 COPY cancerhawk-provider.yml .
 
-EXPOSE 8765 1402
+EXPOSE 8765
 
-CMD sh -c 'python -m app.main'
+CMD ["python", "-m", "app.main"]
