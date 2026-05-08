@@ -1,0 +1,19 @@
+{
+  "block": 29,
+  "title": "Hantavirus Superspreader Risk and Prevention Strategies",
+  "research_goal": "Research the hantavirus. Possibily of it becoming a super spreader and how we can prevent it.",
+  "models": {
+    "submitter": "openrouter/free",
+    "validator": "openrouter/free",
+    "compiler": "openrouter/free",
+    "archetype": "openrouter/free",
+    "topic_deriver": "openrouter/free"
+  },
+  "timestamp": "2026-05-08T00:32:11.226396+00:00",
+  "section_count": 9,
+  "accepted_submissions": 3,
+  "rejection_count": 0,
+  "market_price": 0.48857142857142855,
+  "has_peer_review": true,
+  "has_simulations": true
+}
