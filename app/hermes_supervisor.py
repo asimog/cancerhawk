@@ -24,6 +24,7 @@ from .peer_review_engine import (
 from .prompts import topic_deriver_prompt
 from .publisher import hydrate_results_from_github, load_previous_block_context, publish_block, try_git_publish, stage_block
 from .simulation_engine import generate_html5_simulations
+from .moltbook import post_block_race_invite, post_research_result
 from .token_tracker import APICall, APIFailureLimitExceeded, TokenTracker
 
 logger = logging.getLogger("cancerhawk.hermes")
@@ -238,6 +239,30 @@ class HermesSupervisor:
                 git_status = try_git_publish(publish_meta["block"])
                 await self.emit("git", git_status, {"status": git_status})
             logger.info("stage_end", extra={"stage": "publish", "supervisor": "hermes"})
+
+        # Post block results to Moltbook
+        try:
+            block_n = publish_meta.get("block") if publish_meta else None
+            result_url = f"/results/block-{block_n}/paper.html" if block_n else None
+            await self.emit("moltbook", "Hermes posting to Moltbook...", None)
+            await post_research_result(
+                title=f"CancerHawk Block {block_n or '?'}: {paper.title}",
+                paper_title=paper.title,
+                block=block_n or 0,
+                market_price=analysis.market_price,
+                research_goal=cfg.research_goal,
+                result_url=result_url,
+            )
+            await post_block_race_invite(
+                block=block_n or 0,
+                paper_title=paper.title,
+                market_price=analysis.market_price,
+                research_goal=cfg.research_goal,
+            )
+            await self.emit("moltbook", "Hermes posted block results to Moltbook", None)
+        except Exception as exc:
+            logger.error("moltbook_post_error", extra={"error": str(exc)})
+            await self.emit("moltbook", f"Moltbook post failed: {exc}", None)
 
         stats = tracker.stats()
         block_n = publish_meta.get("block") if publish_meta else None

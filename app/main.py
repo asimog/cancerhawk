@@ -44,6 +44,7 @@ from .hermes_supervisor import HermesRunConfig, HermesSupervisor  # noqa: E402
 from .openrouter import close as close_openrouter  # noqa: E402
 from .jobs import append_job_event, create_job, find_job_by_idempotency_key, get_job, job_store_info, list_jobs, update_job_status  # noqa: E402
 from .publisher import publish_from_staging, STAGING_DIR  # noqa: E402
+from .agents import estimate_run_cost, get_leaderboard, get_prompts, parse_agent_run, submit_paper  # noqa: E402
 
 HOST = os.environ.get("HOST", "0.0.0.0")
 PORT = int(os.environ.get("PORT", "8765"))
@@ -111,7 +112,6 @@ async def hermes_status() -> JSONResponse:
         "supervises": ["moto", "analysis", "miroshark_peer_review", "simulation_generation", "repo_publish"],
         "github_repo": os.environ.get("GITHUB_REPO", ""),
         "github_branch": os.environ.get("GITHUB_BRANCH", "master"),
-        "has_github_token": bool(os.environ.get("GITHUB_TOKEN", "").strip()),
         "commit_paths": [p.strip() for p in os.environ.get("HERMES_COMMIT_PATHS", "results").split(",") if p.strip()],
         "vercel_deploy_hook": bool(os.environ.get("VERCEL_DEPLOY_HOOK_URL", "").strip()),
         "job_store": job_store_info(),
@@ -231,6 +231,114 @@ async def block_bundle(block_number: int) -> JSONResponse:
     })
 
 
+# ---------------------------------------------------------------------------
+# Agent API — External AI agents can submit papers, run pipelines, check costs
+# ---------------------------------------------------------------------------
+
+@app.get("/api/agents/prompts")
+async def agent_prompts() -> JSONResponse:
+    """Expose prompt templates for agents running papers locally (BYOK)."""
+    return JSONResponse(get_prompts())
+
+
+@app.post("/api/agents/cost")
+async def agent_cost(payload: dict[str, Any]) -> JSONResponse:
+    """Estimate OpenRouter cost for a run. Used by pay.sh/x402 agents."""
+    model = str(payload.get("model") or "openrouter/free")
+    n_submitters = int(payload.get("n_submitters") or 3)
+    return JSONResponse(estimate_run_cost(model=model, n_submitters=n_submitters))
+
+
+@app.post("/api/agents/submit")
+async def agent_submit(payload: dict[str, Any]) -> JSONResponse:
+    """Accept a paper submission from an external agent."""
+    try:
+        agent_name = str(payload.get("agent_name") or "").strip()
+        if not agent_name:
+            raise ValueError("agent_name is required")
+        paper_title = str(payload.get("paper_title") or "").strip()
+        if not paper_title:
+            raise ValueError("paper_title is required")
+        paper_content = str(payload.get("paper_content") or "").strip()
+        if not paper_content:
+            raise ValueError("paper_content is required")
+        research_goal = str(payload.get("research_goal") or "").strip()
+        if not research_goal:
+            raise ValueError("research_goal is required")
+
+        result = submit_paper(
+            agent_name=agent_name,
+            paper_title=paper_title,
+            paper_content=paper_content,
+            research_goal=research_goal,
+            agent_model=str(payload.get("agent_model") or "unknown"),
+            peer_reviews=payload.get("peer_reviews"),
+            simulations=payload.get("simulations"),
+            wallet_address=str(payload.get("wallet_address") or "").strip() or None,
+        )
+        return JSONResponse(result)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+@app.post("/api/agents/run")
+async def agent_run(payload: dict[str, Any], background_tasks: BackgroundTasks) -> JSONResponse:
+    """Run the full CancerHawk pipeline with the agent's OpenRouter key."""
+    try:
+        api_key, research_goal, model, n_submitters, agent_name = parse_agent_run(payload)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    models_cfg = {
+        "submitter": model,
+        "validator": model,
+        "compiler": model,
+        "archetype": model,
+        "topic_deriver": model,
+    }
+
+    job_config = {
+        "models": models_cfg,
+        "n_submitters": n_submitters,
+        "auto_publish": True,
+        "git_push": False,
+        "agent_name": agent_name,
+    }
+    job = create_job(research_goal=research_goal, config=job_config)
+    job_id = job["job_id"]
+    update_job_status(job_id, "running")
+    append_job_event(
+        job_id, stage="start",
+        message=f"Agent run · {agent_name or 'anonymous'} · goal: {research_goal[:120]}",
+        data={"models": models_cfg, "job_id": job_id, "agent_name": agent_name},
+    )
+
+    background_tasks.add_task(
+        _run_job_background, job_id, api_key, research_goal,
+        n_submitters, True, False, models_cfg,
+    )
+
+    job = get_job(job_id) or job
+    logger.info("agent_run_started", extra={"job_id": job_id, "agent": agent_name, "goal": research_goal[:120]})
+    return JSONResponse({
+        "job": job,
+        "job_id": job_id,
+        "message": f"Pipeline started. Track progress at /api/jobs/{job_id}",
+        "cost_estimate": estimate_run_cost(model=model, n_submitters=n_submitters),
+    })
+
+
+@app.get("/api/agents/leaderboard")
+async def agent_leaderboard() -> JSONResponse:
+    """Return the list of agent paper submissions."""
+    return JSONResponse({
+        "submissions": get_leaderboard(),
+        "total": len(get_leaderboard()),
+        "prize": "0.01 USDC",
+        "note": "Highest market-price synthesis wins. Submissions are peer-reviewed by CancerHawk archetype engines.",
+    })
+
+
 @app.websocket("/ws/run")
 async def ws_run(ws: WebSocket) -> None:
     await _ws_hermes_run(ws)
@@ -303,6 +411,7 @@ def _parse_run_payload_or_400(cfg: dict[str, Any]) -> tuple[str, str, int, bool,
         raise HTTPException(status_code=400, detail="Research goal required")
     if len(research_goal) > 1000:
         raise HTTPException(status_code=400, detail="Research goal must be at most 1000 characters")
+    research_goal = _sanitize_goal(research_goal)
     return api_key, research_goal, n_submitters, auto_publish, git_push, models_cfg
 
 
@@ -419,6 +528,15 @@ async def _run_job_background(
         logger.info("job_run_ended", extra={"job_id": job_id, "run_elapsed_seconds": round(time.time() - run_start, 2)})
 
 
+def _sanitize_goal(goal: str) -> str:
+    """Strip HTML tags, null bytes, and control characters from research goals."""
+    import re
+    goal = goal.replace("\x00", "")
+    goal = re.sub(r"<[^>]*>", "", goal)
+    goal = re.sub(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f-\x9f]", "", goal)
+    return goal.strip()
+
+
 async def _ws_hermes_run(ws: WebSocket) -> None:
     await ws.accept()
     run_start = time.time()
@@ -453,6 +571,8 @@ async def _ws_hermes_run(ws: WebSocket) -> None:
         await ws.send_text(json.dumps({"stage": "error", "message": "Research goal must be at most 1000 characters"}))
         await ws.close()
         return
+
+    research_goal = _sanitize_goal(research_goal)
 
     # Create a job record for this run
     job_config = {"models": models_cfg, "n_submitters": n_submitters, "auto_publish": auto_publish, "git_push": git_push}
