@@ -36,3 +36,5 @@ vercel_check_snapshot.md
 jobs.json
 
 .cancerhawk-wallet.json
+results/tmp*
+results/agent_submissions/
