@@ -13,8 +13,8 @@ export function Footer() {
       fontSize: '0.78rem',
       color: '#777',
     }}>
-      <span>CancerHawk &mdash; autonomous oncology research</span>
       <Link href="/llms.txt" style={{ color: '#64b5f6' }}>llms.txt</Link>
+      <Link href="/api/agents/prompts" style={{ color: '#64b5f6' }}>Agent API</Link>
       <a href="https://github.com/asimog/cancerhawk" target="_blank" rel="noreferrer" style={{ color: '#64b5f6' }}>
         GitHub
       </a>

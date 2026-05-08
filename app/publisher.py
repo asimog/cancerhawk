@@ -1024,16 +1024,23 @@ def _copy_commit_paths(source_root: Path, target_root: Path, paths: list[str]) -
 
 def _try_git_publish_via_clone(
     *,
-    block_n: int,
-    token: str,
-    repo: str,
-    branch: str,
-    env: dict[str, str],
-    paths: list[str],
+    block_n: int = 0,
+    token: str = "",
+    repo: str = "",
+    branch: str = "master",
+    env: dict[str, str] | None = None,
+    paths: list[str] | None = None,
+    block_numbers: list[int] | None = None,
 ) -> str:
     """Clone the GitHub repo in Railway, copy generated edits, commit, push."""
     if not token or not repo:
         return "git failed: GITHUB_TOKEN and GITHUB_REPO are required on Railway"
+    env = env or {}
+    paths = paths or _commit_paths()
+    numbers = block_numbers or ([block_n] if block_n else [])
+    if not numbers:
+        return "no blocks to push"
+    msg = f"publish: blocks {','.join(map(str, numbers))}" if len(numbers) > 1 else f"publish: block {numbers[0]}"
 
     with tempfile.TemporaryDirectory(prefix="cancerhawk-hermes-") as tmp:
         clone_root = Path(tmp) / "repo"
@@ -1047,16 +1054,15 @@ def _try_git_publish_via_clone(
         _copy_commit_paths(REPO_ROOT, clone_root, paths)
         _run_git(["git", "add", "-f", *paths], clone_root, env)
         try:
-            _run_git(["git", "commit", "-m", f"publish: block {block_n}"], clone_root, env)
+            _run_git(["git", "commit", "-m", msg], clone_root, env)
         except subprocess.CalledProcessError as exc:
             stderr = (exc.stderr or b"").decode(errors="replace").replace(token, "***")
             stdout = (exc.stdout or b"").decode(errors="replace").replace(token, "***")
             if "nothing to commit" in stderr or "nothing to commit" in stdout:
-                return f"no changes for block {block_n}"
+                return f"no changes for blocks {numbers}"
             raise
         _run_git(["git", "push", clone_url, f"HEAD:{branch}"], clone_root, env)
-        deploy_status = trigger_website_update(block_n)
-        return f"hermes cloned {repo}, committed {', '.join(paths)}, pushed block {block_n}; {deploy_status}"
+        return f"hermes cloned {repo}, committed {', '.join(paths)}, pushed blocks {numbers}"
 
 
 def hydrate_results_from_github() -> str:
@@ -1095,6 +1101,54 @@ def hydrate_results_from_github() -> str:
         return f"github hydration failed: {stderr[:200] if stderr else exc}"
     except FileNotFoundError:
         return "github hydration failed: git not available"
+
+
+def try_git_publish_for_blocks(block_numbers: list[int]) -> str:
+    """Commit and push multiple blocks in a single batch."""
+    if not block_numbers:
+        return "no blocks to push"
+    numbers = sorted(block_numbers)
+    msg = f"publish: blocks {','.join(map(str, numbers))}"
+    token = os.environ.get("GITHUB_TOKEN", "").strip()
+    repo = os.environ.get("GITHUB_REPO", "").strip()
+    branch = os.environ.get("GITHUB_BRANCH", "master").strip() or "master"
+    committer_name = os.environ.get("GIT_COMMITTER_NAME", "hermes-agent")
+    committer_email = os.environ.get("GIT_COMMITTER_EMAIL", "hermes@cancerhawk.local")
+    paths = _commit_paths()
+
+    env = os.environ.copy()
+    env["GIT_TERMINAL_PROMPT"] = "0"
+    env.setdefault("GIT_AUTHOR_NAME", committer_name)
+    env.setdefault("GIT_AUTHOR_EMAIL", committer_email)
+    env.setdefault("GIT_COMMITTER_NAME", committer_name)
+    env.setdefault("GIT_COMMITTER_EMAIL", committer_email)
+
+    try:
+        if not (REPO_ROOT / ".git").exists():
+            return _try_git_publish_via_clone(
+                token=token, repo=repo, branch=branch, env=env, paths=paths, block_numbers=numbers,
+            )
+        _run_git(["git", "add", "-f", *paths], REPO_ROOT, env)
+        try:
+            _run_git(["git", "commit", "-m", msg], REPO_ROOT, env)
+        except subprocess.CalledProcessError as exc:
+            stderr = (exc.stderr or b"").decode(errors="replace")
+            if "nothing to commit" in stderr or "no changes added" in stderr:
+                return f"no changes for blocks {numbers}"
+            raise
+        if token and repo:
+            push_url = f"https://x-access-token:{token}@github.com/{repo}.git"
+            _run_git(["git", "push", push_url, f"HEAD:{branch}"], REPO_ROOT, env)
+        else:
+            _run_git(["git", "push"], REPO_ROOT, env)
+        return f"pushed blocks {numbers}"
+    except subprocess.CalledProcessError as exc:
+        stderr = (exc.stderr or b"").decode(errors="replace")
+        if token:
+            stderr = stderr.replace(token, "***")
+        return f"git failed: {stderr[:200] if stderr else exc}"
+    except FileNotFoundError:
+        return "git not available"
 
 
 def try_git_publish(block_n: int) -> str:
@@ -1298,15 +1352,22 @@ def publish_from_staging(job_id: str) -> int:
     )
     block_n = publish_meta["block"]
 
-    # Git push if needed
-    if git_push:
-        try:
-            git_status = try_git_publish(block_n)
-            logger = logging.getLogger("cancerhawk.worker")
-            logger.info("git_publish_complete", extra={"status": git_status})
-        except Exception as e:
-            logger = logging.getLogger("cancerhawk.worker")
-            logger.error("git_publish_failed", extra={"block": block_n, "error": str(e)})
+    # Save block to database (batch-pushed to GitHub once daily)
+    try:
+        block_html = (Path(publish_meta["output_dir"]) / "paper.html").read_text(encoding="utf-8") if publish_meta.get("output_dir") else ""
+        block_md = (Path(publish_meta["output_dir"]) / "paper.md").read_text(encoding="utf-8") if publish_meta.get("output_dir") else ""
+        sims_html = (Path(publish_meta["output_dir"]) / "simulations.html").read_text(encoding="utf-8") if publish_meta.get("output_dir") else ""
+        import asyncio
+        asyncio.get_event_loop().create_task(
+            _save_block_to_db(
+                block_n=block_n, research_goal=research_goal, paper_title=paper.title,
+                paper_md=block_md, paper_html=block_html, analysis=analysis_data,
+                market_price=analysis.market_price, simulation_html=sims_html,
+                job_id=job_id,
+            )
+        )
+    except Exception:
+        pass
 
     # Clean up staging directory
     try:
@@ -1315,18 +1376,68 @@ def publish_from_staging(job_id: str) -> int:
         logger = logging.getLogger("cancerhawk.worker")
         logger.warning("failed_to_remove_staging", extra={"job_id": job_id, "error": str(e)})
 
-    # Update job record
-    job = get_job(job_id)
-    if job:
-        new_result = job.get("result") or {}
-        new_result["block"] = block_n
-        new_result["result_url"] = f"/results/block-{block_n}/paper.html"
-        append_job_event(
-            job_id,
-            stage="publish_done",
-            message=f"Published as block {block_n}",
-            data={"block": block_n, "result_url": new_result["result_url"]},
-        )
+    return block_n
+
+
+async def _save_block_to_db(**kwargs: Any) -> None:
+    from . import db
+    await db.save_block(**kwargs)
+
+
+def push_unpushed_to_git() -> None:
+    """Write all unpushed blocks from DB to results/, then push to GitHub.
+    Called once daily by the git sync worker."""
+    import asyncio as _asyncio
+    from . import db
+
+    async def _do() -> None:
+        try:
+            blocks = await db.get_unpushed_blocks()
+        except Exception as e:
+            logger.warning("git_sync_no_db", extra={"error": str(e)})
+            return
+        if not blocks:
+            return
+        for b in blocks:
+            bn = b["block_number"]
+            d = RESULTS_DIR / f"block-{bn}"
+            d.mkdir(parents=True, exist_ok=True)
+            (d / "paper.md").write_text(b.get("paper_md", ""), encoding="utf-8")
+            (d / "paper.html").write_text(b.get("paper_html", ""), encoding="utf-8")
+            analysis = b.get("analysis_json") or {}
+            if isinstance(analysis, str):
+                import json as _json
+                analysis = _json.loads(analysis)
+            (d / "analysis.json").write_text(json.dumps(analysis, indent=2, default=str), encoding="utf-8")
+            block_json = {
+                "block_number": bn,
+                "created_at": str(b.get("created_at", "")),
+                "research_goal": b.get("research_goal", ""),
+                "paper_title": b.get("paper_title", ""),
+                "market_price": b.get("market_price", 0),
+                "models": analysis.get("models", {}),
+                "n_submitters": analysis.get("n_submitters", 3),
+            }
+            (d / "block.json").write_text(json.dumps(block_json, indent=2, default=str), encoding="utf-8")
+        try:
+            rewrite_index_html()
+            rewrite_blocks_html()
+        except Exception:
+            pass
+        numbers = [b["block_number"] for b in blocks]
+        try_git_publish_for_blocks(numbers)
+        await db.mark_blocks_pushed(numbers)
+        logger.info("git_sync_complete", extra={"blocks": numbers})
+
+    try:
+        loop = _asyncio.get_event_loop()  # noqa: F841
+    except RuntimeError:
+        _asyncio.run(_do())
+    else:
+        import concurrent.futures
+        with concurrent.futures.ThreadPoolExecutor() as pool:
+            future = pool.submit(_asyncio.run, _do())
+            future.result()
         update_job_status(job_id, "published", result=new_result)
 
     logger = logging.getLogger("cancerhawk.worker")

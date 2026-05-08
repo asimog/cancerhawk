@@ -42,9 +42,10 @@ APP_DIR = Path(__file__).resolve().parent
 from .token_tracker import APICall, APIFailureLimitExceeded, TokenTracker  # noqa: E402
 from .hermes_supervisor import HermesRunConfig, HermesSupervisor  # noqa: E402
 from .openrouter import close as close_openrouter  # noqa: E402
-from .jobs import append_job_event, create_job, find_job_by_idempotency_key, get_job, job_store_info, list_jobs, update_job_status  # noqa: E402
+from .jobs import append_job_event, create_job, find_job_by_idempotency_key, get_job, hydrate_from_history, job_store_info, list_jobs, update_job_status  # noqa: E402
 from .publisher import publish_from_staging, STAGING_DIR  # noqa: E402
 from .agents import estimate_run_cost, get_leaderboard, get_prompts, parse_agent_run, submit_paper  # noqa: E402
+from . import db  # noqa: E402
 
 HOST = os.environ.get("HOST", "0.0.0.0")
 PORT = int(os.environ.get("PORT", "8765"))
@@ -813,10 +814,22 @@ def _publish_cycle_enabled() -> bool:
     if configured:
         return configured in {"1", "true", "yes", "on"}
 
-    # Avoid surprise background work on local laptops. Railway can still run
-    # the staging publisher by default, and auto-generation remains separately
-    # gated by HERMES_AUTO_GENERATE_ENABLED.
     return bool(os.environ.get("RAILWAY_ENVIRONMENT") or os.environ.get("RAILWAY_PROJECT_ID"))
+
+
+def _git_sync_enabled() -> bool:
+    return bool(os.environ.get("GITHUB_TOKEN") and os.environ.get("GITHUB_REPO"))
+
+
+async def daily_git_sync_worker() -> None:
+    """Push all unpushed blocks from DB to GitHub once per day."""
+    while True:
+        await asyncio.sleep(86400)  # 24 hours
+        try:
+            from .publisher import push_unpushed_to_git
+            await asyncio.to_thread(push_unpushed_to_git)
+        except Exception as e:
+            logger.error("daily_git_sync_failed", exc_info=e)
 
 async def maybe_auto_generate() -> None:
     """Generate a block automatically if no user submissions."""
@@ -865,16 +878,29 @@ async def maybe_auto_generate() -> None:
 
 @app.on_event("startup")
 async def startup_event() -> None:
+    await db.init_db()
+    hydrated = hydrate_from_history()
+    if hydrated:
+        logger.info("jobs_hydrated_from_history", extra={"count": hydrated})
+    try:
+        n = await db.hydrate_blocks_from_db(str(APP_DIR.parent / "results"))
+        if n:
+            logger.info("blocks_hydrated_from_db", extra={"count": n})
+    except Exception:
+        pass
     if _publish_cycle_enabled():
         asyncio.create_task(publish_cycle_worker())
         logger.info("publish_cycle_worker_started")
     else:
         logger.info("publish_cycle_worker_disabled")
+    if _git_sync_enabled():
+        asyncio.create_task(daily_git_sync_worker())
 
 
 @app.on_event("shutdown")
 async def shutdown() -> None:
     await close_openrouter()
+    await db.close_db()
 
 
 # Public job starts use OpenRouter's free auto-router. This avoids pinning a

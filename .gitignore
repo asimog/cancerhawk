@@ -34,3 +34,5 @@ vercel_check_snapshot.md
 
 # Runtime-generated files
 jobs.json
+
+.cancerhawk-wallet.json

@@ -27,9 +27,11 @@ from pathlib import Path
 from typing import Any, Optional
 
 JOBS_FILE = Path(__file__).resolve().parent.parent / "jobs.json"
+JOBS_HISTORY_FILE = Path(__file__).resolve().parent.parent / "results" / "jobs-history.json"
 _lock = threading.RLock()
 MAX_JOB_EVENTS = 300
 _DURABLE_ENV_NAMES = ("CANCERHAWK_JOBS_FILE", "CANCERHAWK_JOBS_PATH")
+TERMINAL_STATUSES = {"completed", "published", "failed", "stopped"}
 
 
 def get_jobs_file() -> Path:
@@ -87,6 +89,28 @@ def _load_jobs() -> list[dict]:
         return loaded if isinstance(loaded, list) else []
 
 
+def hydrate_from_history() -> int:
+    """Load completed jobs from the durable history file into the live store.
+
+    Called at startup so the job feed and autonomous logs survive redeploys.
+    Returns the number of jobs hydrated.
+    """
+    history = _load_history()
+    if not history:
+        return 0
+    jobs = _load_jobs()
+    seen = {j.get("job_id") for j in jobs}
+    hydrated = 0
+    for h in history:
+        if h.get("job_id") not in seen:
+            jobs.append(h)
+            hydrated += 1
+    if hydrated:
+        jobs.sort(key=lambda j: j.get("created_at", ""), reverse=True)
+        _save_jobs(jobs)
+    return hydrated
+
+
 def _save_jobs(jobs: list[dict]) -> None:
     jobs_file = get_jobs_file()
     jobs_file.parent.mkdir(parents=True, exist_ok=True)
@@ -103,6 +127,41 @@ def _save_jobs(jobs: list[dict]) -> None:
             os.fsync(tmp.fileno())
             tmp_name = tmp.name
         os.replace(tmp_name, jobs_file)
+
+
+def _append_to_history(job: dict) -> None:
+    """Persist a completed job to results/jobs-history.json (survives redeploys)."""
+    try:
+        history_file = JOBS_HISTORY_FILE
+        history_file.parent.mkdir(parents=True, exist_ok=True)
+        existing: list[dict] = []
+        if history_file.exists():
+            try:
+                existing = json.loads(history_file.read_text(encoding="utf-8"))
+                if not isinstance(existing, list):
+                    existing = []
+            except (json.JSONDecodeError, OSError):
+                existing = []
+        deduped = [j for j in existing if j.get("job_id") != job.get("job_id")]
+        deduped.append(job)
+        with tempfile.NamedTemporaryFile("w", encoding="utf-8", dir=str(history_file.parent), delete=False) as tmp:
+            tmp.write(json.dumps(deduped[-500:], indent=2, default=str))
+            tmp.flush()
+            os.fsync(tmp.fileno())
+            os.replace(tmp.name, history_file)
+    except OSError:
+        pass
+
+
+def _load_history() -> list[dict]:
+    history_file = JOBS_HISTORY_FILE
+    if not history_file.exists():
+        return []
+    try:
+        loaded = json.loads(history_file.read_text(encoding="utf-8"))
+        return loaded if isinstance(loaded, list) else []
+    except (json.JSONDecodeError, OSError):
+        return []
 
 
 def create_job(*, research_goal: str, config: dict[str, Any]) -> dict:
@@ -150,6 +209,8 @@ def update_job_status(job_id: str, status: str, **kwargs) -> Optional[dict]:
                     if k in ("result", "error", "config"):
                         job[k] = v
                 _save_jobs(jobs)
+                if status in TERMINAL_STATUSES:
+                    _append_to_history(job)
                 return job
     return None
 
@@ -189,9 +250,16 @@ def get_job(job_id: str) -> Optional[dict]:
 
 def list_jobs(limit: int = 50, status: Optional[str] = None) -> list[dict]:
     jobs = _load_jobs()
+    history = _load_history()
+    seen = {j["job_id"] for j in jobs}
+    for h in history:
+        if h.get("job_id") not in seen:
+            jobs.append(h)
+            seen.add(h["job_id"])
     if status:
         jobs = [j for j in jobs if j.get("status") == status]
-    return jobs[-limit:][::-1]  # newest first
+    jobs.sort(key=lambda j: j.get("created_at", ""), reverse=True)
+    return jobs[:limit]
 
 
 # ---------------------------------------------------------------------------
