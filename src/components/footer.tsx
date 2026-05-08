@@ -14,12 +14,12 @@ export function Footer() {
       color: '#777',
     }}>
       <Link href="/llms.txt" style={{ color: '#64b5f6' }}>llms.txt</Link>
-      <Link href="/api/agents/prompts" style={{ color: '#64b5f6' }}>Agent API</Link>
+      <Link href="/api/agents/prompts" style={{ color: '#64b5f6' }}>API Reference</Link>
       <a href="https://github.com/asimog/cancerhawk" target="_blank" rel="noreferrer" style={{ color: '#64b5f6' }}>
         GitHub
       </a>
-      <Link href="/jobs" style={{ color: '#64b5f6' }}>Job Feed</Link>
-      <Link href="/autonomous-logs" style={{ color: '#64b5f6' }}>Autonomous Logs</Link>
+      <Link href="/jobs" style={{ color: '#64b5f6' }}>Jobs</Link>
+      <Link href="/autonomous-logs" style={{ color: '#64b5f6' }}>Logs</Link>
     </footer>
   );
 }
