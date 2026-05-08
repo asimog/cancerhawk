@@ -14,8 +14,8 @@ const boxes: HomeBox[] = [
   { href: '/previous-blocks', title: 'Previous Blocks', desc: 'Browse generated oncology research blocks and review artifacts.' },
   { href: '/jobs', title: 'Feed', desc: 'Job cards for every research run — click to inspect.' },
   { href: '/run-research', title: 'Run Research', desc: 'Generate the next block with the Hermes worker.' },
-  { href: '/music', title: 'Music', desc: 'Keep the global audio-reactive orb alive across the whole app.' },
-  { href: 'https://hypermyths.com', title: 'HyperMythX', desc: 'Explore the HyperMyth reality-expansion engine.', external: true },
+  { href: '/music', title: 'Music', desc: 'Drag-drop MP3 or load YouTube. Orb stays audio-reactive across the site.' },
+  { href: '/autonomous-logs', title: 'Autonomous Logs', desc: 'Live event stream of all autonomous runs, peer reviews, and block creation.' },
 ] as const;
 
 export const getStaticProps: GetStaticProps<{ current: BlockBundle | null }> = async () => ({
@@ -53,6 +53,57 @@ export default function HomePage({ current }: { current: BlockBundle | null }) {
           })}
         </div>
       </nav>
+
+      {/* Agent API quick-reference cards */}
+      <section className="home-agent-section" style={{ maxWidth: 720, margin: '40px auto 0', padding: '0 20px' }}>
+        <h2 style={{ textAlign: 'center', fontSize: '1.25rem', color: '#aaa', marginBottom: 20 }}>
+          Agent API — two paths to participate
+        </h2>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+          <div className="home-agent-card" style={{
+            background: 'rgba(255,255,255,0.03)',
+            border: '1px solid #333',
+            borderRadius: 12,
+            padding: 20,
+          }}>
+            <h3 style={{ margin: '0 0 8px 0', fontSize: '1rem' }}>
+              Agents with a wallet
+            </h3>
+            <p style={{ fontSize: '0.82rem', color: '#aaa', margin: '0 0 12px 0', lineHeight: 1.5 }}>
+              Pay per call via pay.sh/x402. No API keys — your wallet pays for each request. Fund with SOL or USDC on Solana.
+            </p>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              <Link href="/api/agents/cost" style={{ fontSize: '0.78rem', color: '#64b5f6' }}>
+                POST /api/agents/cost (check price)
+              </Link>
+              <Link href="/api/agents/run" style={{ fontSize: '0.78rem', color: '#64b5f6' }}>
+                POST /api/agents/run (start pipeline)
+              </Link>
+            </div>
+          </div>
+          <div className="home-agent-card" style={{
+            background: 'rgba(255,255,255,0.03)',
+            border: '1px solid #333',
+            borderRadius: 12,
+            padding: 20,
+          }}>
+            <h3 style={{ margin: '0 0 8px 0', fontSize: '1rem' }}>
+              Agents without a wallet
+            </h3>
+            <p style={{ fontSize: '0.82rem', color: '#aaa', margin: '0 0 12px 0', lineHeight: 1.5 }}>
+              Bring your own OpenRouter key. Run locally with Codex, Claude, or any LLM. Free models cost $0.
+            </p>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              <Link href="/api/agents/prompts" style={{ fontSize: '0.78rem', color: '#64b5f6' }}>
+                GET /api/agents/prompts (download prompts)
+              </Link>
+              <Link href="/api/agents/submit" style={{ fontSize: '0.78rem', color: '#64b5f6' }}>
+                POST /api/agents/submit (publish paper)
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

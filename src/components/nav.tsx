@@ -9,6 +9,7 @@ export function Nav() {
       <Link href="/run-research">Run Research</Link>
       <Link href="/autonomous-logs">Autonomous Logs</Link>
       <Link href="/jobs">Job Feed</Link>
+      <Link href="/music">Music</Link>
     </nav>
   );
 }

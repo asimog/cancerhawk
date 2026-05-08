@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { Nav } from '@/components/nav';
 import { useMusic } from '@/components/music-provider';
 
@@ -6,15 +6,25 @@ export default function MusicPage() {
   const music = useMusic();
   const [file, setFile] = useState<File | null>(null);
   const [dropError, setDropError] = useState<string | null>(null);
+  const [isDragOver, setIsDragOver] = useState(false);
+  const dropRef = useRef<HTMLDivElement | null>(null);
 
-  // ---------- Drag-and-drop handlers ----------
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'copy';
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    if (dropRef.current && !dropRef.current.contains(e.relatedTarget as Node)) {
+      setIsDragOver(false);
+    }
   };
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
+    setIsDragOver(false);
     setDropError(null);
     const items = e.dataTransfer.files;
     if (items.length && items[0].type.startsWith('audio/')) {
@@ -23,7 +33,7 @@ export default function MusicPage() {
         setDropError(error instanceof Error ? error.message : 'The audio file could not be played.');
       });
     } else {
-      setDropError('Please drop a valid audio file.');
+      setDropError('Please drop a valid audio file (MP3, WAV, etc.).');
       window.setTimeout(() => setDropError(null), 3000);
     }
   };
@@ -33,44 +43,91 @@ export default function MusicPage() {
   }, []);
 
   return (
-    <div className="page music-page" onDragOver={handleDragOver} onDrop={handleDrop}>
+    <div className="page music-page">
       <Nav />
-
-      {/* Drop zone overlay */}
-      {!file && (
-        <div className="drop-zone">
-          <p>Drag & drop an MP3 file here to play</p>
-          <p className="hint">(or use the controls below for YouTube/local tracks)</p>
-          <p className="hint">Audio stays local to your device — nothing is uploaded.</p>
-        </div>
-      )}
-
-      {dropError && (
-        <div className="drop-zone" style={{ background: 'rgba(80,0,0,0.6)' }}>
-          <p>{dropError}</p>
-        </div>
-      )}
 
       <p className="page-kicker">Global audio</p>
       <h1 className="page-title">Music</h1>
 
-      <section className="panel">
-        <p>
-          The music engine is global. Start a local track or a YouTube playlist
-          here, then move through the app while the orb keeps reacting.
-        </p>
+      <p className="muted" style={{ marginBottom: 24 }}>
+        The music engine is global — start a local track or YouTube playlist here, then browse the app while the orb and particles stay audio-reactive.
+      </p>
 
-        {file && (
-          <div style={{ marginBottom: '0.75rem' }}>
-            <span className="badge badge-running" style={{ marginRight: '0.5rem' }}>
-              Local: {file.name}
-            </span>
-            <button className="button" onClick={clearFile} type="button">
-              Clear file
+      {/* Two-option layout: Drag-and-drop + YouTube */}
+      <div className="music-two-columns" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 24 }}>
+        {/* Drag-and-drop column */}
+        <div
+          className={`panel music-drop-panel ${isDragOver ? 'music-drop-active' : ''}`}
+          onDragLeave={handleDragLeave}
+          onDragOver={handleDragOver}
+          onDrop={handleDrop}
+          ref={dropRef}
+          style={{
+            border: `2px dashed ${isDragOver ? '#4caf50' : '#333'}`,
+            borderRadius: 12,
+            padding: 24,
+            textAlign: 'center',
+            transition: 'border-color 0.2s',
+            minHeight: 140,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: 8,
+          }}
+        >
+          <p style={{ fontWeight: 600, margin: 0 }}>Drag & drop MP3</p>
+          <p style={{ fontSize: 13, color: '#888', margin: 0 }}>Audio stays local — nothing uploaded.</p>
+          {file && (
+            <div style={{ marginTop: 8, display: 'flex', gap: 8, alignItems: 'center' }}>
+              <span className="badge badge-running" style={{ fontSize: 12 }}>{file.name}</span>
+              <button className="button" onClick={clearFile} type="button" style={{ fontSize: 12, padding: '2px 8px' }}>
+                Clear
+              </button>
+            </div>
+          )}
+          {dropError && (
+            <p style={{ color: '#ff6b6b', fontSize: 13, margin: 0 }}>{dropError}</p>
+          )}
+        </div>
+
+        {/* YouTube column */}
+        <div className="panel" style={{ borderRadius: 12, padding: 24, minHeight: 140 }}>
+          <p style={{ fontWeight: 600, margin: 0, textAlign: 'center', marginBottom: 12 }}>Load YouTube</p>
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+              void music.loadYoutube();
+            }}
+            style={{ display: 'flex', gap: 8 }}
+          >
+            <input
+              aria-label="YouTube playlist or video URL"
+              onChange={(event) => music.setYoutubeUrl(event.target.value)}
+              placeholder="https://www.youtube.com/watch?v=..."
+              value={music.youtubeUrl}
+              style={{ flex: 1 }}
+            />
+            <button
+              className="button"
+              disabled={music.youtubeLoading || !music.youtubeUrl.trim()}
+              type="submit"
+            >
+              {music.youtubeLoading ? 'Loading' : 'Load'}
             </button>
-          </div>
-        )}
+          </form>
+          {music.youtubeEntries.length > 0 && (
+            <div className="youtube-list" style={{ marginTop: 8, fontSize: 12, color: '#888' }}>
+              {music.youtubeEntries.slice(0, 6).map((entry) => (
+                <span key={entry.id}>{entry.title}</span>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
 
+      {/* Playback controls */}
+      <section className="panel" style={{ borderRadius: 12, padding: 20 }}>
         <div className="music-controls">
           <button className="button" onClick={() => void music.previous()} type="button">
             Previous
@@ -93,38 +150,7 @@ export default function MusicPage() {
             ))}
           </select>
         </div>
-
-        <form
-          className="youtube-form"
-          onSubmit={(event) => {
-            event.preventDefault();
-            void music.loadYoutube();
-          }}
-        >
-          <input
-            aria-label="YouTube playlist or video URL"
-            onChange={(event) => music.setYoutubeUrl(event.target.value)}
-            placeholder="https://www.youtube.com/watch?v=... or playlist"
-            value={music.youtubeUrl}
-          />
-          <button
-            className="button"
-            disabled={music.youtubeLoading || !music.youtubeUrl.trim()}
-            type="submit"
-          >
-            {music.youtubeLoading ? 'Loading' : 'Load YouTube'}
-          </button>
-        </form>
-
-        {music.youtubeEntries.length > 0 && (
-          <div className="youtube-list">
-            {music.youtubeEntries.slice(0, 8).map((entry) => (
-              <span key={entry.id}>{entry.title}</span>
-            ))}
-          </div>
-        )}
-
-        <p>{music.status}</p>
+        <p style={{ fontSize: 13, color: '#888', margin: '8px 0 0 0' }}>{music.status}</p>
       </section>
     </div>
   );

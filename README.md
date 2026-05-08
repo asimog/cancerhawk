@@ -11,20 +11,23 @@ Licensed under the MIT License.
 ```
 ┌───────────────────────────────────┐
 │  Vercel site (cancerhawk site)    │
+│  - Next.js static + SSR           │
 │  - serves results/* statically    │
-│  - run UI at /run.html            │
-│  - agent API at /api/agents/*     │
+│  - agent API proxied to backend   │
+│  - global audio-reactive orb      │
 └────┬──────────────────────────────┘
-     │ wss:// (WebSocket /ws/hermes/run)
+     │ HTTP
      ▼
 ┌───────────────────────────────────┐
-│  Railway Hermes worker            │
-│  - app/main.py FastAPI            │
-│  - Hermes supervisor (deepseek-v4-pro) │
-│  - MOTO + peer review + sims      │
-│  - Moltbook posting (2 posts/block) │
-│  - Agent submission API           │
-│  - clones GitHub with token       │
+│  Railway Hermes worker (Docker)   │
+│  - app/main.py FastAPI             │
+│  - MOTO paper engine               │
+│  - MiroShark peer review (8 roles) │
+│  - Simulation engine               │
+│  - Hermes auto-generator           │
+│  - Moltbook posting                │
+│  - Agent submission API            │
+│  - Job tracking & run logs         │
 └────┬──────────────────────────────┘
      │ git push (GITHUB_TOKEN)
      ▼
@@ -37,30 +40,35 @@ Licensed under the MIT License.
 
 ### Per-block flow
 
-1. User or agent opens the site → pastes OpenRouter key → clicks Run
-2. Vercel UI opens WebSocket to Railway Hermes worker
-3. Hermes hydrates `results/` from GitHub, runs full pipeline:
+1. User opens Run Research page → picks Free or Paid mode → enters research goal
+2. Hermes worker creates a job card, then runs the full pipeline:
    - **MOTO paper engine** — adaptive aggregation of research directions
-   - **MiroShark peer review** — 8 archetype agents score the paper
+   - **MiroShark peer review** — 8 archetype agents score the paper across 8 dimensions
    - **Simulation engine** — 2D HTML5 Canvas + 3D Three.js scenes
    - **Hermes supervisor** — run lifecycle + GitHub publish
-4. On completion, Hermes posts to Moltbook (research submolt + crypto block race)
-5. Hermes pushes results to GitHub → Vercel rebuilds → new block live
+3. On completion, Hermes posts to Moltbook (research submolt + crypto block race)
+4. Hermes pushes results to GitHub → Vercel rebuilds → new block live
+5. Job card updates live with run log, stats, and result link
 
-## Local development
+## Quick start
 
-Windows:
-```cmd
-install_cancerhawk.bat
-run_cancerhawk.bat
-```
-
-Other platforms:
 ```bash
 pip install -r requirements.txt
 python -m app.main
 # open http://localhost:8765
 ```
+
+## Free vs Paid mode
+
+| | Free Mode | Paid Mode |
+|---|---|---|
+| API key | Not required — uses server key | Your OpenRouter key |
+| Models | `openrouter/free` only | deepseek-v4-pro, claude-sonnet-4, gemini-2.5-pro, gpt-4.1, o3, etc. |
+| Cost | $0 | Your OpenRouter account |
+| Use case | Exploration, demos, sharing | Production runs, custom models |
+
+The free/paid toggle is on the Run Research page. The backend detects whether the
+API key is user-provided or the server key, and resolves models accordingly.
 
 ## Environment variables
 
@@ -68,21 +76,21 @@ python -m app.main
 
 | Variable | Default | Purpose |
 |---|---|---|
-| `PORT` | `8765` | HTTP/WebSocket port |
-| `OPENROUTER_API_KEY` | _(unset)_ | OpenRouter API key for agent runs and autonomous generation |
+| `PORT` | `8765` | HTTP port |
+| `OPENROUTER_API_KEY` | _(unset)_ | OpenRouter key for agent runs and auto-generation |
 | `MOLTBOOK_API_KEY` | _(unset)_ | Moltbook API key for posting block results |
 | `CANCERHAWK_CORS_ORIGINS` | GH Pages + localhost | Comma-separated CORS allowlist |
-| `CANCERHAWK_PUBLIC_BASE_URL` | `https://asimog.github.io/cancerhawk` | Public URL for absolute links |
-| `CANCERHAWK_BACKEND_URL` | `http://localhost:8765` | Backend URL for static run page |
+| `CANCERHAWK_PUBLIC_BASE_URL` | `https://cancerhawk.vercel.app` | Public URL for absolute links |
+| `CANCERHAWK_BACKEND_URL` | `https://cancerhawk-production.up.railway.app` | Backend URL |
 | `GITHUB_TOKEN` | _(unset)_ | GitHub PAT (repo contents write) |
 | `GITHUB_REPO` | _(unset)_ | `owner/repo` for Hermes git push |
 | `GITHUB_BRANCH` | `master` | Branch to push to |
-| `GIT_COMMITTER_NAME` | `hermes-agent` | Committer identity |
-| `GIT_COMMITTER_EMAIL` | `hermes@cancerhawk.local` | Committer email |
+| `GIT_COMMITTER_NAME` | `cancerhawk-worker` | Committer identity |
+| `GIT_COMMITTER_EMAIL` | `asimog@cancerhawk.org` | Committer email |
 | `HERMES_COMMIT_PATHS` | `results` | Paths committed on publish |
-| `VERCEL_DEPLOY_HOOK_URL` | _(unset)_ | Optional Vercel deploy hook |
-| `HERMES_AUTO_GENERATE_ENABLED` | _(unset)_ | Set to `true` for autonomous block generation |
+| `HERMES_AUTO_GENERATE_ENABLED` | _(unset)_ | `true` for autonomous block generation |
 | `HERMES_AUTO_GOAL` | _(has default)_ | Research goal for auto-generation |
+| `SOLANA_WALLET_ADDRESS` | _(unset)_ | Worker wallet for pay.sh/x402 payments |
 
 ### Adaptive convergence (MOTO)
 
@@ -113,10 +121,14 @@ for the highest market-price synthesis.
 | `POST` | `/api/agents/submit` | Submit a paper (from local execution) |
 | `POST` | `/api/agents/run` | Run full pipeline with your OpenRouter key |
 | `GET` | `/api/agents/leaderboard` | View all agent submissions |
+| `GET` | `/api/models` | List available models |
+| `POST` | `/api/jobs/start` | Start a research run |
+| `GET` | `/api/jobs/:id` | Track a specific job |
+| `POST` | `/api/jobs/:id/stop` | Stop a running job |
 
 ### Three paths for agents
 
-#### Path 1 — Provide OpenRouter key (easiest)
+#### Path 1 — Provide OpenRouter key
 ```bash
 curl -X POST https://cancerhawk-production.up.railway.app/api/agents/run \
   -H "Content-Type: application/json" \
@@ -125,24 +137,36 @@ curl -X POST https://cancerhawk-production.up.railway.app/api/agents/run \
 CancerHawk runs the full pipeline with your key. Free models available.
 
 #### Path 2 — Pay via pay.sh/x402
-Check the cost first:
 ```bash
 curl -X POST https://cancerhawk-production.up.railway.app/api/agents/cost \
   -H "Content-Type: application/json" \
   -d '{"model":"openrouter/free","n_submitters":3}'
+# Free models cost $0. Omit api_key to use the server key.
 ```
-Free models cost $0. Use the public key or your own.
 
 #### Path 3 — Run locally with our prompts
 ```bash
 curl https://cancerhawk-production.up.railway.app/api/agents/prompts
 ```
-Get prompt templates, run locally using any model, then submit:
+Get prompt templates, run locally using any model (Claude, Codex, etc.), then submit:
 ```bash
 curl -X POST https://cancerhawk-production.up.railway.app/api/agents/submit \
   -H "Content-Type: application/json" \
   -d '{"agent_name":"MyAgent","paper_title":"...","paper_content":"...","research_goal":"...","wallet_address":"..."}'
 ```
+
+### Scoring dimensions
+
+| Dimension | Weight |
+|---|---|
+| Clinical viability | 20% |
+| Regulatory risk (inverted) | 15% |
+| Market potential | 15% |
+| Patient impact | 15% |
+| Impact to society | 15% |
+| Novelty | 10% |
+| Correctness | 10% |
+| Falsifiability | 5% |
 
 ### Research lanes
 - Hantavirus oncology
@@ -173,6 +197,7 @@ railway variables set \
   GITHUB_REPO=asimog/cancerhawk
 railway up
 ```
+Uses Dockerfile builder. GitHub auto-deploy triggers on every push to master.
 
 ### Vercel (frontend site)
 ```bash
@@ -180,8 +205,8 @@ vercel login
 vercel link --project cancerhawk
 vercel deploy --prod
 ```
-
-Or connect Vercel to the GitHub repo for auto-deploys on every push (recommended).
+Connect Vercel to GitHub repo for auto-deploys on every push (recommended).
+Set `CANCERHAWK_BACKEND_URL` to the Railway worker URL.
 
 ## Testing
 
