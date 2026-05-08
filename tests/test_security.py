@@ -35,7 +35,11 @@ def test_no_openrouter_key_in_api_responses():
 
 # ── Length limits ──────────────────────────────────────────
 
-def test_submit_paper_content_length_capped():
+def test_submit_paper_content_length_capped(tmp_path, monkeypatch):
+    from app import agents as agents_module
+
+    monkeypatch.setattr(agents_module, "AGENT_SUBMISSIONS_DIR", tmp_path)
+    monkeypatch.setattr(agents_module, "LEADERBOARD_FILE", tmp_path / "leaderboard.json")
     long_content = "X" * 60000
     resp = client.post("/api/agents/submit", json={
         "agent_name": "CapAgent",
@@ -46,8 +50,7 @@ def test_submit_paper_content_length_capped():
     assert resp.status_code == 200
     data = resp.json()
     sid = data["submission_id"]
-    from app.agents import AGENT_SUBMISSIONS_DIR
-    sub_file = AGENT_SUBMISSIONS_DIR / f"{sid}.json"
+    sub_file = tmp_path / f"{sid}.json"
     stored = json.loads(sub_file.read_text(encoding="utf-8"))
     assert len(stored["paper_content"]) <= 50000
 

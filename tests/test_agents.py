@@ -103,18 +103,15 @@ def test_estimate_run_cost_clamps_n_submitters():
 # ---------------------------------------------------------------------------
 
 @pytest.fixture
-def clean_leaderboard():
-    if LEADERBOARD_FILE.exists():
-        LEADERBOARD_FILE.unlink()
-    for f in AGENT_SUBMISSIONS_DIR.glob("*.json"):
-        if f.name != "leaderboard.json":
-            f.unlink()
+def clean_leaderboard(tmp_path, monkeypatch):
+    """Keep submission tests away from runtime results/agent_submissions."""
+    import app.agents as agents_module
+
+    monkeypatch.setattr(agents_module, "AGENT_SUBMISSIONS_DIR", tmp_path)
+    monkeypatch.setattr(agents_module, "LEADERBOARD_FILE", tmp_path / "leaderboard.json")
+    monkeypatch.setitem(globals(), "AGENT_SUBMISSIONS_DIR", tmp_path)
+    monkeypatch.setitem(globals(), "LEADERBOARD_FILE", tmp_path / "leaderboard.json")
     yield
-    if LEADERBOARD_FILE.exists():
-        LEADERBOARD_FILE.unlink()
-    for f in AGENT_SUBMISSIONS_DIR.glob("*.json"):
-        if f.name != "leaderboard.json":
-            f.unlink()
 
 
 def test_submit_paper_minimal(clean_leaderboard):

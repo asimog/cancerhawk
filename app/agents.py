@@ -23,6 +23,7 @@ import logging
 import os
 import time
 import uuid
+import re
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -45,6 +46,19 @@ PRIZE_AMOUNT_USDC = 0.01
 
 GIVEWELL_SOLANA = "4Z2DBVoQCJZ42cCTDMNvYDUqRjA1C3vV7B155Mc6jGah"
 OPENROUTER_KEY = os.environ.get("OPENROUTER_API_KEY", "").strip()
+
+
+def resolve_prize_wallet(raw: Any) -> str:
+    """Return a valid prize wallet, or the default charity wallet."""
+    wallet = str(raw or "").strip()
+    if re.fullmatch(r"0x[a-fA-F0-9]{40}", wallet):
+        return wallet
+    if 32 <= len(wallet) <= 44 and all(
+        c in "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
+        for c in wallet
+    ):
+        return wallet
+    return GIVEWELL_SOLANA
 
 
 # ---------------------------------------------------------------------------
@@ -197,7 +211,7 @@ def submit_paper(
         "research_goal": research_goal[:1000],
         "peer_reviews": (peer_reviews or [])[:20],
         "simulations": (simulations or [])[:20],
-        "wallet_address": (wallet_address or "").strip() or GIVEWELL_SOLANA,
+        "wallet_address": resolve_prize_wallet(wallet_address),
         "submitted_at": now,
         "status": "received",
     }
@@ -224,7 +238,7 @@ def submit_paper(
         "paper_title": paper_title,
         "research_goal": research_goal,
         "submitted_at": now,
-        "wallet_address": wallet_address or GIVEWELL_SOLANA,
+        "wallet_address": resolve_prize_wallet(wallet_address),
     })
     _save_leaderboard(leaderboard)
 
@@ -240,7 +254,7 @@ def submit_paper(
         "next_steps": [
             "Your paper will be peer-reviewed by the CancerHawk archetype engine",
             "Scores are posted to the leaderboard at /api/agents/leaderboard",
-            f"Winner receives {PRIZE_AMOUNT_USDC} USDC to their wallet",
+            f"Highest-scoring eligible paper is recorded for {PRIZE_AMOUNT_USDC} USDC prize review",
         ],
     }
 
@@ -286,11 +300,12 @@ def parse_agent_run(cfg: dict[str, Any]) -> tuple[str, str, str, int, str | None
         return "", "", "", 3, None, "local"
 
     api_key = str(cfg.get("api_key") or "").strip()
-    if mode not in ("paysh_cancerhawk",):
-        if not api_key:
-            api_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
-        if not api_key:
-            raise ValueError("OpenRouter API key required — provide api_key or set OPENROUTER_API_KEY")
+    if not api_key:
+        api_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
+    if not api_key:
+        if mode == "paysh_cancerhawk":
+            raise ValueError("CancerHawk server OpenRouter key required for paysh_cancerhawk mode")
+        raise ValueError("OpenRouter API key required — provide api_key or set OPENROUTER_API_KEY")
 
     research_goal = str(cfg.get("research_goal") or "").strip()
     if not research_goal:

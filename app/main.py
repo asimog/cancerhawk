@@ -22,6 +22,7 @@ import time
 import traceback
 from pathlib import Path
 from typing import Any
+import re
 
 import uvicorn
 from fastapi import BackgroundTasks, FastAPI, HTTPException, WebSocket, WebSocketDisconnect
@@ -41,12 +42,20 @@ logger = logging.getLogger("cancerhawk")
 
 
 def _resolve_wallet(raw: Any) -> str:
-    """Resolve wallet to Solana address. Defaults to GiveWell charity."""
+    """Resolve prize wallet. Accepts Solana base58 or Ethereum hex addresses."""
     wallet = str(raw or "").strip()
-    if wallet:
-        if len(wallet) >= 32 and all(c in "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz" for c in wallet[:44]):
-            return wallet
+    if _is_valid_prize_wallet(wallet):
+        return wallet
     return GIVEWELL_SOLANA
+
+
+def _is_valid_prize_wallet(wallet: str) -> bool:
+    if re.fullmatch(r"0x[a-fA-F0-9]{40}", wallet):
+        return True
+    return 32 <= len(wallet) <= 44 and all(
+        c in "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
+        for c in wallet
+    )
 
 APP_DIR = Path(__file__).resolve().parent
 
@@ -288,7 +297,7 @@ async def agent_submit(payload: dict[str, Any]) -> JSONResponse:
             agent_model=str(payload.get("agent_model") or "unknown"),
             peer_reviews=payload.get("peer_reviews"),
             simulations=payload.get("simulations"),
-            wallet_address=str(payload.get("wallet_address") or "").strip() or GIVEWELL_SOLANA,
+            wallet_address=_resolve_wallet(payload.get("wallet_address")),
         )
         return JSONResponse(result)
     except ValueError as exc:
@@ -877,11 +886,11 @@ async def maybe_auto_generate() -> None:
 
     for i in range(n_to_generate):
         models = {
-            "submitter": os.environ.get("HERMES_MODEL_SUBMITTER", "deepseek/deepseek-v4-pro"),
-            "validator": os.environ.get("HERMES_MODEL_VALIDATOR", "deepseek/deepseek-v4-pro"),
-            "compiler": os.environ.get("HERMES_MODEL_COMPILER", "deepseek/deepseek-v4-pro"),
-            "archetype": os.environ.get("HERMES_MODEL_ARCHETYPE", "deepseek/deepseek-v4-pro"),
-            "topic_deriver": os.environ.get("HERMES_MODEL_TOPIC_DERIVER", "deepseek/deepseek-v4-pro"),
+            "submitter": os.environ.get("HERMES_MODEL_SUBMITTER", FREE_ROUTER_MODEL),
+            "validator": os.environ.get("HERMES_MODEL_VALIDATOR", FREE_ROUTER_MODEL),
+            "compiler": os.environ.get("HERMES_MODEL_COMPILER", FREE_ROUTER_MODEL),
+            "archetype": os.environ.get("HERMES_MODEL_ARCHETYPE", FREE_ROUTER_MODEL),
+            "topic_deriver": os.environ.get("HERMES_MODEL_TOPIC_DERIVER", FREE_ROUTER_MODEL),
         }
         n_submitters = int(os.environ.get("HERMES_N_SUBMITTERS", "3"))
         goal = goals[i % len(goals)]
