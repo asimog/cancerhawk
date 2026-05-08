@@ -191,7 +191,7 @@ export default function AutonomousLogsPage({ backendUrl }: { backendUrl: string 
           {entries.map((entry, i) => {
             const color = stageColor[entry.stage] || '#888';
             const time = new Date(entry.at).toLocaleTimeString();
-            const mode = 'free'; // Default; actual mode from job config would need additional fetch
+            const mode: string = 'free';
             return (
               <div key={`${entry.job_id}-${i}`} style={{
                 padding: '4px 0',

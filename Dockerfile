@@ -11,11 +11,18 @@ RUN pip install --no-cache-dir --upgrade pip
 COPY app/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Install pay CLI for x402 payment handling
-RUN curl -fsSL https://pay.sh/install.sh | sh \
-    && mv /root/.local/bin/pay /usr/local/bin/pay 2>/dev/null || true \
-    && mv /root/.cargo/bin/pay /usr/local/bin/pay 2>/dev/null || true \
-    && echo "pay CLI available: $(which pay || echo 'not found')"
+# Install pay CLI for x402 payment handling.
+# The install.sh script downloads a prebuilt binary for Linux amd64/arm64.
+RUN curl -fsSL https://pay.sh/install.sh -o /tmp/install-pay.sh \
+    && sh /tmp/install-pay.sh \
+    && find / -name pay -type f 2>/dev/null | head -5 \
+    && (cp /root/.local/bin/pay /usr/local/bin/pay 2>/dev/null \
+        || cp /root/.cargo/bin/pay /usr/local/bin/pay 2>/dev/null \
+        || cp /usr/local/cargo/bin/pay /usr/local/bin/pay 2>/dev/null \
+        || echo "WARNING: pay binary not found after install") \
+    && chmod +x /usr/local/bin/pay 2>/dev/null || true \
+    && echo "pay CLI available: $(which pay 2>/dev/null || echo 'not found')" \
+    && pay --version 2>/dev/null || echo "pay version check failed"
 
 COPY app/ app/
 COPY backend/ backend/
@@ -23,9 +30,4 @@ COPY cancerhawk-provider.yml .
 
 EXPOSE 8765 1402
 
-# Start both the pay gateway and the FastAPI worker.
-# The gateway on :1402 proxies paid requests to :8765.
-# The FastAPI worker on :8765 handles all business logic.
-CMD sh -c 'pay --sandbox server start cancerhawk-provider.yml --bind 0.0.0.0:1402 & \
-           sleep 2 && \
-           python -m app.main'
+CMD sh -c 'python -m app.main'
