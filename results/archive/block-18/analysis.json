@@ -1,0 +1,540 @@
+{
+  "archetypes": [
+    {
+      "scores": {
+        "clinical_viability": 6,
+        "regulatory_risk": 7,
+        "market_potential": 5,
+        "patient_impact": 7,
+        "novelty": 9,
+        "falsifiability": 8
+      },
+      "verdict": "This paper presents a theoretically elegant geometric control framework for CRISPR scheduling in metastatic DTCs, but its clinical viability is questionable. The reliance on real-time Cas13a-H3K27ac biosensors and curvature estimation introduces practical hurdles\u2014biomarker latency, three-dimensional niche variability, and off-target risks\u2014that aren\u2019t fully addressed. While simulations show promise, translating curvature-adaptive control to clinical workflows would require overcoming significant technical and regulatory barriers. Compared to standard fixed-interval CRISPR, it offers mechanistic novelty but lacks validation in human cohorts. The patient burden could be high if biosensor integration demands complex monitoring. Regulatory risk is elevated due to unproven closed-loop control in humans. However, if successful, this could redefine resistance management\u2014shifting from reactive to predictive oncology. The falsifiability is strong, with clear failure thresholds, which is a credit.",
+      "would_move_price": "A successful Phase I trial in patient-derived xenografts demonstrating reduced resistant subclone emergence would sharply increase prediction-market prices, while biosensor failure or off-target toxicity would crash them.",
+      "archetype_id": "oncologist",
+      "archetype_name": "Practicing Oncologist"
+    },
+    {
+      "scores": {
+        "clinical_viability": 3,
+        "regulatory_risk": 8,
+        "market_potential": 2,
+        "patient_impact": 4,
+        "novelty": 9,
+        "falsifiability": 6
+      },
+      "verdict": "The proposal is intellectually flamboyant but utterly speculative for a clinical trial. It hinges on measuring Gaussian curvature of a high\u2011dimensional epigenetic manifold in real time and modulating Cas9 dosing accordingly\u2014no validated assay exists, and the biosensor latency and error bounds are hand\u2011waved. There is no defined patient population, comparator, or primary endpoint beyond a simulated 42% reduction in first\u2011passage time, which cannot be translated to survival or response metrics. Regulatory agencies will view the CRISPR\u2011based control loop as a combination product with unknown off\u2011target risk, making IND approval unlikely. While the geometric control concept is novel, the lack of preclinical safety data, feasibility of curvature estimation in vivo, and a concrete statistical design render the work non\u2011viable for near\u2011term development.",
+      "would_move_price": "A successful in vivo demonstration that curvature can be measured with <10% error and that CASOC dosing reduces resistant clone emergence in a patient\u2011derived xenograft model would dramatically raise the price prediction.",
+      "archetype_id": "biostatistician",
+      "archetype_name": "Biostatistician"
+    },
+    {
+      "scores": {
+        "clinical_viability": 6,
+        "regulatory_risk": 7,
+        "market_potential": 7,
+        "patient_impact": 7,
+        "novelty": 9,
+        "falsifiability": 9
+      },
+      "verdict": "This paper presents a bold, mechanistic hypothesis linking epigenetic geometry to CRISPR-based control of metastatic resistance, which is intellectually compelling and novel. However, from an FDA regulatory lens, the approach faces significant hurdles. The reliance on real-time curvature estimation via Cas13a biosensors introduces critical technical risks\u2014errors or latency could derail the closed-loop system, potentially worsening outcomes. While the organoid data show promise, IND-enabling studies would require robust validation in patient-derived models to confirm biological relevance and safety. The framework\u2019s complexity (e.g., integrating microenvironmental dynamics) raises questions about reproducibility and scalability. Accelerated-approval eligibility is unlikely without clearer clinical endpoints or biomarkers. Prior precedents (e.g., CRISPR scheduling) exist but lack this geometric precision. The work is hypothesis-driven and requires extensive preclinical de-risking before advancing to trials.",
+      "would_move_price": "A successful phase I trial demonstrating safety and reduced resistance emergence in patient-derived xenografts would sharply increase the prediction-market price, while safety signals from off-target effects or unintended subclone selection would drive it down.",
+      "archetype_id": "fda",
+      "archetype_name": "FDA Regulator"
+    },
+    {
+      "scores": {
+        "clinical_viability": 3,
+        "regulatory_risk": 8,
+        "market_potential": 6,
+        "patient_impact": 4,
+        "novelty": 9,
+        "falsifiability": 7
+      },
+      "verdict": "Mechanically gorgeous, clinically naive. The Gaussian-curvature control theory is defensible and could yield platform IP around geometry-driven CRISPR scheduling, but the proposed in-vivo implementation assumes real-time Cas13a-H3K27ac biosensor readouts and Cas9 RNP flux modulation in disseminated cells \u2014 a delivery and safety profile that will crater clinical viability. Regulatory path is undefined (no predicate for closed-loop CRISPR therapeutics), and the TAM is capped by niche metastatic indications until broad solid-tumor applicability is proven. Comparable exits favor modality-agnostic platforms over bespoke biological circuits; capital intensity is high for marginal near-term de-risking. Back only if you can show biodistribution and off-target suppression in PDX within 18 months, otherwise this is a math paper wearing a biotech cape.",
+      "would_move_price": "Positive catalyst: in-vivo microfluidic curvature-defined PDX data showing \u226550% reduction in resistant clone emergence with \u226410% off-target indels; negative catalyst: any demonstration that biosensor latency >10% of \u03c4_v drives selection for evasive subclones.",
+      "archetype_id": "investor",
+      "archetype_name": "Biotech Investor"
+    },
+    {
+      "scores": {
+        "clinical_viability": 3,
+        "regulatory_risk": 8,
+        "market_potential": 4,
+        "patient_impact": 5,
+        "novelty": 9,
+        "falsifiability": 7
+      },
+      "verdict": "A conceptually dazzling marriage of differential geometry and CRISPR control that slots squarely between physical oncology and synthetic immunology\u2014too mechanism-first for mainstream TME-centric programs, too in-vivo risky for pure bioengineering consortia. Champions will be mathematical-oncology groups hungry for testable Hamiltonian formulations (e.g., UCSF/QB3, Dana-Farber TMI) and CRISPR-delivery engineers frustrated by empirical scheduling; adversaries will be epigenetic purists who dispute curvature as anything more than a phenomenological proxy and translationalists who balk at Cas13a-H3K27ac biosensor latency in vivo. Conference reception will bifurcate: standing-room-only at Physical Biology/ACS Synthetic Biology, polite hallway murmurs at AACR/ASCO where clinical priors dominate. The 42% mean-first-passage-time reduction versus the 30% threshold is the hook, but the 18% curvature-estimation error bar and the 12% biosensor-latitude tolerance will be attacked as optimistic for solid-tissue DTC niches. Without a clear IND-enabling tox package or IP landscape around \u03ba(p)-scaled RNP dosing, investors will wait for microfluidic/PDX validation before writing large checks.",
+      "would_move_price": "A peer-reviewed confirmation in patient-derived organoids that \u03ba(p)-scaled Cas9 dosing reduces resistant clone emergence frequency by \u226550% without elevating Cas9-tolerant or invasive-plastic subclones would sharply move prediction-market price up; conversely, demonstration that >10% biosensor latency or microenvironmental curvature heterogeneity collapses the control gain would move price down.",
+      "archetype_id": "kol",
+      "archetype_name": "Academic KOL"
+    },
+    {
+      "scores": {
+        "": ""
+      },
+      "verdict": "",
+      "would_move_price": "",
+      "archetype_id": "patient",
+      "archetype_name": "Patient Advocate"
+    },
+    {
+      "scores": {
+        "clinical_viability": 3,
+        "regulatory_risk": 7,
+        "market_potential": 4,
+        "patient_impact": 5,
+        "novelty": 9,
+        "falsifiability": 5
+      },
+      "verdict": "From a payer standpoint, the paper presents an intriguing mechanistic concept but lacks the clinical and economic data needed to assess cost\u2011effectiveness. The evidence is limited to simulated organoid models; no in\u2011vivo efficacy, safety, or manufacturing cost figures are provided, making it impossible to calculate a credible ICER. Given the novel CRISPR\u2011based control system, regulatory risk is high, and any approved therapy would likely trigger stringent prior\u2011authorization requirements and significant budget impact due to high drug development and administration costs. Until robust patient\u2011derived xenograft or early\u2011phase trial data demonstrate a clear clinical benefit that justifies a price within accepted willingness\u2011to\u2011pay thresholds, coverage would be highly restricted and likely contingent on outcomes\u2011based contracts.",
+      "would_move_price": "A demonstrable improvement in metastasis\u2011free survival in a early\u2011phase PDX or clinical trial would lift the expected price, while evidence of increased off\u2011target effects or prohibitive manufacturing complexity would drive it down.",
+      "archetype_id": "payer",
+      "archetype_name": "Insurance Payer"
+    },
+    {
+      "scores": {
+        "clinical_viability": 4,
+        "regulatory_risk": 7,
+        "market_potential": 5,
+        "patient_impact": 6,
+        "novelty": 8,
+        "falsifiability": 6
+      },
+      "archetype_id": "short_seller",
+      "archetype_name": "Adversarial Short-Seller"
+    }
+  ],
+  "market_price": 0.4842857142857143,
+  "score_matrix": {
+    "oncologist": {
+      "clinical_viability": 6,
+      "regulatory_risk": 7,
+      "market_potential": 5,
+      "patient_impact": 7,
+      "novelty": 9,
+      "falsifiability": 8
+    },
+    "biostatistician": {
+      "clinical_viability": 3,
+      "regulatory_risk": 8,
+      "market_potential": 2,
+      "patient_impact": 4,
+      "novelty": 9,
+      "falsifiability": 6
+    },
+    "fda": {
+      "clinical_viability": 6,
+      "regulatory_risk": 7,
+      "market_potential": 7,
+      "patient_impact": 7,
+      "novelty": 9,
+      "falsifiability": 9
+    },
+    "investor": {
+      "clinical_viability": 3,
+      "regulatory_risk": 8,
+      "market_potential": 6,
+      "patient_impact": 4,
+      "novelty": 9,
+      "falsifiability": 7
+    },
+    "kol": {
+      "clinical_viability": 3,
+      "regulatory_risk": 8,
+      "market_potential": 4,
+      "patient_impact": 5,
+      "novelty": 9,
+      "falsifiability": 7
+    },
+    "patient": {
+      "": ""
+    },
+    "payer": {
+      "clinical_viability": 3,
+      "regulatory_risk": 7,
+      "market_potential": 4,
+      "patient_impact": 5,
+      "novelty": 9,
+      "falsifiability": 5
+    },
+    "short_seller": {
+      "clinical_viability": 4,
+      "regulatory_risk": 7,
+      "market_potential": 5,
+      "patient_impact": 6,
+      "novelty": 8,
+      "falsifiability": 6
+    }
+  },
+  "consensus_dim": {
+    "clinical_viability": 4.0,
+    "regulatory_risk": 7.428571428571429,
+    "market_potential": 4.714285714285714,
+    "patient_impact": 5.428571428571429,
+    "novelty": 8.857142857142858,
+    "falsifiability": 6.857142857142857
+  },
+  "headline_catalysts": [
+    "[Practicing Oncologist] A successful Phase I trial in patient-derived xenografts demonstrating reduced resistant subclone emergence would sharply increase prediction-market prices, while biosensor failure or off-target toxicity would crash them.",
+    "[Biostatistician] A successful in vivo demonstration that curvature can be measured with <10% error and that CASOC dosing reduces resistant clone emergence in a patient\u2011derived xenograft model would dramatically raise the price prediction.",
+    "[FDA Regulator] A successful phase I trial demonstrating safety and reduced resistance emergence in patient-derived xenografts would sharply increase the prediction-market price, while safety signals from off-target effects or unintended subclone selection would drive it down.",
+    "[Biotech Investor] Positive catalyst: in-vivo microfluidic curvature-defined PDX data showing \u226550% reduction in resistant clone emergence with \u226410% off-target indels; negative catalyst: any demonstration that biosensor latency >10% of \u03c4_v drives selection for evasive subclones.",
+    "[Academic KOL] A peer-reviewed confirmation in patient-derived organoids that \u03ba(p)-scaled Cas9 dosing reduces resistant clone emergence frequency by \u226550% without elevating Cas9-tolerant or invasive-plastic subclones would sharply move prediction-market price up; conversely, demonstration that >10% biosensor latency or microenvironmental curvature heterogeneity collapses the control gain would move price down.",
+    "[Insurance Payer] A demonstrable improvement in metastasis\u2011free survival in a early\u2011phase PDX or clinical trial would lift the expected price, while evidence of increased off\u2011target effects or prohibitive manufacturing complexity would drive it down."
+  ],
+  "derived_topics": [
+    {
+      "id": 1,
+      "title": "3D niche curvature mapping to quantify \u03c4_v heterogeneity in PDX DTCs",
+      "probability": 0.78,
+      "impact": 8,
+      "token_cost": 3200,
+      "rationale": "Extends the \u03ba(p) scaling law by measuring spatial curvature heterogeneity in patient-derived niches; hypothesis: localized \u03ba(p) variance predicts \u03c4_v dispersion and resistant clone emergence; endpoint: single-cell H3K27ac curvature maps vs scRNA-seq fate; failure: curvature fails to explain >10% of \u03c4_v variance."
+    },
+    {
+      "id": 2,
+      "title": "Closed-loop CASOC with optogenetic \u03ba(p) control to test gain-limits in metastasis",
+      "probability": 0.72,
+      "impact": 9,
+      "token_cost": 3500,
+      "rationale": "Extends controller bandwidth limits by replacing biosensor latency with optogenetic \u03ba(p) actuation; hypothesis: exceeding chromatin-remodeling timescales as control gain amplifies plasticity and invasion; endpoint: metastatic burden vs \u03ba-tracking error; failure: invasion does not rise with excessive gain."
+    },
+    {
+      "id": 3,
+      "title": "Cas9-tolerant subclone fitness under sustained \u03ba(p)-scaled editing pressure",
+      "probability": 0.65,
+      "impact": 7,
+      "token_cost": 2800,
+      "rationale": "Extends the truncation of \u03c4_v by asking whether residual Cas9-tolerant subclones evolve under chronic \u03ba(p)-scaled exposure; hypothesis: high-\u03ba editing selects for nuclease-independent persistence circuits; endpoint: competitive fitness of Cas9-tolerant vs parental DTCs post-CASOC; failure: no fitness divergence."
+    },
+    {
+      "id": 4,
+      "title": "Metabolite-driven curvature steering: lactate as a local \u03ba(p) modulator",
+      "probability": 0.69,
+      "impact": 8,
+      "token_cost": 3000,
+      "rationale": "Extends geometric signposts by testing whether metabolic fluxes reshape \u0393_t curvature; hypothesis: lactate accumulation flattens local \u03ba(p), lengthening \u03c4_v and expanding resistance plateaus; endpoint: lactate clamp vs \u03ba(p) and \u03c4_v; failure: metabolite changes do not alter curvature or commitment kinetics."
+    },
+    {
+      "id": 5,
+      "title": "Microfluidic curvature-defined traps to mechanically probe \u03c4_v compression",
+      "probability": 0.75,
+      "impact": 7,
+      "token_cost": 3100,
+      "rationale": "Extends in silico Langevin dynamics by imposing physical curvature constraints on DTCs; hypothesis: engineered high-\u03ba microchannels compress \u03c4_v analogous to CASOC; endpoint: state transition rates vs imposed curvature; failure: mechanical curvature does not predict epigenetic commitment kinetics."
+    }
+  ],
+  "peer_reviews": [
+    {
+      "archetype_id": "oncologist",
+      "archetype_name": "Practicing Oncologist",
+      "recommendation": "major_revision",
+      "confidence": 0.75,
+      "summary": "The paper proposes a novel geometric control strategy for managing disseminated tumor cell (DTC) resistance using Gaussian curvature of an epigenetic manifold. While the mechanistic framework is innovative, critical gaps in biological validation, statistical rigor, and experimental design undermine its clinical translatability. The core hypothesis requires stronger evidence linking curvature metrics to biological outcomes.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 6,
+        "experimental_design": 7,
+        "evidence_support": 5,
+        "statistical_rigor": 4,
+        "clarity_of_writing": 6
+      },
+      "criticisms": [
+        "The Gaussian curvature \u03ba(p) is abstractly defined as a metaphorical 'kinetic rheostat' without empirical validation of its biological relevance to epigenetic transitions",
+        "Biosensor latency (12%) and error thresholds (18%) lack mechanistic justification for their impact on Cas9 efficacy",
+        "Simulation results (42% reduction in first-passage time) are not benchmarked against alternative control strategies or real-world variability",
+        "Off-target effects of Cas9 scaling in high-curvature regions are unaddressed, risking unintended plasticity",
+        "Clinical relevance is speculative without patient-derived data or in vivo validation"
+      ],
+      "required_fixes": [
+        "Provide experimental evidence linking Gaussian curvature to measurable epigenetic changes (e.g., H3K27ac dynamics in response to curvature manipulation)",
+        "Quantify biosensor latency/error impact through sensitivity analysis with real-time feedback loops",
+        "Add comparative simulations against fixed-interval CRISPR dosing and standard-of-care therapies",
+        "Clarify how curvature adaptation avoids off-target effects in complex 3D tumor microenvironments"
+      ],
+      "suggested_experiments": [
+        "Validate CASOC in patient-derived xenografts with varying curvature profiles under controlled drug exposure",
+        "Test biosensor accuracy using synthetic H3K27ac gradients in controlled organoid systems",
+        "Conduct off-target profiling of Cas9 activity at high-curvature vs. low-curvature genomic regions"
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Develop a multi-scale model integrating epigenetic manifold geometry, Cas9 kinetics, and biosensor dynamics to simulate CASOC under varying latency/error conditions",
+        "expected_metrics": [
+          "First-passage time to drug-sensitive states",
+          "Resistant clone emergence frequency",
+          "Biosensor estimation error propagation",
+          "Cas9 off-target activity"
+        ],
+        "rationale": "This would test the robustness of CASOC to real-world biological variability and biosensor limitations, critical for clinical translation"
+      }
+    },
+    {
+      "archetype_id": "biostatistician",
+      "archetype_name": "Biostatistician",
+      "recommendation": "major_revision",
+      "confidence": 0.78,
+      "summary": "The manuscript presents an innovative geometric control framework (CASOC) for CRISPR dosing based on manifold curvature, but it lacks concrete experimental design, statistical power calculations, and empirical validation; the claims are largely theoretical and simulation\u2011only, making the current evidence insufficient for publication.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 6,
+        "experimental_design": 3,
+        "evidence_support": 4,
+        "statistical_rigor": 2,
+        "clarity_of_writing": 5
+      },
+      "criticisms": [
+        "The study relies exclusively on in silico organoid simulations without any in vivo or ex vivo validation.",
+        "No sample\u2011size justification, power analysis, or statistical testing plan is provided for the simulated experiments.",
+        "Curvature estimation methodology (biosensor latency, error rates) is described qualitatively; quantitative validation is missing.",
+        "The manuscript mixes mathematical formalism with biological narrative, making it difficult to discern testable hypotheses.",
+        "Key parameters (e.g., \u03ba(p) scaling exponent, \u03c4_v thresholds) are arbitrarily chosen without sensitivity analysis."
+      ],
+      "required_fixes": [
+        "Provide a detailed experimental design section specifying number of organoid replicates, controls, and statistical power calculations for the primary endpoint (mean first\u2011passage time).",
+        "Include quantitative validation of the Cas13a\u2011H3K27ac biosensor: calibration curves, measurement error, and latency distribution.",
+        "Present sensitivity analyses showing how variations in curvature estimation error and biosensor delay affect the primary outcome.",
+        "Add at least one proof\u2011of\u2011concept experiment in patient\u2011derived xenografts or primary tumor slices demonstrating CASOC\u2011guided Cas9 dosing versus a fixed schedule.",
+        "Report statistical tests (e.g., mixed\u2011effects models) used to compare groups, with effect sizes and confidence intervals."
+      ],
+      "suggested_experiments": [
+        "Conduct a controlled organoid study with three arms: (1) fixed\u2011interval Cas9 dosing, (2) curvature\u2011adaptive dosing using real\u2011time biosensor feedback, and (3) sham control. Measure mean first\u2011passage time to drug\u2011sensitive attractor and frequency of resistant subclones across \u22658 biological replicates per arm."
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Develop a stochastic differential equation model of epigenetic state dynamics on a curved manifold incorporating measured biosensor noise and latency; simulate CASOC versus fixed dosing across a range of curvature fields.",
+        "expected_metrics": [
+          "Mean first\u2011passage time to sensitive attractor",
+          "Distribution of resistant clone emergence",
+          "Robustness of control under varying \u03ba(p) estimation error"
+        ],
+        "rationale": "A rigorous in silico sensitivity analysis will quantify how realistic measurement imperfections impact the claimed 42% reduction, thereby strengthening the mechanistic claim and informing required experimental sample sizes."
+      }
+    },
+    {
+      "archetype_id": "investor",
+      "archetype_name": "Biotech Investor",
+      "recommendation": "reject",
+      "confidence": 0.92,
+      "summary": "This manuscript proposes a mathematically sophisticated but biologically undefined framework for curvature-adaptive CRISPR control of disseminated tumor cells. While the geometric control theory is internally coherent, the paper suffers from fatal gaps: the epigenetic-transcriptional commitment manifold \u0393_t has no operational definition, the \u03ba(p)^(-1/2) scaling law appears without derivation, all data derive from unspecified 'simulated organoid platforms' with no methodological detail, and critical citations (CancerHawk Blocks 16, 17) are internal documents rather than peer-reviewed literature. The manuscript is also incomplete (Mechanism section cuts off mid-sentence). From a translational perspective, there is no discussion of delivery modality, PK/PD, toxicity, immune response, or any in vivo data. The claimed 42\u00b15% improvement lacks statistical methods or error analysis. This is a theoretical proposal requiring fundamental experimental validation before peer review is meaningful.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 3,
+        "experimental_design": 1,
+        "evidence_support": 1,
+        "statistical_rigor": 2,
+        "clarity_of_writing": 6
+      },
+      "criticisms": [
+        "The epigenetic-transcriptional commitment manifold \u0393_t is never operationally defined - no coordinates, no metric, no method for computing \u03ba(p) from biological data",
+        "The \u03ba(p)^(-1/2) scaling law appears without derivation or physical justification",
+        "All experimental claims derive from 'simulated organoid platforms' with no methods, parameters, or validation described",
+        "The manuscript is incomplete - the Mechanism section ends mid-sentence",
+        "CancerHawk Blocks 16 and 17 are cited as foundational but appear to be internal documents, not peer-reviewed literature",
+        "No discussion of delivery modality (viral, RNP, LNP) for Cas9/Cas13a",
+        "No PK/PD considerations or therapeutic window analysis",
+        "No toxicity or immune response data despite CRISPR-based intervention claims",
+        "The 42\u00b15% improvement claim has no statistical methods, sample sizes, or error analysis",
+        "No in vivo data - only simulations with undefined parameters",
+        "No discussion of off-target effects or DNA damage response implications",
+        "The Cas13a-H3K27ac biosensor is proposed but never characterized experimentally",
+        "Failure thresholds (30% curvature error, 15% biosensor latency) are stated without justification"
+      ],
+      "required_fixes": [
+        "Define \u0393_t operationally with specific coordinates, metric, and computational method for \u03ba(p) from single-cell data",
+        "Provide complete derivation or citation for \u03ba(p)^(-1/2) scaling law",
+        "Describe simulation methods in full detail including all parameters, initial conditions, and validation against real biological data",
+        "Complete the truncated Mechanism section",
+        "Replace internal document citations with peer-reviewed literature or provide access to CancerHawk Blocks 16/17",
+        "Include actual experimental data from organoid or xenograft models, not simulations only",
+        "Provide full statistical methods including sample sizes, replicates, and multiple comparison corrections",
+        "Add in vivo efficacy and toxicity data in relevant animal models",
+        "Characterize the Cas13a-H3K27ac biosensor with actual kinetic measurements",
+        "Discuss delivery modality, PK/PD, and immunogenicity considerations"
+      ],
+      "suggested_experiments": [
+        "Measure H3K27ac dynamics in patient-derived organoids under drug pressure and compute putative curvature metrics from single-cell ATAC-seq",
+        "Test fixed-interval vs \u03ba-scaled Cas9 dosing in DTC-containing organoids with clonal tracking",
+        "Characterize Cas13a-H3K27ac biosensor kinetics and latency in live cells",
+        "Test in patient-derived xenografts with longitudinal sampling for resistant clone emergence",
+        "Validate in microfluidic curvature-defined environments as proposed"
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Build an agent-based model of DTC populations on a defined epigenetic landscape where \u03ba(p) is computed from simulated chromatin state dynamics. Implement CASOC controller with tunable parameters and test against null controllers (fixed-dose, random-dose) across 1000+ Monte Carlo realizations with varying curvature estimation error and biosensor latency.",
+        "expected_metrics": [
+          "Mean first-passage time to drug-sensitive attractors",
+          "Resistant clone emergence frequency at 30 days",
+          "Cumulative Cas9 exposure",
+          "Robustness to 10-30% curvature estimation error",
+          "Robustness to 5-20% biosensor latency as fraction of \u03c4_v"
+        ],
+        "rationale": "This in silico validation would establish whether the claimed 42% improvement is achievable under realistic noise conditions and identify the critical thresholds at which CASOC fails, providing falsifiable predictions for subsequent experimental testing."
+      }
+    },
+    {
+      "archetype_id": "short_seller",
+      "archetype_name": "Adversarial Short-Seller",
+      "recommendation": "major_revision",
+      "confidence": 0.78,
+      "summary": "The manuscript proposes an intriguing curvature\u2011based control strategy for CRISPR dosing, but the mechanistic underpinnings, experimental validation, and quantitative grounding are insufficiently detailed, rendering the claims speculative and untestable in the current form.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 4,
+        "experimental_design": 3,
+        "evidence_support": 2,
+        "statistical_rigor": 2,
+        "clarity_of_writing": 5
+      },
+      "criticisms": [
+        "The central claim that Gaussian curvature of an epigenetic\u2011transcriptional manifold can be accurately estimated in real time via a Cas13a\u2011H3K27ac biosensor is unsupported; no data or calibration curves are presented.",
+        "The scaling law Cas9 flux \u221d \u03ba(p)^(-1/2) is introduced without derivation or justification from first principles or empirical data; curvature units and dimensional consistency are unclear.",
+        "Simulated organoid results are described only qualitatively (42\u202f\u00b1\u202f5% reduction) with no reference to the simulation framework, parameter values, or statistical analysis; the 30% threshold is arbitrary.",
+        "The manuscript conflates curvature with H3K27ac enrichment, yet no correlation analysis or mapping strategy is shown.",
+        "No in vivo or ex vivo validation is provided; the proposed patient\u2011derived xenograft experiments are merely mentioned as future work.",
+        "The discussion of failure modes (e.g., curvature estimation error >30%) lacks quantitative thresholds or sensitivity analyses.",
+        "The manuscript repeatedly cites \u201cCancerHawk Block 16/17\u201d without providing concrete experimental evidence or peer\u2011reviewed references.",
+        "The control architecture assumes overdamped Langevin dynamics on \u0393_t, but the mapping from chromatin states to a continuous manifold is not defined.",
+        "The potential for off\u2011target CRISPR activity or DNA damage responses to select for resistant subclones is acknowledged but not experimentally addressed.",
+        "The manuscript\u2019s writing is dense and repetitive, with many redundant paragraphs that obscure key points."
+      ],
+      "required_fixes": [
+        "Provide a rigorous derivation or empirical justification for the \u03ba(p)^(-1/2) scaling law, including dimensional analysis.",
+        "Present a detailed methodology for estimating Gaussian curvature from single\u2011cell epigenomic data, with validation against known curvature benchmarks.",
+        "Include quantitative simulation data: specify the computational model, parameters, noise levels, and statistical tests used to obtain the 42\u202f\u00b1\u202f5% improvement.",
+        "Show experimental evidence (e.g., ChIP\u2011seq, ATAC\u2011seq, or imaging) linking H3K27ac patterns to local curvature estimates.",
+        "Demonstrate in vitro or ex vivo proof\u2011of\u2011concept that CASOC reduces the transient commitment window \u03c4_v and limits emergence of resistant subclones, with appropriate controls.",
+        "Quantify the sensitivity of the control scheme to curvature estimation error and biosensor latency; provide a robustness analysis.",
+        "Replace vague references to \u201cCancerHawk Block 16/17\u201d with specific, peer\u2011reviewed studies or detailed supplementary data.",
+        "Define the mapping from chromatin state space to the Riemannian manifold \u0393_t, including how high\u2011dimensional data are reduced and how curvature is computed.",
+        "Address potential off\u2011target effects and DNA damage responses experimentally, showing that the proposed dosing strategy does not increase plasticity.",
+        "Revise the manuscript to eliminate redundant sections and improve logical flow."
+      ],
+      "suggested_experiments": [
+        "Measure H3K27ac enrichment and chromatin accessibility (ATAC\u2011seq) in single cells before and after CASOC treatment to correlate changes with predicted curvature shifts.",
+        "Perform time\u2011lapse imaging of DTCs expressing a fluorescent reporter for drug\u2011sensitive vs. tolerant states while applying curvature\u2011adaptive Cas9 dosing versus fixed dosing; quantify \u03c4_v and resistant clone emergence.",
+        "Use CRISPR\u2011Cas9 editing of a reporter locus whose mutation confers drug resistance, and compare the frequency of resistant clones under CASOC versus conventional schedules.",
+        "Implement a microfluidic device that imposes controlled curvature gradients (e.g., via patterned chromatin modifiers) and test whether CASOC preferentially targets high\u2011curvature regions.",
+        "Conduct a dose\u2011response study to determine the optimal \u03ba(p)^(-1/2) scaling exponent that minimizes resistant subclone frequency while maintaining cell viability."
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Develop a stochastic simulation of DTC state dynamics on a discretized epigenetic manifold where curvature is assigned to each node based on synthetic chromatin accessibility data. Implement two control strategies: (1) fixed Cas9 dosing; (2) curvature\u2011adaptive dosing with flux \u221d \u03ba^(-1/2). Compare the mean first\u2011passage time to drug\u2011sensitive attractors and the distribution of \u03c4_v across the population.",
+        "expected_metrics": [
+          "Mean first\u2011passage time to drug\u2011sensitive state",
+          "Distribution of transient commitment window \u03c4_v",
+          "Frequency of resistant subclone emergence",
+          "Sensitivity to curvature estimation error and biosensor latency"
+        ],
+        "rationale": "A well\u2011parameterized simulation will test the core hypothesis that curvature\u2011adaptive dosing shortens \u03c4_v and reduces resistance, while also quantifying robustness to realistic measurement noise and delays, thereby providing a falsifiable benchmark for the proposed control law."
+      }
+    }
+  ],
+  "simulations": [
+    {
+      "id": "computational-model",
+      "title": "computational_model",
+      "type": "html5_canvas",
+      "description": "Develop a stochastic differential equation model of epigenetic state dynamics on a curved manifold incorporating measured biosensor noise and latency; simulate CASOC versus fixed dosing across a range of curvature fields.",
+      "rationale": "A rigorous in silico sensitivity analysis will quantify how realistic measurement imperfections impact the claimed 42% reduction, thereby strengthening the mechanistic claim and informing required experimental sample sizes.",
+      "expected_metrics": [
+        "Mean first\u2011passage time to sensitive attractor",
+        "Distribution of resistant clone emergence",
+        "Robustness of control under varying \u03ba(p) estimation error"
+      ],
+      "scene": "trajectory_manifold",
+      "seed": 101,
+      "parameters": {}
+    },
+    {
+      "id": "computational-model",
+      "title": "computational_model",
+      "type": "html5_canvas",
+      "description": "Develop a stochastic simulation of DTC state dynamics on a discretized epigenetic manifold where curvature is assigned to each node based on synthetic chromatin accessibility data. Implement two control strategies: (1) fixed Cas9 dosing; (2) curvature\u2011adaptive dosing with flux \u221d \u03ba^(-1/2). Compare the mean first\u2011passage time to drug\u2011sensitive attractors and the distribution of \u03c4_v across the population.",
+      "rationale": "A well\u2011parameterized simulation will test the core hypothesis that curvature\u2011adaptive dosing shortens \u03c4_v and reduces resistance, while also quantifying robustness to realistic measurement noise and delays, thereby providing a falsifiable benchmark for the proposed control law.",
+      "expected_metrics": [
+        "Mean first\u2011passage time to drug\u2011sensitive state",
+        "Distribution of transient commitment window \u03c4_v",
+        "Frequency of resistant subclone emergence",
+        "Sensitivity to curvature estimation error and biosensor latency"
+      ],
+      "scene": "trajectory_manifold",
+      "seed": 202,
+      "parameters": {}
+    },
+    {
+      "id": "computational-model",
+      "title": "computational_model",
+      "type": "html5_canvas",
+      "description": "Develop a multi-scale model integrating epigenetic manifold geometry, Cas9 kinetics, and biosensor dynamics to simulate CASOC under varying latency/error conditions",
+      "rationale": "This would test the robustness of CASOC to real-world biological variability and biosensor limitations, critical for clinical translation",
+      "expected_metrics": [
+        "First-passage time to drug-sensitive states",
+        "Resistant clone emergence frequency",
+        "Biosensor estimation error propagation",
+        "Cas9 off-target activity"
+      ],
+      "scene": "trajectory_manifold",
+      "seed": 303,
+      "parameters": {}
+    },
+    {
+      "id": "tumor-volume-3d",
+      "title": "Tumor Volume (3D)",
+      "type": "threejs",
+      "description": "Volumetric point-cloud tumor with phenotype-coloured clusters that grow, divide, and apoptose over time. Rotates the mass to expose where the model places phenotype boundaries.",
+      "rationale": "The 2D manifold view collapses depth \u2014 a 3D volumetric rendering tests whether claimed phenotype clusters survive when seen from arbitrary angles.",
+      "expected_metrics": [
+        "phenotype-cluster volumetric stability",
+        "intra-cluster density",
+        "boundary sharpness under rotation"
+      ],
+      "three_scene": "tumor_volume_3d",
+      "seed": 9933,
+      "parameters": {
+        "title": "Oncology Innovation",
+        "confidence": 0.4842857142857143,
+        "critique": "The Gaussian curvature \u03ba(p) is abstractly defined as a metaphorical 'kinetic rheostat' without empirical validation of its biological relevance to epigenetic transitions",
+        "catalyst": "[Practicing Oncologist] A successful Phase I trial in patient-derived xenografts demonstrating reduced resistant subclone emergence would sharply increase prediction-market prices, while biosensor failure or off-target toxicity would crash them."
+      }
+    },
+    {
+      "id": "mitotic-lattice-3d",
+      "title": "Mitotic Lattice (3D)",
+      "type": "threejs",
+      "description": "Rotating 3D lattice of cells with division events sampled from the validator-emitted novelty distribution. Daughter cells inherit colour from parent phenotype, exposing lineage drift.",
+      "rationale": "Hooks the falsifier visually: if the paper's mechanism predicts a specific division geometry, this scene makes deviations from it immediately visible.",
+      "expected_metrics": [
+        "division-rate per phenotype",
+        "lineage-drift entropy",
+        "spatial clustering of mitotic events"
+      ],
+      "three_scene": "mitotic_lattice_3d",
+      "seed": 9951,
+      "parameters": {
+        "title": "Oncology Innovation",
+        "confidence": 0.4842857142857143,
+        "critique": "The Gaussian curvature \u03ba(p) is abstractly defined as a metaphorical 'kinetic rheostat' without empirical validation of its biological relevance to epigenetic transitions",
+        "catalyst": "[Biostatistician] A successful in vivo demonstration that curvature can be measured with <10% error and that CASOC dosing reduces resistant clone emergence in a patient\u2011derived xenograft model would dramatically raise the price prediction."
+      }
+    },
+    {
+      "id": "perturbation-cone-3d",
+      "title": "Perturbation Cone (3D)",
+      "type": "threejs",
+      "description": "3D analog of the counterfactual scene: treated trajectories spread out from a baseline manifold along a confidence-weighted cone. Cone width tracks acceptance probability.",
+      "rationale": "Forces the prediction-vs-observation gap into a single visual. A narrow, well-aimed cone implies confident divergence; a fat cone signals high predictive uncertainty.",
+      "expected_metrics": [
+        "cone aperture",
+        "trajectory bundle coherence",
+        "off-axis trajectory frequency"
+      ],
+      "three_scene": "perturbation_cone_3d",
+      "seed": 9969,
+      "parameters": {
+        "title": "Oncology Innovation",
+        "confidence": 0.4842857142857143,
+        "critique": "The Gaussian curvature \u03ba(p) is abstractly defined as a metaphorical 'kinetic rheostat' without empirical validation of its biological relevance to epigenetic transitions",
+        "catalyst": "[FDA Regulator] A successful phase I trial demonstrating safety and reduced resistance emergence in patient-derived xenografts would sharply increase the prediction-market price, while safety signals from off-target effects or unintended subclone selection would drive it down."
+      }
+    }
+  ]
+}

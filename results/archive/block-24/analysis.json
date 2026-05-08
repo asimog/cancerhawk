@@ -1,0 +1,486 @@
+{
+  "archetypes": [
+    {
+      "scores": {
+        "clinical_viability": 3,
+        "regulatory_risk": 8,
+        "market_potential": 4,
+        "patient_impact": 5,
+        "novelty": 9,
+        "falsifiability": 6
+      },
+      "verdict": "The proposal is conceptually dazzling but statistically shaky. It hinges on high\u2011dimensional curvature estimates from noisy single\u2011cell ATAC\u2011seq data, yet offers no power calculations, no predefined primary endpoint, and no realistic sample\u2011size justification for a human trial. The closed\u2011loop editing system introduces latency and off\u2011target concerns that would likely dominate any modest 23% MFPT gain observed in organoids. Without rigorous preclinical validation and a clear statistical analysis plan, the chance of translating this geometry\u2011driven epigenetic editing into a viable therapeutic is low.",
+      "would_move_price": "A definitive preclinical study showing reproducible MFPT reduction in multiple patient\u2011derived xenograft models would shift the price upward.",
+      "archetype_id": "biostatistician",
+      "archetype_name": "Biostatistician"
+    },
+    {
+      "scores": {
+        "clinical_viability": 3,
+        "regulatory_risk": 8,
+        "market_potential": 4,
+        "patient_impact": 3,
+        "novelty": 9,
+        "falsifiability": 5
+      },
+      "verdict": "The concept of Ricci\u2011curvature\u2011guided epigenetic editing is intellectually intriguing but falls far short of an IND\u2011ready therapeutic. The manuscript provides no preclinical safety data, no pharmacology, and relies on speculative geometry metrics that are highly sensitive to single\u2011cell ATAC\u2011seq noise. Without demonstrable off\u2011target profiling, biodistribution, and a clear dosing regimen, the FDA would view this as a high\u2011risk, early\u2011stage research tool rather than a drug candidate. Accelerated\u2011approval pathways are unavailable because no surrogate endpoint or clinical benefit is established. Substantial IND\u2011enabling work\u2014GLP toxicology, GMP dCas9\u2011TET1 production, and validation of rapid biosensors\u2014is required before any human study could be considered.",
+      "would_move_price": "A successful GLP toxicology package showing minimal off\u2011target epigenetic toxicity would shift the price upward; failure to demonstrate safety would drive it down.",
+      "archetype_id": "fda",
+      "archetype_name": "FDA Regulator"
+    },
+    {
+      "scores": {
+        "": ""
+      },
+      "verdict": "",
+      "would_move_price": "",
+      "archetype_id": "kol",
+      "archetype_name": "Academic KOL"
+    },
+    {
+      "scores": {
+        "": ""
+      },
+      "archetype_id": "patient",
+      "archetype_name": "Patient Advocate"
+    },
+    {
+      "scores": {
+        "clinical_viability": 2,
+        "regulatory_risk": 9,
+        "market_potential": 3,
+        "patient_impact": 2,
+        "novelty": 8,
+        "falsifiability": 7
+      },
+      "verdict": "A gorgeous geometric hallucination that confuses manifold navigation with pharmacology. The Ricci tensor is not a dosing algorithm; it\u2019s a descriptive statistic that collapses under finite-sample noise in single-cell ATAC-seq. The 23% MFPT gain is a curve-fitting artifact that will invert once you account for H3K27me3 rebound kinetics and off-target super-enhancer ignition. Latency in dCas9\u2013TET1 editing exceeds the commitment window for epigenetic state transitions, so the closed-loop is always chasing last week\u2019s manifold. Regulatory will torpedo this on CMC grounds: you cannot file a tensor as an IND, and CUT&RUN off-target maps will reveal collateral H3K27ac at lineage-specifying enhancers that drive explosive relapse. Market will price this at zero once readouts show that curvature-guided arms have higher variance in progression-free survival than physician\u2019s choice, because biology is not Wasserstein-geodesic in a patient with bone-marrow heterogeneity.",
+      "would_move_price": "A preregistered Phase II readout showing non-inferior relapse-free survival with 30% fewer off-target CUT&RUN peaks versus control would spike the prediction-market price; any signal of H3K27ac gain at super-enhancers in serial biopsies would collapse it to zero.",
+      "archetype_id": "short_seller",
+      "archetype_name": "Adversarial Short-Seller"
+    }
+  ],
+  "market_price": 0.37,
+  "score_matrix": {
+    "biostatistician": {
+      "clinical_viability": 3,
+      "regulatory_risk": 8,
+      "market_potential": 4,
+      "patient_impact": 5,
+      "novelty": 9,
+      "falsifiability": 6
+    },
+    "fda": {
+      "clinical_viability": 3,
+      "regulatory_risk": 8,
+      "market_potential": 4,
+      "patient_impact": 3,
+      "novelty": 9,
+      "falsifiability": 5
+    },
+    "kol": {
+      "": ""
+    },
+    "patient": {
+      "": ""
+    },
+    "short_seller": {
+      "clinical_viability": 2,
+      "regulatory_risk": 9,
+      "market_potential": 3,
+      "patient_impact": 2,
+      "novelty": 8,
+      "falsifiability": 7
+    }
+  },
+  "consensus_dim": {
+    "clinical_viability": 2.6666666666666665,
+    "regulatory_risk": 8.333333333333334,
+    "market_potential": 3.6666666666666665,
+    "patient_impact": 3.3333333333333335,
+    "novelty": 8.666666666666666,
+    "falsifiability": 6.0
+  },
+  "headline_catalysts": [
+    "[Biostatistician] A definitive preclinical study showing reproducible MFPT reduction in multiple patient\u2011derived xenograft models would shift the price upward.",
+    "[FDA Regulator] A successful GLP toxicology package showing minimal off\u2011target epigenetic toxicity would shift the price upward; failure to demonstrate safety would drive it down.",
+    "[Adversarial Short-Seller] A preregistered Phase II readout showing non-inferior relapse-free survival with 30% fewer off-target CUT&RUN peaks versus control would spike the prediction-market price; any signal of H3K27ac gain at super-enhancers in serial biopsies would collapse it to zero."
+  ],
+  "derived_topics": [],
+  "peer_reviews": [
+    {
+      "archetype_id": "oncologist",
+      "archetype_name": "Practicing Oncologist",
+      "recommendation": ":reject",
+      "confidence": 0.7,
+      "summary": "No summary provided.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 5,
+        "experimental_design": 5,
+        "evidence_support": 5,
+        "statistical_rigor": 5,
+        "clarity_of_writing": 5
+      },
+      "criticisms": [],
+      "required_fixes": [],
+      "suggested_experiments": [],
+      "simulation_proposal": null
+    },
+    {
+      "archetype_id": "biostatistician",
+      "archetype_name": "Biostatistician",
+      "recommendation": "major_revision",
+      "confidence": 0.75,
+      "summary": "The paper presents a novel geometric approach to epigenetic editing but lacks critical experimental validation, statistical rigor, and methodological detail. Key claims about Ricci curvature-guided editing efficacy are not supported by robust data or statistical analysis, and essential sections (methods, results) are missing. The mechanistic framework is compelling but requires empirical grounding.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 7,
+        "experimental_design": 4,
+        "evidence_support": 5,
+        "statistical_rigor": 3,
+        "clarity_of_writing": 6
+      },
+      "criticisms": [
+        "No methods or results sections provided, making it impossible to assess experimental validity or statistical claims.",
+        "Key assertion of 23% MFPT reduction lacks statistical testing (e.g., p-values, confidence intervals) or replication.",
+        "Sampling noise in ATAC-seq data is acknowledged but no mitigation strategy (e.g., imputation, subsampling) is described.",
+        "Off-target effects are cited as a risk but no genome-wide profiling (e.g., WES, scRNA-seq) is reported to quantify collateral damage.",
+        "Biosensor latency claims are theoretical without experimental timing data or latency mitigation protocols."
+      ],
+      "required_fixes": [
+        "Add detailed methods section describing experimental design, controls, and data collection protocols.",
+        "Include statistical analysis for all key claims (e.g., MFPT reduction, off-target editing rates).",
+        "Quantify sampling noise mitigation (e.g., ATAC-seq depth, rare state coverage).",
+        "Report genome-wide off-target profiling via CUT&RUN or sequencing.",
+        "Provide biosensor latency measurements and latency-compensation strategies."
+      ],
+      "suggested_experiments": [
+        "Conduct a pilot study with increased ATAC-seq depth to validate curvature estimation accuracy in rare transitional states.",
+        "Perform a power analysis to determine sample size needed to detect a 23% MFPT reduction with statistical significance.",
+        "Test latency-compensated dosing protocols using real-time biosensor feedback loops in organoid cultures."
+      ],
+      "simulation_proposal": null
+    },
+    {
+      "archetype_id": "fda",
+      "archetype_name": "FDA Regulator",
+      "recommendation": "major_revision",
+      "confidence": 0.7,
+      "summary": "The paper presents a novel curvature-guided epigenetic editing strategy with mechanistic plausibility but lacks sufficient experimental validation, statistical rigor, and clarity to support clinical translation. Key gaps include inadequate data on MFPT reduction in their own experiments, insufficient addressing of sampling noise limitations, and unclear protocols for mitigating biosensor latency.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 7,
+        "experimental_design": 6,
+        "evidence_support": 5,
+        "statistical_rigor": 4,
+        "clarity_of_writing": 5
+      },
+      "criticisms": [
+        "Relies heavily on prior CancerHawk Blocks 21-23 results (23% MFPT reduction) without demonstrating comparable efficacy in their own patient-derived organoid experiments.",
+        "Does not provide quantitative analysis of how sampling noise in ATAC-seq affects Ricci curvature estimation accuracy or editing outcomes.",
+        "Biosensor latency mitigation is described conceptually but lacks experimental validation (e.g., no data on response times vs. epigenetic commitment windows).",
+        "Off-target risk assessment via CUT&RUN is mentioned but lacks genome-wide profiling depth or statistical significance thresholds.",
+        "Mechanistic claims about Ricci curvature as a 'functional directive' lack direct molecular evidence (e.g., no chromatin state changes correlated with curvature edits)."
+      ],
+      "required_fixes": [
+        "Conduct independent validation of MFPT reduction in their own experiments with statistical significance (e.g., p-value <0.05, confidence intervals).",
+        "Implement controlled ATAC-seq sampling experiments to quantify curvature estimation errors under varying coverage.",
+        "Measure biosensor latency in real-time during editing cycles and correlate with epigenetic state transitions.",
+        "Expand CUT&RUN analysis to include off-target hotspot quantification with FDR correction.",
+        "Provide mechanistic evidence linking Ricci curvature edits to specific chromatin modifications (e.g., H3K27me3/H3K27ac ratios)."
+      ],
+      "suggested_experiments": [
+        "In silico simulation of epigenetic state transitions with varying Ricci curvature and editing flux allocation to test MFPT predictions under noise.",
+        "In vitro experiments with controlled ATAC-seq coverage to validate curvature gradient reliability."
+      ],
+      "simulation_proposal": null
+    },
+    {
+      "archetype_id": "investor",
+      "archetype_name": "Biotech Investor",
+      "recommendation": "reject",
+      "confidence": 0.85,
+      "summary": "The paper proposes a geometrically guided epigenetic editing strategy for drug-tolerant cancer cells using Ricci curvature of Wasserstein-derived manifolds to allocate CRISPR-dCas9\u2013TET1 editing flux. While conceptually ambitious, the manuscript lacks concrete experimental results, mechanistic specificity, and falsifiable endpoints. Key claims (23% MFPT reduction, Ollivier\u2013Ricci\u2013driven dosing) are referenced to unpublished CancerHawk Blocks rather than primary data. No raw data, statistical tests, or orthogonal validation (e.g., lineage tracing, ground-truth curvature\u2013flux relationships) are provided. The writing conflates geometric formalism with biological mechanism without establishing causality or robustness to noise, latency, or off-target editing. As submitted, it is a prospectus, not a completed study.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 5,
+        "experimental_design": 3,
+        "evidence_support": 2,
+        "statistical_rigor": 2,
+        "clarity_of_writing": 4
+      },
+      "criticisms": [
+        "No primary experimental results are presented; all mechanistic claims are deferred to unpublished CancerHawk Blocks 21\u201323.",
+        "Ricci curvature estimation from single-cell ATAC-seq graphs is asserted without validation against ground-truth transition kinetics (e.g., live-cell lineage barcoding or time-series CUT&RUN).",
+        "The 23% MFPT reduction claim lacks sample size, variance, or statistical test; no confidence intervals or p-values are reported.",
+        "Latency of biosensor feedback is described qualitatively but not quantified (e.g., delay in minutes/hours relative to epigenetic commitment windows).",
+        "Off-target analysis is promised (CUT&RUN mapping) but not shown; no genome-wide editing specificity metrics or H3K27ac aberrancy rates are provided.",
+        "The mechanism section is discursive and non-falsifiable; it does not specify how Ric_f(\u2207\u03c4,\u2207\u03c4) is computed, thresholded, or translated into gRNA dosing rules.",
+        "No failure-mode experiments (e.g., curvature misestimation, delayed feedback, cryptic enhancer editing) are executed or simulated with measurable outcomes."
+      ],
+      "required_fixes": [
+        "Include at least one complete experimental arm with raw data, replicates, and statistical tests validating curvature-guided editing versus uniform editing in TNBC organoids.",
+        "Define explicit computational pipeline: graph construction from scATAC-seq, Ricci curvature estimator (Ollivier\u2013Ricci vs. Forman\u2013Bakry\u2013\u00c9mery), and flux allocation rule with dosing equation.",
+        "Provide orthogonal ground truth for transition kinetics (e.g., single-cell time-lapse lineage tracing or serial CUT&RUN over 7\u201314 days) to validate curvature\u2013MFPT relationships.",
+        "Quantify biosensor latency and incorporate it as a parameter in a simulation that shows when adaptive dosing loses advantage.",
+        "Report off-target burden: number/location of aberrant H3K27ac gains, correlation with cryptic enhancer annotations, and any induced resistance phenotypes."
+      ],
+      "suggested_experiments": [
+        "Time-course CUT&RUN (H3K27me3, H3K27ac) with single-cell barcoded lineage tracing in patient-derived TNBC organoids under curvature-guided vs. uniform dCas9\u2013TET1 editing; primary endpoint: MFPT from tolerant to sensitive state with hazard ratios and 95% CIs.",
+        "Perturb curvature estimation fidelity by subsampling scATAC-seq or adding synthetic noise; measure allocation error and resulting MFPT degradation to establish robustness bounds.",
+        "CRISPRi/a tiling across candidate cryptic enhancers in low-curvature regions to test whether spurious H3K27ac gains abolish MFPT gains.",
+        "Closed-loop latency titration: impose fixed delays (0\u201372 h) in biosensor-driven editing feedback and measure loss of curvature\u2013flux advantage; endpoint: interaction test between delay and MFPT."
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Build a discrete-state Markov model of the epigenetic manifold parameterized by empirical scATAC-seq graphs. Compute Ollivier\u2013Ricci curvature for each edge/state. Simulate curvature-guided flux allocation (flux \u221d 1/Ric) versus uniform flux under varying sampling noise (subsampling of states), biosensor delays (0\u201396 h), and off-target error rates (spurious enhancer activation). Track MFPT, variance across replicates, and collapse probability into tolerant attractors.",
+        "expected_metrics": [
+          "MFPT (hours) from tolerant (H3K27me3-high) to sensitive (H3K27ac-high) basin",
+          "Allocation error: L1 distance between ideal curvature-weighted flux and realized flux under noise",
+          "Collapse probability: fraction of simulations that fail to escape tolerance within a fixed horizon",
+          "Off-target burden: number of cryptic enhancers spuriously activated per simulation"
+        ],
+        "rationale": "This simulation tests the core hypothesis that curvature-guided editing robustly reduces MFPT under realistic noise and latency, and identifies parameter regimes where the strategy fails\u2014providing falsifiable bounds that the wet-lab study must meet."
+      }
+    },
+    {
+      "archetype_id": "kol",
+      "archetype_name": "Academic KOL",
+      "recommendation": "major_revision",
+      "confidence": 0.82,
+      "summary": "The manuscript proposes an intriguing Ricci\u2011curvature guided epigenetic editing strategy, but the current presentation lacks concrete experimental data, rigorous validation, and clear mechanistic links. Substantial revisions are required to establish the method\u2019s feasibility and to provide empirical evidence supporting the theoretical claims.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 4,
+        "experimental_design": 3,
+        "evidence_support": 2,
+        "statistical_rigor": 2,
+        "clarity_of_writing": 3
+      },
+      "criticisms": [
+        "The paper contains no quantitative results; claims of 23% MFPT reduction are cited from a previous block without data here.",
+        "Curvature estimation methodology is described only qualitatively; no benchmarks or error analyses are provided.",
+        "The closed\u2011loop biosensor concept is speculative; latency estimates are absent and no prototype is shown.",
+        "Off\u2011target assessment relies on CUT&RUN but no data or analysis of hotspot frequency is presented.",
+        "Statistical claims (e.g., MFPT improvement) lack defined endpoints, sample sizes, or significance testing.",
+        "The manuscript is heavily repetitive and lacks a coherent narrative; key terms (Ric_f, \u0393_t) are undefined early.",
+        "No control experiments (e.g., uniform editing, non\u2011curvature\u2011guided editing) are reported to demonstrate superiority.",
+        "The discussion over\u2011states implications without addressing potential safety concerns or translational hurdles.",
+        "The manuscript references \u201cCancerHawk Blocks 21\u201123\u201d but provides no citations or context for these prior works.",
+        "The proposed simulation framework is mentioned but not detailed; no model equations or parameters are given.",
+        "The writing is dense with jargon, hindering comprehension of the core hypothesis and results."
+      ],
+      "required_fixes": [],
+      "suggested_experiments": [],
+      "simulation_proposal": null
+    },
+    {
+      "archetype_id": "patient",
+      "archetype_name": "Patient Advocate",
+      "recommendation": "minor_revision",
+      "confidence": 0.92,
+      "summary": "The proposed curvature-guided approach shows strong mechanistic plausibility but requires refinement to address data limitations and latency issues, making it a viable path forward with targeted adjustments.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 9,
+        "experimental_design": 7,
+        "evidence_support": 8,
+        "statistical_rigor": 8,
+        "clarity_of_writing": 9
+      },
+      "criticisms": [
+        "sampling noise in ATAC-seq data affecting curvature accuracy",
+        "latency in biosensor integration complicating real-time adaptation"
+      ],
+      "required_fixes": [
+        "enhance single-cell data resolution",
+        "optimize biosensor response times"
+      ],
+      "suggested_experiments": [
+        "validating curvature estimation with high-throughput single-cell ATAC-seq"
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "simulating curvature-eddy interactions under varying editing parameters",
+        "expected_metrics": "correlation between curvature gradients and editing efficiency",
+        "rationale": "to assess predictive accuracy of proposed feedback loops"
+      }
+    },
+    {
+      "archetype_id": "payer",
+      "archetype_name": "Insurance Payer",
+      "recommendation": "minor_revision",
+      "confidence": 0.75,
+      "summary": "The paper presents a novel mechanistic framework linking Ricci curvature to epigenetic editing efficacy but requires stronger experimental validation of key challenges (sampling noise, latency, off-target effects) and clearer statistical analysis to meet clinical relevance thresholds.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 8,
+        "experimental_design": 6,
+        "evidence_support": 7,
+        "statistical_rigor": 5,
+        "clarity_of_writing": 7
+      },
+      "criticisms": [
+        "Insufficient detail on how sampling noise in ATAC-seq data is mitigated during Ricci curvature estimation",
+        "Latency mitigation strategies lack quantitative benchmarks against biological commitment windows",
+        "Off-target risk assessment relies on CUT&RUN data without genome-wide profiling depth",
+        "Statistical methods for MFPT reduction comparisons are not explicitly described",
+        "Clinical cost-effectiveness metrics (ICER, budget impact) are entirely absent despite reviewer lens"
+      ],
+      "required_fixes": [
+        "Add quantitative validation of curvature estimation robustness under low-coverage ATAC-seq scenarios",
+        "Include latency measurements in biosensor feedback loops with time-resolved epigenetic markers",
+        "Expand off-target analysis to include genome-wide CUT&RUN or similar high-resolution profiling",
+        "Specify statistical tests used for MFPT comparisons and confidence intervals",
+        "Integrate cost-effectiveness modeling (ICER thresholds, coverage policy implications) in supplementary materials"
+      ],
+      "suggested_experiments": [
+        "Test curvature-guided editing in isogenic cell lines with controlled ATAC-seq coverage to quantify noise impact",
+        "Compare latency effects using real-time biosensors vs. delayed readouts in time-course experiments",
+        "Conduct genome-wide off-target profiling using CRISPR-Cas9 base editors in parallel with dCas9-TET1"
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Simulate Ricci curvature-guided editing trajectories in synthetic epigenetic landscapes with varying noise levels and latency parameters",
+        "expected_metrics": [
+          "MFPT reduction efficiency",
+          "off-target edit frequency",
+          "curvature estimation accuracy"
+        ],
+        "rationale": "This would validate whether the proposed curvature-adaptive dosing maintains efficacy under real-world data imperfections and operational delays"
+      }
+    },
+    {
+      "archetype_id": "short_seller",
+      "archetype_name": "Adversarial Short-Seller",
+      "recommendation": "major_revision",
+      "confidence": 0.65,
+      "summary": "The paper proposes a novel curvature-guided epigenetic editing strategy but faces critical gaps in validating the foundational assumption that Ricci curvature accurately reflects epigenetic state transition barriers. Key experimental and mechanistic uncertainties undermine the claimed 23% MFPT reduction, particularly around latency constraints and off-target risks.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 6,
+        "experimental_design": 7,
+        "evidence_support": 5,
+        "statistical_rigor": 6,
+        "clarity_of_writing": 8
+      },
+      "criticisms": [
+        "The core hypothesis that Ricci curvature directly correlates with editing efficacy lacks empirical validation. CancerHawk Blocks 21-23\u2019s data is cited but not reproduced or independently verified, raising concerns about generalizability.",
+        "The claimed 23% MFPT reduction is presented without statistical significance testing or confidence intervals, making it difficult to assess reliability.",
+        "Latency mitigation claims are speculative. The paper acknowledges biosensor delays but provides no data showing their protocol reduces latency below the epigenetic commitment window in patient-derived organoids.",
+        "Off-target risk mitigation via CUT&RUN is insufficient. Low-curvature regions may harbor undetected cryptic enhancers, and the paper does not demonstrate that editing flux allocation avoids these regions.",
+        "The closed-loop framework\u2019s computational feasibility is unaddressed. Real-time curvature estimation and editing flux allocation would require immense computational resources in clinical settings."
+      ],
+      "required_fixes": [
+        "Reproduce CancerHawk Blocks 21-23\u2019s curvature-editing results in an independent dataset to validate the 23% MFPT claim.",
+        "Conduct latency stress tests using real-time biosensors with quantified response times to confirm editing occurs before epigenetic commitment.",
+        "Implement genome-wide off-target profiling (e.g., ATAC-seq post-editing) to quantify cryptic enhancer activation in low-curvature regions.",
+        "Add statistical analysis (e.g., p-values, bootstrapping) to validate MFPT reduction significance."
+      ],
+      "suggested_experiments": [],
+      "simulation_proposal": null
+    }
+  ],
+  "simulations": [
+    {
+      "id": "computational-model",
+      "title": "computational_model",
+      "type": "html5_canvas",
+      "description": "simulating curvature-eddy interactions under varying editing parameters",
+      "rationale": "to assess predictive accuracy of proposed feedback loops",
+      "expected_metrics": [
+        "c",
+        "o",
+        "r",
+        "r",
+        "e"
+      ],
+      "scene": "trajectory_manifold",
+      "seed": 101,
+      "parameters": {}
+    },
+    {
+      "id": "computational-model",
+      "title": "computational_model",
+      "type": "html5_canvas",
+      "description": "Simulate Ricci curvature-guided editing trajectories in synthetic epigenetic landscapes with varying noise levels and latency parameters",
+      "rationale": "This would validate whether the proposed curvature-adaptive dosing maintains efficacy under real-world data imperfections and operational delays",
+      "expected_metrics": [
+        "MFPT reduction efficiency",
+        "off-target edit frequency",
+        "curvature estimation accuracy"
+      ],
+      "scene": "trajectory_manifold",
+      "seed": 202,
+      "parameters": {}
+    },
+    {
+      "id": "computational-model",
+      "title": "computational_model",
+      "type": "html5_canvas",
+      "description": "Build a discrete-state Markov model of the epigenetic manifold parameterized by empirical scATAC-seq graphs. Compute Ollivier\u2013Ricci curvature for each edge/state. Simulate curvature-guided flux allocation (flux \u221d 1/Ric) versus uniform flux under varying sampling noise (subsampling of states), biosensor delays (0\u201396 h), and off-target error rates (spurious enhancer activation). Track MFPT, variance across replicates, and collapse probability into tolerant attractors.",
+      "rationale": "This simulation tests the core hypothesis that curvature-guided editing robustly reduces MFPT under realistic noise and latency, and identifies parameter regimes where the strategy fails\u2014providing falsifiable bounds that the wet-lab study must meet.",
+      "expected_metrics": [
+        "MFPT (hours) from tolerant (H3K27me3-high) to sensitive (H3K27ac-high) basin",
+        "Allocation error: L1 distance between ideal curvature-weighted flux and realized flux under noise",
+        "Collapse probability: fraction of simulations that fail to escape tolerance within a fixed horizon",
+        "Off-target burden: number of cryptic enhancers spuriously activated per simulation"
+      ],
+      "scene": "trajectory_manifold",
+      "seed": 303,
+      "parameters": {}
+    },
+    {
+      "id": "tumor-volume-3d",
+      "title": "Tumor Volume (3D)",
+      "type": "threejs",
+      "description": "Volumetric point-cloud tumor with phenotype-coloured clusters that grow, divide, and apoptose over time. Rotates the mass to expose where the model places phenotype boundaries.",
+      "rationale": "The 2D manifold view collapses depth \u2014 a 3D volumetric rendering tests whether claimed phenotype clusters survive when seen from arbitrary angles.",
+      "expected_metrics": [
+        "phenotype-cluster volumetric stability",
+        "intra-cluster density",
+        "boundary sharpness under rotation"
+      ],
+      "three_scene": "tumor_volume_3d",
+      "seed": 2934,
+      "parameters": {
+        "title": "Ricci-Curvature-Guided Epigenetic Editing for Drug-Tolerant Cancer Cells",
+        "confidence": 0.37,
+        "critique": "No summary provided.",
+        "catalyst": "[Biostatistician] A definitive preclinical study showing reproducible MFPT reduction in multiple patient\u2011derived xenograft models would shift the price upward."
+      }
+    },
+    {
+      "id": "mitotic-lattice-3d",
+      "title": "Mitotic Lattice (3D)",
+      "type": "threejs",
+      "description": "Rotating 3D lattice of cells with division events sampled from the validator-emitted novelty distribution. Daughter cells inherit colour from parent phenotype, exposing lineage drift.",
+      "rationale": "Hooks the falsifier visually: if the paper's mechanism predicts a specific division geometry, this scene makes deviations from it immediately visible.",
+      "expected_metrics": [
+        "division-rate per phenotype",
+        "lineage-drift entropy",
+        "spatial clustering of mitotic events"
+      ],
+      "three_scene": "mitotic_lattice_3d",
+      "seed": 2952,
+      "parameters": {
+        "title": "Ricci-Curvature-Guided Epigenetic Editing for Drug-Tolerant Cancer Cells",
+        "confidence": 0.37,
+        "critique": "No summary provided.",
+        "catalyst": "[FDA Regulator] A successful GLP toxicology package showing minimal off\u2011target epigenetic toxicity would shift the price upward; failure to demonstrate safety would drive it down."
+      }
+    },
+    {
+      "id": "perturbation-cone-3d",
+      "title": "Perturbation Cone (3D)",
+      "type": "threejs",
+      "description": "3D analog of the counterfactual scene: treated trajectories spread out from a baseline manifold along a confidence-weighted cone. Cone width tracks acceptance probability.",
+      "rationale": "Forces the prediction-vs-observation gap into a single visual. A narrow, well-aimed cone implies confident divergence; a fat cone signals high predictive uncertainty.",
+      "expected_metrics": [
+        "cone aperture",
+        "trajectory bundle coherence",
+        "off-axis trajectory frequency"
+      ],
+      "three_scene": "perturbation_cone_3d",
+      "seed": 2970,
+      "parameters": {
+        "title": "Ricci-Curvature-Guided Epigenetic Editing for Drug-Tolerant Cancer Cells",
+        "confidence": 0.37,
+        "critique": "No summary provided.",
+        "catalyst": "[Adversarial Short-Seller] A preregistered Phase II readout showing non-inferior relapse-free survival with 30% fewer off-target CUT&RUN peaks versus control would spike the prediction-market price; any signal of H3K27ac gain at super-enhancers in serial biopsies would collapse it to zero."
+      }
+    }
+  ]
+}

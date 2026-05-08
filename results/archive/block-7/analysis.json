@@ -1,0 +1,493 @@
+{
+  "archetypes": [
+    {
+      "scores": {
+        "clinical_viability": 2,
+        "regulatory_risk": 9,
+        "market_potential": 3,
+        "patient_impact": 4,
+        "novelty": 8,
+        "falsifiability": 7
+      },
+      "verdict": "Mechanistically seductive but operationally brittle. The premise \u2014 time-locked multiplex CRISPR against GPX4/NRF2/ASCL1 triggered by Cell Cinema latent-space \u201ccommitment windows\u201d \u2014 is elegant and biologically plausible. In practice, it collides with an unscalable workflow: continuous live-cell imaging plus real-time inducible editing is incompatible with inpatient or outpatient oncology. Off-label realities are treacherous: GPX4/NRF2 ablation risks acute ferroptotic organ injury (hepatic, renal) and ASCL1 editing carries neuroendocrine toxicity liabilities that would torpedo any compassionate-use pathway. Compared with SOC (systemic therapy, immunotherapy, local ablative measures), this adds layers of procedure-driven morbidity without a clear surrogate or retreatment plan. The stochastic-control formalism is novel and internally falsifiable, but the clinical translation assumes a precision infrastructure that does not exist and would require bespoke device/vector development, pushing regulatory exposure into Class III combination-product territory with immunogenicity and off-target liability tails. I would not activate a trial without first de-risking the delivery vehicle and defining a clinically feasible imaging surrogate for \u03c4_v.",
+      "would_move_price": "A credible large-animal study showing that a clinically translatable imaging biomarker (e.g., hyperpolarized 13C-MRI redox ratio or PET-FAPI uptake kinetics) can reliably proxy the Cell Cinema \u03c4_v and that a single IV LNP-mRNA multiplex dose safely achieves target knockout during that window would sharply move the prediction-market price up; conversely, any signal of GPX4/NRF2 editing\u2013driven hepatic or renal failure in a primate model would crash it.",
+      "archetype_id": "oncologist",
+      "archetype_name": "Practicing Oncologist"
+    },
+    {
+      "scores": {
+        "clinical_viability": 7,
+        "regulatory_risk": 6,
+        "market_potential": 8,
+        "patient_impact": 8,
+        "novelty": 9,
+        "falsifiability": 7
+      },
+      "verdict": "This paper presents a highly innovative approach to targeting disseminated tumor cells (DTCs) by leveraging stochastic optimal control and live-cell imaging. The integration of Cell Cinema video-generative embeddings with CRISPR-Cure-7 offers a mechanistic insight into the transient vulnerability windows of DTCs, which is both novel and compelling. The statistical power of this design is enhanced by the use of It\u00f4 diffusion models and the Hamilton\u2013Jacobi\u2013Bellman equation, providing a rigorous mathematical framework for optimal intervention timing. However, the clinical viability score is tempered by the complexity of translating this in-vitro system to in-vivo trials, where additional confounding factors such as tumor heterogeneity and immune responses may affect the precision of the commitment windows. The regulatory risk is moderate due to the novel use of multiplex CRISPR editing, which may require extensive safety and efficacy data. The market potential and patient impact are high, given the unmet need in metastatic cancer therapy and the potential to reduce resistant clones. The novelty of the approach is exceptional, marking a paradigm shift in how we think about cancer vulnerability. The falsifiability is strong, as the hypotheses can be tested through well-designed in-vitro and in-vivo experiments with measurable endpoints such as the reduction in resistant clones and increased immune-mediated clearance.",
+      "would_move_price": "A successful Phase I trial demonstrating the safety and preliminary efficacy of the CW-CRISPR-7 approach in a small cohort of metastatic cancer patients would significantly shift the prediction-market price for this paper, driving it upwards.",
+      "archetype_id": "biostatistician",
+      "archetype_name": "Biostatistician"
+    },
+    {
+      "scores": {
+        "clinical_viability": 2,
+        "regulatory_risk": 9,
+        "market_potential": 4,
+        "patient_impact": 7,
+        "novelty": 9,
+        "falsifiability": 3
+      },
+      "verdict": "This paper presents a mathematically elegant but clinically disconnected fantasy. There is no IND-enabling data\u2014no in vivo validation, no delivery vector characterization, no toxicity profile, no biodistribution, no immune response assessment. The 'Commitment-Window Diffusions' are simulated latent-space constructs derived from proprietary, unpublished Cell Cinema embeddings with no public validation or reproducibility protocol. CRISPR-Cure-7 is not an FDA-recognized tool; no published sequence, no off-target profiling, no delivery method (viral? lipid? electroporation?). The entire framework relies on real-time, single-cell decision loops in human metastases\u2014physiologically impossible with current tech. Accelerated approval is out of the question: no biomarker, no surrogate endpoint, no measurable clinical correlate. This is computational science fiction dressed as oncology. It fails every regulatory gate before Phase 0. The novelty is provocative, the patient impact plausible in theory\u2014but without a single animal model or human cell line experiment, this is not a drug development proposal. It is a thought experiment with zero path to clinic.",
+      "would_move_price": "A single in vivo mouse model showing delayed metastatic outgrowth with CRISPR-Cure-7 delivered via a clinically translatable vector, timed to a quantifiable phenotypic transition detected by an open-source imaging algorithm, would move the price up; failure to replicate the latent-space prediction in any independent lab would crush it.",
+      "archetype_id": "fda",
+      "archetype_name": "FDA Regulator"
+    },
+    {
+      "scores": {
+        "clinical_viability": 4,
+        "regulatory_risk": 8,
+        "market_potential": 7,
+        "patient_impact": 6,
+        "novelty": 9,
+        "falsifiability": 7
+      },
+      "verdict": "Mechanically dazzling but capital-hungry and distant from IND. The paper marries stochastic optimal control with multiplex CRISPR (GPX4/NRF2/ASCL1) timed to Cell Cinema\u2013derived commitment windows\u2014an elegant, defensible IP position if the latent-space biomarkers are patentable. TAM is contingent on proving in vivo synchrony across metastatic niches; absent that, it remains a platform play rather than a product. Comparable exits lean toward AI-for-target discovery (Recursion, Insitro) rather than in vivo control-therapy companies, implying lower exit multiples. Capital intensity is high: GMP-grade multiplex LNPs, real-time imaging-compatible biomarkers, and non-Markovian scheduling assays will chew through Series A/B before first-in-human. Regulatory risk is severe: simultaneous multi-gene edits with dynamic timing rules complicate CMC, GLP tox, and immunogenicity packages. Falsifiability is respectable\u2014commitment-window boundaries and hazard-ratio improvements are measurable\u2014but clinical viability is throttled by delivery and micro-environment heterogeneity. Back only if syndicate includes LNP/robotic imaging partners and de-risking milestones are staged.",
+      "would_move_price": "A peer-reviewed in vivo study showing that latent-state-triggered multiplex editing (vs. untimed editing) improves metastasis-free survival in an orthotopic PDX model with a pre-specified hazard-ratio endpoint would move the prediction-market price sharply up; failure to synchronize edits with \u03c4_v or emergence of on-target escape alleles would move it down.",
+      "archetype_id": "investor",
+      "archetype_name": "Biotech Investor"
+    },
+    {
+      "scores": {
+        "clinical_viability": 3,
+        "regulatory_risk": 9,
+        "market_potential": 4,
+        "patient_impact": 5,
+        "novelty": 10,
+        "falsifiability": 7
+      },
+      "verdict": "This is not a paper\u2014it\u2019s a manifesto disguised as science. Novelty? Unassailable: coupling It\u00f4 diffusions with CRISPR-Cure-7 via Cell Cinema embeddings is the most audacious synthesis of control theory and cancer biology since the CRISPR-Cas9 explosion. But falsifiability? The \u2018commitment window\u2019 \u03c4_v is inferred from generative embeddings trained on proprietary video data\u2014no public dataset, no code, no raw trajectories. Who champions this? Theoretical biophysicists who still believe differential equations can tame cancer\u2019s chaos. Who attacks it? Every clinical oncologist who\u2019s seen a DTC in vivo and knows that \u2018transient vulnerability\u2019 is a statistical mirage in a microenvironment where oxygen gradients, fibroblast crosstalk, and immune evasion operate on timescales incompatible with CRISPR delivery kinetics. Regulatory risk? Sky-high: FDA will balk at a therapy requiring real-time single-cell phenotyping + timed multiplex editing as a closed loop. No animal model, no in vivo validation, no pharmacokinetics. This belongs in Nature Physics, not Nature Medicine. Publishable? Yes\u2014if you\u2019re willing to bet your career on a mathematical fantasy that may never touch a patient.",
+      "would_move_price": "A preprint showing \u03c4_v is reproducible across 3 human DTC organoids with live CRISPR delivery synchronized to <15-min windows\u2014and a single mouse with reduced metastatic burden\u2014would spike the price; failure to replicate \u03c4_v in 10 independent lineages would crash it.",
+      "archetype_id": "kol",
+      "archetype_name": "Academic KOL"
+    },
+    {
+      "scores": {
+        "clinical_viability": 7,
+        "regulatory_risk": 6,
+        "market_potential": 8,
+        "patient_impact": 9,
+        "novelty": 10,
+        "falsifiability": 8
+      },
+      "verdict": "This paper presents a groundbreaking approach to targeting disseminated tumor cells by leveraging stochastic control and live-cell imaging. The Commitment-Window CRISPR-Cure-7 method offers a precise and timely intervention strategy that could significantly reduce the emergence of resistant clones. Patients may benefit from more effective treatments with potentially fewer side effects, as the approach aims to disrupt resistance circuitry at its most vulnerable moments. However, the complexity of the method and the need for real-time monitoring could pose challenges in clinical implementation. Overall, this innovative framework has the potential to transform metastatic cancer therapy, but its success will depend on overcoming technical hurdles and validating its efficacy in diverse patient populations.",
+      "would_move_price": "A successful Phase I clinical trial demonstrating the safety and preliminary efficacy of the CW-CRISPR-7 approach in patients with metastatic cancer would significantly increase the prediction-market price for this paper.",
+      "archetype_id": "patient",
+      "archetype_name": "Patient Advocate"
+    },
+    {
+      "scores": {
+        "clinical_viability": 6,
+        "regulatory_risk": 8,
+        "market_potential": 7,
+        "patient_impact": 9,
+        "novelty": 8,
+        "falsifiability": 7
+      },
+      "verdict": "The proposed Commitment-Window CRISPR-Cure-7 approach shows promise in enhancing therapeutic efficacy by targeting disseminated tumor cells at their most vulnerable moments. However, the complexity of the stochastic control framework and the need for real-time latent-space monitoring may pose significant regulatory and implementation challenges. As an insurance payer, I would require robust clinical trial data and cost-effectiveness analyses to justify coverage of this innovative therapy.",
+      "would_move_price": "A catalyst that would shift the prediction-market price for this paper up would be the announcement of a large-scale clinical trial demonstrating significant improvements in patient outcomes and cost-effectiveness, while a downward shift would be triggered by regulatory setbacks or disappointing trial results.",
+      "archetype_id": "payer",
+      "archetype_name": "Insurance Payer"
+    },
+    {
+      "scores": {
+        "": ""
+      },
+      "verdict": "",
+      "would_move_price": "",
+      "archetype_id": "short_seller",
+      "archetype_name": "Adversarial Short-Seller"
+    }
+  ],
+  "market_price": 0.5292857142857142,
+  "score_matrix": {
+    "oncologist": {
+      "clinical_viability": 2,
+      "regulatory_risk": 9,
+      "market_potential": 3,
+      "patient_impact": 4,
+      "novelty": 8,
+      "falsifiability": 7
+    },
+    "biostatistician": {
+      "clinical_viability": 7,
+      "regulatory_risk": 6,
+      "market_potential": 8,
+      "patient_impact": 8,
+      "novelty": 9,
+      "falsifiability": 7
+    },
+    "fda": {
+      "clinical_viability": 2,
+      "regulatory_risk": 9,
+      "market_potential": 4,
+      "patient_impact": 7,
+      "novelty": 9,
+      "falsifiability": 3
+    },
+    "investor": {
+      "clinical_viability": 4,
+      "regulatory_risk": 8,
+      "market_potential": 7,
+      "patient_impact": 6,
+      "novelty": 9,
+      "falsifiability": 7
+    },
+    "kol": {
+      "clinical_viability": 3,
+      "regulatory_risk": 9,
+      "market_potential": 4,
+      "patient_impact": 5,
+      "novelty": 10,
+      "falsifiability": 7
+    },
+    "patient": {
+      "clinical_viability": 7,
+      "regulatory_risk": 6,
+      "market_potential": 8,
+      "patient_impact": 9,
+      "novelty": 10,
+      "falsifiability": 8
+    },
+    "payer": {
+      "clinical_viability": 6,
+      "regulatory_risk": 8,
+      "market_potential": 7,
+      "patient_impact": 9,
+      "novelty": 8,
+      "falsifiability": 7
+    },
+    "short_seller": {
+      "": ""
+    }
+  },
+  "consensus_dim": {
+    "clinical_viability": 4.428571428571429,
+    "regulatory_risk": 7.857142857142857,
+    "market_potential": 5.857142857142857,
+    "patient_impact": 6.857142857142857,
+    "novelty": 9.0,
+    "falsifiability": 6.571428571428571
+  },
+  "headline_catalysts": [
+    "[Practicing Oncologist] A credible large-animal study showing that a clinically translatable imaging biomarker (e.g., hyperpolarized 13C-MRI redox ratio or PET-FAPI uptake kinetics) can reliably proxy the Cell Cinema \u03c4_v and that a single IV LNP-mRNA multiplex dose safely achieves target knockout during that window would sharply move the prediction-market price up; conversely, any signal of GPX4/NRF2 editing\u2013driven hepatic or renal failure in a primate model would crash it.",
+    "[Biostatistician] A successful Phase I trial demonstrating the safety and preliminary efficacy of the CW-CRISPR-7 approach in a small cohort of metastatic cancer patients would significantly shift the prediction-market price for this paper, driving it upwards.",
+    "[FDA Regulator] A single in vivo mouse model showing delayed metastatic outgrowth with CRISPR-Cure-7 delivered via a clinically translatable vector, timed to a quantifiable phenotypic transition detected by an open-source imaging algorithm, would move the price up; failure to replicate the latent-space prediction in any independent lab would crush it.",
+    "[Biotech Investor] A peer-reviewed in vivo study showing that latent-state-triggered multiplex editing (vs. untimed editing) improves metastasis-free survival in an orthotopic PDX model with a pre-specified hazard-ratio endpoint would move the prediction-market price sharply up; failure to synchronize edits with \u03c4_v or emergence of on-target escape alleles would move it down.",
+    "[Academic KOL] A preprint showing \u03c4_v is reproducible across 3 human DTC organoids with live CRISPR delivery synchronized to <15-min windows\u2014and a single mouse with reduced metastatic burden\u2014would spike the price; failure to replicate \u03c4_v in 10 independent lineages would crash it.",
+    "[Patient Advocate] A successful Phase I clinical trial demonstrating the safety and preliminary efficacy of the CW-CRISPR-7 approach in patients with metastatic cancer would significantly increase the prediction-market price for this paper.",
+    "[Insurance Payer] A catalyst that would shift the prediction-market price for this paper up would be the announcement of a large-scale clinical trial demonstrating significant improvements in patient outcomes and cost-effectiveness, while a downward shift would be triggered by regulatory setbacks or disappointing trial results."
+  ],
+  "derived_topics": [
+    {
+      "id": 1,
+      "title": "Validate \u03c4_v reproducibility across heterogeneous DTC populations",
+      "probability": 0.75,
+      "impact": 8,
+      "token_cost": 500,
+      "rationale": "If \u03c4_v is consistent across cancer types, it would enable universal application of CW-CRISPR-7. Testing in 5+ metastatic lineages (e.g., breast, lung, melanoma) would confirm generalizability. Failure would require refining latent-space models. Aligns with [citation needed] for cross-omic validation."
+    },
+    {
+      "id": 2,
+      "title": "Optimize real-time \u03c4_v detection via multimodal imaging",
+      "probability": 0.65,
+      "impact": 9,
+      "token_cost": 400
+    }
+  ],
+  "peer_reviews": [
+    {
+      "archetype_id": "oncologist",
+      "archetype_name": "Practicing Oncologist",
+      "recommendation": "major_revision",
+      "confidence": 0.78,
+      "summary": "The manuscript presents an ambitious integration of stochastic optimal control with multiplex CRISPR editing to target transient vulnerability windows in disseminated tumor cells, but the work is currently limited by insufficient experimental validation, unclear model parameterization, and lack of quantitative evidence linking latent\u2011space predictions to actual editing outcomes.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 6,
+        "experimental_design": 4,
+        "evidence_support": 3,
+        "statistical_rigor": 3,
+        "clarity_of_writing": 5
+      },
+      "criticisms": [
+        "The stochastic diffusion model (Section\u202fMechanism) is described mathematically but the drift and diffusion coefficients are not empirically derived or validated against real single\u2011cell trajectory data.",
+        "No in\u2011vitro or in\u2011vivo experiments demonstrate that CRISPR\u2011Cure\u20117 can be delivered with the precise timing required to hit the predicted \u03c4_v windows; the reported time\u2011lapse system is only a simulation.",
+        "Off\u2011target and immunogenic burden are incorporated into the cost function but no experimental measurements (e.g., GUIDE\u2011seq, cytokine release) are provided to support the assumed penalty weights.",
+        "The Cell Cinema latent embeddings are treated as ground truth for commitment risk, yet the manuscript lacks a description of how these embeddings are generated, validated, or linked to functional readouts such as persister markers.",
+        "Statistical analysis of the simulated outcomes is superficial; confidence intervals, sensitivity analyses, or robustness checks for parameter perturbations are missing.",
+        "Writing is dense and many key concepts (e.g., \u201cnon\u2011Markovian hazard\u201d, \u201c\u03c4_v\u201d) are introduced without clear definition, making the methodology hard to reproduce.",
+        "The manuscript claims a \u201cparadigm shift\u201d but provides only computational predictions without any translational or clinical feasibility discussion (e.g., delivery method, patient monitoring)."
+      ],
+      "required_fixes": [
+        "Provide a detailed description of how Cell Cinema video\u2011generative embeddings are constructed, including training data, architecture, and validation against known phenotypic markers.",
+        "Empirically estimate drift (\u03bc) and diffusion (\u03c3) parameters from longitudinal single\u2011cell imaging of at least two cancer cell lines and report goodness\u2011of\u2011fit metrics.",
+        "Demonstrate real\u2011time detection of \u03c4_v in live cells and perform timed delivery of CRISPR\u2011Cure\u20117 (or a surrogate reporter) to show increased editing efficiency versus untimed controls.",
+        "Include quantitative off\u2011target assessment (e.g., GUIDE\u2011seq or amplicon sequencing) and an immunogenicity assay to justify the cost terms used in the control formulation.",
+        "Add sensitivity analyses of the HJB solution to variations in model parameters and editing latency, reporting confidence intervals for predicted resistance suppression.",
+        "Clarify all mathematical symbols and provide a reproducible code repository for the stochastic control simulations.",
+        "Discuss clinical implementation considerations (delivery platform, monitoring frequency, regulatory aspects) to ground the translational claim."
+      ],
+      "suggested_experiments": [
+        "Live\u2011cell imaging of DTCs expressing a fluorescent reporter for GPX4 activity; apply a rapid inducible CRISPR\u2011Cure\u20117 system and compare editing outcomes when activation is triggered at predicted \u03c4_v versus random times.",
+        "Perform single\u2011cell RNA\u2011seq before and after timed CRISPR delivery to verify collapse of the persister transcriptional program and reduction of resistance\u2011associated gene expression.",
+        "In a mouse metastasis model, administer multiplex CRISPR\u2011Cure\u20117 via a nanoparticle carrier with a real\u2011time imaging feedback loop to test whether timed dosing reduces metastatic colonization compared to standard continuous dosing."
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Run Monte\u2011Carlo simulations of the It\u00f4 diffusion with empirically derived \u03bc and \u03c3, coupling them to a stochastic CRISPR delivery module that incorporates realistic editing latency and off\u2011target mutation rates; compare the distribution of final resistance states under timed (\u03c4_v\u2011aligned) versus untimed policies.",
+        "expected_metrics": [
+          "Probability of complete resistance collapse",
+          "Mean number of off\u2011target edits per cell",
+          "Time to metastatic colonization in silico"
+        ],
+        "rationale": "This analysis will quantify the robustness of the proposed control policy to biological variability and demonstrate whether the predicted advantage persists under realistic noise and delivery constraints."
+      }
+    },
+    {
+      "archetype_id": "patient",
+      "archetype_name": "Patient Advocate",
+      "recommendation": "major_revision",
+      "confidence": 0.78,
+      "summary": "The manuscript presents an ambitious integration of stochastic optimal control with multiplex CRISPR editing to target transient vulnerability windows in disseminated tumor cells, but it lacks experimental validation, provides insufficient methodological detail, and makes several unverifiable modeling assumptions that undermine confidence in the claimed therapeutic benefit.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 6,
+        "experimental_design": 4,
+        "evidence_support": 3,
+        "statistical_rigor": 4,
+        "clarity_of_writing": 5
+      },
+      "criticisms": [
+        "Key claims about a \u201ccommitment window\u201d \u03c4_v are based on unpublished Cell Cinema embeddings without validation in primary tumor samples.",
+        "The stochastic differential equation model and Hamilton\u2011Jacobi\u2011Bellman solution are described abstractly; no parameter estimation, sensitivity analysis, or code availability is provided.",
+        "No in\u2011vitro or in\u2011vivo experiments demonstrate that timed delivery of CRISPR\u2011Cure\u20117 improves killing of DTCs compared to untimed delivery.",
+        "Off\u2011target and immunogenic risk assessments are mentioned only qualitatively, lacking quantitative data or assays.",
+        "The manuscript conflates latent\u2011space trajectories with actual molecular events (e.g., chromatin looping) without direct measurement.",
+        "Figures and supplemental data are missing; the description of simulations is vague and does not report replication or convergence diagnostics."
+      ],
+      "required_fixes": [
+        "Provide a clear, reproducible pipeline for extracting the latent coordinates from Cell Cinema video data, including training details and validation metrics.",
+        "Include experimental data (e.g., live\u2011cell imaging with timed inducible CRISPR delivery) that directly test the predicted benefit of aligning edits with \u03c4_v versus control timing.",
+        "Report how model parameters (drift \u03bc, diffusion \u03c3, hazard rates) were estimated from empirical data, and perform sensitivity analyses to show robustness of the optimal policy.",
+        "Quantify off\u2011target editing and immune activation (e.g., GUIDE\u2011seq, cytokine profiling) for the multiplex CRISPR\u2011Cure\u20117 construct under timed and untimed conditions.",
+        "Make all code and simulation scripts publicly available and describe numerical methods used to solve the HJB equation.",
+        "Add missing figures, tables, and supplemental methods that detail the simulation setup, number of trajectories, and statistical tests employed."
+      ],
+      "suggested_experiments": [
+        "Live\u2011cell imaging of DTCs engineered with a fluorescent reporter for GPX4/NRF2 activity, combined with an inducible CRISPR\u2011Cure\u20117 system; compare cell fate outcomes when editing is triggered at the predicted \u03c4_v versus random times.",
+        "In\u2011vivo metastasis assay in mouse models where CRISPR\u2011Cure\u20117 delivery is synchronized to imaging\u2011identified vulnerability windows versus conventional dosing; assess metastatic burden and survival."
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Perform a Monte\u2011Carlo simulation of the It\u00f4 diffusion for a population of virtual DTCs using empirically derived drift and diffusion coefficients, then apply both the optimal timed\u2011control policy and a naive constant\u2011rate policy to compare the distribution of final phenotypic states and resistance emergence.",
+        "expected_metrics": [
+          "Fraction of cells reaching the resistant attractor",
+          "Number of off\u2011target edits per cell",
+          "Cumulative control cost (editing + immunogenic penalty)"
+        ],
+        "rationale": "This analysis will quantitatively test whether the proposed optimal policy yields a statistically significant reduction in resistance and editing burden compared to standard approaches, addressing a central claim of the paper."
+      }
+    },
+    {
+      "archetype_id": "payer",
+      "archetype_name": "Insurance Payer",
+      "recommendation": "major_revision",
+      "confidence": 0.78,
+      "summary": "The manuscript presents an ambitious stochastic control framework linking live\u2011cell imaging, latent\u2011space modeling, and multiplex CRISPR editing to exploit transient vulnerability windows in disseminated tumor cells. While the conceptual integration is novel, the paper lacks concrete experimental validation, provides insufficient detail on model calibration, and does not demonstrate reproducible quantitative outcomes, making the current evidence insufficient for acceptance.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 7,
+        "experimental_design": 4,
+        "evidence_support": 3,
+        "statistical_rigor": 3,
+        "clarity_of_writing": 6
+      },
+      "criticisms": [
+        "The stochastic control model (Section\u00a0Mechanism) is described mathematically but key parameters (drift, diffusion, hazard functions) are not empirically derived or validated against independent data.",
+        "No in\u2011vitro or in\u2011vivo experiments directly test the timing of CRISPR\u2011Cure\u20117 delivery relative to the predicted \u03c4_v; the reported \u201csimulations\u201d are purely synthetic.",
+        "Off\u2011target and immunogenic risk assessments are mentioned only qualitatively, without quantitative metrics or experimental measurement.",
+        "The manuscript frequently references prior CancerHawk blocks without providing sufficient methodological detail for a reader unfamiliar with those works.",
+        "The description of the Cell Cinema latent embeddings and how they are mapped to the diffusion state is vague, lacking validation of the embedding\u2019s fidelity to biological markers of commitment."
+      ],
+      "required_fixes": [
+        "Provide a detailed methodology for calibrating the drift (\u03bc) and diffusion (\u03c3) terms using experimentally measured single\u2011cell trajectories, including data sources, fitting procedures, and goodness\u2011of\u2011fit metrics.",
+        "Include at least one proof\u2011of\u2011concept experiment where CRISPR\u2011Cure\u20117 delivery is timed based on real\u2011time latent\u2011space monitoring, with quantitative outcomes (e.g., % cells exiting persister state, editing efficiency, off\u2011target rates).",
+        "Present quantitative analyses of off\u2011target editing and immune activation for the multiplex CRISPR payload, comparing timed versus untimed delivery.",
+        "Clarify the construction and validation of the Cell Cinema embeddings: show correlation with known markers (e.g., GPX4 expression, chromatin accessibility) and demonstrate reproducibility across cell lines.",
+        "Add a sensitivity analysis of the control policy to variations in \u03c4_v (\u00b112\u202fh) and to uncertainties in model parameters, reporting impact on predicted resistance suppression."
+      ],
+      "suggested_experiments": [
+        "Live\u2011cell imaging of DTCs expressing a fluorescent reporter for GPX4 activity; compute latent embeddings in real time and trigger inducible CRISPR\u2011Cure\u20117 delivery at the predicted \u03c4_v versus a control time point; measure downstream persister markers and colony formation."
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Perform Monte\u2011Carlo simulations of the calibrated It\u00f4 diffusion for a population of DTCs, comparing the optimal timed\u2011control policy against random or periodic CRISPR delivery across a range of parameter uncertainties.",
+        "expected_metrics": [
+          "fraction of simulated cells reaching the resistant attractor",
+          "cumulative off\u2011target mutation burden",
+          "time to metastatic colonization probability"
+        ],
+        "rationale": "A rigorous in\u2011silico sensitivity analysis will demonstrate the robustness of the proposed control strategy and quantify the trade\u2011off between therapeutic benefit and genomic risk, addressing the current lack of quantitative validation."
+      }
+    },
+    {
+      "archetype_id": "short_seller",
+      "archetype_name": "Adversarial Short-Seller",
+      "recommendation": "reject",
+      "confidence": 0.92,
+      "summary": "The paper collapses under its own formalism: it asserts a mathematically precise optimal control framework but provides no empirical validation of the latent \"commitment window\" \u03c4_v, no identification of the It\u00f4 drift and diffusion terms, and no demonstration that CRISPR-Cure-7 editing at the claimed timescale alters metastatic colonization in any system. The mechanism section is truncated, key parameters are unspecified, and the proposed 'vulnerability manifold' is treated as both observable and causal without evidence.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 4,
+        "experimental_design": 2,
+        "evidence_support": 2,
+        "statistical_rigor": 3,
+        "clarity_of_writing": 6
+      },
+      "criticisms": [
+        "The It\u00f4 diffusion model (dX_t = \u03bc(X_t)dt + \u03c3(X_t)dW_t) is introduced without explicit specification of \u03bc, \u03c3, or the state space dimension n; no parameter estimates or identifiability analysis are provided. The 'vulnerability manifold' \u03c4_v is treated as a measurable ground truth rather than a latent construct.",
+        "No experimental data are shown that CRISPR-Cure-7 edits at GPX4, NRF2, ASCL1, or metabolic chokepoints produce the predicted 'collapse of the fitness landscape' or reduce metastatic colonization in vitro or in vivo. The abstract claims 'significant increase in proportion of DTCs redirected out of committed states' with no readout of what that proportion is or how it is measured.",
+        "The paper relies on proprietary or undefined resources ('Cell Cinema video-generative embeddings', 'CancerHawk Block 3/4/5/6', 'CRISPR-Cure-7') without sufficient open specification to evaluate feasibility, off-target profiles, or delivery kinetics. This renders the proposed control policy non-falsifiable in practice.",
+        "The optimal policy is stated as a 'threshold rule' on latent commitment risk, but no closed-form or numerical solution to the Hamilton\u2013Jacobi\u2013Bellman equation is provided, and no sensitivity analysis is given for misspecification of the drift or volatility terms. Without this, the claimed optimality is an assertion, not a result.",
+        "The mechanism section is truncated mid-sentence ('represen'), suggesting incomplete derivation of the control problem. The transition from single-target CancerHawk Block 5 to multiplex editing is asserted to maintain 'high probability of complete resistance collapse' under \u00b112 h window shifts without justification of redundancy or epistasis among GPX4, NRF2, ASCL1 targets.",
+        "No discussion of CRISPR delivery modality (viral vs. RNP), editing efficiency in primary DTCs, or immune recognition of edited cells\u2014factors that dominate whether temporally precise editing can even be implemented. The 'closed-loop intervention' is described but no sensing\u2013actuation latency or feedback control law is specified."
+      ],
+      "required_fixes": [
+        "Explicitly define the It\u00f4 SDE: specify \u03bc(X_t), \u03c3(X_t), domain of X_t, and how drift/volatility are estimated from live-cell data. Provide identifiability analysis and uncertainty quantification for \u03c4_v.",
+        "Provide experimental validation that multiplex CRISPR-Cure-7 editing during the predicted \u03c4_v window (vs. outside it) alters the hypothesized molecular endpoints (GPX4/NRF2/ASCL1 protein levels, chromatin accessibility, ferroptosis sensitivity) and phenotypic outcomes (colonization efficiency) in at least one metastatic model.",
+        "Release or fully specify the Cell Cinema embedding pipeline, CRISPR-Cure-7 guide set, delivery format, and off-target assessment so the control policy can be independently tested.",
+        "Solve or numerically approximate the Hamilton\u2013Jacobi\u2013Bellman equation for the stated state space, report the optimal policy as a function of state, and show robustness to model misspecification and parameter uncertainty.",
+        "Quantify sensing\u2013actuation latency and immune/editing burden costs in the objective functional; without these, the 'optimal' schedule is unconstrained by feasibility."
+      ],
+      "suggested_experiments": [
+        "Time-resolved single-cell multi-omics (scRNA-seq + ATAC-seq + lipid peroxidation reporters) in an in vitro metastasis model (e.g., organotypic microfluidic or 3D culture) to map the trajectory of GPX4/NRF2/ASCL1 states and empirically identify the distribution of \u03c4_v across cells and microenvironments.",
+        "Inducible RNP delivery of multiplex CRISPR-Cure-7 with orthogonal timing triggers to test whether editing at the empirically identified \u03c4_v (vs. randomized or late windows) increases ferroptotic death and reduces clonogenic outgrowth under drug challenge.",
+        "In vivo limiting-dilution colonization assay in immunocompetent mice comparing synchronized vs. asynchronous editing schedules, with longitudinal imaging and barcode lineage tracing to quantify resistant clone emergence."
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Simulate the stated It\u00f4 diffusion on a 2D latent manifold with empirically plausible drift toward commitment and multiplicative noise; implement the proposed threshold policy and compare it to open-loop and myopic policies under varying window shifts (\u00b16\u201312 h) and editing failure rates. Track probability of complete resistance collapse and cumulative off-target burden.",
+        "expected_metrics": [
+          "Probability of escaping commitment within n edits",
+          "Mean time to commitment under policy vs. control",
+          "Cumulative 'editing cost' (off-target + immune exposure)",
+          "Robustness to \u00b1\u03c3 misspecification of \u03c4_v"
+        ],
+        "rationale": "This tests whether the proposed control architecture actually improves upon simpler schedules given realistic noise and latency, and whether the claimed optimality survives model uncertainty."
+      }
+    }
+  ],
+  "simulations": [
+    {
+      "id": "computational-model",
+      "title": "computational_model",
+      "type": "html5_canvas",
+      "description": "Run Monte\u2011Carlo simulations of the It\u00f4 diffusion with empirically derived \u03bc and \u03c3, coupling them to a stochastic CRISPR delivery module that incorporates realistic editing latency and off\u2011target mutation rates; compare the distribution of final resistance states under timed (\u03c4_v\u2011aligned) versus untimed policies.",
+      "rationale": "This analysis will quantify the robustness of the proposed control policy to biological variability and demonstrate whether the predicted advantage persists under realistic noise and delivery constraints.",
+      "expected_metrics": [
+        "Probability of complete resistance collapse",
+        "Mean number of off\u2011target edits per cell",
+        "Time to metastatic colonization in silico"
+      ],
+      "scene": "trajectory_manifold",
+      "seed": 101,
+      "parameters": {}
+    },
+    {
+      "id": "computational-model",
+      "title": "computational_model",
+      "type": "html5_canvas",
+      "description": "Perform a Monte\u2011Carlo simulation of the It\u00f4 diffusion for a population of virtual DTCs using empirically derived drift and diffusion coefficients, then apply both the optimal timed\u2011control policy and a naive constant\u2011rate policy to compare the distribution of final phenotypic states and resistance emergence.",
+      "rationale": "This analysis will quantitatively test whether the proposed optimal policy yields a statistically significant reduction in resistance and editing burden compared to standard approaches, addressing a central claim of the paper.",
+      "expected_metrics": [
+        "Fraction of cells reaching the resistant attractor",
+        "Number of off\u2011target edits per cell",
+        "Cumulative control cost (editing + immunogenic penalty)"
+      ],
+      "scene": "trajectory_manifold",
+      "seed": 202,
+      "parameters": {}
+    },
+    {
+      "id": "computational-model",
+      "title": "computational_model",
+      "type": "html5_canvas",
+      "description": "Perform Monte\u2011Carlo simulations of the calibrated It\u00f4 diffusion for a population of DTCs, comparing the optimal timed\u2011control policy against random or periodic CRISPR delivery across a range of parameter uncertainties.",
+      "rationale": "A rigorous in\u2011silico sensitivity analysis will demonstrate the robustness of the proposed control strategy and quantify the trade\u2011off between therapeutic benefit and genomic risk, addressing the current lack of quantitative validation.",
+      "expected_metrics": [
+        "fraction of simulated cells reaching the resistant attractor",
+        "cumulative off\u2011target mutation burden",
+        "time to metastatic colonization probability"
+      ],
+      "scene": "trajectory_manifold",
+      "seed": 303,
+      "parameters": {}
+    },
+    {
+      "id": "tumor-volume-3d",
+      "title": "Tumor Volume (3D)",
+      "type": "threejs",
+      "description": "Volumetric point-cloud tumor with phenotype-coloured clusters that grow, divide, and apoptose over time. Rotates the mass to expose where the model places phenotype boundaries.",
+      "rationale": "The 2D manifold view collapses depth \u2014 a 3D volumetric rendering tests whether claimed phenotype clusters survive when seen from arbitrary angles.",
+      "expected_metrics": [
+        "phenotype-cluster volumetric stability",
+        "intra-cluster density",
+        "boundary sharpness under rotation"
+      ],
+      "three_scene": "tumor_volume_3d",
+      "seed": 5329,
+      "parameters": {
+        "title": "Optimal Stochastic Control of Multiplex CRISPR-Cure-7 via Commitment-Window Diffusions",
+        "confidence": 0.5292857142857142,
+        "critique": "The stochastic diffusion model (Section\u202fMechanism) is described mathematically but the drift and diffusion coefficients are not empirically derived or validated against real single\u2011cell trajectory data.",
+        "catalyst": "[Practicing Oncologist] A credible large-animal study showing that a clinically translatable imaging biomarker (e.g., hyperpolarized 13C-MRI redox ratio or PET-FAPI uptake kinetics) can reliably proxy the Cell Cinema \u03c4_v and that a single IV LNP-mRNA multiplex dose safely achieves target knockout during that window would sharply move the prediction-market price up; conversely, any signal of GPX4/NRF2 editing\u2013driven hepatic or renal failure in a primate model would crash it."
+      }
+    },
+    {
+      "id": "mitotic-lattice-3d",
+      "title": "Mitotic Lattice (3D)",
+      "type": "threejs",
+      "description": "Rotating 3D lattice of cells with division events sampled from the validator-emitted novelty distribution. Daughter cells inherit colour from parent phenotype, exposing lineage drift.",
+      "rationale": "Hooks the falsifier visually: if the paper's mechanism predicts a specific division geometry, this scene makes deviations from it immediately visible.",
+      "expected_metrics": [
+        "division-rate per phenotype",
+        "lineage-drift entropy",
+        "spatial clustering of mitotic events"
+      ],
+      "three_scene": "mitotic_lattice_3d",
+      "seed": 5347,
+      "parameters": {
+        "title": "Optimal Stochastic Control of Multiplex CRISPR-Cure-7 via Commitment-Window Diffusions",
+        "confidence": 0.5292857142857142,
+        "critique": "The stochastic diffusion model (Section\u202fMechanism) is described mathematically but the drift and diffusion coefficients are not empirically derived or validated against real single\u2011cell trajectory data.",
+        "catalyst": "[Biostatistician] A successful Phase I trial demonstrating the safety and preliminary efficacy of the CW-CRISPR-7 approach in a small cohort of metastatic cancer patients would significantly shift the prediction-market price for this paper, driving it upwards."
+      }
+    },
+    {
+      "id": "perturbation-cone-3d",
+      "title": "Perturbation Cone (3D)",
+      "type": "threejs",
+      "description": "3D analog of the counterfactual scene: treated trajectories spread out from a baseline manifold along a confidence-weighted cone. Cone width tracks acceptance probability.",
+      "rationale": "Forces the prediction-vs-observation gap into a single visual. A narrow, well-aimed cone implies confident divergence; a fat cone signals high predictive uncertainty.",
+      "expected_metrics": [
+        "cone aperture",
+        "trajectory bundle coherence",
+        "off-axis trajectory frequency"
+      ],
+      "three_scene": "perturbation_cone_3d",
+      "seed": 5365,
+      "parameters": {
+        "title": "Optimal Stochastic Control of Multiplex CRISPR-Cure-7 via Commitment-Window Diffusions",
+        "confidence": 0.5292857142857142,
+        "critique": "The stochastic diffusion model (Section\u202fMechanism) is described mathematically but the drift and diffusion coefficients are not empirically derived or validated against real single\u2011cell trajectory data.",
+        "catalyst": "[FDA Regulator] A single in vivo mouse model showing delayed metastatic outgrowth with CRISPR-Cure-7 delivered via a clinically translatable vector, timed to a quantifiable phenotypic transition detected by an open-source imaging algorithm, would move the price up; failure to replicate the latent-space prediction in any independent lab would crush it."
+      }
+    }
+  ]
+}

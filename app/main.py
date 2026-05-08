@@ -886,13 +886,29 @@ async def maybe_auto_generate() -> None:
         n_submitters = int(os.environ.get("HERMES_N_SUBMITTERS", "3"))
         goal = goals[i % len(goals)]
 
-        async def silent_emit(stage: str, message: str, data=None):
+        job_config = {"models": models, "n_submitters": n_submitters, "auto_publish": True, "mode": "auto"}
+        job = create_job(research_goal=goal, config=job_config)
+        job_id = job["job_id"]
+        update_job_status(job_id, "running")
+        append_job_event(job_id, stage="start", message=f"Auto block {i+1}/{n_to_generate}: {goal[:100]}", data={"goal": goal, "block_num": i+1})
+
+        async def emit(stage: str, message: str, data=None):
             logger.info(f"auto_gen [{stage}]: {message}")
+            append_job_event(job_id, stage=stage, message=message, data=data)
 
-        def silent_on_call(call):
-            logger.debug(f"auto_gen API call: {call.role} {call.model}")
+        tracker = TokenTracker()
 
-        supervisor = HermesSupervisor(emit=silent_emit, on_call=silent_on_call, tracker=TokenTracker())
+        async def on_call(call):
+            message = (
+                f"#{call.seq} {call.role} · {call.model} · "
+                f"in={call.prompt_tokens} out={call.completion_tokens} "
+                f"({call.latency_ms}ms, ${call.cost_usd:.4f})"
+                + ("" if call.ok else f" · ERR {call.error[:80] if call.error else ''}")
+            )
+            append_job_event(job_id, stage="api_call", message=message, data={"call": call.to_dict(), "totals": tracker.stats()})
+            logger.info(f"auto_gen API call: {call.role} {call.model}")
+
+        supervisor = HermesSupervisor(emit=emit, on_call=on_call, tracker=tracker)
         try:
             result = await supervisor.run(HermesRunConfig(
                 api_key=api_key,
@@ -902,12 +918,21 @@ async def maybe_auto_generate() -> None:
                 auto_publish=True,
                 git_push=False,
                 stage=False,
-                job_id=None,
+                job_id=job_id,
                 enable_paysh=False,
             ))
+            update_job_status(job_id, "completed", result={
+                "title": result.title,
+                "market_price": result.market_price,
+                "block": result.block,
+                "stats": tracker.stats(),
+            })
+            append_job_event(job_id, stage="done", message=f"Block {result.block} published: {result.title or goal}", data={"block": result.block, "market_price": result.market_price})
             logger.info("auto_generation_complete", extra={"block": result.block, "market_price": result.market_price, "goal": goal[:80]})
             await _save_auto_block_to_db(result, goal, models)
         except Exception as e:
+            update_job_status(job_id, "failed", error=str(e)[:500])
+            append_job_event(job_id, stage="error", message=f"{type(e).__name__}: {str(e)[:200]}")
             logger.error("auto_generation_failed", exc_info=e)
 
 @app.on_event("startup")

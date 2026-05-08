@@ -1,0 +1,614 @@
+{
+  "archetypes": [
+    {
+      "scores": {
+        "clinical_viability": 4,
+        "regulatory_risk": 9,
+        "market_potential": 6,
+        "patient_impact": 7,
+        "novelty": 9,
+        "falsifiability": 8
+      },
+      "verdict": "This paper proposes an ambitious dual strategy targeting glutamine dependency and epigenetic curvature in KRAS-mutant pancreatic cancer. Mechanistically, it\u2019s inventive\u2014linking metabolic vulnerability to geometric epigenetic landscapes is novel. However, clinical viability is low: glutaminase inhibitors are off-label and poorly tolerated, while epigenetic editing remains experimental. Regulatory risk is high due to unvalidated mechanisms and lack of clinical data. Patient impact could be high if successful, but burden from complex therapies may offset benefits. The novelty score reflects its mechanistic creativity, though the Ricci curvature concept is abstract and unproven in this context. Falsifiability is strong with defined endpoints (transition kinetics), but failure modes (e.g., adaptive resistance) are under-addressed.",
+      "would_move_price": "A phase II trial showing reduced recurrence in TSC patients using this combo would sharply increase market potential and viability scores.",
+      "archetype_id": "oncologist",
+      "archetype_name": "Practicing Oncologist"
+    },
+    {
+      "scores": {
+        "clinical_viability": 3,
+        "regulatory_risk": 8,
+        "market_potential": 6,
+        "patient_impact": 4,
+        "novelty": 9,
+        "falsifiability": 2
+      },
+      "verdict": "Mechanistically seductive but operationally hollow. The paper conflates differential geometry (Ricci curvature on a Wasserstein epigenetic manifold) with a deliverable intervention: no ATAC-seq graph construction pipeline, no error model for curvature estimation, no power calculation for single-cell sampling frequency, and no multiplicity correction for testing curvature as a selection criterion. Sample-size feasibility is unaddressed\u2014pancreatic cancer TSC is rare and spatially heterogeneous, yet the design implicitly assumes i.i.d. single-cell draws without accounting for pseudoreplication or dropout-driven curvature bias. Endpoint selection is circular: curvature is both the selection tool and the mechanistic readout, leaving no independent efficacy assessment. Confound risk is high: glutaminase inhibition alters chromatin accessibility, inducing a treatment-by-epigenetic-state interaction that the curvature metric cannot disentangle from drug effect. Regulatory risk is severe: without a prespecified statistical analysis plan linking curvature change to PFS or OS, and without a validated companion diagnostic, the package is un-submittable. Market potential is modest (KRAS-pancreas is crowded), and patient impact is speculative because the paper offers no strategy to prevent immune clearance failure or senescence-associated secretory phenotype (SASP) flare. Novelty is high, but falsifiability is low: the curvature-guided editing protocol is underspecified, and there is no stated threshold for \u2018sufficiently shallow curvature\u2019 or a preregistered stopping rule for futility.",
+      "would_move_price": "A registered phase I window-of-opportunity protocol with a preregistered curvature threshold (e.g., \u0394Ricci > 0.2 units) powering 80% to detect a 30% reduction in TSC clone frequency (ddPCR KRAS-mutant DNA) at 6 weeks would shift price sharply up; failure to specify multiplicity correction or to report dropout-adjusted curvature would shift price down.",
+      "archetype_id": "biostatistician",
+      "archetype_name": "Biostatistician"
+    },
+    {
+      "scores": {
+        "clinical_viability": 4,
+        "regulatory_risk": 8,
+        "market_potential": 7,
+        "patient_impact": 5,
+        "novelty": 9,
+        "falsifiability": 3
+      },
+      "verdict": "IND-enabling package is absent; the proposal couples CB-839-like glutaminase inhibition with a Ricci-curvature\u2013guided epigenetic editing that lacks a defined medicinal chemistry or delivery modality. Accelerated approval is unattainable without a qualified surrogate (e.g., ctDNA clearance or RECIST) linked to a metabolic-epigenetic composite biomarker that does not exist. Safety signals are speculative but include hyperammonemia, TLS risk from epigenetic reawakening, and off-target chromatin editing; prior precedents (EZH2, BET, IDH inhibitors) show that metabolic-epigenetic combinations can achieve signals but require extensive toxicology. The geometric-manifold formalism is elegant but non-falsifiable in a regulatory context; without a locked assay and pre-specified curvature threshold, the claim remains a simulation. Market potential is tempered by KRAS G12C/G12D competition and pancreatic cancer attrition; patient impact is modest until senescence clearance translates to OS. Novelty is high, but viability is low without GLP tox, PK/PD, and a defined IMP.",
+      "would_move_price": "A peer-reviewed in-vivo demonstration that Ricci-curvature\u2013guided CRISPR-dCas editing (or equivalent epigenetic modulator) plus glutaminase inhibition significantly reduces TSC burden and delays recurrence in an orthotopic KRAS-mutant PDX would shift the prediction-market price sharply upward; conversely, failure to show metabolic-addiction bypass or emergence of hyperproliferative relapse on combination would crater it.",
+      "archetype_id": "fda",
+      "archetype_name": "FDA Regulator"
+    },
+    {
+      "scores": {
+        "": ""
+      },
+      "archetype_id": "investor",
+      "archetype_name": "Biotech Investor"
+    },
+    {
+      "scores": {
+        "clinical_viability": 6,
+        "regulatory_risk": 7,
+        "market_potential": 8,
+        "patient_impact": 9,
+        "novelty": 9,
+        "falsifiability": 8
+      },
+      "verdict": "This paper proposes a mechanistically ambitious dual strategy targeting KRAS-mutant pancreatic cancer's therapy-induced senescence (TSC) through glutamine metabolism inhibition and Ricci curvature-guided epigenetic editing. While the integration of metabolic and epigenetic vulnerabilities is novel and holds mechanistic promise, clinical viability is tempered by pancreatic cancer's aggressive biology and the unproven synergy of combining glutaminase inhibitors with epigenetic tools. Regulatory risk is elevated due to the novelty of epigenetic editing in humans, though glutaminase inhibitors have some precedent. Patient impact is high if successful, as TSC is a major driver of resistance. Falsifiability is strong with clear endpoints (e.g., TSC cell reduction, metastasis rates). The adversarial lens questions whether Ricci curvature, a theoretical metric, can translate to clinical efficacy without overfitting to preclinical models.",
+      "would_move_price": "A positive phase I trial demonstrating reduced TSC persistence and metastasis in KRAS-mutant pancreatic cancer patients would sharply increase prediction-market prices, while preclinical failure to replicate Ricci curvature-guided epigenetic editing would drive prices down.",
+      "archetype_id": "kol",
+      "archetype_name": "Academic KOL"
+    },
+    {
+      "scores": {
+        "clinical_viability": 5,
+        "regulatory_risk": 8,
+        "market_potential": 6,
+        "patient_impact": 5,
+        "novelty": 7,
+        "falsifiability": 6
+      },
+      "verdict": "As a patient advocate, I see genuine promise in targeting the therapy-induced senescence reservoir that plagues KRAS-mutant pancreatic cancer - this is where many patients like my father end up, with recurrent disease after initial treatment response. The dual metabolic-epigenetic approach addresses a real biological mechanism, but the complexity gives me pause. Glutamine inhibitors have shown toxicity in clinical trials, and epigenetic editing tools remain largely experimental with unknown long-term consequences. The Ricci curvature concept sounds elegant but adds another layer of technical complexity that could delay patient access. What patients need are therapies that work now, not theoretically perfect combinations that may never translate. The novelty score reflects the innovative approach, but clinical viability suffers from the gap between mathematical elegance and biological reality.",
+      "would_move_price": "A phase II trial showing improved overall survival when adding a glutaminase inhibitor to standard chemotherapy in KRAS-mutant pancreatic cancer would drive the price up, while negative phase I toxicity data for the epigenetic editing component would push it down.",
+      "archetype_id": "patient",
+      "archetype_name": "Patient Advocate"
+    },
+    {
+      "scores": {
+        "clinical_viability": 6,
+        "regulatory_risk": 7,
+        "market_potential": 8,
+        "patient_impact": 7,
+        "novelty": 9,
+        "falsifiability": 9
+      },
+      "verdict": "This paper presents a mechanistically ambitious dual strategy targeting KRAS-mutant pancreatic cancer\u2019s therapy-induced senescence (TSC) through glutamine metabolism inhibition and Ricci curvature-guided epigenetic editing. While the hypothesis is compelling and falsifiable (measurable endpoints include Ricci curvature shifts and glutamine dependency), clinical viability is limited by untested epigenetic editing in vivo and reliance on preclinical models. Regulatory risk is elevated due to the novelty of combining metabolic and epigenetic modalities, which may face hurdles in Phase III validation. Market potential is high for a breakthrough in a high-need area, but adoption could be constrained by complexity and cost. Patient impact is significant if successful, but immediate translation is unlikely. Novelty is exceptional, leveraging geometric epigenetics in a clinically relevant context. Falsifiability is strong, with clear failure modes (e.g., no curvature reduction or increased resistance). However, the adversarial lens highlights risks: unproven epigenetic editing scalability and metabolic resistance could undermine cost-effectiveness.",
+      "would_move_price": "A successful preclinical trial demonstrating reduced TSC recurrence in KRAS-mutant models would sharply increase the prediction-market price, while failure in epigenetic editing feasibility would drive it down.",
+      "archetype_id": "payer",
+      "archetype_name": "Insurance Payer"
+    },
+    {
+      "scores": {
+        "clinical_viability": 4,
+        "regulatory_risk": 7,
+        "market_potential": 5,
+        "patient_impact": 6,
+        "novelty": 8,
+        "falsifiability": 3
+      },
+      "archetype_id": "short_seller",
+      "archetype_name": "Adversarial Short-Seller"
+    }
+  ],
+  "market_price": 0.5249999999999999,
+  "score_matrix": {
+    "oncologist": {
+      "clinical_viability": 4,
+      "regulatory_risk": 9,
+      "market_potential": 6,
+      "patient_impact": 7,
+      "novelty": 9,
+      "falsifiability": 8
+    },
+    "biostatistician": {
+      "clinical_viability": 3,
+      "regulatory_risk": 8,
+      "market_potential": 6,
+      "patient_impact": 4,
+      "novelty": 9,
+      "falsifiability": 2
+    },
+    "fda": {
+      "clinical_viability": 4,
+      "regulatory_risk": 8,
+      "market_potential": 7,
+      "patient_impact": 5,
+      "novelty": 9,
+      "falsifiability": 3
+    },
+    "investor": {
+      "": ""
+    },
+    "kol": {
+      "clinical_viability": 6,
+      "regulatory_risk": 7,
+      "market_potential": 8,
+      "patient_impact": 9,
+      "novelty": 9,
+      "falsifiability": 8
+    },
+    "patient": {
+      "clinical_viability": 5,
+      "regulatory_risk": 8,
+      "market_potential": 6,
+      "patient_impact": 5,
+      "novelty": 7,
+      "falsifiability": 6
+    },
+    "payer": {
+      "clinical_viability": 6,
+      "regulatory_risk": 7,
+      "market_potential": 8,
+      "patient_impact": 7,
+      "novelty": 9,
+      "falsifiability": 9
+    },
+    "short_seller": {
+      "clinical_viability": 4,
+      "regulatory_risk": 7,
+      "market_potential": 5,
+      "patient_impact": 6,
+      "novelty": 8,
+      "falsifiability": 3
+    }
+  },
+  "consensus_dim": {
+    "clinical_viability": 4.571428571428571,
+    "regulatory_risk": 7.714285714285714,
+    "market_potential": 6.571428571428571,
+    "patient_impact": 6.142857142857143,
+    "novelty": 8.571428571428571,
+    "falsifiability": 5.571428571428571
+  },
+  "headline_catalysts": [
+    "[Practicing Oncologist] A phase II trial showing reduced recurrence in TSC patients using this combo would sharply increase market potential and viability scores.",
+    "[Biostatistician] A registered phase I window-of-opportunity protocol with a preregistered curvature threshold (e.g., \u0394Ricci > 0.2 units) powering 80% to detect a 30% reduction in TSC clone frequency (ddPCR KRAS-mutant DNA) at 6 weeks would shift price sharply up; failure to specify multiplicity correction or to report dropout-adjusted curvature would shift price down.",
+    "[FDA Regulator] A peer-reviewed in-vivo demonstration that Ricci-curvature\u2013guided CRISPR-dCas editing (or equivalent epigenetic modulator) plus glutaminase inhibition significantly reduces TSC burden and delays recurrence in an orthotopic KRAS-mutant PDX would shift the prediction-market price sharply upward; conversely, failure to show metabolic-addiction bypass or emergence of hyperproliferative relapse on combination would crater it.",
+    "[Academic KOL] A positive phase I trial demonstrating reduced TSC persistence and metastasis in KRAS-mutant pancreatic cancer patients would sharply increase prediction-market prices, while preclinical failure to replicate Ricci curvature-guided epigenetic editing would drive prices down.",
+    "[Patient Advocate] A phase II trial showing improved overall survival when adding a glutaminase inhibitor to standard chemotherapy in KRAS-mutant pancreatic cancer would drive the price up, while negative phase I toxicity data for the epigenetic editing component would push it down.",
+    "[Insurance Payer] A successful preclinical trial demonstrating reduced TSC recurrence in KRAS-mutant models would sharply increase the prediction-market price, while failure in epigenetic editing feasibility would drive it down."
+  ],
+  "derived_topics": [
+    {
+      "id": 1,
+      "title": "Glutamine-carbon gate as a metabolic rheostat for TSC exit vs senescence arrest",
+      "probability": 0.78,
+      "impact": 8,
+      "token_cost": 2100,
+      "rationale": "Extends the established glutamine addiction by testing whether limiting flux through the glutamine-derived TCA anaplerotic gate (\u03b1KG\u2192succinate) forces TSC cells into senescence-permissive redox states, whereas overflow into GSH and nucleotide pools enables escape. Hypothesis: partial GLS inhibition plus \u03b1KG supplementation increases senescence markers (p21, SA-\u03b2-gal) and suppresses clonogenic recovery in KRAS-mutant TSC models."
+    },
+    {
+      "id": 2,
+      "title": "Ricci curvature thresholding to compress epigenetic commitment windows in TSC",
+      "probability": 0.82,
+      "impact": 9,
+      "token_cost": 2400,
+      "rationale": "Extends the Wasserstein-manifold curvature metric by defining a dynamic Ricci threshold (\u0394Ricci > 0.15) that predicts collapse of the drug-tolerant basin. Hypothesis: dCas-KRAB/acetyltransferase perturbations steered by high-negative-curvature nodes reduce mean first-passage time to H3K27ac-senescence states and lower TSC clone frequency (ddPCR KRAS-mutant DNA) at 6 weeks in orthotopic PDX."
+    },
+    {
+      "id": 3,
+      "title": "Senescence-associated secretome remodeling via glutamine\u2013acetyl-CoA coupling",
+      "probability": 0.71,
+      "impact": 7,
+      "token_cost": 1900,
+      "rationale": "Extends metabolic dependency by testing whether TSC cells rewire glutamine carbon into acetyl-CoA to sustain SASP chromatin accessibility. Hypothesis: dual GLS + ACLY inhibition collapses H3K27ac at NF-\u03baB loci, dampens IL-6/IL-8 SASP output, and reduces niche-mediated TSC survival without driving hyperproliferative relapse."
+    },
+    {
+      "id": 4,
+      "title": "Curvature-guided sequential dosing to preempt resistance trajectories",
+      "probability": 0.69,
+      "impact": 8,
+      "token_cost": 2200,
+      "rationale": "Extends the dual metabolic\u2013epigenetic strategy by sequencing glutaminase inhibition before epigenetic editing based on real-time Ricci drift. Hypothesis: initiating GLSi when Ricci curvature exceeds \u22120.25 and following with curvature-guided editing compresses the TSC persistence area under the manifold and delays recurrence versus concurrent or reverse sequencing in longitudinal organoid assays."
+    },
+    {
+      "id": 5,
+      "title": "Metabolic-epigenetic hysteresis as a biomarker of irreversible senescence commitment",
+      "probability": 0.75,
+      "impact": 7,
+      "token_cost": 2000,
+      "rationale": "Extends the geometric attractor concept by quantifying hysteresis width (\u0394Ricci\u2013\u0394Glutamine-flux) that separates reversible TSC from irreversible senescence. Hypothesis: a combined index (manifold curvature slope + glutamine-to-\u03b1KG flux ratio) predicts failure of withdrawal-driven resensitization with AUROC \u2265 0.85 in patient-derived sphere cultures."
+    }
+  ],
+  "peer_reviews": [
+    {
+      "archetype_id": "oncologist",
+      "archetype_name": "Practicing Oncologist",
+      "recommendation": "reject",
+      "confidence": 0.85,
+      "summary": "The paper proposes an intriguing metabolic-epigenetic synergy in KRAS-mutant pancreatic cancer therapy-induced senescence (TSC), but is fatally undermined by undefined agents, unfalsifiable geometric formalism (Ricci curvature on an epigenetic manifold), and absent translational feasibility. Without pharmacokinetic data, off-label context, or a credible path to human application, the work remains a speculative framework rather than a testable therapeutic blueprint.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 6,
+        "experimental_design": 3,
+        "evidence_support": 4,
+        "statistical_rigor": 2,
+        "clarity_of_writing": 5
+      },
+      "criticisms": [
+        "Agent undefined: V-1971, NITD0006, and ID2 inhibition are presented as established tools, yet no chemical identity, IC50, or PK/PD data are provided for pancreatic cancer models. This renders the proposed experiment non-reproducible.",
+        "Ricci curvature formalism is not operationally linked to measurable chromatin states. The claim that \"low-curvature corridors\" can be exploited for epigenetic editing lacks a mapping to ATAC-seq or ChIP-seq features, making the metric unfalsifiable.",
+        "No off-label reality check: V-1971 (if referring to ASCT2 inhibitors) has no FDA-approved analogue in pancreatic cancer; NITD0006 is not a recognized senolytic in humans. The paper ignores formulary, toxicity, and scheduling constraints that determine clinical feasibility.",
+        "Patient burden omitted: Combination glutaminolysis blockade + senolytics + epigenetic modulators in advanced pancreatic cancer is likely to exacerbate cachexia, mucositis, and myelosuppression. No tolerability modeling or dose de-escalation schema is proposed.",
+        "Comparison to standard-of-care absent: FOLFIRINOX/gemcitabine-abraxane induce senescence as a resistance mechanism; the manuscript does not model how the proposed triplet would integrate with or replace these regimens.",
+        "Statistical plan missing: The abstract and proposed experiment do not specify endpoints (e.g., senescence-associated \u03b2-galactosidase clearance, tumor regrowth delay), sample sizes, or multiplicity control."
+      ],
+      "required_fixes": [
+        "Replace proprietary or undefined compounds with clinically available or well-characterized chemical probes (e.g., CB-839 or telaglenastat for glutaminase inhibition; dasatinib + quercetin as a senolytic combination) and provide dose ranges and scheduling relative to standard-of-care cytotoxics.",
+        "Operationalize Ricci curvature: define a computable mapping from single-cell ATAC-seq or CUT&RUN data to a scalar curvature field, and specify a statistical test (e.g., permutation test on diffusion pseudotime) to validate that curvature predicts transition rates between senescence and senolytic-sensitivity states.",
+        "Add a tolerability and scheduling module: model pharmacodynamic overlap between glutaminase inhibition, senolytics, and backbone chemotherapy to estimate rates of grade \u22653 adverse events and propose dose optimization."
+      ],
+      "suggested_experiments": [
+        "Dose-ranging triplet study in orthotopic KRAS^G12D^ PDAC models comparing V-1971 (or CB-839) + dasatinib/quercetin \u00b1 FOLFIRINOX, with primary endpoint: fraction of residual disease (TSC) cells by CDK1^low^/p21^high~ flow cytometry at 14 days, and secondary endpoint: tumor regrowth delay after treatment cessation.",
+        "Spatial transcriptomics/ATAC-seq of treated vs. control tumors to quantify SASP-associated chromatin states and correlate with immune infiltration (CD8^+ T cell proximity) to test whether senolytic addition restores immune clearance.",
+        "Pharmacokinetic/pharmacodynamic (PK/PD) bridging study in mice to define maximum tolerated doses when combining ASCT2 inhibition with senolytics and gemcitabine, with measurement of plasma glutamine, cytokines (IL-6, IL-8), and cachexia markers (IGF-1, myostatin)."
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Construct a multiscale model coupling (i) a pharmacologic ODE system for glutamine flux and senolytic-induced apoptosis, and (ii) a Markov state model on an epigenetic manifold parameterized by single-cell ATAC-seq-derived transition probabilities. Use Ricci curvature as a local diffusivity parameter to simulate mean first-passage times from TSC to senolytic-sensitive states under varying drug concentrations.",
+        "expected_metrics": [
+          "Mean first-passage time (days) from TSC to senolytic-sensitivity; fraction of persister cells remaining after 21 simulated days; simulated tumor volume trajectories under intermittent vs. continuous dosing.",
+          "Sensitivity index (Sobol) quantifying contribution of glutamine flux vs. curvature-guided epigenetic transition rates to overall response."
+        ],
+        "rationale": "This simulation would test the core hypothesis that curvature-guided epigenetic editing synergizes with metabolic inhibition to collapse the TSC reservoir, while exposing parameter regimes where toxicity or compensatory metabolism abolishes benefit\u2014thereby prioritizing feasible clinical dosing schedules before animal experimentation."
+      }
+    },
+    {
+      "archetype_id": "biostatistician",
+      "archetype_name": "Biostatistician",
+      "recommendation": "major_revision",
+      "confidence": 0.75,
+      "summary": "The paper presents an innovative mechanistic hypothesis integrating metabolic and epigenetic strategies to target therapy-induced senescence in KRAS-mutant pancreatic cancer. However, critical gaps in experimental design, endpoint specificity, and statistical rigor undermine its feasibility as a proof-of-concept. The proposed combination therapy requires validation of synergistic effects, and the Ricci curvature framework lacks empirical validation in this context.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 8,
+        "experimental_design": 5,
+        "evidence_support": 6,
+        "statistical_rigor": 4,
+        "clarity_of_writing": 7
+      },
+      "criticisms": [
+        "The proposed experiment lacks a clear control group design and does not address potential confounders (e.g., tumor heterogeneity, patient comorbidities) that could affect TSC dynamics.",
+        "Endpoint selection is vague; 'dismantling the senescence reservoir' is not operationally defined (e.g., no measurable biomarkers or clinical outcomes specified).",
+        "Statistical methods for analyzing epigenetic state transitions or metabolic effects are not described, raising concerns about data interpretation.",
+        "The citation [CancerHawk Block 25] appears unverified; if fictional, this undermines credibility.",
+        "The combination of V-1971 and ID2 inhibition is hypothesized but not tested for synergistic effects in preclinical models."
+      ],
+      "required_fixes": [
+        "Define specific, measurable endpoints (e.g., reduction in H3K27me3-positive cells, metastasis rate) with validation in preclinical models.",
+        "Detail experimental design with controls (e.g., vehicle controls, single-agent arms) and stratification for confounders.",
+        "Include power calculations and statistical methods for analyzing epigenetic/quantitative metabolic data.",
+        "Verify all citations, particularly [CancerHawk Block 25], or replace with peer-reviewed references.",
+        "Conduct preliminary experiments to validate Ricci curvature-guided epigenetic editing in vitro before clinical translation."
+      ],
+      "suggested_experiments": [],
+      "simulation_proposal": null
+    },
+    {
+      "archetype_id": "fda",
+      "archetype_name": "FDA Regulator",
+      "recommendation": "major_revision",
+      "confidence": 0.75,
+      "summary": "The paper presents a novel hypothesis integrating metabolic and epigenetic strategies to target therapy-induced senescence in KRAS-mutant pancreatic cancer. However, the proposed experimental design is incomplete, lacking critical details on methodology, controls, and statistical analysis. The Ricci curvature framework is mechanistically intriguing but requires validation through targeted experiments.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 8,
+        "experimental_design": 5,
+        "evidence_support": 6,
+        "statistical_rigor": 4,
+        "clarity_of_writing": 7
+      },
+      "criticisms": [
+        "The proposed experiment is incomplete, with the methods section cut off mid-description of pharmacologic levers (V-1971, NITD0006, ID2 inhibition).",
+        "No clear rationale or evidence linking Ricci curvature-guided epigenetic editing to measurable clinical outcomes.",
+        "Statistical methods (e.g., sample size, controls, hypothesis testing) are not specified, undermining reproducibility.",
+        "Some claims (e.g., Ricci curvature as a 'quantitative metric') lack citations or experimental validation.",
+        "The connection between glutamine addiction and epigenetic metastability is proposed but not mechanistically detailed."
+      ],
+      "required_fixes": [
+        "Complete the experimental design section, including dosing regimens, combination strategies, and endpoints for V-1971, NITD0006, and ID2 inhibition.",
+        "Add statistical rigor: specify sample size, control groups, and statistical tests for hypothesis validation.",
+        "Provide citations for key claims (e.g., Ricci curvature's role in epigenetic editing, glutamine's role in TSC).",
+        "Clarify how Ricci curvature measurements will be translated into therapeutic interventions.",
+        "Detail mechanisms linking glutamine metabolism to epigenetic state transitions in TSC cells."
+      ],
+      "suggested_experiments": [
+        "In vitro co-culture experiments to test V-1971 (glutaminase inhibitor) combined with NITD0006 (senolytic) and ID2 inhibition in KRAS-mutant pancreatic cancer cell lines.",
+        "Single-cell RNA-seq and ATAC-seq analysis to validate Ricci curvature-guided epigenetic editing in TSC cells.",
+        "In vivo mouse models to assess combination therapy efficacy and resistance mechanisms."
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Develop a stochastic model of the Wasserstein-derived epigenetic manifold \u0393\u209c under glutamine deprivation, incorporating Ricci curvature dynamics and metabolic stress.",
+        "expected_metrics": [
+          "Transition rates between H3K27me3 and H3K27ac states",
+          "Effect of V-1971 on curvature",
+          "Time to apoptosis induction"
+        ],
+        "rationale": "This simulation would test whether metabolic inhibition alters epigenetic landscape geometry, validating the hypothesis that Ricci curvature-guided editing can accelerate state transitions under metabolic stress."
+      }
+    },
+    {
+      "archetype_id": "investor",
+      "archetype_name": "Biotech Investor",
+      "recommendation": "minor_revision",
+      "confidence": 0.7,
+      "summary": "The paper presents a novel mechanistic hypothesis integrating metabolic and epigenetic strategies to target therapy-induced senescence in KRAS-mutant pancreatic cancer. While the conceptual framework is innovative and aligns with precision oncology goals, the proposed experimental design lacks critical details, and the application of Ricci curvature as a therapeutic guide requires stronger validation. Minor revisions to clarify experimental protocols and validate key claims would strengthen the manuscript.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 7,
+        "experimental_design": 6,
+        "evidence_support": 6,
+        "statistical_rigor": 5,
+        "clarity_of_writing": 7
+      },
+      "criticisms": [
+        "The proposed experiment section is incomplete and does not specify how V-1971, NITD0006, or ID2 inhibition will be quantified or combined in a coherent protocol.",
+        "The application of Ricci curvature (\u0393\u209c) to guide epigenetic editing is theoretically compelling but lacks experimental evidence linking curvature metrics to therapeutic outcomes in TSC cells.",
+        "The manuscript underemphasizes potential off-target effects of epigenetic editing or metabolic inhibitors in non-senescent cells, which could compromise therapeutic specificity."
+      ],
+      "required_fixes": [
+        "Complete the proposed experiment section with specific endpoints (e.g., senescence markers, apoptosis rates, Ricci curvature measurements) and statistical methods for data analysis.",
+        "Provide preliminary data or computational models demonstrating how Ricci curvature correlates with therapeutic efficacy in TSC cells.",
+        "Address potential confounding factors (e.g., heterogeneity in TSC cell populations) that could affect the proposed dual strategy."
+      ],
+      "suggested_experiments": [
+        "Conduct in vitro co-culture experiments combining V-1971 (glutamine inhibition) with CRISPR-based epigenetic editing targeting high-curvature regions in TSC cells, measuring senescence reversal and metastasis potential.",
+        "Develop a preclinical mouse model of KRAS-mutant pancreatic cancer with inducible TSC, then test the dual strategy while tracking Ricci curvature changes via single-cell sequencing.",
+        "Perform a dose-response analysis of ID2 inhibition in combination with metabolic inhibitors to quantify SASP disruption and its impact on TSC cell survival."
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Simulate epigenetic state transitions in TSC cells under glutamine deprivation using a Wasserstein manifold framework, incorporating Ricci curvature as a dynamic parameter to predict the efficacy of epigenetic editing.",
+        "expected_metrics": [
+          "Mean first-passage time from high-curvature to low-curvature states",
+          "Survival rates of TSC cells under combined metabolic/epigenetic inhibition"
+        ],
+        "rationale": "This simulation would test whether Ricci curvature-guided editing can accelerate transitions from drug-tolerant to sensitive states in a controlled metabolic environment, validating the core hypothesis."
+      }
+    },
+    {
+      "archetype_id": "kol",
+      "archetype_name": "Academic KOL",
+      "recommendation": "major_revision",
+      "confidence": 0.6,
+      "summary": "The paper proposes an innovative dual strategy targeting metabolic and epigenetic vulnerabilities in therapy-induced senescence (TSC) for KRAS-mutant pancreatic cancer. While the hypothesis is mechanistically intriguing and aligns with emerging trends in precision oncology, the experimental design lacks specificity, critical citations for Ricci curvature concepts, and statistical rigor. The integration of metabolic and epigenetic approaches requires stronger mechanistic justification and clearer experimental endpoints.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 7,
+        "experimental_design": 5,
+        "evidence_support": 6,
+        "statistical_rigor": 4,
+        "clarity_of_writing": 6
+      },
+      "criticisms": [
+        "The connection between Ricci curvature (\u0393\u209c) and metabolic inhibition is not mechanistically detailed. The paper references prior work [CancerHawk Block 25] but fails to cite specific experiments validating Ricci curvature as a manipulable metric in this context.",
+        "The proposed experiment with V-1971, NITD0006, and ID2 inhibition lacks defined dosages, timepoints, or control groups. Endpoints (e.g., transition from TSC to drug-sensitive states) are vaguely described.",
+        "No statistical methods are outlined for analyzing metabolic or epigenetic data. The paper does not address variability or sample size requirements.",
+        "The Ricci curvature framework is introduced without clear validation in KRAS-mutant pancreatic cancer cells. The geometric analogy to state transitions is conceptually dense but lacks empirical grounding.",
+        "The simultaneous targeting of metabolic and epigenetic pathways is proposed without evidence of synergistic effects. The paper does not address potential compensatory mechanisms."
+      ],
+      "required_fixes": [
+        "Cite specific experiments validating Ricci curvature as a manipulable metric in TSC cells (e.g., [CancerHawk Block 25] must be expanded with direct references to prior work).",
+        "Define measurable endpoints (e.g., H3K27me3/H3K27ac ratios, glutamine uptake rates, apoptosis markers) and statistical methods (e.g., Kaplan-Meier survival analysis, ANOVA for metabolic shifts).",
+        "Clarify the mechanistic link between glutamine inhibition and epigenetic state transitions. Include in vitro data showing how metabolic stress alters epigenetic landscapes.",
+        "Add controls (e.g., cells without KRAS mutation, untreated controls) to isolate the effects of each intervention.",
+        "Explain how the dual strategy reduces resistance compared to monotherapy approaches."
+      ],
+      "suggested_experiments": [
+        "Conduct time-course experiments in KRAS-mutant pancreatic cell lines treated with V-1971 (glutamine inhibitor) combined with CRISPR-based epigenetic editing targeting low-curvature corridors. Measure transition rates to drug-sensitive states using flow cytometry."
+      ],
+      "simulation_proposal": null
+    },
+    {
+      "archetype_id": "patient",
+      "archetype_name": "Patient Advocate",
+      "recommendation": ": major_revision",
+      "confidence": 0.85,
+      "summary": "The paper presents an intriguing mechanistic hypothesis that combines glutaminase inhibition with Ricci curvature\u2011guided epigenetic editing to eradicate therapy\u2011induced senescent cells in KRAS\u2011mutant pancreatic cancer. However, from a patient\u2011advocate standpoint the manuscript lacks any patient\u2011relevant data, toxicity or accessibility considerations, and patient\u2011reported outcome measures. Without evidence that the proposed strategy is tolerable, feasible, or beneficial in real\u2011world tumor models derived from patients, the work remains overly speculative and cannot inform clinical decision\u2011making. A major revision that adds patient\u2011derived experimental validation, discusses side\u2011effects and access, and frames outcomes in terms meaningful to patients is required before the manuscript can be considered for publication.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 5,
+        "experimental_design": 5,
+        "evidence_support": 5,
+        "statistical_rigor": 5,
+        "clarity_of_writing": 5
+      },
+      "criticisms": [],
+      "required_fixes": [],
+      "suggested_experiments": [],
+      "simulation_proposal": null
+    },
+    {
+      "archetype_id": "payer",
+      "archetype_name": "Insurance Payer",
+      "recommendation": "reject",
+      "confidence": 0.85,
+      "summary": "This manuscript presents a speculative dual-strategy framework combining glutamine metabolism inhibition with Ricci-curvature-guided epigenetic editing to target therapy-induced senescence in KRAS-mutant pancreatic cancer. While the conceptual intersection of metabolism and epigenetic state dynamics is mechanistically interesting, the paper lacks any experimental data, falsifiable hypotheses, concrete endpoints, or validated pharmacologic agents. The proposed experiment section is truncated mid-sentence. The Ricci curvature framework is presented without demonstrated application to real epigenetic data or cancer biology. As written, the manuscript does not meet the threshold for a research article.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 4,
+        "experimental_design": 1,
+        "evidence_support": 1,
+        "statistical_rigor": 1,
+        "clarity_of_writing": 3
+      },
+      "criticisms": [
+        "The proposed experiment section is incomplete; the manuscript cuts off mid-sentence at 'V\u20111971, a competitive inhibitor of the neutral amino\u2011acid transporter ASCT2', providing no experimental design, controls, or endpoints.",
+        "No data are presented anywhere in the manuscript. There are no figures, no tables, no single-cell ATAC-seq results, no curvature calculations, no cell viability assays, and no xenograft or organoid data.",
+        "The Ricci curvature framework is cited to 'CancerHawk Block 25' without independent validation or a published reference. The claim that Ricci curvature of a Wasserstein manifold can guide epigenetic editing toward drug-sensitive states is asserted but never demonstrated.",
+        "Drug names V-1971 and NITD0006 are introduced without any citation, structural information, or evidence of activity against KRAS-mutant pancreatic cancer cells.",
+        "The hypothesis is stated only in vague terms: 'the metabolic and epigenetic vulnerabilities of TSC cells can be exploited to eliminate the senescence reservoir while minimizing resistance.' No specific, falsifiable prediction with a measurable endpoint is provided.",
+        "The abstract and introduction are highly repetitive; the same paragraphs about TSC being a reservoir and glutamine dependence appear nearly verbatim in multiple sections.",
+        "No ICER, cost-effectiveness, or coverage policy analysis is presented despite the reviewer lens, and the paper does not address translational feasibility, dosing, toxicity, or combination regimens."
+      ],
+      "required_fixes": [
+        "Complete the proposed experiment section with specific hypotheses, arms, controls, measurable endpoints, and a timeline.",
+        "Provide at least pilot data: e.g., single-cell ATAC-seq or scRNA-seq from KRAS-mutant pancreatic cancer cells treated with senescence-inducing therapy, with computed Ricci curvature maps and identified low-curvature corridors.",
+        "Validate the pharmacologic agents: show that V-1971 inhibits ASCT2-mediated glutamine uptake and that NITD0006 acts as a senolytic in relevant KRAS-mutant pancreatic cancer models.",
+        "State a concrete, falsifiable hypothesis with a failure mode, e.g., 'If Ricci curvature-guided epigenetic editing reduces the mean first-passage time from H3K27me3-dominated to H3K27ac-enriched states by greater than 50%, then TSC cell elimination will increase by at least 3-fold compared to metabolic inhibition alone.'",
+        "Remove or substantiate all unnamed drug candidates and internal references."
+      ],
+      "suggested_experiments": [
+        "Perform single-cell ATAC-seq on KRAS-mutant pancreatic cancer organoids before and after senescence induction (e.g., with gemcitabine), compute the Wasserstein barycenter and Ricci curvature of the resulting epigenetic manifold, and identify low-curvature transition corridors.",
+        "Test V-1971 (or a known glutaminase inhibitor such as CB-839) in combination with a senolytic in a KRAS-mutant pancreatic cancer PDX model, measuring senescence markers (p16, SA-beta-gal), SASP factors, and tumor regrowth kinetics.",
+        "Use CRISPR-mediated epigenetic editing (e.g., dCas9-TET1 or dCas9-p300) targeted to low-curvature regions identified by the manifold analysis, and measure whether this accelerates transition to a drug-sensitive transcriptional state."
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Simulate stochastic epigenetic dynamics on a synthetic Wasserstein manifold with known Ricci curvature field, placing virtual TSC cells in a high-curvature drug-tolerant basin and measuring mean first-passage time to a drug-sensitive attractor under varying curvature-guided perturbation strengths.",
+        "expected_metrics": [
+          "Mean first-passage time from tolerant to sensitive attractor",
+          "Probability of escape within a defined time window",
+          "Sensitivity of escape kinetics to curvature perturbation magnitude"
+        ]
+      }
+    },
+    {
+      "archetype_id": "short_seller",
+      "archetype_name": "Adversarial Short-Seller",
+      "recommendation": "major_revision",
+      "confidence": 0.75,
+      "summary": "The paper proposes an innovative dual strategy targeting metabolic and epigenetic vulnerabilities in therapy-induced senescence (TSC) for KRAS-mutant pancreatic cancer. While the mechanistic hypothesis is intriguing, critical gaps in experimental design, statistical rigor, and citations undermine its validity. The Ricci curvature framework requires stronger validation, and the proposed experiment lacks detail on dosing, controls, and endpoints.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 7,
+        "experimental_design": 5,
+        "evidence_support": 6,
+        "statistical_rigor": 4,
+        "clarity_of_writing": 6
+      },
+      "criticisms": [
+        "The Ricci curvature concept is poorly contextualized; [CancerHawk Block 25] is an internal reference without external validation, raising reproducibility concerns.",
+        "Experimental design lacks critical details: dosing regimens, control groups, and endpoints for combining V-1971, NITD0006, and ID2 inhibitors are unspecified.",
+        "No statistical analysis plan is provided, making claims about 'accelerated transitions' or 'reduced resistance' unfalsifiable.",
+        "Epigenetic editing via Ricci curvature is described abstractly without mechanistic linkage to specific molecular targets (e.g., H3K27me3/H3K27ac dynamics).",
+        "The transition from theoretical framework to actionable therapy is abrupt, with no preclinical validation of the dual strategy."
+      ],
+      "required_fixes": [
+        "Add a detailed methods section specifying drug dosages, administration schedules, and control groups (e.g., vehicle control, single-agent controls).",
+        "Include statistical power calculations and planned analyses (e.g., Kaplan-Meier for survival, ANOVA for metabolic endpoints).",
+        "Cite all claims about Ricci curvature and Wasserstein manifolds with peer-reviewed references.",
+        "Clarify how epigenetic editing will be implemented (e.g., CRISPR-based tools, chemical modulators) and validated in vitro/in vivo.",
+        "Define measurable endpoints for 'dismantling the senescence reservoir' (e.g., senescence marker reduction, metastasis assays)."
+      ],
+      "suggested_experiments": [
+        "In vitro co-culture models to test V-1971 + epigenetic editing (e.g., CRISPR-dCas9 targeting H3K27me3) on TSC cells, measuring transition rates to drug-sensitive states.",
+        "Pilot study in xenograft models to assess combinatorial therapy efficacy vs. single agents, with histology and metastasis tracking.",
+        "Single-cell RNA-seq time-course analysis to validate epigenetic state transitions under metabolic stress."
+      ],
+      "simulation_proposal": null
+    }
+  ],
+  "simulations": [
+    {
+      "id": "computational-model",
+      "title": "computational_model",
+      "type": "html5_canvas",
+      "description": "Simulate epigenetic state transitions in TSC cells under glutamine deprivation using a Wasserstein manifold framework, incorporating Ricci curvature as a dynamic parameter to predict the efficacy of epigenetic editing.",
+      "rationale": "This simulation would test whether Ricci curvature-guided editing can accelerate transitions from drug-tolerant to sensitive states in a controlled metabolic environment, validating the core hypothesis.",
+      "expected_metrics": [
+        "Mean first-passage time from high-curvature to low-curvature states",
+        "Survival rates of TSC cells under combined metabolic/epigenetic inhibition"
+      ],
+      "scene": "trajectory_manifold",
+      "seed": 101,
+      "parameters": {}
+    },
+    {
+      "id": "computational-model",
+      "title": "computational_model",
+      "type": "html5_canvas",
+      "description": "Develop a stochastic model of the Wasserstein-derived epigenetic manifold \u0393\u209c under glutamine deprivation, incorporating Ricci curvature dynamics and metabolic stress.",
+      "rationale": "This simulation would test whether metabolic inhibition alters epigenetic landscape geometry, validating the hypothesis that Ricci curvature-guided editing can accelerate state transitions under metabolic stress.",
+      "expected_metrics": [
+        "Transition rates between H3K27me3 and H3K27ac states",
+        "Effect of V-1971 on curvature",
+        "Time to apoptosis induction"
+      ],
+      "scene": "trajectory_manifold",
+      "seed": 202,
+      "parameters": {}
+    },
+    {
+      "id": "computational-model",
+      "title": "computational_model",
+      "type": "html5_canvas",
+      "description": "Construct a multiscale model coupling (i) a pharmacologic ODE system for glutamine flux and senolytic-induced apoptosis, and (ii) a Markov state model on an epigenetic manifold parameterized by single-cell ATAC-seq-derived transition probabilities. Use Ricci curvature as a local diffusivity parameter to simulate mean first-passage times from TSC to senolytic-sensitive states under varying drug concentrations.",
+      "rationale": "This simulation would test the core hypothesis that curvature-guided epigenetic editing synergizes with metabolic inhibition to collapse the TSC reservoir, while exposing parameter regimes where toxicity or compensatory metabolism abolishes benefit\u2014thereby prioritizing feasible clinical dosing schedules before animal experimentation.",
+      "expected_metrics": [
+        "Mean first-passage time (days) from TSC to senolytic-sensitivity; fraction of persister cells remaining after 21 simulated days; simulated tumor volume trajectories under intermittent vs. continuous dosing.",
+        "Sensitivity index (Sobol) quantifying contribution of glutamine flux vs. curvature-guided epigenetic transition rates to overall response."
+      ],
+      "scene": "trajectory_manifold",
+      "seed": 303,
+      "parameters": {}
+    },
+    {
+      "id": "tumor-volume-3d",
+      "title": "Tumor Volume (3D)",
+      "type": "threejs",
+      "description": "Volumetric point-cloud tumor with phenotype-coloured clusters that grow, divide, and apoptose over time. Rotates the mass to expose where the model places phenotype boundaries.",
+      "rationale": "The 2D manifold view collapses depth \u2014 a 3D volumetric rendering tests whether claimed phenotype clusters survive when seen from arbitrary angles.",
+      "expected_metrics": [
+        "phenotype-cluster volumetric stability",
+        "intra-cluster density",
+        "boundary sharpness under rotation"
+      ],
+      "three_scene": "tumor_volume_3d",
+      "seed": 6038,
+      "parameters": {
+        "title": "Metabolic and Epigenetic Strategies to Target Therapy-Induced Senescence in KRAS-Mutant Pancreatic Cancer",
+        "confidence": 0.5249999999999999,
+        "critique": "Agent undefined: V-1971, NITD0006, and ID2 inhibition are presented as established tools, yet no chemical identity, IC50, or PK/PD data are provided for pancreatic cancer models. This renders the proposed experiment non-",
+        "catalyst": "[Practicing Oncologist] A phase II trial showing reduced recurrence in TSC patients using this combo would sharply increase market potential and viability scores."
+      }
+    },
+    {
+      "id": "mitotic-lattice-3d",
+      "title": "Mitotic Lattice (3D)",
+      "type": "threejs",
+      "description": "Rotating 3D lattice of cells with division events sampled from the validator-emitted novelty distribution. Daughter cells inherit colour from parent phenotype, exposing lineage drift.",
+      "rationale": "Hooks the falsifier visually: if the paper's mechanism predicts a specific division geometry, this scene makes deviations from it immediately visible.",
+      "expected_metrics": [
+        "division-rate per phenotype",
+        "lineage-drift entropy",
+        "spatial clustering of mitotic events"
+      ],
+      "three_scene": "mitotic_lattice_3d",
+      "seed": 6056,
+      "parameters": {
+        "title": "Metabolic and Epigenetic Strategies to Target Therapy-Induced Senescence in KRAS-Mutant Pancreatic Cancer",
+        "confidence": 0.5249999999999999,
+        "critique": "Agent undefined: V-1971, NITD0006, and ID2 inhibition are presented as established tools, yet no chemical identity, IC50, or PK/PD data are provided for pancreatic cancer models. This renders the proposed experiment non-",
+        "catalyst": "[Biostatistician] A registered phase I window-of-opportunity protocol with a preregistered curvature threshold (e.g., \u0394Ricci > 0.2 units) powering 80% to detect a 30% reduction in TSC clone frequency (ddPCR KRAS-mutant DNA) at 6 weeks would shift price sharply up; failure to specify multiplicity correction or to report dropout-adjusted curvature would shift price down."
+      }
+    },
+    {
+      "id": "perturbation-cone-3d",
+      "title": "Perturbation Cone (3D)",
+      "type": "threejs",
+      "description": "3D analog of the counterfactual scene: treated trajectories spread out from a baseline manifold along a confidence-weighted cone. Cone width tracks acceptance probability.",
+      "rationale": "Forces the prediction-vs-observation gap into a single visual. A narrow, well-aimed cone implies confident divergence; a fat cone signals high predictive uncertainty.",
+      "expected_metrics": [
+        "cone aperture",
+        "trajectory bundle coherence",
+        "off-axis trajectory frequency"
+      ],
+      "three_scene": "perturbation_cone_3d",
+      "seed": 6074,
+      "parameters": {
+        "title": "Metabolic and Epigenetic Strategies to Target Therapy-Induced Senescence in KRAS-Mutant Pancreatic Cancer",
+        "confidence": 0.5249999999999999,
+        "critique": "Agent undefined: V-1971, NITD0006, and ID2 inhibition are presented as established tools, yet no chemical identity, IC50, or PK/PD data are provided for pancreatic cancer models. This renders the proposed experiment non-",
+        "catalyst": "[FDA Regulator] A peer-reviewed in-vivo demonstration that Ricci-curvature\u2013guided CRISPR-dCas editing (or equivalent epigenetic modulator) plus glutaminase inhibition significantly reduces TSC burden and delays recurrence in an orthotopic KRAS-mutant PDX would shift the prediction-market price sharply upward; conversely, failure to show metabolic-addiction bypass or emergence of hyperproliferative relapse on combination would crater it."
+      }
+    }
+  ]
+}

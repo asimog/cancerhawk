@@ -1,0 +1,693 @@
+{
+  "archetypes": [
+    {
+      "scores": {
+        "clinical_viability": 3,
+        "regulatory_risk": 4,
+        "market_potential": 3,
+        "patient_impact": 2,
+        "novelty": 7,
+        "falsifiability": 9
+      },
+      "verdict": "This paper presents a mechanistically rigorous model of hantavirus superspreading using negative binomial branching processes, which is methodologically sound and highly falsifiable. However, its relevance to oncology is tenuous. The proposed prevention strategies\u2014targeting rodent shedding heterogeneity and environmental decontamination\u2014are public health interventions with no direct application to cancer care workflows. While the negative binomial framework is novel in zoonotic epidemiology, it doesn\u2019t address oncological challenges like tumor heterogeneity or treatment resistance. The paper\u2019s value lies in its mathematical rigor, not clinical oncology integration. A practicing oncologist would likely dismiss it as outside their scope unless repurposed for modeling cancer-related infectious complications, which isn\u2019t proposed here.",
+      "would_move_price": "A clinical application demonstrating how this superspreading model could predict or mitigate cancer-related infectious outbreaks (e.g., post-transplant infections) would sharply increase the prediction-market price.",
+      "archetype_id": "oncologist",
+      "archetype_name": "Practicing Oncologist"
+    },
+    {
+      "scores": {
+        "clinical_viability": 4,
+        "regulatory_risk": 2,
+        "market_potential": 1,
+        "patient_impact": 3,
+        "novelty": 8,
+        "falsifiability": 6
+      },
+      "verdict": "The manuscript offers a mathematically elegant negative\u2011binomial framework for hantavirus superspreading but lacks concrete empirical validation; its proposed prevention tactics are speculative and would require extensive ecological and epidemiological data to be actionable, making translation to policy or market incentives unlikely.",
+      "would_move_price": "Price would rise only if a prospective cohort demonstrates a dispersion parameter k below 0.3 with a statistically significant heavy\u2011tailed secondary\u2011case distribution.",
+      "archetype_id": "biostatistician",
+      "archetype_name": "Biostatistician"
+    },
+    {
+      "scores": {
+        "": ""
+      },
+      "archetype_id": "fda",
+      "archetype_name": "FDA Regulator"
+    },
+    {
+      "scores": {
+        "clinical_viability": 6,
+        "regulatory_risk": 4,
+        "market_potential": 5,
+        "patient_impact": 7,
+        "novelty": 8,
+        "falsifiability": 7
+      },
+      "verdict": "From an investor lens, the paper targets a niche zoonotic niche with modest TAM but high clinical urgency; time-to-clinic is long due to ecological validation needs, capital intensity is high for field epidemiology and environmental sampling, syndicate appeal is limited to specialized infectious disease funds, comparable exits are scarce, and IP defensibility is weak absent proprietary surveillance tech, making it a speculative bet.",
+      "would_move_price": "A confirmed superspreader dispersion below 0.3 in a prospective cohort would lift market price, whereas a null result would depress it.",
+      "archetype_id": "investor",
+      "archetype_name": "Biotech Investor"
+    },
+    {
+      "scores": {
+        "clinical_viability": 6,
+        "regulatory_risk": 3,
+        "market_potential": 5,
+        "patient_impact": 6,
+        "novelty": 8,
+        "falsifiability": 9
+      },
+      "verdict": "This paper presents a mechanistically rigorous framework for understanding hantavirus superspreading through a negative-binomial branching process model. Its novelty lies in linking environmental viral load and network topology to transmission heterogeneity\u2014a compelling angle in zoonotic disease ecology. However, clinical viability is limited by hantavirus' rarity and the niche applicability of interventions (e.g., rodent culling). Regulatory risk is low, but market potential is constrained by geographic specificity. Patient impact is moderate, as prevention strategies require high-resource implementation. Falsifiability is strong, with clear endpoints (k <0.3) and failure modes. The paper slots well in theoretical/epidemiological circles but may face skepticism from applied public health due to its complexity.",
+      "would_move_price": "A field study demonstrating k <0.3 in a hantavirus outbreak would sharply increase prediction-market odds for the paper's preventative framework, while failure to replicate k below 0.3 would undermine its mechanistic claims.",
+      "archetype_id": "kol",
+      "archetype_name": "Academic KOL"
+    },
+    {
+      "scores": {
+        "clinical_viability": 3,
+        "regulatory_risk": 4,
+        "market_potential": 2,
+        "patient_impact": 5,
+        "novelty": 7,
+        "falsifiability": 8
+      },
+      "verdict": "This reads like an elegant modeling exercise dressed up as outbreak control \u2014 and that\u2019s exactly why it frustrates me. The paper admits superspreading is driven by \u2018a single aerosolized cloud during sweeping of rodent-infested sheds,\u2019 yet offers no practical plan to stop that cloud from hitting my lungs while I\u2019m cleaning my uncle\u2019s cabin so I can keep my job. It proposes \u2018spatially targeted culling\u2019 and \u2018variance compression\u2019 without asking who pays for HEPA vacuums, who trains the crews, or how we triage the farmworker who can\u2019t afford to miss a week with hantavirus pulmonary syndrome. The branching-process math may be beautiful, but it doesn\u2019t lower my days in the ICU or my medical debt. Without a patient-centered implementation plan and real-world PROs (symptom burden, work loss, PTSD after near-miss exposures), this remains a simulation of justice, not justice itself.",
+      "would_move_price": "The prediction-market price would drop sharply if field data showed k > 0.5 despite high environmental viral loads, invalidating the core superspreading hypothesis and exposing the proposed interventions as misaligned with actual transmission heterogeneity.",
+      "archetype_id": "patient",
+      "archetype_name": "Patient Advocate"
+    },
+    {
+      "scores": {
+        "clinical_viability": 7,
+        "regulatory_risk": 6,
+        "market_potential": 5,
+        "patient_impact": 6,
+        "novelty": 9,
+        "falsifiability": 8
+      },
+      "verdict": "The paper presents a novel mechanistic framework for hantavirus superspreading using negative-binomial branching processes, which is scientifically rigorous and falsifiable. However, its relevance to insurance payers is limited by the lack of direct cost-effectiveness analysis or intervention cost data. While the proposed prevention strategies (e.g., targeted culling, environmental decontamination) could reduce transmission heterogeneity, their economic feasibility and scalability remain unaddressed. The focus on R\u2080 and k thresholds is methodologically sound but abstract, requiring real-world validation to translate to actionable policy. For payers, this would only become clinically viable if paired with cost data demonstrating ICER thresholds below coverage thresholds.",
+      "would_move_price": "A field study demonstrating k < 0.3 in a high-risk hantavirus outbreak would validate the model and shift the prediction-market price up by confirming the paper's mechanistic predictions.",
+      "archetype_id": "payer",
+      "archetype_name": "Insurance Payer"
+    },
+    {
+      "scores": {
+        "clinical_viability": 1,
+        "regulatory_risk": 10,
+        "market_potential": 1,
+        "patient_impact": 1,
+        "novelty": 2,
+        "falsifiability": 8
+      },
+      "verdict": "Fatal flaw: hantaviruses do NOT transmit human-to-human, making the entire superspreader framework biologically nonsensical. The paper builds elaborate statistical models and intervention strategies around a phenomenon that cannot exist - human superspreader events for a zoonotic disease with no human transmission. This isn't just wrong, it's antithetical to basic hantavirus epidemiology. Any regulatory review would immediately flag this as scientifically indefensible. The market potential is zero because you cannot prevent human superspreading of a disease that doesn't spread between humans.",
+      "would_move_price": "Immediate collapse if any reviewer with basic infectious disease knowledge reads past the abstract and recognizes hantavirus lacks human-to-human transmission.",
+      "archetype_id": "short_seller",
+      "archetype_name": "Adversarial Short-Seller"
+    }
+  ],
+  "market_price": 0.48857142857142855,
+  "score_matrix": {
+    "oncologist": {
+      "clinical_viability": 3,
+      "regulatory_risk": 4,
+      "market_potential": 3,
+      "patient_impact": 2,
+      "novelty": 7,
+      "falsifiability": 9
+    },
+    "biostatistician": {
+      "clinical_viability": 4,
+      "regulatory_risk": 2,
+      "market_potential": 1,
+      "patient_impact": 3,
+      "novelty": 8,
+      "falsifiability": 6
+    },
+    "fda": {
+      "": ""
+    },
+    "investor": {
+      "clinical_viability": 6,
+      "regulatory_risk": 4,
+      "market_potential": 5,
+      "patient_impact": 7,
+      "novelty": 8,
+      "falsifiability": 7
+    },
+    "kol": {
+      "clinical_viability": 6,
+      "regulatory_risk": 3,
+      "market_potential": 5,
+      "patient_impact": 6,
+      "novelty": 8,
+      "falsifiability": 9
+    },
+    "patient": {
+      "clinical_viability": 3,
+      "regulatory_risk": 4,
+      "market_potential": 2,
+      "patient_impact": 5,
+      "novelty": 7,
+      "falsifiability": 8
+    },
+    "payer": {
+      "clinical_viability": 7,
+      "regulatory_risk": 6,
+      "market_potential": 5,
+      "patient_impact": 6,
+      "novelty": 9,
+      "falsifiability": 8
+    },
+    "short_seller": {
+      "clinical_viability": 1,
+      "regulatory_risk": 10,
+      "market_potential": 1,
+      "patient_impact": 1,
+      "novelty": 2,
+      "falsifiability": 8
+    }
+  },
+  "consensus_dim": {
+    "clinical_viability": 4.285714285714286,
+    "regulatory_risk": 4.714285714285714,
+    "market_potential": 3.142857142857143,
+    "patient_impact": 4.285714285714286,
+    "novelty": 7.0,
+    "falsifiability": 7.857142857142857
+  },
+  "headline_catalysts": [
+    "[Practicing Oncologist] A clinical application demonstrating how this superspreading model could predict or mitigate cancer-related infectious outbreaks (e.g., post-transplant infections) would sharply increase the prediction-market price.",
+    "[Biostatistician] Price would rise only if a prospective cohort demonstrates a dispersion parameter k below 0.3 with a statistically significant heavy\u2011tailed secondary\u2011case distribution.",
+    "[Biotech Investor] A confirmed superspreader dispersion below 0.3 in a prospective cohort would lift market price, whereas a null result would depress it.",
+    "[Academic KOL] A field study demonstrating k <0.3 in a hantavirus outbreak would sharply increase prediction-market odds for the paper's preventative framework, while failure to replicate k below 0.3 would undermine its mechanistic claims.",
+    "[Patient Advocate] The prediction-market price would drop sharply if field data showed k > 0.5 despite high environmental viral loads, invalidating the core superspreading hypothesis and exposing the proposed interventions as misaligned with actual transmission heterogeneity.",
+    "[Insurance Payer] A field study demonstrating k < 0.3 in a high-risk hantavirus outbreak would validate the model and shift the prediction-market price up by confirming the paper's mechanistic predictions.",
+    "[Adversarial Short-Seller] Immediate collapse if any reviewer with basic infectious disease knowledge reads past the abstract and recognizes hantavirus lacks human-to-human transmission."
+  ],
+  "derived_topics": [
+    {
+      "id": 1,
+      "title": "Quantify high-shedder rodent prevalence via longitudinal serology and urine viral load profiling",
+      "probability": 0.68,
+      "impact": 7,
+      "token_cost": 420,
+      "rationale": "Extends the finding that a minority of rodents shed orders of magnitude more virus; measuring their temporal dynamics will test the hypothesis that high-shedders drive low dispersion (k<1)."
+    },
+    {
+      "id": 2,
+      "title": "Model aerosol particle-size distribution from rodent urine drying under varied humidity",
+      "probability": 0.55,
+      "impact": 6,
+      "token_cost": 380,
+      "rationale": "Builds on the mechanistic link between dried urine particles and infectious aerosol; experimental data will falsify the assumed dose\u2011response threshold for superspreading."
+    },
+    {
+      "id": 3,
+      "title": "Assess impact of targeted culling on dispersion parameter k in controlled field plots",
+      "probability": 0.48,
+      "impact": 8,
+      "token_cost": 460,
+      "rationale": "Directly tests the claim that non\u2011selective culling may increase k by concentrating shedding; a before\u2011after k estimation provides a measurable endpoint."
+    },
+    {
+      "id": 4,
+      "title": "Develop real\u2011time environmental qPCR sensors for aerosolized hantavirus detection",
+      "probability": 0.62,
+      "impact": 7,
+      "token_cost": 500,
+      "rationale": "Extends the prevention pillar of environmental decontamination by creating a falsifiable metric (viral copies per m\u00b3) linked to predicted secondary case variance."
+    },
+    {
+      "id": 5,
+      "title": "Integrate human dose\u2011response curve with rodent shedding data to predict outbreak tail risk",
+      "probability": 0.53,
+      "impact": 7,
+      "token_cost": 440,
+      "rationale": "Combines the identified steep human dose\u2011response with measured shedding heterogeneity to generate a quantitative k forecast, enabling prospective validation in future outbreaks."
+    }
+  ],
+  "peer_reviews": [
+    {
+      "archetype_id": "oncologist",
+      "archetype_name": "Practicing Oncologist",
+      "recommendation": "minor_revision",
+      "confidence": 0.8,
+      "summary": "The paper presents a compelling mechanistic model of hantavirus superspreading, grounded in ecological and epidemiological first principles. The proposed experiments are well-designed to test key model predictions, but some areas require clarification or elaboration.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 9,
+        "experimental_design": 8,
+        "evidence_support": 7,
+        "statistical_rigor": 8,
+        "clarity_of_writing": 7
+      },
+      "criticisms": [
+        "The introduction of the negative-binomial model is somewhat abrupt and would benefit from a clearer justification of its selection over alternative formulations.",
+        "The proposed experiment for estimating R\u2080 and k relies heavily on contact-tracing data, which may be prone to biases or gaps that are not fully addressed.",
+        "The link between the mechanistic model and the proposed prevention strategies could be more explicitly drawn out, with specific examples of how model parameters inform intervention design."
+      ],
+      "required_fixes": [
+        "Provide a more comprehensive rationale for the choice of the negative-binomial model, including a discussion of its strengths and limitations compared to other candidate models (e.g., Poisson-lognormal).",
+        "Address potential sources of bias or uncertainty in the contact-tracing data used to estimate R\u2080 and k, and outline strategies to mitigate these issues."
+      ],
+      "suggested_experiments": [
+        "A simulation study comparing the performance of the negative-binomial model to alternative formulations under various scenarios of data quality and completeness.",
+        "An observational study investigating the relationship between environmental viral load, network centrality, and superspreading risk in a real-world setting."
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Develop an agent-based model simulating hantavirus transmission dynamics under different scenarios of rodent population control and environmental decontamination.",
+        "expected_metrics": [
+          "Proportion of simulations producing superspreading events",
+          "Mean and variance of secondary case counts",
+          "Time to extinction of simulated outbreaks"
+        ],
+        "rationale": "This simulation would provide a direct test of the paper's central hypothesis that interventions targeting shedding heterogeneity can effectively reduce superspreading risk, while also yielding insights into the relative efficacy of different prevention strategies."
+      }
+    },
+    {
+      "archetype_id": "biostatistician",
+      "archetype_name": "Biostatistician",
+      "recommendation": "major_revision",
+      "confidence": 0.78,
+      "summary": "The manuscript proposes a mechanistic framework for hantavirus superspreading based on negative\u2011binomial branching processes and environmental shedding heterogeneity, but the study design is incomplete, the statistical power is unclear, and key assumptions lack empirical support. Major revisions are required to clarify the sampling strategy, justify the choice of dispersion model, and provide preliminary data or simulations that demonstrate feasibility.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 6,
+        "experimental_design": 4,
+        "evidence_support": 3,
+        "statistical_rigor": 4,
+        "clarity_of_writing": 5
+      },
+      "criticisms": [
+        "Insufficient description of how index cases and secondary cases will be identified and linked in the field; the paper does not specify inclusion criteria or case definition.",
+        "The proposed sample size (n\u2248150) is not justified; power calculations for estimating k and R0 are absent, making it unclear whether the study can detect k<0.3.",
+        "The use of a negative\u2011binomial model is not compared to alternative over\u2011dispersed distributions; no goodness\u2011of\u2011fit assessment is presented.",
+        "Environmental viral load measurements (qPCR) are mentioned but no protocol, limits of detection, or correlation with aerosol concentration is provided.",
+        "The claim that targeting high\u2011centrality individuals will reduce superspreading is speculative without network data or intervention simulations.",
+        "The prevention strategies section lacks quantitative targets (e.g., reduction in variance of secondary cases) and does not link back to the mechanistic model.",
+        "The manuscript references \u201cprospective cohort of hantavirus cases\u201d but provides no details on recruitment, follow\u2011up, or data collection instruments.",
+        "The statistical analysis plan is missing; no description of how k will be estimated from observed offspring counts or how confidence intervals will be derived.",
+        "The paper does not address potential confounders such as varying rodent population densities, seasonal effects, or human behavioral differences across sites.",
+        "The manuscript uses several technical terms (e.g., eigenvector centrality) without defining them or explaining how they will be calculated from contact data.",
+        "The abstract is truncated and does not summarize the key findings or methodological approach.",
+        "The introduction contains extensive background but does not clearly state the primary hypothesis or specific research questions.",
+        "The paper does not discuss ethical approvals for human and animal work.",
+        "The manuscript lacks a clear timeline or milestones for the three\u2011pronged experimental program.",
+        "The proposed prevention interventions (e.g., targeted chemoprophylaxis) are not grounded in existing evidence for hantavirus prophylaxis.",
+        "The paper does not address how the model would be validated against real outbreak data.",
+        "The manuscript does not provide a plan for handling missing data or loss to follow\u2011up.",
+        "The paper does not discuss the potential impact of vaccination or antiviral treatment on the dispersion parameter.",
+        "The paper does not provide a clear definition of what constitutes a superspreader event for hantavirus (e.g., >10 secondary cases)."
+      ],
+      "required_fixes": [
+        "Provide a detailed study protocol including case definition, recruitment strategy, and follow\u2011up procedures for the prospective cohort.",
+        "Include a formal power calculation for estimating k and R0 with the proposed sample size, and justify the chosen thresholds for superspreading.",
+        "Present a preliminary dataset or simulation that demonstrates the feasibility of estimating k from observed secondary case counts and assess model fit against alternative distributions.",
+        "Describe the environmental sampling protocol, qPCR assay sensitivity, and how aerosol concentrations will be quantified and related to environmental viral loads.",
+        "Develop a quantitative network analysis plan, including how contact data will be collected, processed, and used to compute centrality metrics.",
+        "Link the prevention strategies to specific, measurable outcomes (e.g., reduction in variance of secondary cases) and provide a target effect size.",
+        "Include ethical approval statements for human and animal components.",
+        "Outline a detailed timeline for the three\u2011pronged experimental program with milestones.",
+        "Provide a plan for handling missing data, loss to follow\u2011up, and sensitivity analyses.",
+        "Clarify the definition of a superspreader event for hantavirus and justify the chosen threshold.",
+        "Add a section on potential confounders and how they will be controlled or adjusted for in the analysis.",
+        "Include a discussion of existing evidence for chemoprophylaxis or vaccination against hantavirus and how it informs the proposed interventions.",
+        "Provide a validation strategy for the negative\u2011binomial model using historical outbreak data or simulated outbreaks.",
+        "Define the statistical methods for estimating k (e.g., maximum likelihood, Bayesian inference) and for constructing confidence intervals.",
+        "Ensure all technical terms are defined and explain how they will be operationalized in the study."
+      ],
+      "suggested_experiments": [
+        "Collect longitudinal environmental samples (urine, dust) from multiple rodent-infested sites and quantify viral RNA loads to assess shedding heterogeneity.",
+        "Conduct a pilot contact\u2011tracing study in a known hantavirus outbreak to estimate secondary case counts and compute k.",
+        "Simulate outbreaks using the proposed negative\u2011binomial model under varying k and R0 to determine the sensitivity of superspreader detection to sample size.",
+        "Test the impact of targeted ventilation interventions on aerosol viral concentrations in controlled field settings.",
+        "Evaluate the effect of a small-scale rodent culling program on the distribution of environmental viral loads and subsequent human infection risk."
+      ],
+      "simulation_proposal": {
+        "type": "statistical",
+        "description": "Implement a Monte Carlo simulation that generates synthetic outbreak trees using a negative\u2011binomial offspring distribution with specified R0 and k values. The simulation will vary k from 0.1 to 1.0 and R0 from 0.8 to 2.0, and will record the proportion of index cases generating \u226510 secondary infections. This will allow assessment of the power to detect superspreading under different sample sizes and event thresholds.",
+        "expected_metrics": [
+          "Proportion of simulations where \u226510 secondary cases occur",
+          "Estimated k from simulated offspring counts",
+          "Confidence intervals for k",
+          "Sensitivity and specificity of superspreader detection",
+          "Effect of sample size on estimation error"
+        ],
+        "rationale": "The simulation will directly test the core claim that a k<0.3 leads to a >1% probability of \u226510 secondary cases, and will inform the required cohort size and event thresholds for the proposed field study."
+      }
+    },
+    {
+      "archetype_id": "fda",
+      "archetype_name": "FDA Regulator",
+      "recommendation": "major_revision",
+      "confidence": 0.78,
+      "summary": "The manuscript proposes a mechanistic framework for hantavirus superspreading based on negative\u2011binomial branching processes and suggests targeted interventions, but the study lacks empirical data, rigorous statistical validation, and clear experimental design, rendering the claims unsupported for regulatory consideration.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 5,
+        "experimental_design": 3,
+        "evidence_support": 2,
+        "statistical_rigor": 3,
+        "clarity_of_writing": 4
+      },
+      "criticisms": [
+        "Insufficient empirical data to estimate R\u2080 and k; the paper relies on theoretical derivations without field or laboratory validation.",
+        "The proposed correlation between aerosol viral load, network centrality, and superspreading is speculative and not supported by any dataset.",
+        "The prevention strategies (e.g., targeted culling, air filtration) are described mechanistically but lack feasibility assessment or cost\u2013benefit analysis.",
+        "Statistical claims (e.g., k<0.3 predicts >1% tail probability) are derived from equations but no confidence intervals or sensitivity analyses are provided.",
+        "The manuscript contains incomplete sections (e.g., \u201cEstimating R\u2080 and k from contact-tracing data.\u201d) and abrupt truncation, undermining methodological transparency."
+      ],
+      "required_fixes": [
+        "Provide a detailed protocol for a prospective cohort study to estimate R\u2080 and k, including sample size justification and data collection methods.",
+        "Include pilot data or literature evidence demonstrating high variability in rodent shedding and environmental viral loads.",
+        "Perform a sensitivity analysis of the negative\u2011binomial model to show robustness of the k threshold to parameter uncertainty.",
+        "Develop a cost\u2013effectiveness model for the proposed interventions (culling, ventilation, air filtration).",
+        "Complete the manuscript, ensuring all sections are fully written and references are properly cited."
+      ],
+      "suggested_experiments": [
+        "Conduct a controlled field study measuring aerosolized viral RNA in rodent-infested sites before and after targeted culling to assess changes in environmental viral load and k.",
+        "Implement a randomized trial of portable HEPA filtration units in high-risk indoor settings to quantify reductions in secondary human infections.",
+        "Collect detailed contact networks of confirmed hantavirus cases to calculate eigenvector centrality and correlate with secondary case counts."
+      ],
+      "simulation_proposal": {
+        "type": "statistical",
+        "description": "Simulate a negative\u2011binomial branching process with varying k and R\u2080 values, incorporating realistic rodent shedding distributions and human dose\u2013response curves to generate synthetic outbreak trees. Overlay network structures derived from empirical contact data to evaluate the impact of centrality on superspreading probability.",
+        "expected_metrics": [
+          "Distribution of secondary cases per index case",
+          "Tail probability of \u226510 secondary infections",
+          "Correlation between simulated aerosol load, centrality, and outbreak size"
+        ],
+        "rationale": "This simulation will test the core hypothesis that environmental heterogeneity and network topology jointly drive superspreading, providing a quantitative benchmark against which real-world data can be compared."
+      }
+    },
+    {
+      "archetype_id": "investor",
+      "archetype_name": "Biotech Investor",
+      "recommendation": "major_revision",
+      "confidence": 0.85,
+      "summary": "The paper presents a conceptually sound mechanistic framework for understanding hantavirus superspreading using negative-binomial branching processes, with falsifiable hypotheses and logically coherent prevention strategies. However, it suffers from significant structural incompleteness (truncated abstract, missing Background section, incomplete Proposed Experiment), lacks empirical data to support key claims (particularly the k threshold calculations and network centrality predictions), and reads more as a detailed research proposal than a completed study. The mechanistic plausibility is high but the evidence support is low.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 8,
+        "experimental_design": 6,
+        "evidence_support": 3,
+        "statistical_rigor": 7,
+        "clarity_of_writing": 5
+      },
+      "criticisms": [],
+      "required_fixes": [
+        "Complete the abstract, Background, and Proposed Experiment sections with full content",
+        "Provide citations for all key epidemiological parameters (R0 values, shedding titers, dose-response data)",
+        "Present either existing field data validating the k < 0.25 threshold or acknowledge this is purely a theoretical prediction",
+        "Include a Limitations section addressing model assumptions and data gaps",
+        "Add comparable outbreak analyses (Andes virus 2018-19 outbreak, Seoul virus outbreaks) to ground the superspreader framework empirically",
+        "Specify simulation parameters used to generate the eigenvector centrality claim (>70% of cases from top 10% nodes)"
+      ],
+      "suggested_experiments": [
+        "Prospective contact-tracing study in rodent-endemic areas (as proposed) to estimate empirical k from secondary case distributions",
+        "Aerosol sampling campaigns in infested structures paired with qPCR to validate the viral load distribution claims",
+        "Case-control study comparing network centrality metrics between superspreader suspected and non-suspected index cases",
+        "Field validation that high-shedder rodents (>10^8 copies/g urine) cluster spatially in ways that create focal contamination hotspots"
+      ],
+      "simulation_proposal": {
+        "type": "in_silico",
+        "description": "Agent-based transmission model combining rodent reservoir dynamics (seasonal density-dependent shedding), environmental aerosolization physics (particle size distribution, humidity effects), and human contact networks parameterized from field studies. Simulate 10,000 iterations across varying ecological contexts (agricultural vs peri-urban, wet vs dry seasons) to generate predicted secondary case distributions and extract empirical k values.",
+        "expected_metrics": [
+          "Dispersion parameter k estimated from offspring distributions",
+          "Correlation between geometric mean aerosol viral load and superspreader probability",
+          "Proportion of total cases attributable to top 10% centrality nodes across scenarios",
+          "Threshold conditions (rodent density, shedding variance, ventilation) that push k below 0.25"
+        ],
+        "rationale": "This simulation would bridge the gap between the theoretical framework and empirical validation, generating testable predictions that the proposed field study could confirm or refute. It directly addresses the failure mode: if simulated k consistently exceeds 0.5 despite high environmental viral loads, the negative-binomial framework would be invalidated for hantavirus."
+      }
+    },
+    {
+      "archetype_id": "patient",
+      "archetype_name": "Patient Advocate",
+      "recommendation": "major_revision",
+      "confidence": 0.78,
+      "summary": "The manuscript proposes an intriguing mechanistic framework linking rodent shedding heterogeneity to human superspreading of hantavirus, but it lacks empirical validation, rigorous statistical analysis, and clear linkage between proposed interventions and measurable patient outcomes. Substantial revisions are required to address methodological gaps, clarify assumptions, and provide realistic implementation strategies from the patient perspective.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 6,
+        "experimental_design": 4,
+        "evidence_support": 3,
+        "statistical_rigor": 3,
+        "clarity_of_writing": 5
+      },
+      "criticisms": [
+        "Insufficient empirical data to estimate dispersion parameter k; reliance on theoretical distributions without field validation.",
+        "No patient-centered outcomes or real-world impact assessment; interventions are described at a high level without feasibility analysis.",
+        "Statistical claims (e.g., k_crit calculation) lack derivation details and sensitivity analysis.",
+        "Methodological description of contact tracing and environmental sampling is incomplete; sample size justification missing.",
+        "Intervention strategies (e.g., targeted culling, ventilation) are not linked to measurable reductions in secondary cases or patient-reported outcomes.",
+        "The manuscript mixes ecological, virological, and network modeling without integrating them into a coherent, testable hypothesis.",
+        "No discussion of ethical, logistical, or cost barriers to proposed interventions.",
+        "Theoretical model assumes homogeneous human susceptibility and ignores variation in immune response or comorbidities affecting disease severity.",
+        "The paper does not address how superspreading risk translates into patient access to care, treatment burden, or side\u2011effect profiles.",
+        "The proposed experimental program is outlined but lacks detailed protocols, timelines, and resource estimates.",
+        "The manuscript does not reference any existing outbreak data or surveillance reports to ground its assumptions.",
+        "The use of negative\u2011binomial branching process may be inappropriate if overdispersion is driven by environmental factors rather than host heterogeneity.",
+        "The paper does not consider alternative models (e.g., Poisson\u2011lognormal) that might better capture the data.",
+        "The manuscript lacks a clear statement of how patient-reported outcomes will be measured or integrated into the analysis.",
+        "The proposed prevention strategies are not evaluated against real-world constraints such as rural infrastructure or patient compliance."
+      ],
+      "required_fixes": [
+        "Provide empirical estimates of k and R0 from existing outbreak data or pilot studies; include sensitivity analyses.",
+        "Develop a patient-centered outcome framework linking interventions to access, side\u2011effect burden, and quality of life.",
+        "Detail statistical methods for estimating dispersion and validate the negative\u2011binomial assumption with real data.",
+        "Specify sample sizes, sampling methods, and ethical approvals for environmental and contact\u2011tracing studies.",
+        "Quantify expected reductions in secondary cases and patient outcomes for each intervention; include cost\u2011effectiveness analysis.",
+        "Integrate ecological, virological, and network components into a unified, testable model with clear assumptions.",
+        "Address ethical, logistical, and financial feasibility of culling, ventilation, and chemoprophylaxis interventions.",
+        "Incorporate variability in human susceptibility (e.g., comorbidities) into the model.",
+        "Include a plan for collecting and analyzing patient-reported outcomes (e.g., surveys, interviews).",
+        "Outline detailed protocols, timelines, and resource requirements for the three\u2011pronged experimental program.",
+        "Reference at least three published hantavirus outbreak reports to ground assumptions.",
+        "Compare negative\u2011binomial with alternative overdispersion models and justify choice.",
+        "Define metrics for patient access, treatment burden, and side\u2011effect profiles and how they will be measured.",
+        "Provide a realistic assessment of implementation barriers and propose mitigation strategies."
+      ],
+      "suggested_experiments": [
+        "Prospective cohort study of hantavirus patients (n\u2248150) with detailed contact tracing and environmental sampling to estimate k and R0; include patient-reported outcome measures (e.g., symptom burden, treatment side effects).",
+        "Randomized controlled trial of targeted ventilation and air filtration in high\u2011risk cleaning settings versus standard practice; measure environmental viral load, secondary infection rates, and patient-reported exposure anxiety.",
+        "Field trial of selective rodent culling guided by high\u2011shedding hotspots versus conventional culling; assess changes in environmental viral load, human infection incidence, and community acceptance via surveys."
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Agent\u2011based simulation of rodent\u2013human interactions incorporating heterogeneous shedding, environmental aerosol dynamics, and human contact networks. The model will vary k, R0, and intervention parameters (ventilation, culling intensity) to predict secondary case distributions and patient\u2011reported outcome proxies (e.g., exposure anxiety scores).",
+        "expected_metrics": [
+          "Distribution of secondary cases per index case; dispersion parameter k; environmental viral load; simulated patient exposure anxiety scores; cost per infection averted"
+        ],
+        "rationale": "The simulation will test whether reductions in shedding heterogeneity (lower k) and environmental viral load translate into measurable decreases in superspreading events and patient\u2011centered outcomes, providing a mechanistic link between ecological interventions and real\u2011world patient impact."
+      }
+    },
+    {
+      "archetype_id": "payer",
+      "archetype_name": "Insurance Payer",
+      "recommendation": "major_revision",
+      "confidence": 0.85,
+      "summary": "This paper presents a theoretically interesting framework for modeling hantavirus superspreading using negative binomial branching processes, with plausible mechanistic links between rodent shedding heterogeneity, aerosol dynamics, and human network topology. However, the manuscript has critical deficiencies: it is structurally incomplete (abstract truncated, Background section empty, Methods/Results sections missing), relies on extrapolated parameter estimates from other pathogens rather than hantavirus-specific data, and lacks any empirical validation of the proposed dispersion parameter thresholds. The proposed prevention strategies are logically derived but not cost-analyzed. From an insurance payer perspective, without ICER calculations, budget impact analysis, or comparison to standard rodent control, coverage recommendations cannot be substantiated.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 7,
+        "experimental_design": 3,
+        "evidence_support": 2,
+        "statistical_rigor": 5,
+        "clarity_of_writing": 4
+      },
+      "criticisms": [
+        "Abstract is truncated and incomplete",
+        "Background section is entirely empty",
+        "No Results or actual experimental data section exists - only proposed experiments",
+        "R0=1.3 for Sin Nombre virus is presented without citation",
+        "Dispersion parameter k for hantaviruses is not empirically derived - all values (0.25, 0.2, 0.3) are assumed from SARS-CoV-2 literature",
+        "The paper proposes a hypothesis but provides no data to test it",
+        "No cost-effectiveness analysis, ICER calculations, or budget impact modeling despite insurance payer relevance",
+        "Prevention strategies (ventilation, filtration, targeted culling) lack cost-benefit analysis",
+        "No discussion of prior authorization complexity for proposed interventions",
+        "Sample size justification (n\u2248150) for prospective cohort lacks statistical power calculation",
+        "Network centrality analysis methodology is referenced but not detailed",
+        "The paper ends abruptly mid-sentence in the Proposed Experiment section"
+      ],
+      "required_fixes": [
+        "Complete the abstract with full summary of methods and findings",
+        "Add a complete Background section with literature review",
+        "Provide empirical data or cite existing studies for hantavirus-specific R0 and k values",
+        "Include a proper Results section with actual data, not just proposed experiments",
+        "Add cost-effectiveness analysis with ICER thresholds for proposed interventions",
+        "Perform budget impact analysis for coverage policy implications",
+        "Complete the Proposed Experiment section that currently ends mid-sentence",
+        "Add sample size and power calculations for proposed cohort study",
+        "Cite the source for the R0=1.3 estimate for Sin Nombre virus"
+      ],
+      "suggested_experiments": [
+        "Retrospective contact-tracing analysis of documented hantavirus outbreaks to estimate empirical k",
+        "Prospective environmental sampling with qPCR across different rodent density settings",
+        "Agent-based simulation modeling intervention cost-effectiveness",
+        "Pilot study of targeted vs. blanket rodent control comparing cost per case prevented"
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "An agent-based transmission model parameterized with the negative binomial offspring distribution (varying k from 0.1-1.0), incorporating spatial rodent density heterogeneity, human exposure events by activity type (agricultural, cleaning, camping), and network contact structures. Simulate 10,000 iterations under baseline and intervention scenarios (ventilation, targeted culling, prophylaxis).",
+        "expected_metrics": [
+          "Cases averted per intervention",
+          "Cost per case averted",
+          "ICER ($/QALY gained) for each intervention vs. status quo",
+          "Budget impact at 1/5/10 year horizons",
+          "Probability of superspreading event (Pr(Z\u226510)) under each scenario"
+        ],
+        "rationale": "From an insurance payer lens, the paper's prevention strategies require economic evaluation. This simulation would provide the cost-effectiveness data necessary for coverage policy decisions, identifying which interventions cross typical ICER thresholds ($50,000-$150,000/QALY) and have acceptable budget impact."
+      }
+    },
+    {
+      "archetype_id": "short_seller",
+      "archetype_name": "Adversarial Short-Seller",
+      "recommendation": "major_revision",
+      "confidence": 0.78,
+      "summary": "The manuscript presents an intriguing hypothesis that hantavirus transmission can exhibit superspreading dynamics driven by heterogeneous rodent shedding and environmental aerosolization, but the mechanistic links, data sources, and experimental plan are insufficiently substantiated, rendering the central claims unconvincing in their current form.",
+      "dimension_scores": {
+        "mechanistic_plausibility": 5,
+        "experimental_design": 3,
+        "evidence_support": 2,
+        "statistical_rigor": 3,
+        "clarity_of_writing": 6
+      },
+      "criticisms": [
+        "The negative\u2011binomial framework is imported from respiratory viruses without direct empirical validation for hantavirus; no field data on secondary\u2011case distributions are presented.",
+        "Key parameters (R0, k, dose\u2011response thresholds) are cited without primary sources; many statements lack citations or rely on speculative numbers.",
+        "The proposed cohort (n\u2248150) is unrealistic for hantavirus given its low incidence; power calculations and feasibility are absent.",
+        "Environmental viral load measurements are described but the sampling methodology, limits of detection, and correlation with human dose are not detailed.",
+        "The network analysis assumes detailed contact graphs that are rarely obtainable in rural hantavirus outbreaks; the model\u2019s sensitivity to missing edges is not explored."
+      ],
+      "required_fixes": [
+        "Provide a systematic literature review or meta\u2011analysis of documented hantavirus outbreak investigations that includes secondary\u2011case counts to estimate k empirically.",
+        "Include explicit power and sample\u2011size calculations for the proposed prospective cohort, justifying the chosen n and explaining recruitment strategy.",
+        "Detail the environmental sampling protocol (e.g., air\u2011sampler type, volume, qPCR standards) and present pilot data showing detectable aerosolized virus in realistic settings.",
+        "Add sensitivity analyses for the negative\u2011binomial model, comparing alternative offspring distributions (e.g., Poisson\u2011lognormal) and showing robustness of the k\u202f<\u202f0.3 claim.",
+        "Clarify how contact\u2011network data will be collected, validated, and handled when incomplete; include a plan for imputation or use of surrogate metrics."
+      ],
+      "suggested_experiments": [
+        "Conduct a retrospective case\u2011control study of at least three well\u2011documented hantavirus outbreaks, extracting the number of secondary human cases per index exposure site to compute empirical dispersion parameters.",
+        "Perform controlled aerosolization experiments in a biosafety\u2011level\u20113 chamber using infected rodent urine to quantify the dose\u2011response curve for human airway epithelial cultures, establishing the >10\u00b3\u201310\u2074 virion infectivity threshold.",
+        "Implement a pilot rodent\u2011culling intervention in a defined geographic area, measuring pre\u2011 and post\u2011intervention rodent density, shedding prevalence, and environmental viral load to assess impact on k."
+      ],
+      "simulation_proposal": {
+        "type": "computational_model",
+        "description": "Develop an agent\u2011based model that couples rodent population dynamics (including heterogeneous shedding states) with stochastic aerosol generation and human contact networks; the model should generate synthetic outbreak data for a range of R0 and k values.",
+        "expected_metrics": [
+          "estimated dispersion parameter k",
+          "frequency of \u226510 secondary cases per index",
+          "sensitivity of k to changes in rodent density and ventilation rates"
+        ],
+        "rationale": "Such a simulation will test whether the proposed mechanistic pathway can realistically produce superspreading tails under plausible ecological conditions, and will guide the design of field studies by identifying the most influential parameters."
+      }
+    }
+  ],
+  "simulations": [
+    {
+      "id": "computational-model",
+      "title": "computational_model",
+      "type": "html5_canvas",
+      "description": "Develop an agent-based model simulating hantavirus transmission dynamics under different scenarios of rodent population control and environmental decontamination.",
+      "rationale": "This simulation would provide a direct test of the paper's central hypothesis that interventions targeting shedding heterogeneity can effectively reduce superspreading risk, while also yielding insights into the relative efficacy of different prevention strategies.",
+      "expected_metrics": [
+        "Proportion of simulations producing superspreading events",
+        "Mean and variance of secondary case counts",
+        "Time to extinction of simulated outbreaks"
+      ],
+      "scene": "trajectory_manifold",
+      "seed": 101,
+      "parameters": {}
+    },
+    {
+      "id": "in-silico",
+      "title": "in_silico",
+      "type": "html5_canvas",
+      "description": "Agent-based transmission model combining rodent reservoir dynamics (seasonal density-dependent shedding), environmental aerosolization physics (particle size distribution, humidity effects), and human contact networks parameterized from field studies. Simulate 10,000 iterations across varying ecological contexts (agricultural vs peri-urban, wet vs dry seasons) to generate predicted secondary case distributions and extract empirical k values.",
+      "rationale": "This simulation would bridge the gap between the theoretical framework and empirical validation, generating testable predictions that the proposed field study could confirm or refute. It directly addresses the failure mode: if simulated k consistently exceeds 0.5 despite high environmental viral loads, the negative-binomial framework would be invalidated for hantavirus.",
+      "expected_metrics": [
+        "Dispersion parameter k estimated from offspring distributions",
+        "Correlation between geometric mean aerosol viral load and superspreader probability",
+        "Proportion of total cases attributable to top 10% centrality nodes across scenarios",
+        "Threshold conditions (rodent density, shedding variance, ventilation) that push k below 0.25"
+      ],
+      "scene": "trajectory_manifold",
+      "seed": 202,
+      "parameters": {}
+    },
+    {
+      "id": "computational-model",
+      "title": "computational_model",
+      "type": "html5_canvas",
+      "description": "An agent-based transmission model parameterized with the negative binomial offspring distribution (varying k from 0.1-1.0), incorporating spatial rodent density heterogeneity, human exposure events by activity type (agricultural, cleaning, camping), and network contact structures. Simulate 10,000 iterations under baseline and intervention scenarios (ventilation, targeted culling, prophylaxis).",
+      "rationale": "From an insurance payer lens, the paper's prevention strategies require economic evaluation. This simulation would provide the cost-effectiveness data necessary for coverage policy decisions, identifying which interventions cross typical ICER thresholds ($50,000-$150,000/QALY) and have acceptable budget impact.",
+      "expected_metrics": [
+        "Cases averted per intervention",
+        "Cost per case averted",
+        "ICER ($/QALY gained) for each intervention vs. status quo",
+        "Budget impact at 1/5/10 year horizons",
+        "Probability of superspreading event (Pr(Z\u226510)) under each scenario"
+      ],
+      "scene": "trajectory_manifold",
+      "seed": 303,
+      "parameters": {}
+    },
+    {
+      "id": "tumor-volume-3d",
+      "title": "Tumor Volume (3D)",
+      "type": "threejs",
+      "description": "Volumetric point-cloud tumor with phenotype-coloured clusters that grow, divide, and apoptose over time. Rotates the mass to expose where the model places phenotype boundaries.",
+      "rationale": "The 2D manifold view collapses depth \u2014 a 3D volumetric rendering tests whether claimed phenotype clusters survive when seen from arbitrary angles.",
+      "expected_metrics": [
+        "phenotype-cluster volumetric stability",
+        "intra-cluster density",
+        "boundary sharpness under rotation"
+      ],
+      "three_scene": "tumor_volume_3d",
+      "seed": 5224,
+      "parameters": {
+        "title": "Hantavirus Superspreader Risk and Prevention Strategies",
+        "confidence": 0.48857142857142855,
+        "critique": "The introduction of the negative-binomial model is somewhat abrupt and would benefit from a clearer justification of its selection over alternative formulations.",
+        "catalyst": "[Practicing Oncologist] A clinical application demonstrating how this superspreading model could predict or mitigate cancer-related infectious outbreaks (e.g., post-transplant infections) would sharply increase the prediction-market price."
+      }
+    },
+    {
+      "id": "mitotic-lattice-3d",
+      "title": "Mitotic Lattice (3D)",
+      "type": "threejs",
+      "description": "Rotating 3D lattice of cells with division events sampled from the validator-emitted novelty distribution. Daughter cells inherit colour from parent phenotype, exposing lineage drift.",
+      "rationale": "Hooks the falsifier visually: if the paper's mechanism predicts a specific division geometry, this scene makes deviations from it immediately visible.",
+      "expected_metrics": [
+        "division-rate per phenotype",
+        "lineage-drift entropy",
+        "spatial clustering of mitotic events"
+      ],
+      "three_scene": "mitotic_lattice_3d",
+      "seed": 5242,
+      "parameters": {
+        "title": "Hantavirus Superspreader Risk and Prevention Strategies",
+        "confidence": 0.48857142857142855,
+        "critique": "The introduction of the negative-binomial model is somewhat abrupt and would benefit from a clearer justification of its selection over alternative formulations.",
+        "catalyst": "[Biostatistician] Price would rise only if a prospective cohort demonstrates a dispersion parameter k below 0.3 with a statistically significant heavy\u2011tailed secondary\u2011case distribution."
+      }
+    },
+    {
+      "id": "perturbation-cone-3d",
+      "title": "Perturbation Cone (3D)",
+      "type": "threejs",
+      "description": "3D analog of the counterfactual scene: treated trajectories spread out from a baseline manifold along a confidence-weighted cone. Cone width tracks acceptance probability.",
+      "rationale": "Forces the prediction-vs-observation gap into a single visual. A narrow, well-aimed cone implies confident divergence; a fat cone signals high predictive uncertainty.",
+      "expected_metrics": [
+        "cone aperture",
+        "trajectory bundle coherence",
+        "off-axis trajectory frequency"
+      ],
+      "three_scene": "perturbation_cone_3d",
+      "seed": 5260,
+      "parameters": {
+        "title": "Hantavirus Superspreader Risk and Prevention Strategies",
+        "confidence": 0.48857142857142855,
+        "critique": "The introduction of the negative-binomial model is somewhat abrupt and would benefit from a clearer justification of its selection over alternative formulations.",
+        "catalyst": "[Biotech Investor] A confirmed superspreader dispersion below 0.3 in a prospective cohort would lift market price, whereas a null result would depress it."
+      }
+    }
+  ]
+}

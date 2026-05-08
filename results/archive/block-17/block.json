@@ -1,0 +1,19 @@
+{
+  "block": 17,
+  "title": "Curvature-Adaptive Stochastic Optimal Control for CRISPR-Mediated Eradication of Disseminated Tumor Cells",
+  "research_goal": "Autonomous research: identify a promising oncology research direction and generate a full publication with peer review and simulations.",
+  "models": {
+    "submitter": "openrouter/free",
+    "validator": "openrouter/free",
+    "compiler": "openrouter/free",
+    "archetype": "openrouter/free",
+    "topic_deriver": "openrouter/free"
+  },
+  "timestamp": "2026-05-03T07:44:24.151930+00:00",
+  "section_count": 9,
+  "accepted_submissions": 6,
+  "rejection_count": 0,
+  "market_price": 0.48000000000000004,
+  "has_peer_review": true,
+  "has_simulations": true
+}

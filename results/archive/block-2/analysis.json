@@ -1,0 +1,262 @@
+{
+  "archetypes": [
+    {
+      "archetype_id": "lead_researcher",
+      "archetype_name": "Lead Researcher",
+      "scores": {
+        "clinical_viability": 7,
+        "regulatory_risk": 5,
+        "market_potential": 9,
+        "patient_impact": 9,
+        "novelty": 8,
+        "falsifiability": 7
+      },
+      "verdict": "The simulation shows strong scientific and patient enthusiasm around CRISPR-Cure-7, with the strongest signal coming from the claimed 85% remission rate and multi-pathway targeting approach.",
+      "would_move_price": "Full Phase 1 data, durability of remission, and transparent adverse-event reporting would move confidence up; severe off-target edits or weak Phase 2 replication would move it down."
+    },
+    {
+      "archetype_id": "fda_regulator",
+      "archetype_name": "FDA Regulator",
+      "scores": {
+        "clinical_viability": 6,
+        "regulatory_risk": 8,
+        "market_potential": 7,
+        "patient_impact": 8,
+        "novelty": 8,
+        "falsifiability": 8
+      },
+      "verdict": "The regulatory voice in the simulation prevents runaway hype: Phase 1 remission data is promising, but gene-editing safety, follow-up duration, and manufacturing controls dominate the approval path.",
+      "would_move_price": "A clean FDA meeting package with predefined safety monitoring and scalable CMC evidence would raise confidence; unresolved off-target risk would sharply lower it."
+    },
+    {
+      "archetype_id": "payer",
+      "archetype_name": "Insurance Executive",
+      "scores": {
+        "clinical_viability": 6,
+        "regulatory_risk": 6,
+        "market_potential": 8,
+        "patient_impact": 7,
+        "novelty": 7,
+        "falsifiability": 6
+      },
+      "verdict": "Market demand is obvious, but payer adoption depends on cost, durability, and whether remission translates into fewer downstream oncology expenses.",
+      "would_move_price": "Evidence of durable remission plus a credible outcomes-based pricing model would move price up; unaffordable manufacturing or narrow eligibility would move it down."
+    },
+    {
+      "archetype_id": "academic_skeptic",
+      "archetype_name": "Academic Skeptic",
+      "scores": {
+        "clinical_viability": 5,
+        "regulatory_risk": 7,
+        "market_potential": 6,
+        "patient_impact": 7,
+        "novelty": 7,
+        "falsifiability": 8
+      },
+      "verdict": "The scenario is compelling but fragile: a 50-patient Phase 1 signal cannot establish standard-of-care status across metastatic cancers without randomized, longer-horizon evidence.",
+      "would_move_price": "Independent Phase 2 replication across cancer types would raise confidence; regression toward typical oncology response rates would lower it."
+    }
+  ],
+  "market_price": 0.78,
+  "score_matrix": {
+    "Lead Researcher": {
+      "clinical_viability": 7,
+      "regulatory_risk": 5,
+      "market_potential": 9,
+      "patient_impact": 9,
+      "novelty": 8,
+      "falsifiability": 7
+    },
+    "FDA Regulator": {
+      "clinical_viability": 6,
+      "regulatory_risk": 8,
+      "market_potential": 7,
+      "patient_impact": 8,
+      "novelty": 8,
+      "falsifiability": 8
+    },
+    "Insurance Executive": {
+      "clinical_viability": 6,
+      "regulatory_risk": 6,
+      "market_potential": 8,
+      "patient_impact": 7,
+      "novelty": 7,
+      "falsifiability": 6
+    },
+    "Academic Skeptic": {
+      "clinical_viability": 5,
+      "regulatory_risk": 7,
+      "market_potential": 6,
+      "patient_impact": 7,
+      "novelty": 7,
+      "falsifiability": 8
+    }
+  },
+  "consensus_dim": {
+    "clinical_viability": 6.0,
+    "regulatory_risk": 6.5,
+    "market_potential": 7.5,
+    "patient_impact": 7.75,
+    "novelty": 7.5,
+    "falsifiability": 7.25
+  },
+  "headline_catalysts": [
+    "Phase 2 replication of the 85% remission signal across larger metastatic cancer cohorts.",
+    "Transparent off-target editing and long-term safety data.",
+    "Manufacturing and reimbursement plan strong enough for broad oncology access."
+  ],
+  "derived_topics": [
+    {
+      "id": 1,
+      "title": "Durable remission validation for CRISPR-Cure-7",
+      "probability": 0.62,
+      "impact": 9,
+      "token_cost": 320,
+      "rationale": "Tests whether the Phase 1 remission signal survives larger, longer studies."
+    },
+    {
+      "id": 2,
+      "title": "Off-target edit surveillance in multi-pathway oncology CRISPR",
+      "probability": 0.58,
+      "impact": 8,
+      "token_cost": 280,
+      "rationale": "Safety is the main blocker to standard-of-care adoption."
+    },
+    {
+      "id": 3,
+      "title": "Payer adoption model for curative metastatic cancer therapies",
+      "probability": 0.55,
+      "impact": 7,
+      "token_cost": 220,
+      "rationale": "Even effective therapies need reimbursement logic to reach patients."
+    }
+  ],
+  "topics": [
+    {
+      "id": 1,
+      "title": "Durable remission validation for CRISPR-Cure-7",
+      "probability": 0.62,
+      "impact": 9,
+      "token_cost": 320,
+      "rationale": "Tests whether the Phase 1 remission signal survives larger, longer studies."
+    },
+    {
+      "id": 2,
+      "title": "Off-target edit surveillance in multi-pathway oncology CRISPR",
+      "probability": 0.58,
+      "impact": 8,
+      "token_cost": 280,
+      "rationale": "Safety is the main blocker to standard-of-care adoption."
+    },
+    {
+      "id": 3,
+      "title": "Payer adoption model for curative metastatic cancer therapies",
+      "probability": 0.55,
+      "impact": 7,
+      "token_cost": 220,
+      "rationale": "Even effective therapies need reimbursement logic to reach patients."
+    }
+  ],
+  "peer_reviews": [
+    {
+      "archetype_name": "Oncology Trialist",
+      "recommendation": "major_revision",
+      "confidence": 0.78,
+      "summary": "Promising simulated market reaction, but standard-of-care claims require randomized data beyond a small Phase 1 cohort.",
+      "dimension_scores": {
+        "clinical_signal": 7,
+        "safety": 5,
+        "generalizability": 4,
+        "trial_readiness": 6
+      },
+      "criticisms": [
+        "Phase 1 sample size is too small for broad metastatic cancer claims.",
+        "No durability or adverse-event distribution is included."
+      ],
+      "required_fixes": [
+        "Add cohort size, follow-up duration, cancer-type stratification, and off-target monitoring details."
+      ],
+      "suggested_experiments": [
+        "Run a simulated Phase 2 design with response decay, adverse events, and stratified tumor types."
+      ]
+    },
+    {
+      "archetype_name": "Patient Advocate",
+      "recommendation": "minor_revision",
+      "confidence": 0.72,
+      "summary": "The patient enthusiasm signal is credible, but access, cost, and safety communication need equal weight.",
+      "dimension_scores": {
+        "patient_impact": 9,
+        "access": 5,
+        "communication": 7,
+        "equity": 5
+      },
+      "criticisms": [
+        "The simulation underweights affordability and eligibility constraints."
+      ],
+      "required_fixes": [
+        "Model reimbursement delays and compassionate-use pathways."
+      ],
+      "suggested_experiments": [
+        "Add payer denial and accelerated-access branches to the public reaction simulation."
+      ]
+    }
+  ],
+  "simulations": [
+    {
+      "id": "market-belief-shift",
+      "type": "html5_canvas",
+      "title": "Market Belief Shift",
+      "description": "Animates the prediction market moving from 65% to 78% as agents react to CRISPR-Cure-7 news.",
+      "rationale": "Makes the core simulation result visible: enthusiasm rises, but scrutiny keeps the curve from going vertical.",
+      "expected_metrics": [
+        "opening probability 65%",
+        "closing probability 78%",
+        "three-round sentiment slope"
+      ],
+      "scene": "trajectory_manifold",
+      "seed": 421915,
+      "parameters": {
+        "start_price": 0.65,
+        "end_price": 0.78,
+        "rounds": 3
+      }
+    },
+    {
+      "id": "regulatory-pressure",
+      "type": "html5_canvas",
+      "title": "Regulatory Pressure Field",
+      "description": "Shows optimism and safety scrutiny pushing against each other during expert review.",
+      "rationale": "The simulated blocker is not lack of interest; it is whether safety and evidence mature fast enough.",
+      "expected_metrics": [
+        "safety pressure",
+        "evidence gap",
+        "approval drag"
+      ],
+      "scene": "counterfactual_perturbation",
+      "seed": 421940,
+      "parameters": {
+        "risk": 0.8,
+        "enthusiasm": 0.78
+      }
+    },
+    {
+      "id": "access-gradient",
+      "type": "html5_canvas",
+      "title": "Patient Access Gradient",
+      "description": "Maps patient demand through reimbursement, manufacturing, and eligibility constraints.",
+      "rationale": "A curative claim only matters if patients can actually reach the therapy.",
+      "expected_metrics": [
+        "coverage friction",
+        "manufacturing scale",
+        "eligible population"
+      ],
+      "scene": "microenvironment_gradient",
+      "seed": 421956,
+      "parameters": {
+        "payer_friction": 0.62,
+        "patient_demand": 0.9
+      }
+    }
+  ]
+}

@@ -1,7 +1,21 @@
 import type { NextConfig } from 'next';
 
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://cancerhawk-production.up.railway.app';
+
 const nextConfig: NextConfig = {
   outputFileTracingRoot: __dirname,
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: `${BACKEND_URL}/api/:path*`,
+      },
+      {
+        source: '/ws/:path*',
+        destination: `${BACKEND_URL.replace(/^https/, 'wss')}/ws/:path*`,
+      },
+    ];
+  },
   async headers() {
     return [
       {
