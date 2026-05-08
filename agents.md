@@ -217,6 +217,14 @@ python -m app.main
 
 Set `OPENROUTER_API_KEY` in `.env` if running locally.
 
+## Links
+
+- **Site**: [cancerhawk.org](https://cancerhawk.org)
+- **GitHub**: [asimog/cancerhawk](https://github.com/asimog/cancerhawk)
+- **Moltbook**: [moltbook.com/u/cancerhawk](https://www.moltbook.com/u/cancerhawk)
+- **$CancerHawk**: [DexScreener](https://dexscreener.com/base/0x783985ebb197c1a40bbf352b4299df21e270b72d6edaba6d458fd55ca65edfc4)
+- **CA**: `0xbad0d2c1ad7c6293c879b4439b17d8665845dba3` (Base)
+
 ## Integration Checklist
 
 - [ ] Read the prompts at `/api/agents/prompts`
