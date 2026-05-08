@@ -375,8 +375,57 @@ async def chat_json(
         raise OpenRouterError(detail) from exc
 
 
+def _escape_invalid_json_backslashes(json_str: str) -> str:
+    repaired: list[str] = []
+    i = 0
+    while i < len(json_str):
+        ch = json_str[i]
+        if ch != "\\":
+            repaired.append(ch)
+            i += 1
+            continue
+
+        if i + 1 >= len(json_str):
+            repaired.append("\\\\")
+            i += 1
+            continue
+
+        nxt = json_str[i + 1]
+        if nxt in "bfnrt" and i + 2 < len(json_str) and json_str[i + 2].isalpha():
+            repaired.append("\\\\")
+            i += 1
+            continue
+
+        if nxt in '"\\/bfnrt':
+            repaired.append(json_str[i:i + 2])
+            i += 2
+            continue
+
+        if nxt == "u" and i + 5 < len(json_str):
+            hex_part = json_str[i + 2:i + 6]
+            if all(c in "0123456789abcdefABCDEF" for c in hex_part):
+                repaired.append(json_str[i:i + 6])
+                i += 6
+                continue
+
+        repaired.append("\\\\")
+        i += 1
+
+    return "".join(repaired)
+
+
+def _loads_json_object(json_str: str) -> Any:
+    try:
+        return json.loads(json_str)
+    except json.JSONDecodeError:
+        repaired = _escape_invalid_json_backslashes(json_str)
+        if repaired == json_str:
+            raise
+        return json.loads(repaired)
+
+
 def _parse_and_unwrap(json_str: str) -> dict:
-    parsed = json.loads(json_str)
+    parsed = _loads_json_object(json_str)
     if isinstance(parsed, list) and len(parsed) == 1 and isinstance(parsed[0], dict):
         return parsed[0]
     if isinstance(parsed, dict):

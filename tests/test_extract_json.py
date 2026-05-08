@@ -45,6 +45,13 @@ class TestComplete:
         # Raw text on the wire is: {"path": "C:\\\\users"} → JSON value C:\\users
         assert _extract_json(r'{"path": "C:\\users"}') == {"path": r"C:\users"}
 
+    def test_invalid_latex_backslash_inside_string_is_repaired(self):
+        raw = '{"title":"Lactate","summary":"restore $ \\mathcal{R}_I > 1 $ and $ \\beta L $"}'
+        assert _extract_json(raw) == {
+            "title": "Lactate",
+            "summary": r"restore $ \mathcal{R}_I > 1 $ and $ \beta L $",
+        }
+
 
 # --- markdown fences -------------------------------------------------------
 
