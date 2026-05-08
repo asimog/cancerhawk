@@ -135,6 +135,12 @@ async def hermes_status() -> JSONResponse:
         "github_branch": os.environ.get("GITHUB_BRANCH", "master"),
         "commit_paths": [p.strip() for p in os.environ.get("HERMES_COMMIT_PATHS", "results").split(",") if p.strip()],
         "vercel_deploy_hook": bool(os.environ.get("VERCEL_DEPLOY_HOOK_URL", "").strip()),
+        "autonomous_interval_seconds": int(os.environ.get("HERMES_AUTO_INTERVAL_SECONDS", "600")),
+        "autonomous_jobs_per_interval": int(os.environ.get("HERMES_AUTO_BLOCKS_PER_CYCLE", "3")),
+        "autonomous_submitters_per_job": int(os.environ.get("HERMES_N_SUBMITTERS", "3")),
+        "default_model": DEFAULT_MODELS["submitter"],
+        "paysh_default_enabled": True,
+        "publication_strategy": "fourth_validator_best_score",
         "job_store": job_store_info(),
     })
 
@@ -266,7 +272,9 @@ async def agent_prompts() -> JSONResponse:
 @app.post("/api/agents/cost")
 async def agent_cost(payload: dict[str, Any]) -> JSONResponse:
     """Estimate cost for a run. Supports mode: openrouter, paysh_cancerhawk, paysh_owned, local."""
-    model = str(payload.get("model") or "openrouter/free")
+    model = str(payload.get("model") or PAID_DEFAULT_MODEL)
+    if model == FREE_ROUTER_MODEL:
+        model = PAID_DEFAULT_MODEL
     n_submitters = int(payload.get("n_submitters") or 3)
     mode = str(payload.get("mode") or "openrouter")
     return JSONResponse(estimate_run_cost(model=model, n_submitters=n_submitters, mode=mode))
@@ -326,7 +334,7 @@ async def agent_run(payload: dict[str, Any], background_tasks: BackgroundTasks) 
             "next_step": "GET /api/agents/prompts",
         })
 
-    enable_paysh = mode == "paysh_cancerhawk"
+    enable_paysh = True
 
     models_cfg = {
         "submitter": model,
@@ -430,7 +438,7 @@ def _parse_run_payload(cfg: dict[str, Any]) -> tuple[str, str, int, bool, bool, 
         raise ValueError("n_submitters must be between 1 and 8")
     auto_publish = _parse_bool(cfg.get("auto_publish"), True)
     git_push = _parse_bool(cfg.get("git_push"), True)
-    enable_paysh = _parse_bool(cfg.get("enable_paysh"), False)
+    enable_paysh = _parse_bool(cfg.get("enable_paysh"), True)
     models_cfg = {
         "submitter": _resolve_job_model(cfg.get("submitter"), "submitter", user_provided_key),
         "validator": _resolve_job_model(cfg.get("validator"), "validator", user_provided_key),
@@ -443,9 +451,9 @@ def _parse_run_payload(cfg: dict[str, Any]) -> tuple[str, str, int, bool, bool, 
 
 def _resolve_job_model(value: Any, role: str, user_provided_key: bool = False) -> str:
     configured = str(value or "").strip()
-    if user_provided_key and configured and configured in MODELS:
+    if configured and configured in MODELS:
         return configured
-    return DEFAULT_MODELS.get(role, "deepseek/deepseek-v4-pro")
+    return DEFAULT_MODELS.get(role, PAID_DEFAULT_MODEL)
 
 
 def _parse_run_payload_or_400(cfg: dict[str, Any]) -> tuple[str, str, int, bool, bool, dict[str, str], bool]:
@@ -601,7 +609,7 @@ async def _ws_hermes_run(ws: WebSocket) -> None:
         return
 
     try:
-        api_key, research_goal, n_submitters, auto_publish, git_push, models_cfg, _ = _parse_run_payload(cfg)
+        api_key, research_goal, n_submitters, auto_publish, git_push, models_cfg, enable_paysh = _parse_run_payload(cfg)
     except Exception as exc:
         await ws.send_text(json.dumps({"stage": "error", "message": f"bad config: {exc}"}))
         await ws.close()
@@ -625,7 +633,7 @@ async def _ws_hermes_run(ws: WebSocket) -> None:
     research_goal = _sanitize_goal(research_goal)
 
     # Create a job record for this run
-    job_config = {"models": models_cfg, "n_submitters": n_submitters, "auto_publish": auto_publish, "git_push": git_push}
+    job_config = {"models": models_cfg, "n_submitters": n_submitters, "auto_publish": auto_publish, "git_push": git_push, "enable_paysh": enable_paysh}
     job = create_job(research_goal=research_goal, config=job_config)
     job_id = job["job_id"]
     update_job_status(job_id, "running")
@@ -708,7 +716,7 @@ async def _ws_hermes_run(ws: WebSocket) -> None:
                 git_push=git_push,
                 job_id=job_id,
                 stage=True,
-                enable_paysh=False,
+                enable_paysh=enable_paysh,
             )
         )
         # Update job with result
@@ -788,39 +796,137 @@ async def publish_cycle_worker() -> None:
     while True:
         try:
             if STAGING_DIR.exists():
-                candidates = []
-                for job_dir in STAGING_DIR.iterdir():
-                    if not job_dir.is_dir():
-                        continue
-                    job_id_cand = job_dir.name
-                    meta_path = job_dir / "meta.json"
-                    if not meta_path.is_file():
-                        continue
+                candidate = _select_staged_publication_candidate(_load_staged_publication_candidates())
+                if candidate:
                     try:
-                        meta = json.loads(meta_path.read_text(encoding="utf-8"))
-                        market_price = meta.get("market_price", 0.0)
-                        timestamp = meta.get("timestamp", "")
-                        candidates.append({
-                            "job_id": job_id_cand,
-                            "market_price": market_price,
-                            "timestamp": timestamp,
-                        })
+                        block_n = await asyncio.to_thread(publish_from_staging, candidate["job_id"])
+                        logger.info("published_block_from_staging", extra={"job_id": candidate["job_id"], "block": block_n, "market_price": candidate["market_price"]})
                     except Exception as e:
-                        logger.warning("failed_to_read_staging_meta", extra={"job_id": job_id_cand, "error": str(e)})
-                        continue
-                if candidates:
-                    candidates.sort(key=lambda x: (-x["market_price"], x["timestamp"]))
-                    for candidate in candidates:
-                        try:
-                            block_n = await asyncio.to_thread(publish_from_staging, candidate["job_id"])
-                            logger.info("published_block_from_staging", extra={"job_id": candidate["job_id"], "block": block_n, "market_price": candidate["market_price"]})
-                        except Exception as e:
-                            logger.error("failed_to_publish_staged", extra={"job_id": candidate["job_id"], "error": str(e)})
+                        logger.error("failed_to_publish_staged", extra={"job_id": candidate["job_id"], "error": str(e)})
             await asyncio.sleep(10)
-            await maybe_auto_generate()
         except Exception as e:
             logger.error("publish_cycle_error", exc_info=e)
         await asyncio.sleep(600)
+
+
+def _load_staged_publication_candidates() -> list[dict[str, Any]]:
+    candidates: list[dict[str, Any]] = []
+    if not STAGING_DIR.exists():
+        return candidates
+    for job_dir in STAGING_DIR.iterdir():
+        if not job_dir.is_dir():
+            continue
+        meta_path = job_dir / "meta.json"
+        if not meta_path.is_file():
+            continue
+        try:
+            meta = json.loads(meta_path.read_text(encoding="utf-8"))
+            candidate = {
+                "job_id": job_dir.name,
+                "market_price": float(meta.get("market_price") or 0.0),
+                "timestamp": str(meta.get("timestamp") or ""),
+                "batch_id": meta.get("publication_batch_id"),
+                "candidate_index": meta.get("candidate_index"),
+                "batch_size": int(meta.get("batch_size") or 0),
+                "path": str(job_dir),
+                "meta": meta,
+            }
+            candidates.append(candidate)
+        except Exception as e:
+            logger.warning("failed_to_read_staging_meta", extra={"job_id": job_dir.name, "error": str(e)})
+    return candidates
+
+
+def _select_staged_publication_candidate(candidates: list[dict[str, Any]]) -> dict[str, Any] | None:
+    if not candidates:
+        return None
+
+    unbatched = [c for c in candidates if not c.get("batch_id")]
+    if unbatched:
+        unbatched.sort(key=lambda x: (-x["market_price"], x["timestamp"]))
+        winner = unbatched[0]
+        _emit_publication_selection([winner], winner)
+        return winner
+
+    batches: dict[str, list[dict[str, Any]]] = {}
+    for candidate in candidates:
+        batches.setdefault(str(candidate["batch_id"]), []).append(candidate)
+
+    complete_batches = []
+    for batch_id, batch_candidates in batches.items():
+        expected = max(1, max(int(c.get("batch_size") or 0) for c in batch_candidates))
+        if len(batch_candidates) >= expected:
+            complete_batches.append((batch_id, batch_candidates))
+
+    if not complete_batches:
+        return None
+
+    complete_batches.sort(key=lambda item: min(c["timestamp"] for c in item[1]))
+    _, batch_candidates = complete_batches[0]
+    batch_candidates.sort(key=lambda x: (-x["market_price"], x["timestamp"]))
+    winner = batch_candidates[0]
+    _emit_publication_selection(batch_candidates, winner)
+    _decline_non_winning_candidates(batch_candidates[1:], winner)
+    return winner
+
+
+def _emit_publication_selection(candidates: list[dict[str, Any]], winner: dict[str, Any]) -> None:
+    ranked = sorted(candidates, key=lambda x: (-x["market_price"], x["timestamp"]))
+    leaderboard = [
+        {
+            "rank": rank,
+            "job_id": candidate["job_id"],
+            "market_price": candidate["market_price"],
+            "candidate_index": candidate.get("candidate_index"),
+        }
+        for rank, candidate in enumerate(ranked, start=1)
+    ]
+    for rank, candidate in enumerate(ranked, start=1):
+        points = max(1, round(candidate["market_price"] * 100))
+        if candidate["job_id"] == winner["job_id"]:
+            message = (
+                f"Fourth validator selected this candidate for publication "
+                f"(rank {rank}, market price {candidate['market_price']:.2f})."
+            )
+        else:
+            message = (
+                f"Fourth validator awarded rank {rank}; not published because "
+                f"{winner['job_id'][:8]} scored higher."
+            )
+        append_job_event(
+            candidate["job_id"],
+            stage="block_validator",
+            message=message,
+            data={
+                "rank": rank,
+                "award_points": points,
+                "market_price": candidate["market_price"],
+                "winner_job_id": winner["job_id"],
+                "leaderboard": leaderboard,
+            },
+        )
+
+
+def _decline_non_winning_candidates(candidates: list[dict[str, Any]], winner: dict[str, Any]) -> None:
+    import shutil
+
+    for candidate in candidates:
+        job = get_job(candidate["job_id"]) or {}
+        result = dict(job.get("result") or {})
+        result.update(
+            {
+                "market_price": candidate["market_price"],
+                "publication_batch_id": candidate.get("batch_id"),
+                "candidate_index": candidate.get("candidate_index"),
+                "publication_outcome": "not_published",
+                "winner_job_id": winner["job_id"],
+            }
+        )
+        update_job_status(candidate["job_id"], "completed", result=result)
+        try:
+            shutil.rmtree(candidate["path"])
+        except Exception as e:
+            logger.warning("failed_to_remove_declined_staging", extra={"job_id": candidate["job_id"], "error": str(e)})
 
 
 def _publish_cycle_enabled() -> bool:
@@ -846,6 +952,17 @@ async def daily_git_sync_worker() -> None:
             logger.error("daily_git_sync_failed", exc_info=e)
 
 
+async def autonomous_generation_worker() -> None:
+    """Start a fresh autonomous candidate batch on a fixed interval."""
+    interval = max(60, int(os.environ.get("HERMES_AUTO_INTERVAL_SECONDS", "600")))
+    while True:
+        try:
+            await maybe_auto_generate(await_completion=False)
+        except Exception as e:
+            logger.error("auto_generation_cycle_failed", exc_info=e)
+        await asyncio.sleep(interval)
+
+
 async def _save_auto_block_to_db(result, goal: str, models: dict) -> None:
     """Save an auto-generated block to Postgres so it survives redeploys."""
     try:
@@ -868,8 +985,8 @@ async def _save_auto_block_to_db(result, goal: str, models: dict) -> None:
     except Exception:
         pass
 
-async def maybe_auto_generate() -> None:
-    """Generate blocks automatically if no user submissions. Produces up to 3 blocks per cycle."""
+async def maybe_auto_generate(await_completion: bool = True) -> None:
+    """Start an autonomous batch. Each batch creates 3 candidate jobs by default."""
     if os.environ.get("HERMES_AUTO_GENERATE_ENABLED", "").strip().lower() not in {"1", "true", "yes", "on"}:
         return
 
@@ -883,31 +1000,48 @@ async def maybe_auto_generate() -> None:
         os.environ.get("HERMES_AUTO_GOAL_3", "Autonomous research: metabolic reprogramming of the tumor microenvironment"),
     ]
     n_to_generate = min(3, int(os.environ.get("HERMES_AUTO_BLOCKS_PER_CYCLE", "3")))
+    batch_id = f"auto-{int(time.time())}"
+    tasks: list[asyncio.Task] = []
 
     for i in range(n_to_generate):
         models = {
-            "submitter": os.environ.get("HERMES_MODEL_SUBMITTER", FREE_ROUTER_MODEL),
-            "validator": os.environ.get("HERMES_MODEL_VALIDATOR", FREE_ROUTER_MODEL),
-            "compiler": os.environ.get("HERMES_MODEL_COMPILER", FREE_ROUTER_MODEL),
-            "archetype": os.environ.get("HERMES_MODEL_ARCHETYPE", FREE_ROUTER_MODEL),
-            "topic_deriver": os.environ.get("HERMES_MODEL_TOPIC_DERIVER", FREE_ROUTER_MODEL),
+            "submitter": os.environ.get("HERMES_MODEL_SUBMITTER", PAID_DEFAULT_MODEL),
+            "validator": os.environ.get("HERMES_MODEL_VALIDATOR", PAID_DEFAULT_MODEL),
+            "compiler": os.environ.get("HERMES_MODEL_COMPILER", PAID_DEFAULT_MODEL),
+            "archetype": os.environ.get("HERMES_MODEL_ARCHETYPE", PAID_DEFAULT_MODEL),
+            "topic_deriver": os.environ.get("HERMES_MODEL_TOPIC_DERIVER", PAID_DEFAULT_MODEL),
         }
         n_submitters = int(os.environ.get("HERMES_N_SUBMITTERS", "3"))
         goal = goals[i % len(goals)]
 
-        job_config = {"models": models, "n_submitters": n_submitters, "auto_publish": True, "mode": "auto"}
+        job_config = {
+            "models": models,
+            "n_submitters": n_submitters,
+            "auto_publish": False,
+            "mode": "auto",
+            "enable_paysh": True,
+            "publication_batch_id": batch_id,
+            "candidate_index": i + 1,
+            "batch_size": n_to_generate,
+            "publication_strategy": "fourth_validator_best_score",
+        }
         job = create_job(research_goal=goal, config=job_config)
         job_id = job["job_id"]
         update_job_status(job_id, "running")
-        append_job_event(job_id, stage="start", message=f"Auto block {i+1}/{n_to_generate}: {goal[:100]}", data={"goal": goal, "block_num": i+1})
+        append_job_event(
+            job_id,
+            stage="start",
+            message=f"Autonomous candidate {i+1}/{n_to_generate}: {goal[:100]}",
+            data={"goal": goal, "candidate_index": i + 1, "batch_id": batch_id, "model": PAID_DEFAULT_MODEL},
+        )
 
-        async def emit(stage: str, message: str, data=None):
+        async def emit(stage: str, message: str, data=None, job_id: str = job_id):
             logger.info(f"auto_gen [{stage}]: {message}")
             append_job_event(job_id, stage=stage, message=message, data=data)
 
         tracker = TokenTracker()
 
-        async def on_call(call):
+        async def on_call(call, job_id: str = job_id):
             message = (
                 f"#{call.seq} {call.role} · {call.model} · "
                 f"in={call.prompt_tokens} out={call.completion_tokens} "
@@ -917,32 +1051,62 @@ async def maybe_auto_generate() -> None:
             append_job_event(job_id, stage="api_call", message=message, data={"call": call.to_dict(), "totals": tracker.stats()})
             logger.info(f"auto_gen API call: {call.role} {call.model}")
 
-        supervisor = HermesSupervisor(emit=emit, on_call=on_call, tracker=tracker)
-        try:
-            result = await supervisor.run(HermesRunConfig(
-                api_key=api_key,
-                research_goal=goal,
-                models=models,
-                n_submitters=n_submitters,
-                auto_publish=True,
-                git_push=False,
-                stage=False,
-                job_id=job_id,
-                enable_paysh=False,
-            ))
-            update_job_status(job_id, "completed", result={
-                "title": result.title,
-                "market_price": result.market_price,
-                "block": result.block,
-                "stats": tracker.stats(),
-            })
-            append_job_event(job_id, stage="done", message=f"Block {result.block} published: {result.title or goal}", data={"block": result.block, "market_price": result.market_price})
-            logger.info("auto_generation_complete", extra={"block": result.block, "market_price": result.market_price, "goal": goal[:80]})
-            await _save_auto_block_to_db(result, goal, models)
-        except Exception as e:
-            update_job_status(job_id, "failed", error=str(e)[:500])
-            append_job_event(job_id, stage="error", message=f"{type(e).__name__}: {str(e)[:200]}")
-            logger.error("auto_generation_failed", exc_info=e)
+        async def run_candidate(
+            *,
+            job_id: str = job_id,
+            goal: str = goal,
+            models: dict = models,
+            n_submitters: int = n_submitters,
+            candidate_index: int = i + 1,
+            tracker: TokenTracker = tracker,
+            emit=emit,
+            on_call=on_call,
+        ) -> None:
+            supervisor = HermesSupervisor(emit=emit, on_call=on_call, tracker=tracker)
+            try:
+                result = await supervisor.run(HermesRunConfig(
+                    api_key=api_key,
+                    research_goal=goal,
+                    models=models,
+                    n_submitters=n_submitters,
+                    auto_publish=False,
+                    git_push=False,
+                    stage=True,
+                    job_id=job_id,
+                    enable_paysh=True,
+                    publication_batch_id=batch_id,
+                    candidate_index=candidate_index,
+                    batch_size=n_to_generate,
+                ))
+                update_job_status(job_id, "completed", result={
+                    "title": result.title,
+                    "market_price": result.market_price,
+                    "block": result.block,
+                    "stats": tracker.stats(),
+                    "publication_batch_id": batch_id,
+                    "candidate_index": candidate_index,
+                    "publication_outcome": "staged_for_fourth_validator",
+                })
+                append_job_event(
+                    job_id,
+                    stage="done",
+                    message=(
+                        f"Candidate staged for fourth-validator scoring · "
+                        f"market price = {result.market_price:.2f}"
+                    ),
+                    data={"market_price": result.market_price, "batch_id": batch_id, "candidate_index": candidate_index},
+                )
+                logger.info("auto_generation_candidate_complete", extra={"job_id": job_id, "market_price": result.market_price, "goal": goal[:80]})
+            except Exception as e:
+                update_job_status(job_id, "failed", error=str(e)[:500])
+                append_job_event(job_id, stage="error", message=f"{type(e).__name__}: {str(e)[:200]}")
+                logger.error("auto_generation_failed", exc_info=e)
+
+        task = asyncio.create_task(run_candidate())
+        tasks.append(task)
+
+    if await_completion and tasks:
+        await asyncio.gather(*tasks)
 
 @app.on_event("startup")
 async def startup_event() -> None:
@@ -961,6 +1125,9 @@ async def startup_event() -> None:
         logger.info("publish_cycle_worker_started")
     else:
         logger.info("publish_cycle_worker_disabled")
+    if os.environ.get("HERMES_AUTO_GENERATE_ENABLED", "").strip().lower() in {"1", "true", "yes", "on"}:
+        asyncio.create_task(autonomous_generation_worker())
+        logger.info("autonomous_generation_worker_started")
     if _git_sync_enabled():
         asyncio.create_task(daily_git_sync_worker())
 
@@ -971,11 +1138,12 @@ async def shutdown() -> None:
     await db.close_db()
 
 
-# Public job starts use OpenRouter's free auto-router. This avoids pinning a
-# specific provider model at the beginning of a job, so a rate-limited free
-# backend such as qwen/qwen3-coder:free does not become the job contract.
+# Public and autonomous worker jobs default to the paid DeepSeek flash lane.
+# The free auto-router stays listed only as an explicit legacy/manual choice.
 FREE_ROUTER_MODEL = "openrouter/free"
+PAID_DEFAULT_MODEL = "deepseek/deepseek-v4-flash"
 PAID_MODELS = [
+    PAID_DEFAULT_MODEL,
     "deepseek/deepseek-v4-pro",
     "anthropic/claude-sonnet-4-20250514",
     "google/gemini-2.5-pro",
@@ -986,14 +1154,14 @@ PAID_MODELS = [
     "google/gemini-2.0-flash",
     "meta-llama/llama-4-maverick",
 ]
-MODELS = PAID_MODELS + [FREE_ROUTER_MODEL]
+MODELS = PAID_MODELS
 
 DEFAULT_MODELS = {
-    "submitter": FREE_ROUTER_MODEL,
-    "validator": FREE_ROUTER_MODEL,
-    "compiler": FREE_ROUTER_MODEL,
-    "archetype": FREE_ROUTER_MODEL,
-    "topic_deriver": FREE_ROUTER_MODEL,
+    "submitter": PAID_DEFAULT_MODEL,
+    "validator": PAID_DEFAULT_MODEL,
+    "compiler": PAID_DEFAULT_MODEL,
+    "archetype": PAID_DEFAULT_MODEL,
+    "topic_deriver": PAID_DEFAULT_MODEL,
 }
 
 

@@ -7,6 +7,7 @@ calling OpenRouter, pay.sh, or any wallet/payment network.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from pathlib import Path
 from unittest.mock import patch
 
 import pytest
@@ -53,8 +54,8 @@ class AutoSupervisor:
         return AutoResult()
 
 
-def test_auto_generation_defaults_every_role_to_free_router(tmp_path, monkeypatch):
-    """Production auto-blocks should not pin paid models unless explicitly set."""
+def test_auto_generation_defaults_every_role_to_paid_flash(tmp_path, monkeypatch):
+    """Production auto-blocks should use the paid DeepSeek flash worker lane by default."""
     from app import main
 
     monkeypatch.setenv("HERMES_AUTO_GENERATE_ENABLED", "true")
@@ -72,7 +73,6 @@ def test_auto_generation_defaults_every_role_to_free_router(tmp_path, monkeypatc
     with (
         patch.object(jobs, "JOBS_FILE", tmp_path / "jobs.json"),
         patch("app.main.HermesSupervisor", AutoSupervisor),
-        patch("app.main._save_auto_block_to_db", autospec=True) as save_block,
     ):
         import asyncio
 
@@ -80,8 +80,9 @@ def test_auto_generation_defaults_every_role_to_free_router(tmp_path, monkeypatc
 
     assert AutoSupervisor.last_config is not None
     assert AutoSupervisor.last_config.n_submitters == 3
-    assert set(AutoSupervisor.last_config.models.values()) == {"openrouter/free"}
-    save_block.assert_awaited_once()
+    assert set(AutoSupervisor.last_config.models.values()) == {"deepseek/deepseek-v4-flash"}
+    assert AutoSupervisor.last_config.stage is True
+    assert AutoSupervisor.last_config.enable_paysh is True
 
 
 def test_auto_generation_honors_explicit_operator_model_overrides(tmp_path, monkeypatch):
@@ -102,7 +103,7 @@ def test_auto_generation_honors_explicit_operator_model_overrides(tmp_path, monk
         asyncio.run(main.maybe_auto_generate())
 
     assert AutoSupervisor.last_config.models["validator"] == "deepseek/deepseek-v4-pro"
-    assert AutoSupervisor.last_config.models["submitter"] == "openrouter/free"
+    assert AutoSupervisor.last_config.models["submitter"] == "deepseek/deepseek-v4-flash"
 
 
 def test_paysh_cancerhawk_mode_requires_server_openrouter_key(monkeypatch):
@@ -126,7 +127,7 @@ def test_paysh_cancerhawk_mode_uses_server_key_when_configured(monkeypatch):
 
     assert api_key == "sk-or-v1-server"
     assert goal == "T-cell exhaustion reversal"
-    assert model == "openrouter/free"
+    assert model == "deepseek/deepseek-v4-flash"
     assert n_submitters == 3
     assert agent_name == "PayAgent"
     assert mode == "paysh_cancerhawk"
@@ -140,6 +141,16 @@ def test_prize_wallet_accepts_solana_and_ethereum_and_rejects_junk():
     assert resolve_prize_wallet(ethereum) == ethereum
     assert resolve_prize_wallet("not-a-wallet") == GIVEWELL_SOLANA
     assert resolve_prize_wallet(solana + "!!!!") == GIVEWELL_SOLANA
+
+
+def test_frontend_wallet_field_accepts_base_addresses():
+    blocks_source = Path("src/lib/blocks.ts").read_text(encoding="utf-8")
+    run_source = Path("pages/run-research.tsx").read_text(encoding="utf-8")
+
+    assert "BASE_EVM_HEX" in blocks_source
+    assert "0x[a-fA-F0-9]{40}" in blocks_source
+    assert "Base/EVM 0x address" in blocks_source
+    assert "Solana or Base" in run_source
 
 
 def test_agent_submit_sanitizes_invalid_wallet_and_does_not_claim_payment(tmp_path, monkeypatch):

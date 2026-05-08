@@ -45,6 +45,9 @@ class HermesRunConfig:
     job_id: str | None = None
     stage: bool = False
     enable_paysh: bool = False
+    publication_batch_id: str | None = None
+    candidate_index: int | None = None
+    batch_size: int | None = None
 
 
 @dataclass
@@ -235,6 +238,9 @@ class HermesSupervisor:
                     simulations=simulations,
                     job_id=cfg.job_id,
                     git_push=cfg.git_push,
+                    publication_batch_id=cfg.publication_batch_id,
+                    candidate_index=cfg.candidate_index,
+                    batch_size=cfg.batch_size,
                 )
             except Exception as exc:
                 logger.error("staging_failed", extra={"job_id": cfg.job_id, "error": str(exc)})

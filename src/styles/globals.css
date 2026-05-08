@@ -150,6 +150,11 @@ th { color: var(--teal); text-transform: uppercase; letter-spacing: 0.08em; font
 .job-section h2 { margin: 0 0 0.8rem; color: var(--teal); font-size: 1.3rem; }
 .job-json { background: rgba(0,0,0,0.42); border-radius: 8px; padding: 1rem; font-size: 0.82rem; overflow-x: auto; }
 .job-live-log { min-height: 320px; max-height: 58vh; }
+.job-event-details { display: block; }
+.job-event-details summary { display: grid; grid-template-columns: 108px minmax(0, 1fr); gap: 0.75rem; cursor: pointer; }
+.job-event-payload { grid-column: 1 / -1; padding: 0.55rem 0 0.35rem 108px; color: var(--soft); }
+.job-event-payload p { margin: 0 0 0.45rem; }
+.job-event-payload pre { max-height: 280px; overflow: auto; white-space: pre-wrap; border: 1px solid var(--border-soft); border-radius: 8px; background: rgba(0,0,0,0.42); padding: 0.7rem; font-size: 0.72rem; }
 .job-error-section { border-color: rgba(255,107,107,0.32); }
 .job-error { color: #ff6b6b; }
 
@@ -167,3 +172,45 @@ th { color: var(--teal); text-transform: uppercase; letter-spacing: 0.08em; font
 .stat-card { border: 1px solid var(--border-soft); border-radius: 10px; padding: 0.85rem; text-align: center; }
 .stat-label { font-size: 0.78rem; color: var(--soft); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.35rem; }
 .stat-value { font-size: 1.45rem; color: var(--ink); font-weight: 700; }
+
+/* ===== Autonomous Block Explorer ===== */
+.autonomous-explorer-page { max-width: 1320px; }
+.explorer-header { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+.explorer-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.85rem; margin: 1rem 0; }
+.explorer-stat { border: 1px solid var(--border); border-radius: 12px; background: rgba(8,20,26,0.58); padding: 0.95rem; }
+.explorer-stat span, .batch-head span, .block-explorer-card span { display: block; color: var(--soft); font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.08em; }
+.explorer-stat strong { display: block; margin-top: 0.25rem; color: var(--ink); font-size: 2rem; line-height: 1; }
+.explorer-section-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.75rem; margin-bottom: 0.85rem; }
+.explorer-section-head h2 { margin: 0; }
+.explorer-section-head > span, .explorer-toggle { color: var(--soft); font-size: 0.88rem; }
+.explorer-toggle { display: inline-flex; gap: 0.45rem; align-items: center; }
+.block-explorer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0.85rem; }
+.block-explorer-card { min-height: 190px; display: grid; align-content: start; gap: 0.55rem; border: 1px solid var(--border-soft); border-radius: 12px; background: rgba(0,0,0,0.3); padding: 0.9rem; }
+.block-explorer-card:hover { border-color: rgba(124,228,210,0.5); }
+.block-explorer-card strong { color: var(--ink); font-size: 1rem; line-height: 1.18; }
+.block-explorer-card p { margin: 0; color: var(--soft); font-size: 0.9rem; line-height: 1.35; }
+.block-explorer-card em { color: #ffd166; font-style: normal; font-family: "Fragment Mono", ui-monospace, monospace; }
+.batch-stack { display: grid; gap: 1rem; }
+.batch-panel { border: 1px solid var(--border-soft); border-radius: 12px; background: rgba(0,0,0,0.26); padding: 0.9rem; }
+.batch-head { display: flex; justify-content: space-between; gap: 1rem; align-items: center; margin-bottom: 0.85rem; }
+.batch-head strong { color: var(--ink); font-family: "Fragment Mono", ui-monospace, monospace; overflow-wrap: anywhere; }
+.batch-head em { color: var(--teal); font-style: normal; }
+.candidate-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.85rem; align-items: start; }
+.candidate-card { border: 1px solid var(--border); border-radius: 12px; background: rgba(8,20,26,0.64); padding: 0.9rem; min-width: 0; }
+.candidate-topline, .candidate-score-row { display: flex; justify-content: space-between; align-items: center; gap: 0.65rem; color: var(--soft); font-size: 0.8rem; }
+.candidate-card h3 { margin: 0.75rem 0 0.55rem; color: var(--ink); font-size: 1.1rem; line-height: 1.18; }
+.candidate-meta { color: var(--soft); font-family: "Fragment Mono", ui-monospace, monospace; font-size: 0.78rem; overflow-wrap: anywhere; }
+.candidate-meta a { color: var(--teal); }
+.candidate-score-row { border-top: 1px solid var(--border-soft); border-bottom: 1px solid var(--border-soft); padding: 0.55rem 0; margin-bottom: 0.65rem; }
+.job-log-slice { display: grid; gap: 0.35rem; max-height: 540px; overflow: auto; padding-right: 0.25rem; }
+.event-row { border: 1px solid rgba(255,255,255,0.07); border-radius: 8px; background: rgba(0,0,0,0.28); }
+.event-row summary { display: grid; grid-template-columns: 70px 104px minmax(0, 1fr); gap: 0.5rem; align-items: start; padding: 0.5rem; cursor: pointer; }
+.event-row summary span { color: rgba(255,255,255,0.44); font-family: "Fragment Mono", ui-monospace, monospace; font-size: 0.75rem; }
+.event-row summary strong { color: var(--teal); text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.06em; overflow-wrap: anywhere; }
+.event-row summary em { color: rgba(233,255,249,0.86); font-style: normal; font-size: 0.8rem; line-height: 1.3; overflow-wrap: anywhere; }
+.event-call { padding: 0 0.6rem 0.6rem; color: var(--soft); font-size: 0.8rem; }
+.event-call pre, .event-row pre { max-height: 260px; overflow: auto; margin: 0.5rem; background: rgba(0,0,0,0.46); border: 1px solid var(--border-soft); border-radius: 8px; padding: 0.65rem; font-size: 0.72rem; white-space: pre-wrap; }
+.award-line { margin: 0.4rem 0.6rem 0.65rem; color: #ffd166; font-family: "Fragment Mono", ui-monospace, monospace; font-size: 0.78rem; }
+.event-validate summary strong, .event-review summary strong, .event-review_complete summary strong, .event-block_validator summary strong, .event-subagent_award summary strong { color: #ffd166; }
+@media (max-width: 1100px) { .candidate-grid { grid-template-columns: 1fr; } .explorer-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 720px) { .explorer-stats { grid-template-columns: 1fr; } .event-row summary { grid-template-columns: 1fr; } }

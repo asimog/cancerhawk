@@ -1247,7 +1247,20 @@ def trigger_website_update(block_n: int) -> str:
         return f"vercel deploy hook failed: {exc}"
 
 
-def stage_block(paper, analysis, derived_topics, research_goal, models, peer_reviews, simulations, job_id, git_push) -> dict:
+def stage_block(
+    paper,
+    analysis,
+    derived_topics,
+    research_goal,
+    models,
+    peer_reviews,
+    simulations,
+    job_id,
+    git_push,
+    publication_batch_id: str | None = None,
+    candidate_index: int | None = None,
+    batch_size: int | None = None,
+) -> dict:
     """Write block artifacts to staging area for later publication."""
     staging_dir = STAGING_DIR / job_id
     staging_dir.mkdir(parents=True, exist_ok=True)
@@ -1295,10 +1308,21 @@ def stage_block(paper, analysis, derived_topics, research_goal, models, peer_rev
         "has_peer_review": peer_reviews is not None and len(peer_reviews) > 0,
         "has_simulations": simulations is not None and len(simulations) > 0,
         "git_push": git_push,
+        "publication_batch_id": publication_batch_id,
+        "candidate_index": candidate_index,
+        "batch_size": batch_size,
     }
     (staging_dir / "meta.json").write_text(json.dumps(meta, indent=2, default=str), encoding="utf-8")
 
-    return {"staged": True, "job_id": job_id, "path": str(staging_dir.relative_to(REPO_ROOT))}
+    return {
+        "staged": True,
+        "job_id": job_id,
+        "path": str(staging_dir.relative_to(REPO_ROOT)),
+        "publication_batch_id": publication_batch_id,
+        "candidate_index": candidate_index,
+        "batch_size": batch_size,
+        "market_price": analysis.market_price,
+    }
 
 
 def publish_from_staging(job_id: str) -> int:
@@ -1351,6 +1375,7 @@ def publish_from_staging(job_id: str) -> int:
         simulations=simulations,
     )
     block_n = publish_meta["block"]
+    result_url = f"/results/block-{block_n}/paper.html"
 
     # Save block to database (batch-pushed to GitHub once daily)
     try:
@@ -1375,6 +1400,29 @@ def publish_from_staging(job_id: str) -> int:
     except Exception as e:
         logger = logging.getLogger("cancerhawk.worker")
         logger.warning("failed_to_remove_staging", extra={"job_id": job_id, "error": str(e)})
+
+    try:
+        existing_job = get_job(job_id) or {}
+        existing_result = dict(existing_job.get("result") or {})
+        existing_result.update(
+            {
+                "title": paper.title,
+                "market_price": analysis.market_price,
+                "block": block_n,
+                "result_url": result_url,
+                "publication_batch_id": meta.get("publication_batch_id"),
+                "candidate_index": meta.get("candidate_index"),
+            }
+        )
+        append_job_event(
+            job_id,
+            stage="publish_done",
+            message=f"Fourth validator published winner as Block {block_n}: {paper.title}",
+            data={"block": block_n, "result_url": result_url, "market_price": analysis.market_price},
+        )
+        update_job_status(job_id, "published", result=existing_result)
+    except Exception:
+        pass
 
     return block_n
 

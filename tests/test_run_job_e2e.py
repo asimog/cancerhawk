@@ -119,11 +119,11 @@ def test_start_job_parses_boolean_strings_and_persists_config(tmp_path):
     assert FakeSupervisor.last_config.n_submitters == 2
 
 
-def test_start_job_persists_wallet_and_normalizes_models_to_free_router(tmp_path):
+def test_start_job_persists_wallet_and_normalizes_models_to_paid_default(tmp_path):
     test_jobs_file = tmp_path / "jobs.json"
     payload = {
         "api_key": "sk-test",
-        "research_goal": "Wallet and free-router contract",
+        "research_goal": "Wallet and paid-model contract",
         "n_submitters": 1,
         "validator": "qwen/qwen3-coder:free",
         "wallet_address": "DfXygYQxEznVKtFmzVUaHbBiNyHPa1JL1y2jTnCvHRX",
@@ -140,8 +140,9 @@ def test_start_job_persists_wallet_and_normalizes_models_to_free_router(tmp_path
         job = client.get(f"/api/jobs/{job_id}").json()
 
     assert job["config"]["wallet_address"] == "DfXygYQxEznVKtFmzVUaHbBiNyHPa1JL1y2jTnCvHRX"
-    assert job["config"]["models"]["validator"] == "openrouter/free"
-    assert FakeSupervisor.last_config.models["validator"] == "openrouter/free"
+    assert job["config"]["models"]["validator"] == "deepseek/deepseek-v4-flash"
+    assert FakeSupervisor.last_config.models["validator"] == "deepseek/deepseek-v4-flash"
+    assert job["config"]["enable_paysh"] is True
 
 
 def test_start_job_idempotency_key_returns_existing_job(tmp_path):

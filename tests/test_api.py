@@ -28,8 +28,8 @@ def test_models_endpoint():
     assert "defaults" in data
     assert isinstance(data["models"], list)
     assert isinstance(data["defaults"], dict)
-    assert "openrouter/free" in data["models"]
-    assert data["defaults"]["validator"] == "openrouter/free"
+    assert "openrouter/free" not in data["models"]
+    assert data["defaults"]["validator"] == "deepseek/deepseek-v4-flash"
 
 
 def test_hermes_status_exposes_job_store_info():

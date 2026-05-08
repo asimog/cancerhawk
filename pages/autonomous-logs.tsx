@@ -1,64 +1,126 @@
 import { GetStaticProps } from 'next';
 import Link from 'next/link';
 import { getBackendUrl, fetchWithTimeout } from '@/lib/blocks';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Nav } from '@/components/nav';
 
-type LogEntry = {
-  job_id: string;
-  created_at: string;
-  research_goal: string;
-  status: string;
-  stage: string;
-  message: string;
-  at: string;
-  block?: number;
-  market_price?: number;
+type JobEvent = {
+  at?: string;
+  stage?: string;
+  message?: string;
+  data?: {
+    call?: {
+      role?: string;
+      model?: string;
+      prompt_tokens?: number;
+      completion_tokens?: number;
+      total_tokens?: number;
+      cost_usd?: number;
+      ok?: boolean;
+      error?: string | null;
+      prompt?: string;
+      response?: string;
+    };
+    scores?: Record<string, number>;
+    award_points?: number;
+    rank?: number;
+    winner_job_id?: string;
+    leaderboard?: Array<{ rank: number; job_id: string; market_price: number; candidate_index?: number }>;
+    [key: string]: unknown;
+  } | null;
 };
 
 type ApiJob = {
   job_id: string;
   created_at: string;
+  updated_at?: string;
   research_goal: string;
   status: string;
   result?: {
     title?: string;
     market_price?: number;
-    block?: number;
+    block?: number | string | null;
+    publication_outcome?: string;
+    publication_batch_id?: string;
+    candidate_index?: number;
     stats?: {
       total_calls?: number;
       total_tokens?: number;
       total_cost_usd?: number;
       elapsed_seconds?: number;
     };
-  };
+  } | null;
   error?: string | null;
-  events?: Array<{
-    at?: string;
-    stage?: string;
-    message?: string;
-    data?: Record<string, unknown> | null;
-  }>;
-  config?: Record<string, unknown>;
+  events?: JobEvent[];
+  config?: {
+    models?: Record<string, string>;
+    mode?: string;
+    enable_paysh?: boolean;
+    publication_batch_id?: string;
+    candidate_index?: number;
+    batch_size?: number;
+    n_submitters?: number;
+    publication_strategy?: string;
+    [key: string]: unknown;
+  };
+};
+
+type ExplorerBlock = {
+  block: number;
+  title: string;
+  research_goal: string;
+  market_price: number;
 };
 
 export const getStaticProps: GetStaticProps<{ backendUrl: string }> = async () => ({
   props: { backendUrl: (await import('@/lib/blocks')).getBackendUrl() },
 });
 
-function modeLabel(config?: Record<string, unknown>): string {
-  if (!config) return 'free';
-  const mode = config.mode;
-  if (mode === 'paid') return 'paid';
-  if (typeof config?.api_key === 'string' && config.api_key.trim()) return 'paid';
-  return 'free';
+function modeLabel(job: ApiJob): string {
+  if (job.config?.enable_paysh) return 'pay.sh';
+  const model = job.config?.models?.submitter || '';
+  if (model && model !== 'openrouter/free') return 'paid';
+  return 'legacy';
+}
+
+function shortId(id: string) {
+  return id.slice(0, 8);
+}
+
+function eventTime(value?: string) {
+  if (!value) return '';
+  return new Date(value).toLocaleTimeString();
+}
+
+function isValidatorEvent(event: JobEvent) {
+  const stage = event.stage || '';
+  const role = event.data?.call?.role || '';
+  return (
+    stage === 'validate' ||
+    stage === 'review' ||
+    stage === 'review_start' ||
+    stage === 'review_complete' ||
+    stage === 'block_validator' ||
+    role.includes('validator') ||
+    role.includes('peer_review') ||
+    role.includes('archetype')
+  );
+}
+
+function batchId(job: ApiJob) {
+  return job.config?.publication_batch_id || job.result?.publication_batch_id || 'manual';
+}
+
+function marketPct(value?: number) {
+  return typeof value === 'number' ? `${Math.round(value * 100)}%` : '--';
 }
 
 export default function AutonomousLogsPage({ backendUrl }: { backendUrl: string }) {
-  const [entries, setEntries] = useState<LogEntry[]>([]);
+  const [jobs, setJobs] = useState<ApiJob[]>([]);
+  const [blocks, setBlocks] = useState<ExplorerBlock[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [autoScroll, setAutoScroll] = useState(true);
-  const logRef = useRef<HTMLDivElement | null>(null);
+  const [showValidatorsOnly, setShowValidatorsOnly] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
 
   const load = useCallback(async () => {
@@ -66,46 +128,41 @@ export default function AutonomousLogsPage({ backendUrl }: { backendUrl: string 
     if (abortRef.current) abortRef.current.abort();
     const controller = new AbortController();
     abortRef.current = controller;
+
     try {
       const res = await fetchWithTimeout(`${backendUrl}/api/jobs?limit=100`, {
         cache: 'no-store',
         signal: controller.signal,
       });
-      if (!res.ok) return;
+      if (!res.ok) throw new Error(`Backend returned ${res.status}`);
       const data = await res.json();
-      const jobs: ApiJob[] = data.jobs || [];
-      const all: LogEntry[] = [];
-      for (const job of jobs) {
-        const events = job.events || [];
-        for (const ev of events) {
-          all.push({
-            job_id: job.job_id,
-            created_at: job.created_at,
-            research_goal: job.research_goal,
-            status: job.status,
-            stage: ev.stage || 'event',
-            message: ev.message || '',
-            at: ev.at || job.created_at,
-            block: job.result?.block != null ? Number(job.result.block) : undefined,
-            market_price: job.result?.market_price,
-          });
-        }
-        if (events.length === 0) {
-          all.push({
-            job_id: job.job_id,
-            created_at: job.created_at,
-            research_goal: job.research_goal,
-            status: job.status,
-            stage: 'created',
-            message: `Job created — status: ${job.status}` + (job.error ? ` (error: ${String(job.error).slice(0, 120)})` : ''),
-            at: job.created_at,
-            block: job.result?.block != null ? Number(job.result.block) : undefined,
-            market_price: job.result?.market_price,
-          });
-        }
-      }
-      all.sort((a, b) => new Date(b.at).getTime() - new Date(a.at).getTime());
-      setEntries(all);
+      const nextJobs: ApiJob[] = data.jobs || [];
+      setJobs(nextJobs);
+
+      const discoveredBlocks = Array.from(new Set(
+        nextJobs
+          .map((job) => Number(job.result?.block))
+          .filter((block) => Number.isInteger(block) && block > 0),
+      )).sort((a, b) => b - a);
+      const fallbackBlocks = discoveredBlocks.length ? discoveredBlocks : Array.from({ length: 10 }, (_, index) => index + 1).reverse();
+      const blockPayloads = await Promise.all(
+        fallbackBlocks.slice(0, 12).map(async (block) => {
+          try {
+            const blockRes = await fetchWithTimeout(`${backendUrl}/api/blocks/${block}`, { cache: 'no-store', timeout: 5000 });
+            if (!blockRes.ok) return null;
+            const payload = await blockRes.json();
+            return {
+              block,
+              title: payload.meta?.title || payload.meta?.paper_title || `Block ${block}`,
+              research_goal: payload.meta?.research_goal || '',
+              market_price: Number(payload.meta?.market_price || payload.analysis?.market_price || 0),
+            } as ExplorerBlock;
+          } catch {
+            return null;
+          }
+        }),
+      );
+      setBlocks(blockPayloads.filter((block): block is ExplorerBlock => Boolean(block)));
       setError(null);
     } catch (e: unknown) {
       if (e instanceof Error && e.name === 'AbortError') return;
@@ -124,47 +181,53 @@ export default function AutonomousLogsPage({ backendUrl }: { backendUrl: string 
     };
   }, [load]);
 
-  useEffect(() => {
-    if (autoScroll && logRef.current) {
-      logRef.current.scrollTop = logRef.current.scrollHeight;
+  const batches = useMemo(() => {
+    const grouped = new Map<string, ApiJob[]>();
+    for (const job of jobs) {
+      const key = batchId(job);
+      grouped.set(key, [...(grouped.get(key) || []), job]);
     }
-  }, [entries.length, autoScroll]);
+    return Array.from(grouped.entries()).map(([id, group]) => ({
+      id,
+      jobs: group.sort((a, b) => Number(a.config?.candidate_index || 99) - Number(b.config?.candidate_index || 99)),
+    }));
+  }, [jobs]);
 
-  const stageColor: Record<string, string> = {
-    start: '#4caf50',
-    hermes: '#2196f3',
-    api_call: '#ff9800',
-    done: '#4caf50',
-    error: '#f44336',
-    stopped: '#9e9e9e',
-    created: '#607d8b',
-    completed: '#4caf50',
-    failed: '#f44336',
-    published: '#9c27b0',
-  };
+  const latestBlock = blocks[0];
+  const paidJobs = jobs.filter((job) => modeLabel(job) !== 'legacy').length;
+  const validatorEvents = jobs.reduce((count, job) => count + (job.events || []).filter(isValidatorEvent).length, 0);
 
   return (
-    <div className="page">
-      <header className="page-header">
-        <h1 className="page-title">Autonomous Logs</h1>
-        <p className="page-kicker">
-          All CancerHawk autonomous runs, peer reviews, block creations, and rewards.
-          This page displays every event — no user interaction, just the logs.
-        </p>
+    <div className="page autonomous-explorer-page">
+      <Nav />
+      <header className="page-header explorer-header">
+        <div>
+          <h1 className="page-title">Autonomous Block Explorer</h1>
+          <p className="page-kicker">Railway worker logs, validator traces, candidate awards, and publication picks</p>
+        </div>
+        <button className="button" onClick={() => void load()} type="button">Refresh</button>
       </header>
 
-      <div style={{ marginBottom: 12, display: 'flex', gap: 8, alignItems: 'center' }}>
-        <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', fontSize: 14 }}>
-          <input type="checkbox" checked={autoScroll} onChange={(e) => setAutoScroll(e.currentTarget.checked)} />
-          Auto-scroll
-        </label>
-        <button className="button" onClick={() => void load()} type="button" style={{ fontSize: 13, padding: '4px 10px' }}>
-          Refresh
-        </button>
-        <span style={{ fontSize: 12, color: '#9e9e9e' }}>{entries.length} events</span>
-      </div>
+      <section className="explorer-stats">
+        <div className="explorer-stat">
+          <span>Latest Block</span>
+          <strong>{latestBlock ? `#${latestBlock.block}` : '--'}</strong>
+        </div>
+        <div className="explorer-stat">
+          <span>Tracked Jobs</span>
+          <strong>{jobs.length}</strong>
+        </div>
+        <div className="explorer-stat">
+          <span>Paid / Pay.sh Jobs</span>
+          <strong>{paidJobs}</strong>
+        </div>
+        <div className="explorer-stat">
+          <span>Validator Events</span>
+          <strong>{validatorEvents}</strong>
+        </div>
+      </section>
 
-      {loading && <p className="muted">Loading logs…</p>}
+      {loading && <p className="muted">Loading autonomous logs...</p>}
       {error && (
         <div className="backend-offline">
           <p className="muted">Backend offline: {error}</p>
@@ -172,80 +235,110 @@ export default function AutonomousLogsPage({ backendUrl }: { backendUrl: string 
         </div>
       )}
 
-      {!loading && !error && entries.length === 0 && (
-        <p className="muted">No logs yet. Autonomous runs will appear here.</p>
+      {!loading && !error && (
+        <>
+          <section className="job-section">
+            <div className="explorer-section-head">
+              <h2>Published Blocks</h2>
+              <span>{blocks.length} indexed</span>
+            </div>
+            <div className="block-explorer-grid">
+              {blocks.map((block) => (
+                <Link href={block.block === latestBlock?.block ? '/current-block' : `${backendUrl}/results/block-${block.block}/paper.html`} className="block-explorer-card" key={block.block}>
+                  <span>Block {block.block}</span>
+                  <strong>{block.title}</strong>
+                  <p>{block.research_goal}</p>
+                  <em>{marketPct(block.market_price)}</em>
+                </Link>
+              ))}
+            </div>
+          </section>
+
+          <section className="job-section">
+            <div className="explorer-section-head">
+              <h2>Candidate Batches</h2>
+              <label className="explorer-toggle">
+                <input type="checkbox" checked={showValidatorsOnly} onChange={(event) => setShowValidatorsOnly(event.currentTarget.checked)} />
+                Validator logs only
+              </label>
+            </div>
+
+            <div className="batch-stack">
+              {batches.map((batch) => (
+                <article className="batch-panel" key={batch.id}>
+                  <div className="batch-head">
+                    <div>
+                      <span>Batch</span>
+                      <strong>{batch.id}</strong>
+                    </div>
+                    <em>{batch.jobs.length} jobs</em>
+                  </div>
+
+                  <div className="candidate-grid">
+                    {batch.jobs.map((job) => {
+                      const events = (job.events || []).filter((event) => !showValidatorsOnly || isValidatorEvent(event));
+                      const model = job.config?.models?.submitter || 'unknown';
+                      return (
+                        <div className="candidate-card" key={job.job_id}>
+                          <div className="candidate-topline">
+                            <span className={`badge badge-${job.status}`}>{job.status}</span>
+                            <span>{modeLabel(job).toUpperCase()}</span>
+                          </div>
+                          <h3>{job.research_goal}</h3>
+                          <p className="candidate-meta">
+                            <Link href={`/jobs/${job.job_id}`}>{shortId(job.job_id)}</Link>
+                            {' '}· candidate {job.config?.candidate_index || job.result?.candidate_index || '--'}
+                            {' '}· {model}
+                          </p>
+                          <div className="candidate-score-row">
+                            <span>Market {marketPct(job.result?.market_price)}</span>
+                            <span>{job.result?.block ? `Block ${job.result.block}` : job.result?.publication_outcome || 'running'}</span>
+                          </div>
+
+                          <div className="job-log-slice">
+                            {events.length === 0 ? (
+                              <p className="muted">No matching events yet.</p>
+                            ) : events.slice(-18).map((event, index) => {
+                              const call = event.data?.call;
+                              return (
+                                <details className={`event-row event-${event.stage || 'event'}`} key={`${event.at || ''}-${index}`} open={index >= events.slice(-18).length - 3}>
+                                  <summary>
+                                    <span>{eventTime(event.at)}</span>
+                                    <strong>{event.stage || call?.role || 'event'}</strong>
+                                    <em>{event.message || call?.role || ''}</em>
+                                  </summary>
+                                  {call && (
+                                    <div className="event-call">
+                                      <p>{call.role} · {call.model} · {call.total_tokens?.toLocaleString() || 0} tokens · ${Number(call.cost_usd || 0).toFixed(4)}</p>
+                                      {call.error && <p className="job-error">{call.error}</p>}
+                                      {isValidatorEvent(event) && (
+                                        <pre>{JSON.stringify({ prompt: call.prompt, response: call.response }, null, 2)}</pre>
+                                      )}
+                                    </div>
+                                  )}
+                                  {event.data?.scores && <pre>{JSON.stringify(event.data.scores, null, 2)}</pre>}
+                                  {event.data?.leaderboard && <pre>{JSON.stringify(event.data.leaderboard, null, 2)}</pre>}
+                                  {typeof event.data?.award_points === 'number' && (
+                                    <p className="award-line">Award: {event.data.award_points} points</p>
+                                  )}
+                                </details>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+        </>
       )}
 
-      {!loading && entries.length > 0 && (
-        <div className="autonomous-log" ref={logRef} style={{
-          maxHeight: 'calc(100vh - 260px)',
-          overflowY: 'auto',
-          background: '#0a0a0a',
-          border: '1px solid #333',
-          borderRadius: 8,
-          padding: '12px 16px',
-          fontFamily: "'Consolas', 'Fira Code', monospace",
-          fontSize: 13,
-          lineHeight: 1.6,
-        }}>
-          {entries.map((entry, i) => {
-            const color = stageColor[entry.stage] || '#888';
-            const time = new Date(entry.at).toLocaleTimeString();
-            const mode: string = 'free';
-            return (
-              <div key={`${entry.job_id}-${i}`} style={{
-                padding: '4px 0',
-                borderBottom: '1px solid #1a1a1a',
-                display: 'flex',
-                gap: 10,
-                alignItems: 'flex-start',
-              }}>
-                <span style={{ color: '#555', minWidth: 70, flexShrink: 0 }}>{time}</span>
-                <span style={{
-                  color,
-                  minWidth: 72,
-                  flexShrink: 0,
-                  fontWeight: 600,
-                  textTransform: 'uppercase',
-                  fontSize: 11,
-                  letterSpacing: 0.5,
-                }}>{entry.stage}</span>
-                <span style={{
-                  color: mode === 'paid' ? '#ffd700' : '#888',
-                  minWidth: 38,
-                  flexShrink: 0,
-                  fontSize: 11,
-                  fontWeight: 600,
-                }}>{mode.toUpperCase()}</span>
-                <span style={{
-                  color: '#e0e0e0',
-                  flex: 1,
-                  wordBreak: 'break-word',
-                }}>
-                  <Link href={`/jobs/${entry.job_id}`} style={{ color: '#64b5f6', textDecoration: 'none', marginRight: 6 }}>
-                    [{entry.job_id.slice(0, 8)}]
-                  </Link>
-                  {entry.message}
-                  {entry.block != null && (
-                    <span style={{ marginLeft: 8, color: '#81c784' }}>
-                      Block #{entry.block}
-                    </span>
-                  )}
-                  {typeof entry.market_price === 'number' && (
-                    <span style={{ marginLeft: 8, color: '#ffd700' }}>
-                      {(entry.market_price * 100).toFixed(0)}%
-                    </span>
-                  )}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-      )}
-
-      <footer className="page-footer" style={{ marginTop: 24 }}>
-        <Link href="/jobs" className="footer-link">← Job Feed</Link>
-        <Link href="/" className="footer-link">← Home</Link>
+      <footer className="page-footer">
+        <Link href="/jobs" className="footer-link">Job Feed</Link>
+        <Link href="/" className="footer-link">Home</Link>
       </footer>
     </div>
   );

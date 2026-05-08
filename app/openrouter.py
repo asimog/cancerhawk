@@ -4,7 +4,7 @@ API key is passed per-call (sourced from the browser session, never
 persisted server-side). Per-call usage is recorded into a TokenTracker
 when one is supplied via ``ctx``.
 
-Fallback chain: primary API key → fallback keys → openrouter/free model.
+Fallback chain: primary API key → fallback keys → paid DeepSeek flash model.
 """
 
 from __future__ import annotations
@@ -46,7 +46,7 @@ def _load_fallback_keys() -> list[str]:
 
 
 FALLBACK_API_KEYS = _load_fallback_keys()
-FALLBACK_MODEL = os.environ.get("CANCERHAWK_FALLBACK_MODEL", "openrouter/free").strip() or "openrouter/free"
+FALLBACK_MODEL = os.environ.get("CANCERHAWK_FALLBACK_MODEL", "deepseek/deepseek-v4-flash").strip() or "deepseek/deepseek-v4-flash"
 AUTH_FAILURE_STATUSES = {401, 402, 403}
 
 # Optional async hook the engines can install to push every API call to

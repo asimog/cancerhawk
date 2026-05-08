@@ -39,15 +39,15 @@ def test_prompts_engines_have_template_and_format():
 
 # ── POST /api/agents/cost ─────────────────────────────────
 
-def test_cost_free_model():
+def test_cost_free_model_is_coerced_to_paid_default():
     resp = client.post("/api/agents/cost", json={
         "model": "openrouter/free", "n_submitters": 3, "mode": "openrouter",
     })
     assert resp.status_code == 200
     data = resp.json()
-    assert data["model"] == "openrouter/free"
-    assert data["free_tier_available"] is True
-    assert data["estimated_cost_usd"] == 0.0
+    assert data["model"] == "deepseek/deepseek-v4-flash"
+    assert data["free_tier_available"] is False
+    assert data["estimated_cost_usd"] > 0.0
 
 
 def test_cost_paid_model():
@@ -64,7 +64,7 @@ def test_cost_defaults():
     resp = client.post("/api/agents/cost", json={})
     assert resp.status_code == 200
     data = resp.json()
-    assert data["model"] == "openrouter/free"
+    assert data["model"] == "deepseek/deepseek-v4-flash"
     assert data["estimated_calls"] > 0
 
 
@@ -198,11 +198,11 @@ def test_run_missing_goal_returns_400():
 
 # ── GET /api/models ────────────────────────────────────────
 
-def test_models_includes_openrouter_free():
+def test_models_excludes_openrouter_free():
     resp = client.get("/api/models")
     assert resp.status_code == 200
     data = resp.json()
-    assert "openrouter/free" in data["models"]
+    assert "openrouter/free" not in data["models"]
 
 
 def test_models_includes_paid_models():

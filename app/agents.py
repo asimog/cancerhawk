@@ -41,7 +41,7 @@ AGENT_SUBMISSIONS_DIR.mkdir(parents=True, exist_ok=True)
 ESTIMATED_CALLS_PER_RUN = 20
 ESTIMATED_TOKENS_PER_CALL = 2500
 FREE_MODEL = "openrouter/free"
-DEFAULT_MODEL = "deepseek/deepseek-v4-pro"
+DEFAULT_MODEL = "deepseek/deepseek-v4-flash"
 PRIZE_AMOUNT_USDC = 0.01
 
 GIVEWELL_SOLANA = "4Z2DBVoQCJZ42cCTDMNvYDUqRjA1C3vV7B155Mc6jGah"
@@ -313,7 +313,9 @@ def parse_agent_run(cfg: dict[str, Any]) -> tuple[str, str, str, int, str | None
     if len(research_goal) > 1000:
         raise ValueError("research_goal must be at most 1000 characters")
 
-    model = str(cfg.get("model") or FREE_MODEL).strip()
+    model = str(cfg.get("model") or DEFAULT_MODEL).strip()
+    if model == FREE_MODEL:
+        model = DEFAULT_MODEL
     n_submitters = int(cfg.get("n_submitters") or 3)
     if n_submitters < 1 or n_submitters > 8:
         raise ValueError("n_submitters must be between 1 and 8")

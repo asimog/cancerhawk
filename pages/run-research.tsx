@@ -19,8 +19,7 @@ export default function RunResearchPage({ backendUrl }: { backendUrl: string }) 
   const router = useRouter();
   const [apiKey, setApiKey] = useState('');
   const [goal, setGoal] = useState('');
-  const [mode, setMode] = useState<'free' | 'paid'>('free');
-  const [enablePaysh, setEnablePaysh] = useState(false);
+  const [enablePaysh, setEnablePaysh] = useState(true);
   const [submitterCount, setSubmitterCount] = useState(3);
   const [models, setModels] = useState<string[]>([]);
   const [selectedModels, setSelectedModels] = useState<Record<string, string>>({});
@@ -70,8 +69,8 @@ export default function RunResearchPage({ backendUrl }: { backendUrl: string }) 
   }
 
   const visibleModels = useMemo(() =>
-    mode === 'paid' ? models : models.filter((m) => m === 'openrouter/free'),
-    [models, mode]
+    models.filter((m) => m !== 'openrouter/free'),
+    [models]
   );
 
   function onWalletChange(value: string) {
@@ -83,24 +82,17 @@ export default function RunResearchPage({ backendUrl }: { backendUrl: string }) 
   async function startRun() {
     if (!workerReady || !goal.trim() || isRunning) return;
 
-    if (mode === 'paid' && !apiKey.trim()) {
-      setStatus('API key required in paid mode.');
-      return;
-    }
-
     const walletValidation = validateWalletAddress(walletAddress);
     if (!walletValidation.valid) {
       setWalletError(walletValidation.error || 'Invalid wallet address.');
       return;
     }
 
-    const wallet = walletValidation.solana;
+    const wallet = walletValidation.wallet;
     const useGiveWell = walletValidation.isDefault && !walletAddress.trim();
 
     const confirmed = window.confirm(
-      mode === 'paid'
-        ? `This will use your OpenRouter API key and may incur costs. Wallet: ${wallet.slice(0, 6)}...${wallet.slice(-4)}. Continue?`
-        : `This will run using free OpenRouter models at no cost. Wallet: ${wallet.slice(0, 6)}...${wallet.slice(-4)}. Continue?`
+      `This will use paid worker models and may incur OpenRouter/pay.sh costs. Wallet: ${wallet.slice(0, 6)}...${wallet.slice(-4)}. Continue?`
     );
     if (!confirmed) return;
 
@@ -122,11 +114,12 @@ export default function RunResearchPage({ backendUrl }: { backendUrl: string }) 
         headers: { 'Content-Type': 'application/json' },
         signal: controller.signal,
         body: JSON.stringify({
-          api_key: mode === 'paid' ? apiKey.trim() : '',
+          api_key: apiKey.trim(),
           research_goal: goal.trim(),
           n_submitters: Math.min(8, Math.max(1, Number(submitterCount) || 3)),
           auto_publish: true,
           git_push: true,
+          enable_paysh: enablePaysh,
           idempotency_key: idempotencyKey,
           wallet_address: wallet,
           ...selectedModels,
@@ -158,7 +151,7 @@ export default function RunResearchPage({ backendUrl }: { backendUrl: string }) 
   }
 
   const canSubmit = workerReady && goal.trim() && !isRunning && !walletError
-    && (mode === 'free' || apiKey.trim());
+    && visibleModels.length > 0;
 
   return (
     <div className="page">
@@ -171,34 +164,9 @@ export default function RunResearchPage({ backendUrl }: { backendUrl: string }) 
           <p className="run-status">{status}</p>
 
           <div className="mode-toggle" style={{ display: 'flex', gap: 0, marginBottom: 16 }}>
-            <button
-              className={`button ${mode === 'free' ? '' : 'button-outline'}`}
-              onClick={() => { setMode('free'); setApiKey(''); }}
-              type="button"
-              style={{
-                borderTopRightRadius: 0,
-                borderBottomRightRadius: 0,
-                background: mode === 'free' ? '#1b5e20' : 'transparent',
-                border: '1px solid #333',
-                flex: 1,
-              }}
-            >
-              Free Mode
-            </button>
-            <button
-              className={`button ${mode === 'paid' ? '' : 'button-outline'}`}
-              onClick={() => setMode('paid')}
-              type="button"
-              style={{
-                borderTopLeftRadius: 0,
-                borderBottomLeftRadius: 0,
-                background: mode === 'paid' ? '#1b5e20' : 'transparent',
-                border: '1px solid #333',
-                flex: 1,
-              }}
-            >
-              Paid Mode
-            </button>
+            <div className="button" style={{ background: '#1b5e20', border: '1px solid #333', flex: 1 }}>
+              Paid Worker Mode · DeepSeek V4 Flash
+            </div>
           </div>
 
           <label style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16, cursor: 'pointer' }}>
@@ -216,14 +184,9 @@ export default function RunResearchPage({ backendUrl }: { backendUrl: string }) 
           </label>
 
           <label>
-            OpenRouter API key{mode === 'free' ? ' (optional)' : ''}
-            <input autoComplete="off" onChange={(event) => setApiKey(event.target.value)} placeholder={mode === 'free' ? 'Leave empty for free tier' : 'sk-or-v1-...'} type="password" value={apiKey} />
+            OpenRouter API key (optional when Railway has server key)
+            <input autoComplete="off" onChange={(event) => setApiKey(event.target.value)} placeholder="sk-or-v1-..." type="password" value={apiKey} />
           </label>
-          {mode === 'free' && !apiKey.trim() && (
-            <p style={{ fontSize: 12, color: '#888', marginTop: -8, marginBottom: 12 }}>
-              Using CancerHawk server key — free models only.
-            </p>
-          )}
           <label>
             Research goal
             <textarea onChange={(event) => setGoal(event.target.value)} placeholder="A focused oncology research question for the next CancerHawk block." value={goal} />
@@ -243,7 +206,7 @@ export default function RunResearchPage({ backendUrl }: { backendUrl: string }) 
             <input max={8} min={1} onChange={(event) => setSubmitterCount(Math.min(8, Math.max(1, Number(event.target.value) || 3)))} type="number" value={submitterCount} />
           </label>
           <label>
-            Wallet address (optional — Solana)
+            Wallet address (optional — Solana or Base)
             <input
               autoComplete="off"
               onChange={(event) => onWalletChange(event.target.value)}
@@ -263,7 +226,7 @@ export default function RunResearchPage({ backendUrl }: { backendUrl: string }) 
           </label>
           <div className="run-actions">
             <button className="button" disabled={!canSubmit} onClick={startRun} type="button">
-              {isRunning ? 'Creating job...' : `Run CancerHawk (${mode === 'paid' ? 'Paid' : 'Free'})`}
+              {isRunning ? 'Creating job...' : 'Run CancerHawk (Paid)'}
             </button>
             {createdJobId && <a className="button" href={`/jobs/${createdJobId}`}>Open job</a>}
           </div>
@@ -271,14 +234,10 @@ export default function RunResearchPage({ backendUrl }: { backendUrl: string }) 
 
         <section className="panel">
           <div className="run-job-preview">
-            <span className={`badge ${mode === 'paid' ? 'badge-running' : 'badge-pending'}`}>
-              {mode === 'paid' ? 'paid mode' : 'free mode'}
-            </span>
-            <h2>{mode === 'paid' ? 'Your key, your model.' : 'Free models, zero cost.'}</h2>
+            <span className="badge badge-running">paid mode</span>
+            <h2>Paid workers, pay.sh enrichment.</h2>
             <p className="muted">
-              {mode === 'paid'
-                ? 'Provide your OpenRouter API key and select any model. Costs are charged to your account.'
-                : 'No API key needed — CancerHawk uses its server key with free models only. Safe to explore and share.'}
+              CancerHawk uses paid OpenRouter models and pay.sh enrichment for agent and subagent work. Provide a key to BYOK, or rely on the Railway server key when configured.
             </p>
           </div>
         </section>

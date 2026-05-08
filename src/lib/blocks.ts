@@ -1,11 +1,9 @@
 import type { BlockBundle } from './blocks.types';
 
-const DEFAULT_BACKEND_URL = 'https://cancerhawk-production.up.railway.app';
+const DEFAULT_BACKEND_URL = '';
 
 function cleanBackendUrl(value: string) {
-  return value
-    .trim()
-    .replace(/^["']|["']$/g, '')
+  return value.trim().replace(/^["']|["']$/g, '')
     .replace(/\\n/g, '')
     .replace(/\s+/g, '')
     .replace(/\/+$/, '');
@@ -37,15 +35,39 @@ export function fetchWithTimeout(
 }
 
 const SOLANA_BASE58 = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
+const BASE_EVM_HEX = /^0x[a-fA-F0-9]{40}$/;
 
 export const GIVEWELL_WALLET = "4Z2DBVoQCJZ42cCTDMNvYDUqRjA1C3vV7B155Mc6jGah";
 export const GIVEWELL_URL = "https://www.givewell.org/about/donate/cryptocurrency";
 
-export function validateWalletAddress(value: string): { valid: boolean; solana: string; isDefault: boolean; error?: string } {
+type WalletValidation = {
+  valid: boolean;
+  wallet: string;
+  solana: string;
+  chain: 'solana' | 'base' | 'default' | '';
+  isDefault: boolean;
+  error?: string;
+};
+
+export function validateWalletAddress(value: string): WalletValidation {
   const trimmed = value.trim();
-  if (!trimmed) return { valid: true, solana: GIVEWELL_WALLET, isDefault: true };
-  if (SOLANA_BASE58.test(trimmed)) return { valid: true, solana: trimmed, isDefault: trimmed === GIVEWELL_WALLET };
-  return { valid: false, solana: "", isDefault: false, error: 'Enter a valid Solana base58 address (32-44 chars).' };
+  if (!trimmed) {
+    return { valid: true, wallet: GIVEWELL_WALLET, solana: GIVEWELL_WALLET, chain: 'default', isDefault: true };
+  }
+  if (SOLANA_BASE58.test(trimmed)) {
+    return { valid: true, wallet: trimmed, solana: trimmed, chain: 'solana', isDefault: trimmed === GIVEWELL_WALLET };
+  }
+  if (BASE_EVM_HEX.test(trimmed)) {
+    return { valid: true, wallet: trimmed, solana: trimmed, chain: 'base', isDefault: false };
+  }
+  return {
+    valid: false,
+    wallet: "",
+    solana: "",
+    chain: '',
+    isDefault: false,
+    error: 'Enter a valid Solana base58 address or Base/EVM 0x address.',
+  };
 }
 
 export function excerpt(markdown: string, maxLength = 280) {

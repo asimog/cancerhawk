@@ -141,12 +141,25 @@ async def run_peer_review_engine(
             })
             continue
         reviews.append(result)
+        award_points = max(1, round(result.overall_confidence * 10))
         await emit(
             "review",
             f"✓ {archetype['name']}: {result.recommendation} "
             f"(confidence={result.overall_confidence:.2f})",
             {
                 "archetype_id": archetype["id"],
+                "recommendation": result.recommendation,
+                "confidence": result.overall_confidence,
+                "award_points": award_points,
+            },
+        )
+        await emit(
+            "subagent_award",
+            f"{archetype['name']} awarded {award_points} validator points for peer review",
+            {
+                "subagent": f"validator_{archetype['id']}",
+                "archetype_id": archetype["id"],
+                "award_points": award_points,
                 "recommendation": result.recommendation,
                 "confidence": result.overall_confidence,
             },

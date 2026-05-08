@@ -11,6 +11,9 @@ type Job = {
   config?: Record<string, unknown>;
   result?: {
     title?: string;
+    market_price?: number;
+    block?: number | string | null;
+    publication_outcome?: string;
   };
   error?: string | null;
 };
@@ -31,6 +34,13 @@ function JobWallet({ config }: { config?: Record<string, unknown> }) {
       )}
     </p>
   );
+}
+
+function jobMode(config?: Record<string, unknown>) {
+  const models = config?.models as Record<string, string> | undefined;
+  if (config?.enable_paysh) return 'PAY.SH';
+  if (models?.submitter && models.submitter !== 'openrouter/free') return 'PAID';
+  return 'LEGACY';
 }
 
 export const getStaticProps: GetStaticProps<{ backendUrl: string }> = async () => ({
@@ -118,6 +128,7 @@ export default function JobsPage({ backendUrl }: { backendUrl: string }) {
                 <span className={`badge ${statusBadge[job.status] || 'badge-pending'}`}>
                   {job.status}
                 </span>
+                <span className="badge badge-running">{jobMode(job.config)}</span>
                 <span className="job-date">
                   {new Date(job.created_at).toLocaleString()}
                 </span>
@@ -126,6 +137,12 @@ export default function JobsPage({ backendUrl }: { backendUrl: string }) {
               {job.result?.title ? (
                 <p className="job-result-title">{job.result.title}</p>
               ) : null}
+              {typeof job.result?.market_price === 'number' && (
+                <p className="candidate-score-row">
+                  <span>Market {Math.round(job.result.market_price * 100)}%</span>
+                  <span>{job.result.block ? `Block ${job.result.block}` : job.result.publication_outcome || 'candidate'}</span>
+                </p>
+              )}
               {job.error && (
                 <p className="job-error">{String(job.error).slice(0, 120)}</p>
               )}

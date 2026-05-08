@@ -340,14 +340,16 @@ async def run_paper_engine(
         ]
         raw_submissions = await asyncio.gather(*generation_tasks, return_exceptions=True)
 
-        valid_submissions: list[str] = []
+        valid_entries: list[tuple[int, str]] = []
         for i, sub in enumerate(raw_submissions):
             if isinstance(sub, Exception):
                 if isinstance(sub, APIFailureLimitExceeded):
                     raise sub
                 await emit("validate", f"Submitter {i+1} failed: {sub}", {"error": str(sub)})
             else:
-                valid_submissions.append(_truncate(sub or "", MAX_SUBMISSION_CHARS))
+                valid_entries.append((i + 1, _truncate(sub or "", MAX_SUBMISSION_CHARS)))
+
+        valid_submissions = [submission for _, submission in valid_entries]
 
         shared_context = _aggregate_context(accepted_submissions)
 
@@ -422,6 +424,9 @@ async def run_paper_engine(
         for dec_idx, decision in enumerate(batch_validations):
             if not isinstance(decision, dict):
                 continue
+            if dec_idx >= len(valid_submissions):
+                continue
+            submitter_index = valid_entries[dec_idx][0] if dec_idx < len(valid_entries) else dec_idx + 1
             # MOTO validator returns {"decision": "accept"|"reject", "reasoning": "...", "summary": "...", "scores": {...} optional}
             scores = decision.get("scores") or {}
             nov = scores.get("novelty") if isinstance(scores, dict) else None
@@ -433,19 +438,52 @@ async def run_paper_engine(
             if _decision_accepted(decision):
                 accepted_submissions.append(valid_submissions[dec_idx])
                 round_accepts += 1
+                award_points = 10 + int(round_novelty_scores[-1] if round_novelty_scores else 0)
                 await emit(
                     "validate",
                     f"✓ accepted submission {len(accepted_submissions)} "
                     f"(round {round_num}): {decision.get('reasoning', '')[:120]}",
-                    {"scores": scores, "accepted_total": len(accepted_submissions)},
+                    {
+                        "scores": scores,
+                        "accepted_total": len(accepted_submissions),
+                        "submitter": submitter_index,
+                        "award_points": award_points,
+                    },
+                )
+                await emit(
+                    "subagent_award",
+                    f"Submitter {submitter_index} awarded {award_points} points for an accepted direction",
+                    {
+                        "subagent": f"submitter_{submitter_index}",
+                        "round": round_num,
+                        "award_points": award_points,
+                        "decision": "accepted",
+                        "scores": scores,
+                    },
                 )
             else:
                 steering = _decision_feedback(decision)
                 rejection_feedback.append(steering[:200])
+                award_points = max(1, int(round_novelty_scores[-1] if round_novelty_scores else 1))
                 await emit(
                     "validate",
                     f"✗ rejected — {steering[:120]}",
-                    {"scores": scores},
+                    {
+                        "scores": scores,
+                        "submitter": submitter_index,
+                        "award_points": award_points,
+                    },
+                )
+                await emit(
+                    "subagent_award",
+                    f"Submitter {submitter_index} awarded {award_points} review-credit points for a falsifiable attempt",
+                    {
+                        "subagent": f"submitter_{submitter_index}",
+                        "round": round_num,
+                        "award_points": award_points,
+                        "decision": "rejected",
+                        "scores": scores,
+                    },
                 )
 
         accepts_per_round.append(round_accepts)

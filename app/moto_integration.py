@@ -115,7 +115,7 @@ async def _initialize_moto_components(api_key: str, models: dict, n_submitters: 
         config = SubmitterConfig(
             submitter_id=i,
             provider="lm_studio",
-            model_id=models.get("submitter", "openrouter/free"),
+            model_id=models.get("submitter", "deepseek/deepseek-v4-flash"),
             context_window=131072,
             max_output_tokens=25000
         )

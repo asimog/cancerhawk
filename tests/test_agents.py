@@ -218,7 +218,7 @@ def test_parse_agent_run_valid_config():
     api_key, goal, model, n_sub, name, mode = parse_agent_run(cfg)
     assert api_key == "sk-or-v1-testkey123456"
     assert goal == "PD-1 resistance in melanoma"
-    assert model == "openrouter/free"
+    assert model == "deepseek/deepseek-v4-flash"
     assert n_sub == 3
     assert name == "TestRunner"
     assert mode == "openrouter"
@@ -258,7 +258,7 @@ def test_parse_agent_run_defaults():
         "research_goal": "Default model test",
     }
     api_key, goal, model, n_sub, name, mode = parse_agent_run(cfg)
-    assert model == "openrouter/free"
+    assert model == "deepseek/deepseek-v4-flash"
     assert n_sub == 3
     assert name is None
     assert mode == "openrouter"

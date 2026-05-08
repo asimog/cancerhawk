@@ -9,7 +9,21 @@ type JobEvent = {
   at?: string;
   stage?: string;
   message?: string;
-  data?: Record<string, unknown> | null;
+  data?: {
+    call?: {
+      role?: string;
+      model?: string;
+      total_tokens?: number;
+      cost_usd?: number;
+      error?: string | null;
+      prompt?: string;
+      response?: string;
+    };
+    scores?: Record<string, number>;
+    award_points?: number;
+    leaderboard?: unknown;
+    [key: string]: unknown;
+  } | null;
 };
 
 type Job = {
@@ -220,12 +234,40 @@ export default function JobDetailPage({ job, backendUrl }: { job: Job | null; ba
         <div className="run-log job-live-log" aria-live="polite" ref={logRef}>
           {events.length === 0 ? (
             <div className="run-log-row"><span className="run-log-stage">created</span><span>Waiting for the first event.</span></div>
-          ) : events.map((event, index) => (
-            <div className="run-log-row" key={`${event.at || ''}-${event.stage || 'event'}-${index}`}>
-              <span className="run-log-stage">{event.stage || 'event'}</span>
-              <span>{event.message || ''}</span>
-            </div>
-          ))}
+          ) : events.map((event, index) => {
+            const call = event.data?.call;
+            const role = call?.role || '';
+            const isValidator = (
+              (event.stage || '').includes('validate') ||
+              (event.stage || '').includes('review') ||
+              event.stage === 'block_validator' ||
+              role.includes('validator') ||
+              role.includes('peer_review') ||
+              role.includes('archetype')
+            );
+            return (
+              <details className="run-log-row job-event-details" key={`${event.at || ''}-${event.stage || 'event'}-${index}`} open={index >= events.length - 3 || isValidator}>
+                <summary>
+                  <span className="run-log-stage">{event.stage || call?.role || 'event'}</span>
+                  <span>{event.message || ''}</span>
+                </summary>
+                {(call || event.data?.scores || event.data?.leaderboard || event.data?.award_points) && (
+                  <div className="job-event-payload">
+                    {call && (
+                      <p>
+                        {call.role} · {call.model} · {call.total_tokens?.toLocaleString() || 0} tokens · ${Number(call.cost_usd || 0).toFixed(4)}
+                      </p>
+                    )}
+                    {call?.error && <p className="job-error">{call.error}</p>}
+                    {isValidator && call && <pre>{JSON.stringify({ prompt: call.prompt, response: call.response }, null, 2)}</pre>}
+                    {event.data?.scores && <pre>{JSON.stringify(event.data.scores, null, 2)}</pre>}
+                    {event.data?.leaderboard != null && <pre>{JSON.stringify(event.data.leaderboard, null, 2)}</pre>}
+                    {typeof event.data?.award_points === 'number' && <p className="award-line">Award: {event.data.award_points} points</p>}
+                  </div>
+                )}
+              </details>
+            );
+          })}
         </div>
       </section>
 

@@ -31,6 +31,7 @@ PRICING_PER_M = {
     "mistralai/mistral-large": (2.00, 6.00),
     "deepseek/deepseek-r1": (0.55, 2.19),
     "deepseek/deepseek-chat": (0.27, 1.10),
+    "deepseek/deepseek-v4-flash": (0.27, 1.10),
     "x-ai/grok-2-1212": (2.00, 10.00),
 }
 
