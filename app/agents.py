@@ -301,6 +301,8 @@ def parse_agent_run(cfg: dict[str, Any]) -> tuple[str, str, str, int, str | None
 
     api_key = str(cfg.get("api_key") or "").strip()
     if not api_key:
+        api_key = os.environ.get("CANCERHAWK_HUMAN_SUBMISSION_KEY", "").strip()
+    if not api_key:
         api_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
     if not api_key:
         if mode == "paysh_cancerhawk":

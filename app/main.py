@@ -433,8 +433,9 @@ def _parse_bool(value: Any, default: bool) -> bool:
 def _parse_run_payload(cfg: dict[str, Any]) -> tuple[str, str, int, bool, bool, dict[str, str], bool, str | None]:
     user_api_key = (cfg.get("api_key") or "").strip()
     server_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
+    human_key = os.environ.get("CANCERHAWK_HUMAN_SUBMISSION_KEY", "").strip()
     user_provided_key = bool(user_api_key and user_api_key != server_key)
-    api_key = user_api_key or server_key
+    api_key = user_api_key or human_key or server_key
     research_goal = (cfg.get("research_goal") or "").strip()
     n_submitters = int(cfg.get("n_submitters") or 3)
     if n_submitters < 1 or n_submitters > 8:
