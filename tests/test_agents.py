@@ -218,12 +218,13 @@ def test_parse_agent_run_valid_config():
         "n_submitters": 3,
         "agent_name": "TestRunner",
     }
-    api_key, goal, model, n_sub, name = parse_agent_run(cfg)
+    api_key, goal, model, n_sub, name, mode = parse_agent_run(cfg)
     assert api_key == "sk-or-v1-testkey123456"
     assert goal == "PD-1 resistance in melanoma"
     assert model == "openrouter/free"
     assert n_sub == 3
     assert name == "TestRunner"
+    assert mode == "openrouter"
 
 
 def test_parse_agent_run_missing_api_key_raises():
@@ -259,10 +260,11 @@ def test_parse_agent_run_defaults():
         "api_key": "sk-or-v1-defaults",
         "research_goal": "Default model test",
     }
-    api_key, goal, model, n_sub, name = parse_agent_run(cfg)
+    api_key, goal, model, n_sub, name, mode = parse_agent_run(cfg)
     assert model == "openrouter/free"
     assert n_sub == 3
     assert name is None
+    assert mode == "openrouter"
 
 
 def test_parse_agent_run_agent_name_none_when_missing():
@@ -271,12 +273,12 @@ def test_parse_agent_run_agent_name_none_when_missing():
         "research_goal": "No name test",
         "n_submitters": 2,
     }
-    _, _, _, _, name = parse_agent_run(cfg)
+    _, _, _, _, name, _ = parse_agent_run(cfg)
     assert name is None
 
 
 def test_parse_agent_run_falls_back_to_env_key(monkeypatch):
     monkeypatch.setenv("OPENROUTER_API_KEY", "sk-or-v1-env-fallback")
     cfg = {"research_goal": "env key test", "n_submitters": 2}
-    api_key, _, _, _, _ = parse_agent_run(cfg)
+    api_key, _, _, _, _, _ = parse_agent_run(cfg)
     assert api_key == "sk-or-v1-env-fallback"

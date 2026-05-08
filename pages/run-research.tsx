@@ -20,6 +20,7 @@ export default function RunResearchPage({ backendUrl }: { backendUrl: string }) 
   const [apiKey, setApiKey] = useState('');
   const [goal, setGoal] = useState('');
   const [mode, setMode] = useState<'free' | 'paid'>('free');
+  const [enablePaysh, setEnablePaysh] = useState(false);
   const [submitterCount, setSubmitterCount] = useState(3);
   const [models, setModels] = useState<string[]>([]);
   const [selectedModels, setSelectedModels] = useState<Record<string, string>>({});
@@ -126,6 +127,7 @@ export default function RunResearchPage({ backendUrl }: { backendUrl: string }) 
           idempotency_key: idempotencyKey,
           wallet_address: walletValidation.chain ? walletAddress.trim() : undefined,
           wallet_chain: walletValidation.chain || undefined,
+          enable_paysh: enablePaysh,
           ...selectedModels,
         }),
       });
@@ -197,6 +199,20 @@ export default function RunResearchPage({ backendUrl }: { backendUrl: string }) 
               Paid Mode
             </button>
           </div>
+
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16, cursor: 'pointer' }}>
+            <input
+              type="checkbox"
+              checked={enablePaysh}
+              onChange={(e) => setEnablePaysh(e.currentTarget.checked)}
+            />
+            <span style={{ fontSize: 14 }}>
+              Enable pay.sh enrichment{' '}
+              <span style={{ color: '#888', fontSize: 12 }}>
+                (calls Perplexity + web search for richer research — paid from CancerHawk wallet)
+              </span>
+            </span>
+          </label>
 
           <label>
             OpenRouter API key{mode === 'free' ? ' (optional)' : ''}

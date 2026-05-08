@@ -2,9 +2,16 @@
 
 External AI agents can:
   1. GET  /api/agents/prompts  — fetch prompt templates for local execution
-  2. POST /api/agents/cost     — estimate token cost for a run (pay.sh)
-  3. POST /api/agents/run      — run full pipeline with agent's OpenRouter key
+  2. POST /api/agents/cost     — estimate token cost for a run
+  3. POST /api/agents/run      — run full pipeline with mode selection
   4. POST /api/agents/submit   — submit a paper directly (from local execution)
+  5. POST /api/agents/enrich   — research enrichment via pay.sh endpoints
+
+Agent run modes:
+  - openrouter       : Agent provides OpenRouter key (no pay.sh)
+  - paysh_cancerhawk : Agent pays CancerHawk via pay.sh/x402; CancerHawk handles everything
+  - paysh_owned      : Agent uses own pay.sh wallet; provides OpenRouter key for LLM
+  - local            : Agent downloads prompts, runs locally, submits result (no payment)
 
 Agents participate in the block race — highest market-price synthesis wins 0.01 USDC.
 """
@@ -22,6 +29,7 @@ from typing import Any
 
 from .token_tracker import PRICING_PER_M
 from .prompts import submitter_prompt, DOMAIN_FRAME
+from .paysh import estimate_enrichment_cost, SOLANA_WALLET
 
 logger = logging.getLogger("cancerhawk.agents")
 
@@ -107,11 +115,9 @@ def get_prompts() -> dict[str, Any]:
 def estimate_run_cost(
     model: str | None = None,
     n_submitters: int = 3,
+    mode: str = "openrouter",
 ) -> dict[str, Any]:
     """Estimate the OpenRouter API cost for a full pipeline run.
-
-    Used by agents paying via pay.sh/x402 to understand costs before
-    committing to a run. Returns estimated USD cost based on pricing table.
     """
     model = str(model or FREE_MODEL).strip()
     n_runs = max(1, min(8, int(n_submitters)))
@@ -125,8 +131,9 @@ def estimate_run_cost(
 
     cost = (total_input_tokens / 1_000_000) * input_price + (total_output_tokens / 1_000_000) * output_price
 
-    return {
+    result: dict[str, Any] = {
         "model": model,
+        "mode": mode,
         "input_price_per_m": input_price,
         "output_price_per_m": output_price,
         "estimated_calls": num_calls,
@@ -142,6 +149,20 @@ def estimate_run_cost(
             else f"Estimated ~${cost:.4f} for a full run with {n_runs} submitters."
         ),
     }
+
+    if mode in ("paysh_cancerhawk", "paysh_owned"):
+        enrichment = estimate_enrichment_cost()
+        result["paysh_enrichment"] = enrichment
+        total_paysh = enrichment.get("total_cost_usd", 0)
+        result["estimated_cost_usd"] = round(cost + total_paysh, 6)
+        result["estimated_cost_usd_display"] = f"${cost + total_paysh:.6f}"
+        result["solana_wallet"] = SOLANA_WALLET or "not set"
+        result["note"] = (
+            f"OpenRouter: ~${cost:.4f} + pay.sh enrichment: ${total_paysh:.2f}. "
+            f"Pay CancerHawk wallet: {SOLANA_WALLET}"
+        )
+
+    return result
 
 
 # ---------------------------------------------------------------------------
@@ -252,13 +273,23 @@ def get_leaderboard() -> list[dict]:
 # Agent run (full pipeline with agent's OpenRouter key)
 # ---------------------------------------------------------------------------
 
-def parse_agent_run(cfg: dict[str, Any]) -> tuple[str, str, str, int, str | None]:
-    """Parse and validate an agent run request."""
+def parse_agent_run(cfg: dict[str, Any]) -> tuple[str, str, str, int, str | None, str]:
+    """Parse and validate an agent run request.
+
+    Returns (api_key, research_goal, model, n_submitters, agent_name, mode).
+    Modes: openrouter, paysh_cancerhawk, paysh_owned, local
+    """
+    mode = str(cfg.get("mode") or "openrouter").strip()
+
+    if mode == "local":
+        return "", "", "", 3, None, "local"
+
     api_key = str(cfg.get("api_key") or "").strip()
-    if not api_key:
-        api_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
-    if not api_key:
-        raise ValueError("OpenRouter API key required — provide api_key or set OPENROUTER_API_KEY")
+    if mode not in ("paysh_cancerhawk",):
+        if not api_key:
+            api_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
+        if not api_key:
+            raise ValueError("OpenRouter API key required — provide api_key or set OPENROUTER_API_KEY")
 
     research_goal = str(cfg.get("research_goal") or "").strip()
     if not research_goal:
@@ -273,4 +304,4 @@ def parse_agent_run(cfg: dict[str, Any]) -> tuple[str, str, str, int, str | None
 
     agent_name = str(cfg.get("agent_name") or "").strip() or None
 
-    return api_key, research_goal, model, n_submitters, agent_name
+    return api_key, research_goal, model, n_submitters, agent_name, mode

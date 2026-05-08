@@ -153,7 +153,7 @@ async def stop_job(job_id: str) -> JSONResponse:
 @app.post("/api/jobs/start")
 async def start_job(payload: dict[str, Any], background_tasks: BackgroundTasks) -> JSONResponse:
     """Create a job card immediately, then run CancerHawk in the background."""
-    api_key, research_goal, n_submitters, auto_publish, git_push, models_cfg = _parse_run_payload_or_400(payload)
+    api_key, research_goal, n_submitters, auto_publish, git_push, models_cfg, enable_paysh = _parse_run_payload_or_400(payload)
 
     idempotency_key = str(payload.get("idempotency_key") or "").strip()[:160]
     if idempotency_key:
@@ -169,6 +169,7 @@ async def start_job(payload: dict[str, Any], background_tasks: BackgroundTasks) 
         "idempotency_key": idempotency_key or None,
         "wallet_address": str(payload.get("wallet_address") or "").strip()[:128] or None,
         "wallet_chain": str(payload.get("wallet_chain") or "").strip()[:24] or None,
+        "enable_paysh": enable_paysh,
     }
     job = create_job(research_goal=research_goal, config=job_config)
     job_id = job["job_id"]
@@ -177,7 +178,7 @@ async def start_job(payload: dict[str, Any], background_tasks: BackgroundTasks) 
         job_id,
         stage="start",
         message=f"Starting block · goal: {research_goal[:120]}",
-        data={"models": models_cfg, "job_id": job_id},
+        data={"models": models_cfg, "job_id": job_id, "enable_paysh": enable_paysh},
     )
     background_tasks.add_task(
         _run_job_background,
@@ -188,6 +189,7 @@ async def start_job(payload: dict[str, Any], background_tasks: BackgroundTasks) 
         auto_publish,
         git_push,
         models_cfg,
+        enable_paysh,
     )
     job = get_job(job_id) or job
     logger.info("job_created", extra={"job_id": job_id, "goal": research_goal[:120]})
@@ -243,10 +245,11 @@ async def agent_prompts() -> JSONResponse:
 
 @app.post("/api/agents/cost")
 async def agent_cost(payload: dict[str, Any]) -> JSONResponse:
-    """Estimate OpenRouter cost for a run. Used by pay.sh/x402 agents."""
+    """Estimate cost for a run. Supports mode: openrouter, paysh_cancerhawk, paysh_owned, local."""
     model = str(payload.get("model") or "openrouter/free")
     n_submitters = int(payload.get("n_submitters") or 3)
-    return JSONResponse(estimate_run_cost(model=model, n_submitters=n_submitters))
+    mode = str(payload.get("mode") or "openrouter")
+    return JSONResponse(estimate_run_cost(model=model, n_submitters=n_submitters, mode=mode))
 
 
 @app.post("/api/agents/submit")
@@ -283,11 +286,27 @@ async def agent_submit(payload: dict[str, Any]) -> JSONResponse:
 
 @app.post("/api/agents/run")
 async def agent_run(payload: dict[str, Any], background_tasks: BackgroundTasks) -> JSONResponse:
-    """Run the full CancerHawk pipeline with the agent's OpenRouter key."""
+    """Run the full CancerHawk pipeline.
+
+    Modes:
+      - openrouter       : Agent provides OpenRouter key (default)
+      - paysh_cancerhawk : Agent pays CancerHawk via pay.sh; CancerHawk handles everything
+      - paysh_owned      : Agent uses own pay.sh wallet; provides OpenRouter key
+      - local            : Download prompts, run locally, submit result
+    """
     try:
-        api_key, research_goal, model, n_submitters, agent_name = parse_agent_run(payload)
+        api_key, research_goal, model, n_submitters, agent_name, mode = parse_agent_run(payload)
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    if mode == "local":
+        return JSONResponse({
+            "mode": "local",
+            "message": "Use GET /api/agents/prompts to download prompt templates, run locally, then POST /api/agents/submit with your paper.",
+            "next_step": "GET /api/agents/prompts",
+        })
+
+    enable_paysh = mode == "paysh_cancerhawk"
 
     models_cfg = {
         "submitter": model,
@@ -303,28 +322,30 @@ async def agent_run(payload: dict[str, Any], background_tasks: BackgroundTasks) 
         "auto_publish": True,
         "git_push": False,
         "agent_name": agent_name,
+        "mode": mode,
+        "enable_paysh": enable_paysh,
     }
     job = create_job(research_goal=research_goal, config=job_config)
     job_id = job["job_id"]
     update_job_status(job_id, "running")
     append_job_event(
         job_id, stage="start",
-        message=f"Agent run · {agent_name or 'anonymous'} · goal: {research_goal[:120]}",
-        data={"models": models_cfg, "job_id": job_id, "agent_name": agent_name},
+        message=f"Agent run [{mode}] · {agent_name or 'anonymous'} · goal: {research_goal[:120]}",
+        data={"models": models_cfg, "job_id": job_id, "agent_name": agent_name, "mode": mode, "enable_paysh": enable_paysh},
     )
 
     background_tasks.add_task(
         _run_job_background, job_id, api_key, research_goal,
-        n_submitters, True, False, models_cfg,
+        n_submitters, True, False, models_cfg, enable_paysh,
     )
 
     job = get_job(job_id) or job
-    logger.info("agent_run_started", extra={"job_id": job_id, "agent": agent_name, "goal": research_goal[:120]})
+    logger.info("agent_run_started", extra={"job_id": job_id, "agent": agent_name, "goal": research_goal[:120], "mode": mode})
     return JSONResponse({
         "job": job,
         "job_id": job_id,
-        "message": f"Pipeline started. Track progress at /api/jobs/{job_id}",
-        "cost_estimate": estimate_run_cost(model=model, n_submitters=n_submitters),
+        "message": f"Pipeline started [{mode}]. Track progress at /api/jobs/{job_id}",
+        "cost_estimate": estimate_run_cost(model=model, n_submitters=n_submitters, mode=mode),
     })
 
 
@@ -336,6 +357,21 @@ async def agent_leaderboard() -> JSONResponse:
         "total": len(get_leaderboard()),
         "prize": "0.01 USDC",
         "note": "Highest market-price synthesis wins. Submissions are peer-reviewed by CancerHawk archetype engines.",
+    })
+
+
+@app.post("/api/agents/enrich")
+async def agent_enrich(payload: dict[str, Any]) -> JSONResponse:
+    """Research enrichment via pay.sh endpoints. Returns web search results for a goal."""
+    from .paysh import research_enrichment, PAYSH_ENDPOINTS
+    research_goal = str(payload.get("research_goal") or "").strip()
+    if not research_goal:
+        raise HTTPException(status_code=400, detail="research_goal is required")
+    enrichment = research_enrichment(research_goal)
+    return JSONResponse({
+        "research_goal": research_goal[:200],
+        "enrichment": enrichment,
+        "available_endpoints": list(PAYSH_ENDPOINTS.keys()),
     })
 
 
@@ -363,7 +399,7 @@ def _parse_bool(value: Any, default: bool) -> bool:
     raise ValueError("expected boolean")
 
 
-def _parse_run_payload(cfg: dict[str, Any]) -> tuple[str, str, int, bool, bool, dict[str, str]]:
+def _parse_run_payload(cfg: dict[str, Any]) -> tuple[str, str, int, bool, bool, dict[str, str], bool]:
     user_api_key = (cfg.get("api_key") or "").strip()
     server_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
     user_provided_key = bool(user_api_key and user_api_key != server_key)
@@ -374,6 +410,7 @@ def _parse_run_payload(cfg: dict[str, Any]) -> tuple[str, str, int, bool, bool, 
         raise ValueError("n_submitters must be between 1 and 8")
     auto_publish = _parse_bool(cfg.get("auto_publish"), True)
     git_push = _parse_bool(cfg.get("git_push"), True)
+    enable_paysh = _parse_bool(cfg.get("enable_paysh"), False)
     models_cfg = {
         "submitter": _resolve_job_model(cfg.get("submitter"), "submitter", user_provided_key),
         "validator": _resolve_job_model(cfg.get("validator"), "validator", user_provided_key),
@@ -381,7 +418,7 @@ def _parse_run_payload(cfg: dict[str, Any]) -> tuple[str, str, int, bool, bool, 
         "archetype": _resolve_job_model(cfg.get("archetype"), "archetype", user_provided_key),
         "topic_deriver": _resolve_job_model(cfg.get("topic_deriver"), "topic_deriver", user_provided_key),
     }
-    return api_key, research_goal, n_submitters, auto_publish, git_push, models_cfg
+    return api_key, research_goal, n_submitters, auto_publish, git_push, models_cfg, enable_paysh
 
 
 def _resolve_job_model(value: Any, role: str, user_provided_key: bool = False) -> str:
@@ -391,9 +428,9 @@ def _resolve_job_model(value: Any, role: str, user_provided_key: bool = False) -
     return FREE_ROUTER_MODEL
 
 
-def _parse_run_payload_or_400(cfg: dict[str, Any]) -> tuple[str, str, int, bool, bool, dict[str, str]]:
+def _parse_run_payload_or_400(cfg: dict[str, Any]) -> tuple[str, str, int, bool, bool, dict[str, str], bool]:
     try:
-        api_key, research_goal, n_submitters, auto_publish, git_push, models_cfg = _parse_run_payload(cfg)
+        api_key, research_goal, n_submitters, auto_publish, git_push, models_cfg, enable_paysh = _parse_run_payload(cfg)
     except (TypeError, ValueError) as exc:
         raise HTTPException(status_code=400, detail=f"Invalid run payload: {exc}") from exc
     if not api_key:
@@ -403,7 +440,7 @@ def _parse_run_payload_or_400(cfg: dict[str, Any]) -> tuple[str, str, int, bool,
     if len(research_goal) > 1000:
         raise HTTPException(status_code=400, detail="Research goal must be at most 1000 characters")
     research_goal = _sanitize_goal(research_goal)
-    return api_key, research_goal, n_submitters, auto_publish, git_push, models_cfg
+    return api_key, research_goal, n_submitters, auto_publish, git_push, models_cfg, enable_paysh
 
 
 def _raise_if_job_stopped(job_id: str) -> None:
@@ -420,6 +457,7 @@ async def _run_job_background(
     auto_publish: bool,
     git_push: bool,
     models_cfg: dict[str, str],
+    enable_paysh: bool = False,
 ) -> None:
     tracker = TokenTracker()
     run_start = time.time()
@@ -471,6 +509,7 @@ async def _run_job_background(
                 git_push=git_push,
                 job_id=job_id,
                 stage=True,
+                enable_paysh=enable_paysh,
             )
         )
         _raise_if_job_stopped(job_id)
@@ -542,7 +581,7 @@ async def _ws_hermes_run(ws: WebSocket) -> None:
         return
 
     try:
-        api_key, research_goal, n_submitters, auto_publish, git_push, models_cfg = _parse_run_payload(cfg)
+        api_key, research_goal, n_submitters, auto_publish, git_push, models_cfg, _ = _parse_run_payload(cfg)
     except Exception as exc:
         await ws.send_text(json.dumps({"stage": "error", "message": f"bad config: {exc}"}))
         await ws.close()
@@ -649,6 +688,7 @@ async def _ws_hermes_run(ws: WebSocket) -> None:
                 git_push=git_push,
                 job_id=job_id,
                 stage=True,
+                enable_paysh=False,
             )
         )
         # Update job with result
@@ -817,6 +857,7 @@ async def maybe_auto_generate() -> None:
             git_push=git_push,
             stage=False,
             job_id=None,
+            enable_paysh=False,
         ))
         logger.info("auto_generation_complete", extra={"block": result.block, "market_price": result.market_price})
     except Exception as e:

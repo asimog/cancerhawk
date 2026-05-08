@@ -4,7 +4,6 @@
     "dockerfilePath": "Dockerfile"
   },
   "deploy": {
-    "startCommand": "python -m app.main",
     "healthcheckPath": "/api/health",
     "restartPolicy": {
       "maxRetries": 3

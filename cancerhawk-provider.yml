@@ -1,0 +1,63 @@
+name: cancerhawk
+subdomain: cancerhawk
+title: 'CancerHawk Research Engine'
+description: 'Autonomous oncology research. Pay per run via x402.'
+category: ai_ml
+version: v1
+routing:
+  type: proxy
+  url: 'http://127.0.0.1:8765'
+operator:
+  network: mainnet
+  fee_payer: true
+endpoints:
+  - method: POST
+    path: api/agents/run
+    resource: 'research_run'
+    description: 'Run a full research pipeline. Pay 3 USDC per run.'
+    metering:
+      dimensions:
+        - direction: usage
+          unit: requests
+          scale: 1
+          tiers:
+            - price_usd: 0.03
+  - method: POST
+    path: api/agents/cost
+    resource: 'cost_check'
+    description: 'Check cost estimate before committing to a run.'
+  - method: GET
+    path: api/agents/prompts
+    resource: 'prompts'
+    description: 'Download prompt templates for local execution.'
+  - method: POST
+    path: api/agents/submit
+    resource: 'submit_paper'
+    description: 'Submit a paper from local execution.'
+  - method: GET
+    path: api/agents/leaderboard
+    resource: 'leaderboard'
+    description: 'View agent leaderboard and scores.'
+  - method: GET
+    path: api/models
+    resource: 'models'
+    description: 'List available OpenRouter models.'
+  - method: POST
+    path: api/agents/enrich
+    resource: 'enrichment'
+    description: 'Research enrichment via pay.sh endpoints.'
+    metering:
+      dimensions:
+        - direction: usage
+          unit: requests
+          scale: 1
+          tiers:
+            - price_usd: 0.01
+  - method: GET
+    path: api/health
+    resource: 'health'
+    description: 'Service health check.'
+  - method: GET
+    path: api/healthcheck
+    resource: 'healthcheck'
+    description: 'Deployment health check.'

@@ -16,6 +16,7 @@ from typing import Any, Awaitable, Callable
 from .analysis_engine import run_analysis_engine
 from .openrouter import chat_json
 from .paper_engine import run_paper_engine
+from .paysh import PAY_SH_SANDBOX, research_enrichment, estimate_enrichment_cost
 from .peer_review_engine import (
     consolidated_to_dict,
     reviews_to_dict,
@@ -43,6 +44,7 @@ class HermesRunConfig:
     models: dict[str, str]
     job_id: str | None = None
     stage: bool = False
+    enable_paysh: bool = False
 
 
 @dataclass
@@ -89,6 +91,28 @@ class HermesSupervisor:
                 "Hermes loaded prior CancerHawk blocks for continuity",
                 {"chars": len(previous_block_context)},
             )
+
+        enrichment_context = ""
+        if cfg.enable_paysh:
+            await self.emit(
+                "paysh",
+                f"Pay.sh enrichment enabled (sandbox={PAY_SH_SANDBOX}). Searching for research context...",
+                {"sandbox": PAY_SH_SANDBOX},
+            )
+            enrichment_context = research_enrichment(cfg.research_goal)
+            if enrichment_context:
+                await self.emit(
+                    "paysh",
+                    "Pay.sh enrichment complete.",
+                    {"chars": len(enrichment_context)},
+                )
+                previous_block_context = enrichment_context + "\n\n" + previous_block_context
+            else:
+                await self.emit(
+                    "paysh",
+                    "Pay.sh enrichment returned no results or is in sandbox mode.",
+                    {"sandbox": PAY_SH_SANDBOX},
+                )
 
         logger.info("stage_start", extra={"stage": "paper_engine", "supervisor": "hermes"})
         paper = await run_paper_engine(
