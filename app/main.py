@@ -180,7 +180,7 @@ async def stop_job(job_id: str) -> JSONResponse:
 @app.post("/api/jobs/start")
 async def start_job(payload: dict[str, Any], background_tasks: BackgroundTasks) -> JSONResponse:
     """Create a job card immediately, then run CancerHawk in the background."""
-    api_key, research_goal, n_submitters, auto_publish, git_push, models_cfg, enable_paysh = _parse_run_payload_or_400(payload)
+    api_key, research_goal, n_submitters, auto_publish, git_push, models_cfg, enable_paysh, wallet_address = _parse_run_payload_or_400(payload)
 
     idempotency_key = str(payload.get("idempotency_key") or "").strip()[:160]
     if idempotency_key:
@@ -216,6 +216,7 @@ async def start_job(payload: dict[str, Any], background_tasks: BackgroundTasks) 
         git_push,
         models_cfg,
         enable_paysh,
+        wallet_address,
     )
     job = get_job(job_id) or job
     logger.info("job_created", extra={"job_id": job_id, "goal": research_goal[:120]})
@@ -352,6 +353,7 @@ async def agent_run(payload: dict[str, Any], background_tasks: BackgroundTasks) 
         "agent_name": agent_name,
         "mode": mode,
         "enable_paysh": enable_paysh,
+        "wallet_address": _resolve_wallet(payload.get("wallet_address")),
     }
     job = create_job(research_goal=research_goal, config=job_config)
     job_id = job["job_id"]
@@ -365,6 +367,7 @@ async def agent_run(payload: dict[str, Any], background_tasks: BackgroundTasks) 
     background_tasks.add_task(
         _run_job_background, job_id, api_key, research_goal,
         n_submitters, True, False, models_cfg, enable_paysh,
+        _resolve_wallet(payload.get("wallet_address")),
     )
 
     job = get_job(job_id) or job
@@ -427,7 +430,7 @@ def _parse_bool(value: Any, default: bool) -> bool:
     raise ValueError("expected boolean")
 
 
-def _parse_run_payload(cfg: dict[str, Any]) -> tuple[str, str, int, bool, bool, dict[str, str], bool]:
+def _parse_run_payload(cfg: dict[str, Any]) -> tuple[str, str, int, bool, bool, dict[str, str], bool, str | None]:
     user_api_key = (cfg.get("api_key") or "").strip()
     server_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
     user_provided_key = bool(user_api_key and user_api_key != server_key)
@@ -439,6 +442,7 @@ def _parse_run_payload(cfg: dict[str, Any]) -> tuple[str, str, int, bool, bool, 
     auto_publish = _parse_bool(cfg.get("auto_publish"), True)
     git_push = _parse_bool(cfg.get("git_push"), True)
     enable_paysh = _parse_bool(cfg.get("enable_paysh"), True)
+    wallet_address = _resolve_wallet(cfg.get("wallet_address"))
     models_cfg = {
         "submitter": _resolve_job_model(cfg.get("submitter"), "submitter", user_provided_key),
         "validator": _resolve_job_model(cfg.get("validator"), "validator", user_provided_key),
@@ -446,7 +450,7 @@ def _parse_run_payload(cfg: dict[str, Any]) -> tuple[str, str, int, bool, bool, 
         "archetype": _resolve_job_model(cfg.get("archetype"), "archetype", user_provided_key),
         "topic_deriver": _resolve_job_model(cfg.get("topic_deriver"), "topic_deriver", user_provided_key),
     }
-    return api_key, research_goal, n_submitters, auto_publish, git_push, models_cfg, enable_paysh
+    return api_key, research_goal, n_submitters, auto_publish, git_push, models_cfg, enable_paysh, wallet_address
 
 
 def _resolve_job_model(value: Any, role: str, user_provided_key: bool = False) -> str:
@@ -456,9 +460,9 @@ def _resolve_job_model(value: Any, role: str, user_provided_key: bool = False) -
     return DEFAULT_MODELS.get(role, PAID_DEFAULT_MODEL)
 
 
-def _parse_run_payload_or_400(cfg: dict[str, Any]) -> tuple[str, str, int, bool, bool, dict[str, str], bool]:
+def _parse_run_payload_or_400(cfg: dict[str, Any]) -> tuple[str, str, int, bool, bool, dict[str, str], bool, str | None]:
     try:
-        api_key, research_goal, n_submitters, auto_publish, git_push, models_cfg, enable_paysh = _parse_run_payload(cfg)
+        api_key, research_goal, n_submitters, auto_publish, git_push, models_cfg, enable_paysh, wallet_address = _parse_run_payload(cfg)
     except (TypeError, ValueError) as exc:
         raise HTTPException(status_code=400, detail=f"Invalid run payload: {exc}") from exc
     if not api_key:
@@ -468,7 +472,7 @@ def _parse_run_payload_or_400(cfg: dict[str, Any]) -> tuple[str, str, int, bool,
     if len(research_goal) > 1000:
         raise HTTPException(status_code=400, detail="Research goal must be at most 1000 characters")
     research_goal = _sanitize_goal(research_goal)
-    return api_key, research_goal, n_submitters, auto_publish, git_push, models_cfg, enable_paysh
+    return api_key, research_goal, n_submitters, auto_publish, git_push, models_cfg, enable_paysh, wallet_address
 
 
 def _raise_if_job_stopped(job_id: str) -> None:
@@ -486,6 +490,7 @@ async def _run_job_background(
     git_push: bool,
     models_cfg: dict[str, str],
     enable_paysh: bool = False,
+    wallet_address: str | None = None,
 ) -> None:
     tracker = TokenTracker()
     run_start = time.time()
@@ -538,6 +543,7 @@ async def _run_job_background(
                 job_id=job_id,
                 stage=True,
                 enable_paysh=enable_paysh,
+                wallet_address=wallet_address,
             )
         )
         _raise_if_job_stopped(job_id)
@@ -609,7 +615,7 @@ async def _ws_hermes_run(ws: WebSocket) -> None:
         return
 
     try:
-        api_key, research_goal, n_submitters, auto_publish, git_push, models_cfg, enable_paysh = _parse_run_payload(cfg)
+        api_key, research_goal, n_submitters, auto_publish, git_push, models_cfg, enable_paysh, wallet_address = _parse_run_payload(cfg)
     except Exception as exc:
         await ws.send_text(json.dumps({"stage": "error", "message": f"bad config: {exc}"}))
         await ws.close()
@@ -633,7 +639,7 @@ async def _ws_hermes_run(ws: WebSocket) -> None:
     research_goal = _sanitize_goal(research_goal)
 
     # Create a job record for this run
-    job_config = {"models": models_cfg, "n_submitters": n_submitters, "auto_publish": auto_publish, "git_push": git_push, "enable_paysh": enable_paysh}
+    job_config = {"models": models_cfg, "n_submitters": n_submitters, "auto_publish": auto_publish, "git_push": git_push, "enable_paysh": enable_paysh, "wallet_address": wallet_address}
     job = create_job(research_goal=research_goal, config=job_config)
     job_id = job["job_id"]
     update_job_status(job_id, "running")
@@ -717,6 +723,7 @@ async def _ws_hermes_run(ws: WebSocket) -> None:
                 job_id=job_id,
                 stage=True,
                 enable_paysh=enable_paysh,
+                wallet_address=wallet_address,
             )
         )
         # Update job with result
@@ -801,6 +808,21 @@ async def publish_cycle_worker() -> None:
                     try:
                         block_n = await asyncio.to_thread(publish_from_staging, candidate["job_id"])
                         logger.info("published_block_from_staging", extra={"job_id": candidate["job_id"], "block": block_n, "market_price": candidate["market_price"]})
+
+                        # Pay the winner via Bankr.bot
+                        wallet = candidate.get("wallet_address")
+                        if wallet and wallet != GIVEWELL_SOLANA:
+                            try:
+                                from .payment_service import pay_winner, payment_enabled
+                                if payment_enabled():
+                                    result = await pay_winner(wallet)
+                                    logger.info("prize_payment_sent", extra={"wallet": wallet[:12] + "...", "block": block_n, "result": result})
+                                else:
+                                    logger.info("prize_payment_skipped_disabled", extra={"wallet": wallet[:12] + "...", "block": block_n})
+                            except Exception as e:
+                                logger.error("prize_payment_failed", extra={"wallet": wallet[:12] + "...", "block": block_n, "error": str(e)})
+                        else:
+                            logger.info("prize_payment_skipped_givewell", extra={"block": block_n})
                     except Exception as e:
                         logger.error("failed_to_publish_staged", extra={"job_id": candidate["job_id"], "error": str(e)})
             await asyncio.sleep(10)
@@ -830,6 +852,7 @@ def _load_staged_publication_candidates() -> list[dict[str, Any]]:
                 "batch_size": int(meta.get("batch_size") or 0),
                 "path": str(job_dir),
                 "meta": meta,
+                "wallet_address": meta.get("wallet_address"),
             }
             candidates.append(candidate)
         except Exception as e:

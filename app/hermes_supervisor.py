@@ -48,6 +48,7 @@ class HermesRunConfig:
     publication_batch_id: str | None = None
     candidate_index: int | None = None
     batch_size: int | None = None
+    wallet_address: str | None = None
 
 
 @dataclass
@@ -241,6 +242,7 @@ class HermesSupervisor:
                     publication_batch_id=cfg.publication_batch_id,
                     candidate_index=cfg.candidate_index,
                     batch_size=cfg.batch_size,
+                    wallet_address=cfg.wallet_address,
                 )
             except Exception as exc:
                 logger.error("staging_failed", extra={"job_id": cfg.job_id, "error": str(exc)})

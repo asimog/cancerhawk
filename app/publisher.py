@@ -1260,6 +1260,7 @@ def stage_block(
     publication_batch_id: str | None = None,
     candidate_index: int | None = None,
     batch_size: int | None = None,
+    wallet_address: str | None = None,
 ) -> dict:
     """Write block artifacts to staging area for later publication."""
     staging_dir = STAGING_DIR / job_id
@@ -1311,6 +1312,7 @@ def stage_block(
         "publication_batch_id": publication_batch_id,
         "candidate_index": candidate_index,
         "batch_size": batch_size,
+        "wallet_address": wallet_address,
     }
     (staging_dir / "meta.json").write_text(json.dumps(meta, indent=2, default=str), encoding="utf-8")
 
