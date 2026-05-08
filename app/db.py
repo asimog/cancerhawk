@@ -144,7 +144,7 @@ async def append_event(job_id: str, *, stage: str, message: str, data: dict | No
     async with pool.acquire() as conn:
         row = await conn.fetchrow(
             """UPDATE jobs SET updated_at = $1,
-               events = (events || $2::jsonb) ->> 'events' || $2::jsonb
+               events = events || $2::jsonb
                WHERE job_id = $3
                RETURNING *""",
             now, json.dumps([event], default=str), job_id,
