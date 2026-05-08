@@ -19,6 +19,7 @@ jobs:
           python-version: "3.12"
           cache: pip
       - run: pip install -r app/requirements.txt pytest pytest-asyncio
+      - run: rm -f jobs.json results/jobs-history.json
       - run: python -m pytest -q --tb=short
       - run: python scripts/scan_secrets.py
       - run: python scripts/verify_backend.py
