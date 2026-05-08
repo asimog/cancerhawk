@@ -1,9 +1,11 @@
 {
   "build": {
-    "builder": "NIXPACKS",
-    "nixpacksConfigPath": "nixpacks.toml"
+    "builder": "DOCKERFILE",
+    "dockerfilePath": "Dockerfile"
   },
   "deploy": {
+    "startCommand": "python -m app.main",
+    "healthcheckPath": "/api/health",
     "restartPolicy": {
       "maxRetries": 3
     }
