@@ -980,11 +980,11 @@ PAID_MODELS = [
 MODELS = PAID_MODELS + [FREE_ROUTER_MODEL]
 
 DEFAULT_MODELS = {
-    "submitter": "deepseek/deepseek-v4-pro",
-    "validator": "deepseek/deepseek-v4-pro",
-    "compiler": "deepseek/deepseek-v4-pro",
-    "archetype": "deepseek/deepseek-v4-pro",
-    "topic_deriver": "deepseek/deepseek-v4-pro",
+    "submitter": FREE_ROUTER_MODEL,
+    "validator": FREE_ROUTER_MODEL,
+    "compiler": FREE_ROUTER_MODEL,
+    "archetype": FREE_ROUTER_MODEL,
+    "topic_deriver": FREE_ROUTER_MODEL,
 }
 
 

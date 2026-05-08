@@ -2,6 +2,7 @@
 
 from fastapi.testclient import TestClient
 from app.main import app
+from app import main
 
 client = TestClient(app)
 
@@ -71,7 +72,17 @@ def test_start_job_rejects_invalid_boolean_flag():
     assert "expected boolean" in resp.json()["detail"]
 
 
-def test_block_bundle_endpoint_returns_paper_review_and_simulations():
+def test_block_bundle_endpoint_returns_paper_review_and_simulations(tmp_path, monkeypatch):
+    block_dir = tmp_path / "block-1"
+    block_dir.mkdir()
+    (block_dir / "block.json").write_text('{"block_number":1}', encoding="utf-8")
+    (block_dir / "analysis.json").write_text(
+        '{"peer_reviews":[],"simulations":[],"market_price":0.5}',
+        encoding="utf-8",
+    )
+    (block_dir / "paper.md").write_text("# Test Block", encoding="utf-8")
+    monkeypatch.setattr(main, "RESULTS_DIR", tmp_path)
+
     resp = client.get("/api/blocks/1")
     assert resp.status_code == 200
     data = resp.json()

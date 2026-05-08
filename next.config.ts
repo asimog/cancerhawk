@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: '/ws/:path*',
-        destination: `${BACKEND_URL.replace(/^https/, 'wss')}/ws/:path*`,
+        destination: `${BACKEND_URL}/ws/:path*`,
       },
     ];
   },

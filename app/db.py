@@ -43,6 +43,7 @@ CREATE INDEX IF NOT EXISTS idx_jobs_idempotent ON jobs (idempotency_key) WHERE i
 CREATE TABLE IF NOT EXISTS blocks (
     block_number   INT PRIMARY KEY,
     created_at     TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_at     TIMESTAMPTZ NOT NULL DEFAULT now(),
     research_goal  TEXT NOT NULL,
     paper_title    TEXT NOT NULL DEFAULT '',
     paper_md       TEXT NOT NULL DEFAULT '',
@@ -56,6 +57,8 @@ CREATE TABLE IF NOT EXISTS blocks (
 );
 
 CREATE INDEX IF NOT EXISTS idx_blocks_pushed   ON blocks (pushed_to_git, created_at);
+
+ALTER TABLE blocks ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT now();
 """
 
 
