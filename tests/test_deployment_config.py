@@ -46,4 +46,5 @@ def test_autonomous_generation_is_opt_in():
     source = open("app/main.py", encoding="utf-8").read()
 
     assert "HERMES_AUTO_GENERATE_ENABLED" in source
-    assert "auto_generation_skipped_disabled" in source
+    assert "maybe_auto_generate" in source
+    assert "HERMES_AUTO_BLOCKS_PER_CYCLE" in source

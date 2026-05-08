@@ -778,7 +778,6 @@ async def _ws_hermes_run(ws: WebSocket) -> None:
 async def publish_cycle_worker() -> None:
     while True:
         try:
-            # Check for staged jobs
             if STAGING_DIR.exists():
                 candidates = []
                 for job_dir in STAGING_DIR.iterdir():
@@ -801,18 +800,14 @@ async def publish_cycle_worker() -> None:
                         logger.warning("failed_to_read_staging_meta", extra={"job_id": job_id_cand, "error": str(e)})
                         continue
                 if candidates:
-                    # Sort by market_price descending, then by timestamp ascending (older first)
                     candidates.sort(key=lambda x: (-x["market_price"], x["timestamp"]))
-                    selected = candidates[0]
-                    try:
-                        block_n = await asyncio.to_thread(publish_from_staging, selected["job_id"])
-                        logger.info("published_block_from_staging", extra={"job_id": selected["job_id"], "block": block_n, "market_price": selected["market_price"]})
-                    except Exception as e:
-                        logger.error("failed_to_publish_staged", extra={"job_id": selected["job_id"], "error": str(e)})
-                    # Sleep and continue to next cycle
-                    await asyncio.sleep(600)
-                    continue
-            # No staged jobs: try auto-generation
+                    for candidate in candidates:
+                        try:
+                            block_n = await asyncio.to_thread(publish_from_staging, candidate["job_id"])
+                            logger.info("published_block_from_staging", extra={"job_id": candidate["job_id"], "block": block_n, "market_price": candidate["market_price"]})
+                        except Exception as e:
+                            logger.error("failed_to_publish_staged", extra={"job_id": candidate["job_id"], "error": str(e)})
+            await asyncio.sleep(10)
             await maybe_auto_generate()
         except Exception as e:
             logger.error("publish_cycle_error", exc_info=e)
@@ -841,50 +836,79 @@ async def daily_git_sync_worker() -> None:
         except Exception as e:
             logger.error("daily_git_sync_failed", exc_info=e)
 
+
+async def _save_auto_block_to_db(result, goal: str, models: dict) -> None:
+    """Save an auto-generated block to Postgres so it survives redeploys."""
+    try:
+        block_n = result.block
+        block_dir = Path("results") / f"block-{block_n}"
+        paper_md = (block_dir / "paper.md").read_text(encoding="utf-8") if (block_dir / "paper.md").exists() else ""
+        paper_html = (block_dir / "paper.html").read_text(encoding="utf-8") if (block_dir / "paper.html").exists() else ""
+        analysis = {}
+        if (block_dir / "analysis.json").exists():
+            analysis = json.loads((block_dir / "analysis.json").read_text(encoding="utf-8"))
+        await db.save_block(
+            block_number=block_n,
+            research_goal=goal,
+            paper_title=result.title or "",
+            paper_md=paper_md,
+            paper_html=paper_html,
+            analysis=analysis,
+            market_price=result.market_price or 0,
+        )
+    except Exception:
+        pass
+
 async def maybe_auto_generate() -> None:
-    """Generate a block automatically if no user submissions."""
+    """Generate blocks automatically if no user submissions. Produces up to 3 blocks per cycle."""
     if os.environ.get("HERMES_AUTO_GENERATE_ENABLED", "").strip().lower() not in {"1", "true", "yes", "on"}:
-        logger.debug("auto_generation_skipped_disabled")
         return
 
     api_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
     if not api_key:
-        logger.debug("auto_generation_skipped_no_api_key")
         return
 
-    research_goal = os.environ.get("HERMES_AUTO_GOAL", "Autonomous research: identify a promising oncology research direction and generate a full publication with peer review and simulations.")
-    models = {
-        "submitter": os.environ.get("HERMES_MODEL_SUBMITTER", "openrouter/free"),
-        "validator": os.environ.get("HERMES_MODEL_VALIDATOR", "openrouter/free"),
-        "compiler": os.environ.get("HERMES_MODEL_COMPILER", "openrouter/free"),
-        "archetype": os.environ.get("HERMES_MODEL_ARCHETYPE", "openrouter/free"),
-        "topic_deriver": os.environ.get("HERMES_MODEL_TOPIC_DERIVER", "openrouter/free"),
-    }
-    n_submitters = int(os.environ.get("HERMES_N_SUBMITTERS", "3"))
-    git_push = bool(os.environ.get("GITHUB_TOKEN", "").strip() and os.environ.get("GITHUB_REPO", "").strip())
+    goals = [
+        os.environ.get("HERMES_AUTO_GOAL", "Autonomous research: identify a promising oncology research direction"),
+        os.environ.get("HERMES_AUTO_GOAL_2", "Autonomous research: mechanism for reversing T-cell exhaustion in solid tumors"),
+        os.environ.get("HERMES_AUTO_GOAL_3", "Autonomous research: metabolic reprogramming of the tumor microenvironment"),
+    ]
+    n_to_generate = min(3, int(os.environ.get("HERMES_AUTO_BLOCKS_PER_CYCLE", "3")))
 
-    async def silent_emit(stage: str, message: str, data=None):
-        logger.info(f"auto_gen [{stage}]: {message}")
+    for i in range(n_to_generate):
+        models = {
+            "submitter": os.environ.get("HERMES_MODEL_SUBMITTER", "openrouter/free"),
+            "validator": os.environ.get("HERMES_MODEL_VALIDATOR", "openrouter/free"),
+            "compiler": os.environ.get("HERMES_MODEL_COMPILER", "openrouter/free"),
+            "archetype": os.environ.get("HERMES_MODEL_ARCHETYPE", "openrouter/free"),
+            "topic_deriver": os.environ.get("HERMES_MODEL_TOPIC_DERIVER", "openrouter/free"),
+        }
+        n_submitters = int(os.environ.get("HERMES_N_SUBMITTERS", "3"))
+        goal = goals[i % len(goals)]
 
-    def silent_on_call(call):
-        logger.debug(f"auto_gen API call: {call.role} {call.model}")
+        async def silent_emit(stage: str, message: str, data=None):
+            logger.info(f"auto_gen [{stage}]: {message}")
 
-    supervisor = HermesSupervisor(emit=silent_emit, on_call=silent_on_call, tracker=TokenTracker())
-    try:
-        result = await supervisor.run(HermesRunConfig(
-            api_key=api_key,
-            research_goal=research_goal,
-            models=models,
-            n_submitters=n_submitters,
-            auto_publish=True,
-            git_push=git_push,
-            stage=False,
-            job_id=None,
-            enable_paysh=False,
-        ))
-        logger.info("auto_generation_complete", extra={"block": result.block, "market_price": result.market_price})
-    except Exception as e:
-        logger.error("auto_generation_failed", exc_info=e)
+        def silent_on_call(call):
+            logger.debug(f"auto_gen API call: {call.role} {call.model}")
+
+        supervisor = HermesSupervisor(emit=silent_emit, on_call=silent_on_call, tracker=TokenTracker())
+        try:
+            result = await supervisor.run(HermesRunConfig(
+                api_key=api_key,
+                research_goal=goal,
+                models=models,
+                n_submitters=n_submitters,
+                auto_publish=True,
+                git_push=False,
+                stage=False,
+                job_id=None,
+                enable_paysh=False,
+            ))
+            logger.info("auto_generation_complete", extra={"block": result.block, "market_price": result.market_price, "goal": goal[:80]})
+            await _save_auto_block_to_db(result, goal, models)
+        except Exception as e:
+            logger.error("auto_generation_failed", exc_info=e)
 
 @app.on_event("startup")
 async def startup_event() -> None:
