@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import type { GetStaticProps } from 'next';
+import type { GetServerSideProps } from 'next';
 import type { BlockBundle } from '@/lib/blocks.types';
 
 type HomeBox = {
@@ -18,8 +18,8 @@ const boxes: HomeBox[] = [
   { href: '/autonomous-logs', title: 'Autonomous Logs', desc: 'Live event stream of all autonomous runs, peer reviews, and block creation.' },
 ] as const;
 
-export const getStaticProps: GetStaticProps<{ current: BlockBundle | null }> = async () => ({
-  props: { current: (await import('@/lib/blocks.server')).getCurrentBlock() },
+export const getServerSideProps: GetServerSideProps<{ current: BlockBundle | null }> = async () => ({
+  props: { current: await (await import('@/lib/blocks.server')).getLiveCurrentBlock() },
 });
 
 export default function HomePage({ current }: { current: BlockBundle | null }) {

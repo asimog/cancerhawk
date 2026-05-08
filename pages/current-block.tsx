@@ -1,10 +1,10 @@
-import type { GetStaticProps } from 'next';
+import type { GetServerSideProps } from 'next';
 import { Nav } from '@/components/nav';
 import type { BlockBundle } from '@/lib/blocks.types';
 import { Markdown } from '@/lib/markdown';
 
-export const getStaticProps: GetStaticProps<{ block: BlockBundle | null }> = async () => ({
-  props: { block: (await import('@/lib/blocks.server')).getCurrentBlock() },
+export const getServerSideProps: GetServerSideProps<{ block: BlockBundle | null }> = async () => ({
+  props: { block: await (await import('@/lib/blocks.server')).getLiveCurrentBlock() },
 });
 
 export default function CurrentBlockPage({ block }: { block: BlockBundle | null }) {

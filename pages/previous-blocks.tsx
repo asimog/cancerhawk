@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import type { GetStaticProps } from 'next';
+import type { GetServerSideProps } from 'next';
 import { useMemo, useState } from 'react';
 import { Nav } from '@/components/nav';
 import type { BlockBundle } from '@/lib/blocks.types';
@@ -9,6 +9,7 @@ type ArchiveBlock = {
   title: string;
   marketPrice: number;
   summary: string;
+  href: string;
 };
 
 const BLOCKS_PER_PAGE = 9;
@@ -23,15 +24,18 @@ function excerpt(markdown: string, maxLength = 280) {
   return text.length > maxLength ? `${text.slice(0, maxLength).trim()}...` : text;
 }
 
-export const getStaticProps: GetStaticProps<{ blocks: ArchiveBlock[] }> = async () => {
-  const { getBlocks } = await import('@/lib/blocks.server');
+export const getServerSideProps: GetServerSideProps<{ blocks: ArchiveBlock[] }> = async () => {
+  const { getBackendUrl, getLiveBlocks } = await import('@/lib/blocks.server');
+  const backendUrl = getBackendUrl();
+  const blocks = await getLiveBlocks();
   return {
     props: {
-      blocks: getBlocks().map((block: BlockBundle) => ({
+      blocks: blocks.map((block: BlockBundle, index: number) => ({
         number: block.number,
         title: block.meta.title,
         marketPrice: block.meta.market_price,
         summary: excerpt(block.paper),
+        href: index === 0 ? '/current-block' : `${backendUrl}/results/block-${block.number}/paper.html`,
       })),
     },
   };
@@ -53,7 +57,7 @@ export default function PreviousBlocksPage({ blocks }: { blocks: ArchiveBlock[] 
       <h1 className="page-title">Previous Blocks</h1>
       <div className="archive-grid">
         {visibleBlocks.map((block) => (
-          <Link className="panel" href={block.number === blocks[0]?.number ? '/current-block' : `/results/block-${block.number}/paper.html`} key={block.number}>
+          <Link className="panel" href={block.href} key={block.number}>
             <p className="page-kicker">Block {block.number} · {Math.round(block.marketPrice * 100)}%</p>
             <h2>{block.title}</h2>
             <p>{block.summary}</p>
