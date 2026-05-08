@@ -5,6 +5,15 @@ import type { BlockBundle, BlockMeta, Analysis } from './blocks.types';
 const RESULTS_DIR = path.join(process.cwd(), 'results');
 const DEFAULT_BACKEND_URL = 'https://cancerhawk-production.up.railway.app';
 
+function cleanBackendUrl(value: string) {
+  return value
+    .trim()
+    .replace(/^["']|["']$/g, '')
+    .replace(/\\n/g, '')
+    .replace(/\s+/g, '')
+    .replace(/\/+$/, '');
+}
+
 function blockDirs() {
   if (!fs.existsSync(RESULTS_DIR)) return [];
   return fs.readdirSync(RESULTS_DIR)
@@ -37,11 +46,11 @@ export function getCurrentBlock(): BlockBundle | null {
 }
 
 export function getBackendUrl(): string {
-  return (
+  return cleanBackendUrl(
     process.env.NEXT_PUBLIC_BACKEND_URL ||
     process.env.CANCERHAWK_BACKEND_URL ||
-    DEFAULT_BACKEND_URL
-  ).trim().replace(/\/+$/, '');
+    DEFAULT_BACKEND_URL,
+  );
 }
 
 async function fetchBackendJson<T>(path: string): Promise<T | null> {

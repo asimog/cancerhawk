@@ -1,11 +1,22 @@
 import type { BlockBundle } from './blocks.types';
 
+const DEFAULT_BACKEND_URL = 'https://cancerhawk-production.up.railway.app';
+
+function cleanBackendUrl(value: string) {
+  return value
+    .trim()
+    .replace(/^["']|["']$/g, '')
+    .replace(/\\n/g, '')
+    .replace(/\s+/g, '')
+    .replace(/\/+$/, '');
+}
+
 export function getBackendUrl(): string {
-  return (
+  return cleanBackendUrl(
     process.env.NEXT_PUBLIC_BACKEND_URL ||
     process.env.CANCERHAWK_BACKEND_URL ||
-    ''
-  ).trim().replace(/\/+$/, '');
+    DEFAULT_BACKEND_URL,
+  );
 }
 
 export function fetchWithTimeout(
