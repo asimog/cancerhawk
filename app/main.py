@@ -1013,7 +1013,7 @@ async def _save_auto_block_to_db(result, goal: str, models: dict) -> None:
         pass
 
 async def maybe_auto_generate(await_completion: bool = True) -> None:
-    """Start an autonomous batch. Each batch creates 3 candidate jobs by default."""
+    """Start an autonomous batch. Each batch creates published block jobs by default."""
     if os.environ.get("HERMES_AUTO_GENERATE_ENABLED", "").strip().lower() not in {"1", "true", "yes", "on"}:
         return
 
@@ -1044,13 +1044,14 @@ async def maybe_auto_generate(await_completion: bool = True) -> None:
         job_config = {
             "models": models,
             "n_submitters": n_submitters,
-            "auto_publish": False,
+            "auto_publish": True,
+            "git_push": False,
             "mode": "auto",
             "enable_paysh": True,
             "publication_batch_id": batch_id,
             "candidate_index": i + 1,
             "batch_size": n_to_generate,
-            "publication_strategy": "fourth_validator_best_score",
+            "publication_strategy": "direct_block_publish",
         }
         job = create_job(research_goal=goal, config=job_config)
         job_id = job["job_id"]
@@ -1096,9 +1097,9 @@ async def maybe_auto_generate(await_completion: bool = True) -> None:
                     research_goal=goal,
                     models=models,
                     n_submitters=n_submitters,
-                    auto_publish=False,
+                    auto_publish=True,
                     git_push=False,
-                    stage=True,
+                    stage=False,
                     job_id=job_id,
                     enable_paysh=True,
                     publication_batch_id=batch_id,
@@ -1112,16 +1113,22 @@ async def maybe_auto_generate(await_completion: bool = True) -> None:
                     "stats": tracker.stats(),
                     "publication_batch_id": batch_id,
                     "candidate_index": candidate_index,
-                    "publication_outcome": "staged_for_fourth_validator",
+                    "publication_outcome": "published_block",
                 })
                 append_job_event(
                     job_id,
                     stage="done",
                     message=(
-                        f"Candidate staged for fourth-validator scoring · "
+                        f"Autonomous block published · block = {result.block} · "
                         f"market price = {result.market_price:.2f}"
                     ),
-                    data={"market_price": result.market_price, "batch_id": batch_id, "candidate_index": candidate_index},
+                    data={
+                        "block": result.block,
+                        "result_url": result.result_url,
+                        "market_price": result.market_price,
+                        "batch_id": batch_id,
+                        "candidate_index": candidate_index,
+                    },
                 )
                 logger.info("auto_generation_candidate_complete", extra={"job_id": job_id, "market_price": result.market_price, "goal": goal[:80]})
             except Exception as e:

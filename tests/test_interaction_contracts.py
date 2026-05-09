@@ -28,7 +28,7 @@ class AutoResult:
     block: int = 3
     result_url: str = "/results/block-3/paper.html"
     calls: list = None
-    git_status: str = "staged"
+    git_status: str = None
 
     def __post_init__(self):
         self.calls = self.calls or []
@@ -81,7 +81,8 @@ def test_auto_generation_defaults_every_role_to_paid_flash(tmp_path, monkeypatch
     assert AutoSupervisor.last_config is not None
     assert AutoSupervisor.last_config.n_submitters == 3
     assert set(AutoSupervisor.last_config.models.values()) == {"deepseek/deepseek-v4-flash"}
-    assert AutoSupervisor.last_config.stage is True
+    assert AutoSupervisor.last_config.auto_publish is True
+    assert AutoSupervisor.last_config.stage is False
     assert AutoSupervisor.last_config.enable_paysh is True
 
 
