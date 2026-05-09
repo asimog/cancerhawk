@@ -10,13 +10,11 @@ server-side.
 ## Pipeline (one click → one block)
 
 ```
-brainstorm  →  validate  →  compile paper  →  archetype analysis  →  peer review
-   N parallel    accept/    section-by-       8 archetypes score      8 archetypes
-   submitters    reject     section by        on 6 dimensions         review paper
-   per round     + steer    compiler                                  + simulations
-   (loops with   + aggregate
-    convergence
-    detection)
+Precigenetic base layer  →  10 MOTO workers  →  10 MiroShark reviews  →  MOTO validator
+   TCGA/GDC topic seeds      independent          independent              ranks winner
+   exactly 10 topics         candidate papers     peer review              + next 10 topics
+                                              ↓
+                                          archetype analysis
                                               ↓
                                           synthesis market price
                                               ↓
@@ -45,6 +43,9 @@ show the latest one.
 |---|---|
 | `main.py` | FastAPI app — UI + WebSocket pipeline orchestrator |
 | `openrouter.py` | Async OpenRouter chat client (key per-call) |
+| `precigenetic_base_layer.py` | TCGA/GDC seed layer that emits 10 starting topics |
+| `block_race_engine.py` | 10-topic MOTO/MiroShark block race + validator |
+| `subagent_wallets.py` | Public run-scoped wallet identities for subagents |
 | `prompts.py` | All system prompts and the 8 archetype definitions |
 | `paper_engine.py` | Brainstorm → validate → compile loop |
 | `analysis_engine.py` | 8 archetype agents + synthesis-market price |
@@ -90,7 +91,7 @@ live to Pages automatically.
   - `CANCERHAWK_MAX_WALL_CLOCK` (default 3600s) — soft safety guard on
     wall-clock seconds. Set to 0 to disable.
 - **Change submitters per round** — `n_submitters` in the WebSocket config
-  (UI input, 1–8).
+  (UI input, 1–10). The default block race uses 10 topics/workers/reviewers.
 
 ## Deployment
 

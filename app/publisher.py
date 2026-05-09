@@ -26,6 +26,7 @@ import urllib.request
 from dataclasses import asdict
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any
 
 from .jobs import append_job_event, get_job, update_job_status  # noqa: E402
 
@@ -65,6 +66,7 @@ def publish_block(
     models: dict,
     peer_reviews: list[dict] | None = None,
     simulations: list[dict] | None = None,
+    race_metadata: dict | None = None,
 ) -> dict:
     """Write block-N/ + rewrite results/index.html. Returns metadata."""
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
@@ -90,6 +92,9 @@ def publish_block(
         analysis_payload["peer_reviews"] = peer_reviews
     if simulations is not None:
         analysis_payload["simulations"] = simulations
+    if race_metadata is not None:
+        analysis_payload["race"] = race_metadata
+        analysis_payload["subagent_wallets"] = race_metadata.get("subagent_wallets", {})
     (block_dir / "analysis.json").write_text(
         json.dumps(analysis_payload, indent=2), encoding="utf-8"
     )
@@ -1261,6 +1266,7 @@ def stage_block(
     candidate_index: int | None = None,
     batch_size: int | None = None,
     wallet_address: str | None = None,
+    race_metadata: dict | None = None,
 ) -> dict:
     """Write block artifacts to staging area for later publication."""
     staging_dir = STAGING_DIR / job_id
@@ -1294,6 +1300,9 @@ def stage_block(
         analysis_payload["peer_reviews"] = peer_reviews
     if simulations is not None:
         analysis_payload["simulations"] = simulations
+    if race_metadata is not None:
+        analysis_payload["race"] = race_metadata
+        analysis_payload["subagent_wallets"] = race_metadata.get("subagent_wallets", {})
     (staging_dir / "analysis.json").write_text(json.dumps(analysis_payload, indent=2), encoding="utf-8")
 
     # Write meta.json
@@ -1358,6 +1367,7 @@ def publish_from_staging(job_id: str) -> int:
     derived_topics = analysis_data.get("derived_topics", [])
     peer_reviews = analysis_data.get("peer_reviews")
     simulations = analysis_data.get("simulations")
+    race_metadata = analysis_data.get("race")
 
     # Load meta.json for research_goal, models, git_push
     meta_path = staging_dir / "meta.json"
@@ -1375,6 +1385,7 @@ def publish_from_staging(job_id: str) -> int:
         models=models,
         peer_reviews=peer_reviews,
         simulations=simulations,
+        race_metadata=race_metadata,
     )
     block_n = publish_meta["block"]
     result_url = f"/results/block-{block_n}/paper.html"

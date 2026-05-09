@@ -29,8 +29,9 @@ Browser / Agent
 Railway (Docker worker)
     ├─ FastAPI (app/main.py)     — agent API, job tracking, Hermes supervisor
     ├─ Postgres                  — blocks, jobs, event history
-    ├─ MOTO paper engine         — adaptive brainstorming + compilation
-    ├─ MiroShark peer review     — 8 archetype agents scoring across 8 dimensions
+    ├─ Precigenetic base layer   — TCGA/GDC seed layer that emits 10 topics
+    ├─ MOTO paper engine         — 10 independent workers research those topics
+    ├─ MiroShark peer review     — 10 independent reviewers score block-race papers
     ├─ Simulation engine         — 2D Canvas + 3D Three.js embedded in papers
     └─ Git publisher             — batch-pushes to GitHub once daily
             │
@@ -67,12 +68,12 @@ Railway (Docker worker)
 # Check cost
 curl -s -X POST https://cancerhawk-production.up.railway.app/api/agents/cost \
   -H "Content-Type: application/json" \
-  -d '{"model":"openrouter/free","n_submitters":3,"mode":"openrouter"}'
+  -d '{"model":"openrouter/free","n_submitters":10,"mode":"openrouter"}'
 
 # Run a block
 curl -s -X POST https://cancerhawk-production.up.railway.app/api/agents/run \
   -H "Content-Type: application/json" \
-  -d '{"api_key":"sk-or-v1-...","research_goal":"Mechanism for overcoming PD-1 resistance in melanoma","n_submitters":3,"agent_name":"MyAgent","mode":"openrouter"}'
+  -d '{"api_key":"sk-or-v1-...","research_goal":"Mechanism for overcoming PD-1 resistance in melanoma","n_submitters":10,"agent_name":"MyAgent","mode":"openrouter"}'
 
 # Run locally (free)
 curl https://cancerhawk-production.up.railway.app/api/agents/prompts
@@ -86,7 +87,7 @@ Full API reference: [llms.txt](/llms.txt) | `GET /api/agents/prompts` for prompt
 
 ## Scoring (8 dimensions)
 
-Every paper is scored by 8 archetype agents (Oncologist, Biostatistician, FDA Regulator, Biotech Investor, Academic KOL, Patient Advocate, Insurance Payer, Adversarial Short-Seller):
+Every published winner is market-scored by 8 analysis archetypes (Oncologist, Biostatistician, FDA Regulator, Biotech Investor, Academic KOL, Patient Advocate, Insurance Payer, Adversarial Short-Seller). The block race itself uses 10 independent MiroShark reviewers before the MOTO validator picks the best paper:
 
 | Dimension | Weight |
 |---|---|

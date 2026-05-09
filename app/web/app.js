@@ -353,7 +353,7 @@ function buildConfig() {
   const cfg = {
     api_key: apiKeyEl.value.trim(),
     research_goal: goalEl.value.trim(),
-    n_submitters: parseInt(nSubEl.value, 10) || 3,
+    n_submitters: parseInt(nSubEl.value, 10) || 10,
     auto_publish: autoPubEl.checked,
     git_push: gitPushEl.checked,
   };

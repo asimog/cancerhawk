@@ -20,7 +20,7 @@ export default function RunResearchPage({ backendUrl }: { backendUrl: string }) 
   const [apiKey, setApiKey] = useState('');
   const [goal, setGoal] = useState('');
   const [enablePaysh, setEnablePaysh] = useState(true);
-  const [submitterCount, setSubmitterCount] = useState(3);
+  const [submitterCount, setSubmitterCount] = useState(10);
   const [models, setModels] = useState<string[]>([]);
   const [selectedModels, setSelectedModels] = useState<Record<string, string>>({});
   const [status, setStatus] = useState('Checking Hermes worker...');
@@ -116,7 +116,7 @@ export default function RunResearchPage({ backendUrl }: { backendUrl: string }) 
         body: JSON.stringify({
           api_key: apiKey.trim(),
           research_goal: goal.trim(),
-          n_submitters: Math.min(8, Math.max(1, Number(submitterCount) || 3)),
+          n_submitters: Math.min(10, Math.max(1, Number(submitterCount) || 10)),
           auto_publish: true,
           git_push: true,
           enable_paysh: enablePaysh,
@@ -203,7 +203,7 @@ export default function RunResearchPage({ backendUrl }: { backendUrl: string }) 
           </div>
           <label>
             Submitter count
-            <input max={8} min={1} onChange={(event) => setSubmitterCount(Math.min(8, Math.max(1, Number(event.target.value) || 3)))} type="number" value={submitterCount} />
+            <input max={10} min={1} onChange={(event) => setSubmitterCount(Math.min(10, Math.max(1, Number(event.target.value) || 10)))} type="number" value={submitterCount} />
           </label>
           <label>
             Wallet address (optional — Solana or Base)

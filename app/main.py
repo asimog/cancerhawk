@@ -256,6 +256,9 @@ async def block_bundle(block_number: int) -> JSONResponse:
             "consensus_dim": analysis.get("consensus_dim"),
             "headline_catalysts": analysis.get("headline_catalysts", []),
             "topics": analysis.get("topics", []),
+            "derived_topics": analysis.get("derived_topics", []),
+            "race": analysis.get("race"),
+            "subagent_wallets": analysis.get("subagent_wallets", {}),
         },
     })
 
@@ -438,8 +441,8 @@ def _parse_run_payload(cfg: dict[str, Any]) -> tuple[str, str, int, bool, bool, 
     api_key = user_api_key or human_key or server_key
     research_goal = (cfg.get("research_goal") or "").strip()
     n_submitters = int(cfg.get("n_submitters") or 3)
-    if n_submitters < 1 or n_submitters > 8:
-        raise ValueError("n_submitters must be between 1 and 8")
+    if n_submitters < 1 or n_submitters > 10:
+        raise ValueError("n_submitters must be between 1 and 10")
     auto_publish = _parse_bool(cfg.get("auto_publish"), True)
     git_push = _parse_bool(cfg.get("git_push"), True)
     enable_paysh = _parse_bool(cfg.get("enable_paysh"), True)

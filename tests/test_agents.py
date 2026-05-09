@@ -79,9 +79,9 @@ def test_estimate_run_cost_default_model():
 def test_estimate_run_cost_n_submitters_bounds():
     result = estimate_run_cost(n_submitters=1)
     calls_1 = result["estimated_calls"]
-    result = estimate_run_cost(n_submitters=8)
-    calls_8 = result["estimated_calls"]
-    assert calls_8 > calls_1
+    result = estimate_run_cost(n_submitters=10)
+    calls_10 = result["estimated_calls"]
+    assert calls_10 > calls_1
 
 
 def test_estimate_run_cost_unknown_model_zero_price():
@@ -243,12 +243,12 @@ def test_parse_agent_run_research_goal_too_long_raises():
 
 
 def test_parse_agent_run_n_submitters_out_of_bounds_raises():
-    cfg = {"api_key": "sk-or-v1-testkey", "research_goal": "test", "n_submitters": 9}
-    with pytest.raises(ValueError, match="between 1 and 8"):
+    cfg = {"api_key": "sk-or-v1-testkey", "research_goal": "test", "n_submitters": 11}
+    with pytest.raises(ValueError, match="between 1 and 10"):
         parse_agent_run(cfg)
 
     cfg["n_submitters"] = -1
-    with pytest.raises(ValueError, match="between 1 and 8"):
+    with pytest.raises(ValueError, match="between 1 and 10"):
         parse_agent_run(cfg)
 
 

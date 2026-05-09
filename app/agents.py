@@ -135,7 +135,7 @@ def estimate_run_cost(
     """Estimate the OpenRouter API cost for a full pipeline run.
     """
     model = str(model or FREE_MODEL).strip()
-    n_runs = max(1, min(8, int(n_submitters)))
+    n_runs = max(1, min(10, int(n_submitters)))
 
     pricing = PRICING_PER_M.get(model, (0.0, 0.0))
     input_price, output_price = pricing
@@ -319,8 +319,8 @@ def parse_agent_run(cfg: dict[str, Any]) -> tuple[str, str, str, int, str | None
     if model == FREE_MODEL:
         model = DEFAULT_MODEL
     n_submitters = int(cfg.get("n_submitters") or 3)
-    if n_submitters < 1 or n_submitters > 8:
-        raise ValueError("n_submitters must be between 1 and 8")
+    if n_submitters < 1 or n_submitters > 10:
+        raise ValueError("n_submitters must be between 1 and 10")
 
     agent_name = str(cfg.get("agent_name") or "").strip() or None
 

@@ -14,19 +14,12 @@ from dataclasses import dataclass
 from typing import Any, Awaitable, Callable
 
 from .analysis_engine import run_analysis_engine
-from .openrouter import chat_json
-from .paper_engine import run_paper_engine
+from .block_race_engine import run_block_race
 from .paysh import PAY_SH_SANDBOX, research_enrichment, estimate_enrichment_cost
-from .peer_review_engine import (
-    consolidated_to_dict,
-    reviews_to_dict,
-    run_peer_review_engine,
-)
-from .prompts import topic_deriver_prompt
 from .publisher import hydrate_results_from_github, load_previous_block_context, publish_block, try_git_publish, stage_block
 from .simulation_engine import generate_html5_simulations
 from .moltbook import post_block_race_invite, post_research_result
-from .token_tracker import APICall, APIFailureLimitExceeded, TokenTracker
+from .token_tracker import APICall, TokenTracker
 
 logger = logging.getLogger("cancerhawk.hermes")
 
@@ -118,32 +111,34 @@ class HermesSupervisor:
                     {"sandbox": PAY_SH_SANDBOX},
                 )
 
-        logger.info("stage_start", extra={"stage": "paper_engine", "supervisor": "hermes"})
-        paper = await run_paper_engine(
+        logger.info("stage_start", extra={"stage": "block_race", "supervisor": "hermes"})
+        race = await run_block_race(
             api_key=cfg.api_key,
             research_goal=cfg.research_goal,
             models=cfg.models,
-            n_submitters=cfg.n_submitters,
             emit=self.emit,
             tracker=tracker,
             on_call=self.on_call,
             previous_block_context=previous_block_context,
+            run_id=cfg.job_id or cfg.publication_batch_id,
         )
-        logger.info("stage_end", extra={"stage": "paper_engine", "supervisor": "hermes"})
+        logger.info("stage_end", extra={"stage": "block_race", "supervisor": "hermes"})
+        paper = race.winner.paper
         paper_text = paper.full_text()
         await self.emit(
             "paper_done",
-            f"Paper compiled: '{paper.title}' · {len(paper.sections)} sections · "
-            f"{len(paper_text.split())} words · aggregated "
-            f"{len(paper.accepted_submissions)} directions over "
-            f"{getattr(paper, 'rounds_run', 0)} rounds "
-            f"({getattr(paper, 'convergence_reason', '') or 'n/a'})",
+            f"Block-race winner compiled: candidate {race.winner.index} · '{paper.title}' · "
+            f"{len(paper.sections)} sections · {len(paper_text.split())} words",
             {
                 "title": paper.title,
+                "winner_index": race.winner.index,
+                "worker_id": race.winner.worker_id,
+                "worker_wallet": race.winner.worker_wallet,
                 "section_count": len(paper.sections),
                 "accepted_count": len(paper.accepted_submissions),
                 "rounds_run": getattr(paper, "rounds_run", 0),
                 "convergence_reason": getattr(paper, "convergence_reason", ""),
+                "candidate_count": len(race.candidates),
             },
         )
 
@@ -159,26 +154,16 @@ class HermesSupervisor:
         logger.info("stage_end", extra={"stage": "analysis_engine", "supervisor": "hermes"})
 
         logger.info("stage_start", extra={"stage": "peer_review", "supervisor": "hermes"})
-        await self.emit("review", "Hermes sending paper to MiroShark peer reviewers", None)
-        peer_review_result = await run_peer_review_engine(
-            api_key=cfg.api_key,
-            paper_text=paper_text,
-            analysis_result=analysis,
-            model=cfg.models["archetype"],
-            emit=self.emit,
-            tracker=tracker,
-            on_call=self.on_call,
-        )
-        peer_reviews_dict = reviews_to_dict(peer_review_result.individual_reviews)
-        simulations_dict = consolidated_to_dict(peer_review_result)
+        peer_reviews_dict = race.reviews
+        recommended_simulations = _recommended_simulations_from_reviews(peer_reviews_dict)
         await self.emit(
             "review_complete",
-            f"Hermes peer review complete · acceptance={peer_review_result.acceptance_probability:.0%} · "
-            f"{len(peer_review_result.recommended_simulations)} simulation proposals",
+            f"MiroShark race review complete · {len(peer_reviews_dict)} independent reviews · "
+            f"{len(recommended_simulations)} simulation proposals",
             {
-                "acceptance_probability": peer_review_result.acceptance_probability,
-                "major_concerns": len(peer_review_result.major_concerns),
-                "simulation_count": len(peer_review_result.recommended_simulations),
+                "review_count": len(peer_reviews_dict),
+                "simulation_count": len(recommended_simulations),
+                "winner_index": race.winner.index,
             },
         )
         logger.info("stage_end", extra={"stage": "peer_review", "supervisor": "hermes"})
@@ -189,7 +174,7 @@ class HermesSupervisor:
             paper_text=paper_text,
             analysis_result=analysis,
             peer_reviews=peer_reviews_dict,
-            recommended_simulations=simulations_dict.get("recommended_simulations", []),
+            recommended_simulations=recommended_simulations,
         )
         await self.emit(
             "simulate_done",
@@ -198,31 +183,13 @@ class HermesSupervisor:
         )
         logger.info("stage_end", extra={"stage": "simulation_generation", "supervisor": "hermes"})
 
-        logger.info("stage_start", extra={"stage": "topic_derivation", "supervisor": "hermes"})
-        await self.emit("derive", "Hermes deriving next-block topics", None)
-        analysis_text_for_derive = json.dumps(
-            {"consensus": analysis.consensus_dim, "catalysts": analysis.headline_catalysts},
-            indent=2,
+        derived_topics = race.next_topics
+        await self.emit(
+            "derive",
+            "MOTO validator emitted next-block topics",
+            {"topics": derived_topics, "topic_count": len(derived_topics)},
         )
-        try:
-            topics_payload = await chat_json(
-                cfg.api_key,
-                cfg.models["topic_deriver"],
-                topic_deriver_prompt(paper_text, analysis_text_for_derive),
-                temperature=0.5,
-                max_tokens=1500,
-                role="topic_deriver",
-                tracker=tracker,
-                on_call=self.on_call,
-            )
-            derived_topics = topics_payload.get("topics", [])
-        except APIFailureLimitExceeded:
-            raise
-        except Exception as exc:
-            logger.warning("topic_derivation_failed", extra={"error": str(exc)})
-            await self.emit("derive", f"topic derivation failed: {exc}", {"error": str(exc)})
-            derived_topics = []
-        logger.info("stage_end", extra={"stage": "topic_derivation", "supervisor": "hermes"})
+        race_metadata = race.race_metadata()
 
         publish_meta = None
         if getattr(cfg, 'stage', False) and cfg.job_id:
@@ -237,6 +204,7 @@ class HermesSupervisor:
                     models=cfg.models,
                     peer_reviews=peer_reviews_dict,
                     simulations=simulations,
+                    race_metadata=race_metadata,
                     job_id=cfg.job_id,
                     git_push=cfg.git_push,
                     publication_batch_id=cfg.publication_batch_id,
@@ -260,6 +228,7 @@ class HermesSupervisor:
                 models=cfg.models,
                 peer_reviews=peer_reviews_dict,
                 simulations=simulations,
+                race_metadata=race_metadata,
             )
             await self.emit(
                 "publish_done",
@@ -307,3 +276,15 @@ class HermesSupervisor:
             calls=[c.to_dict() for c in tracker.calls],
             git_status=git_status,
         )
+
+
+def _recommended_simulations_from_reviews(peer_reviews: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    proposals: list[dict[str, Any]] = []
+    for review in peer_reviews:
+        proposal = review.get("simulation_proposal")
+        if not isinstance(proposal, dict):
+            continue
+        if not proposal.get("description") or not proposal.get("type"):
+            continue
+        proposals.append(proposal)
+    return proposals[:3]

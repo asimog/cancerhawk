@@ -100,7 +100,7 @@ def test_home_logo_style_does_not_add_a_background():
     assert "box-shadow" not in home_logo_rule
 
 
-def test_miroshark_peer_review_remains_after_paper_and_before_simulations():
+def test_block_race_remains_before_analysis_and_simulations():
     source = (ROOT / "app/hermes_supervisor.py").read_text()
     module = ast.parse(source)
     run_method = next(
@@ -121,7 +121,7 @@ def test_miroshark_peer_review_remains_after_paper_and_before_simulations():
 
     OrderedCallVisitor().visit(run_method)
 
-    assert calls.index("run_paper_engine") < calls.index("run_peer_review_engine")
-    assert calls.index("run_peer_review_engine") < calls.index("generate_html5_simulations")
-    assert "reviews_to_dict" in calls
-    assert "consolidated_to_dict" in calls
+    assert calls.index("run_block_race") < calls.index("run_analysis_engine")
+    assert calls.index("run_analysis_engine") < calls.index("generate_html5_simulations")
+    assert "_recommended_simulations_from_reviews" in calls
+    assert "race_metadata" in calls

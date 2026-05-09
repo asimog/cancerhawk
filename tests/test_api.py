@@ -58,7 +58,7 @@ def test_start_job_rejects_out_of_range_submitter_count():
         "n_submitters": 99,
     })
     assert resp.status_code == 400
-    assert "between 1 and 8" in resp.json()["detail"]
+    assert "between 1 and 10" in resp.json()["detail"]
 
 
 def test_start_job_rejects_invalid_boolean_flag():
